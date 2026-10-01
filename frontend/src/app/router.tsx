@@ -1,6 +1,6 @@
 /**
- * Edu-Branch-AI — Application Router
- * Source of Truth: Proposal V1.1 & Final Migration Plan Rev 2
+ * EduBranch AI — Application Router
+ * Source of Truth: Proposal V1.2 & Final Migration Plan Rev 2
  */
 
 import { createBrowserRouter } from "react-router-dom";
@@ -16,6 +16,7 @@ import { CaseReviewPage } from "../pages/lecturer/CaseReviewPage";
 import { StatisticsPage } from "../pages/lecturer/StatisticsPage";
 import { LecturerFeedbackPage } from "../pages/lecturer/LecturerFeedbackPage";
 import { BranchingCasePlayerPage } from "../pages/student/BranchingCasePlayerPage";
+import { BranchingReviewPage } from "../pages/student/BranchingReviewPage";
 import { ChallengeSupportPage } from "../pages/student/ChallengeSupportPage";
 import { ReflectionPage } from "../pages/student/ReflectionPage";
 import { ReviewStudyPage } from "../pages/student/ReviewStudyPage";
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { path: "cases/:caseId/branching-play", element: <BranchingCasePlayerPage /> },
+      { path: "cases/:caseId/attempt/:attemptId/review", element: <BranchingReviewPage /> },
       { path: "cases/:caseId/attempt/:attemptId/reflect", element: <ReflectionPage /> },
       { path: "cases/:caseId/review-study", element: <ReviewStudyPage /> },
       { path: "cases/:caseId/review-study/:submissionId/feedback", element: <ReviewFeedbackPage /> },

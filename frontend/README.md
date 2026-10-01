@@ -1,11 +1,16 @@
-﻿# Edu-Branch-AI — Frontend
+# Edu-Branch-AI — Frontend
 
 React 19 + Vite + TypeScript + TailwindCSS v4 UI for the Edu-Branch-AI platform.
+
+The current student learning screens are an interactive prototype: they use
+sample case data and a local Zustand store. Persistent attempts, lecturer
+feedback, and published-case access will be connected through the NestJS
+Backend Gateway as the domain APIs are implemented.
 
 ## Responsibilities
 
 - Lecturer UI: courses, material upload, case generation, review/edit/publish, statistics
-- Student UI: case simulator, argument submission, debate interface
+- Student UI: Branching Case Player (experience-first), Journey Review (retrospective reasoning), Reflection, Review Study, Challenge Support
 - Authentication: login, registration
 - Decision tree visualization via ReactFlow
 
@@ -31,16 +36,17 @@ React 19 + Vite + TypeScript + TailwindCSS v4 UI for the Edu-Branch-AI platform.
 
 ```
 src/features/
-├── auth/          ← Login, registration, password reset
-├── courses/       ← Lecturer course management
-├── materials/     ← Teaching material upload
-├── cases/         ← Case generation trigger
-├── case-review/   ← Decision tree review, edit, approve, publish
-├── simulator/     ← Student interactive decision-tree simulator
-├── arguments/     ← Student argument submission
-├── debate/        ← AI Debate Assistant interface
-├── statistics/    ← Lecturer statistics view
-└── evaluation/    ← Research evaluation boundary
+├── auth/              ← Login, registration, password reset
+├── courses/           ← Lecturer course management
+├── materials/         ← Teaching material upload
+├── cases/             ← Case generation trigger
+├── case-review/       ← Decision tree review, edit, approve, publish
+├── branching-study/   ← Branching Case Player & Journey Review
+├── review-study/      ← Review Study case analysis & solution submission
+├── challenge-support/ ← AI Reasoning / Challenge Support (max 2 rounds)
+├── reflection/        ← Post-journey / post-feedback reflection
+├── statistics/        ← Lecturer statistics view
+└── evaluation/        ← Research evaluation boundary
 ```
 
 ## Local Setup

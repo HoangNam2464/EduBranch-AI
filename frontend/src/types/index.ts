@@ -1,5 +1,5 @@
 /**
- * Edu-Branch-AI — Shared TypeScript Types
+ * EduBranch AI — Shared TypeScript Types
  *
  * All types mirror the Backend Gateway API response structures.
  */
@@ -7,7 +7,7 @@
 // ============================================================================
 // Auth & User
 // ============================================================================
-export type Role = "LECTURER" | "STUDENT";
+export type Role = "LECTURER" | "STUDENT" | "ADMIN";
 
 export interface User {
   id: string;
@@ -134,7 +134,7 @@ export interface StudentReasoning {
   attemptId: string;
   nodeId: string;
   selectedOptionId: string;  // always set in Branching Study
-  reasoningText: string;
+  reasoningText?: string;    // captured retrospectively in REVIEW phase
   submittedAt: string;
 }
 
