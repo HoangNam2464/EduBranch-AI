@@ -1,4 +1,4 @@
-﻿# Feature: Quantitative Evaluation & Research Methodology
+# Feature: Quantitative Evaluation & Research Methodology
 
 > **Authoritative Traceability**: Items 28, 29, 30 (Proposal Section 2 p. 6, Section 4 p. 7, Section 6 p. 10, Section 10 p. 14)  
 > **Target Package / Module**: Backend `evaluation/` · AI Service `evaluation/` · Research Boundary  
@@ -19,16 +19,15 @@ Supports the core empirical research contribution of the Capstone project. Provi
 
 ---
 
-## 3. Scope
-- Defining rubric criteria for evaluating case studies:
+## 3. Scope & MVP Boundary
+- **MVP Trial Boundary**: For the confirmed classroom trial (Weeks 12-13), student survey data (`Complete evaluation survey` on Context Diagram) is collected via a standardized external research instrument (e.g. Google Forms / standardized Likert questionnaire link provided post-session), while core student activity telemetry (attempts, paths, reasoning length, challenge rounds) is tracked natively in EduBranch AI and exported (CSV/JSON) for statistical analysis. Rendering in-platform interactive survey forms is a post-MVP roadmap item.
+- **Rubric Criteria**:
   1. **Realism**: Plausibility of situations, options, and consequences.
   2. **Difficulty**: Cognitive challenge, trade-off complexity, ambiguity.
   3. **Course Alignment**: Grounding in authentic syllabus and lecture materials.
-- Tracking student reasoning metrics and challenge support engagement depth.
-- Future evaluation options:
-  - **Option 1**: In-Platform Manual Rubric Scoring (lecturer scores cases and arguments directly in the UI).
-  - **Option 2**: Structured Data Export (CSV/JSON) for offline statistical analysis.
-- Privacy-preserving, anonymized research dataset generation for capstone deliverables.
+- **Data Export & Privacy**:
+  - Anonymized research dataset generation for Capstone Deliverable 6.
+  - Tracking student reasoning metrics and challenge support engagement depth without storing PII.
 
 ---
 

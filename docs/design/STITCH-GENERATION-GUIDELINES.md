@@ -1,4 +1,4 @@
-﻿# Edu-Branch-AI — Stitch Generation Guidelines
+# Edu-Branch-AI — Stitch Generation Guidelines
 
 > **Status**: CANONICAL — supersedes the single-screen prompt conventions in the retired `.stitch/next-prompt.md`.
 > **Purpose**: Every Stitch prompt written for any Edu-Branch-AI screen (P0–P4) must be assembled using the nine fields below, in order. This keeps generation grounded in approved product behavior instead of improvising UI or functionality.
@@ -17,7 +17,7 @@ The exact screen or component being generated, named using **current terminology
 Which role uses it: **Lecturer** or **Student** (never both with identical content — even shared concepts like Challenge Support render differently per role's data). Reference the role table in `SITE.md §2`.
 
 ### WHY
-Which product objective it serves, traced to Proposal V1.1's stated goals (active decision-making, human-in-the-loop AI governance, Socratic reasoning challenge without grading, pedagogical insight — `SITE.md §3`). A screen with no traceable objective should not be generated.
+Which product objective it serves, traced to Proposal V1.2's stated goals (active decision-making, human-in-the-loop AI governance, Socratic reasoning challenge without grading, pedagogical insight — `SITE.md §3`). A screen with no traceable objective should not be generated.
 
 ### WHEN
 Its position in the workflow — reference the relevant workflow diagram in `SITE.md §6` (Material Ingestion / Case Generation / Human-in-the-Loop Review / Branching Study / Review Study / Challenge Support). State what precedes and what follows this screen.
@@ -65,7 +65,7 @@ Explicit exclusions for this screen, drawn from the relevant feature doc's "Excl
 <Lecturer | Student> — <one line on this role's relationship to the screen>
 
 ## WHY
-<Proposal V1.1 objective this serves>
+<Proposal V1.2 objective this serves>
 
 ## WHEN
 <workflow position: precedes / follows>

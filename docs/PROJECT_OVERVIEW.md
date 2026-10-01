@@ -32,6 +32,7 @@ Students learn not by passively reading outcomes, but by making decisions, compl
 |---|---|
 | **Lecturer** | Creates courses; uploads teaching materials; triggers AI case generation; inspects, edits, approves, and publishes cases; shares case link with students; reviews student attempts/submissions; writes qualitative feedback; uses statistics for class discussion. |
 | **Student** | Accesses case via direct link from lecturer. In Branching Study: navigates the experience, makes consecutive decisions, completes the journey, reviews the full path retrospectively, writes reasoning and reflection, and may retry. In Review Study: analyzes context, proposes solution, receives feedback, reflects. |
+| **Admin** | System administrator (Proposal V1.2 Context Diagram): manages user accounts and roles, manages courses, monitors API and system health logs. |
 
 > **Students do not create cases.** Students do not browse case lists. Student access is always via a direct link provided by the Lecturer.
 
@@ -160,5 +161,5 @@ All features are classified strictly under three states:
 | Student Reflection | Structurally Scaffolded | Post-journey / post-feedback reflection shell |
 | Lecturer Feedback & Review | Structurally Scaffolded | Qualitative feedback entity, review dashboard |
 | Lecturer Statistics | Structurally Scaffolded | Statistics aggregation query shells, page shell |
-| Notifications | Documented | Proposal options (In-App / Email / Hybrid) |
-| Quantitative Evaluation & Research | Documented | Rubric / export boundary (Implementation open) |
+| Notifications | Documented (Phase 2) | Proposal options (In-App / Email / Hybrid). In MVP, deadlines are presented with published cases; automated reminder push is Phase 2. |
+| Quantitative Evaluation & Research | Documented (Research Boundary) | Rubric / export boundary. In MVP classroom trial, survey responses are captured via standardized external instrument (e.g. Google Forms/Likert link), while core activity metrics are logged in-platform. |

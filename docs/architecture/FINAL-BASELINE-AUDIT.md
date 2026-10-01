@@ -1,4 +1,4 @@
-﻿# FINAL BASELINE AUDIT — Edu-Branch-AI
+# FINAL BASELINE AUDIT — Edu-Branch-AI
 # Post-Technology-Migration Verification Report
 
 > **Audit Date**: 2026-09-11
@@ -152,7 +152,7 @@ All entries above are structural skeleton and documentation only. No functional 
 - Case Publishing (`case/` module, DRAFT->PUBLISHED lifecycle)
 - Student Simulator (`simulation/` module)
 - Student Arguments (`argument/` module)
-- AI Debate Assistant (`debate/` module and package)
+- AI Reasoning / Challenge Support (`challenge-support/` module and package)
 - Lecturer Statistics (`statistics/` module)
 - Notifications (`notification/` module — extension point)
 - Evaluation / Research boundary (`evaluation/` module and package)

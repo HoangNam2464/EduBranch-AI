@@ -1,4 +1,4 @@
-﻿# Edu-Branch-AI — Project Direction Audit
+# Edu-Branch-AI — Project Direction Audit
 
 > **Audit Type**: Read-Only Source-of-Truth & Architectural Direction Audit  
 > **Target System**: Edu-Branch-AI (`https://github.com/HoangNam2464/CaseTree-AI`)  
@@ -16,7 +16,7 @@
 
 **Yes, conceptually and functionally, but with technical inheritance debt.**
 
-- **Pedagogical & Functional Direction**: **GREEN**. The repository faithfully represents the core pedagogical workflow mandated by the Proposal: university course context → teaching material upload (PDF/DOCX) → RAG semantic retrieval → AI-generated branching decision tree (JSON Schema) → mandatory human-in-the-loop review & approval → publishing → interactive case simulator → decision consequence reveal → student argument capture → AI Debate Assistant (Devil's Advocate, 1–2 rounds max, no grading) → lecturer statistics → quantitative evaluation research boundary.
+- **Pedagogical & Functional Direction**: **GREEN**. The repository faithfully represents the core pedagogical workflow mandated by the Proposal: university course context → teaching material upload (PDF/DOCX) → RAG semantic retrieval → AI-generated branching decision tree (JSON Schema) → mandatory human-in-the-loop review & approval → publishing → Branching Case Player → retrospective decision consequence reveal → student reasoning capture → AI Reasoning / Challenge Support (1–2 rounds max, no grading) → lecturer statistics → quantitative evaluation research boundary.
 - **Reference Leakage Protection**: **GREEN**. All product-specific K-12 features from `ai-teacher-copilot` (Lesson Planner, Exam/Quiz Generator, Teacher Personal Workspace, Word Export, Bloom's Taxonomy, Autonomous Grading) have been cleanly excluded from both documentation and skeleton code.
 - **Service Boundaries & AI Governance**: **GREEN**. The strict 3-tier hierarchy (`Frontend → Backend Gateway → FastAPI AI Service (Internal Only)`) and AI safety rules (untrusted material wrapped in `<sources>`, 2-round cap, zero autonomous grading) are documented with high fidelity.
 - **Technology & Rule Alignment**: **YELLOW**. The project inherited Spring Boot 3 (Java 17) directly from `ai-teacher-copilot` during initial scaffolding. While documentation in `ADR-001-TECHNOLOGY-STACK.md` now treats Backend Gateway as a Candidate Option, **all 14 `.agents/rules/*.md` files still hardcode Spring Boot as an immutable project rule**, conflicting with both the Proposal (which specifies Node.js/NestJS or Python FastAPI) and the Project Owner's explicit candidate-option stance. Furthermore, `package.json` installed React 19 and TailwindCSS v4 despite rules prescribing React 18 and TailwindCSS v3.
@@ -37,13 +37,13 @@ Extracted directly from `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`:
   3. Lack of critical-thinking challenge: student submissions are rarely debated in real-time.
   4. Market gap: Existing tools (H5P, BranchTrack, Kritik) do not combine AI case generation bound to a lecturer's own materials with a real-time AI debate partner.
 - **Proposed Solution**:
-  - Web platform integrating a RAG-based AI Case Generator with an AI Debate Assistant.
+  - Web platform integrating a RAG-based AI Case Generator with AI Reasoning / Challenge Support.
   - Course context and teaching material upload (PDF / DOCX).
   - Branching Decision Tree case studies modeled as: **`Situation → Options → Consequences → Next Node`**.
   - Form/list editor for lecturer review, edit, and approval before publishing (human-in-the-loop).
-  - Interactive Case Simulator with immediate consequence reveal and short argument capture.
-  - AI Debate Assistant acting as a **Devil's Advocate** (1–2 rounds of targeted counter-questions).
-  - Simple lecturer statistics on branch choices and argument quality.
+  - Branching Case Player with retrospective consequence reveal and reasoning capture.
+  - AI Reasoning / Challenge Support (1–2 rounds of targeted counter-questions, no grading).
+  - Simple lecturer statistics on branch choices and reasoning quality.
   - Quantitative evaluation module supporting the confirmed research question.
   - Deadline notification reminders (email / in-app).
 - **Confirmed Research Question**:
@@ -55,7 +55,7 @@ Extracted directly from `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`:
   - Database & Cache: PostgreSQL (or MongoDB), Redis.
   - AI/LLM: OpenAI GPT-4o-mini / Gemini Flash API + LangChain.
 - **Key Constraints & Ethics**:
-  - AI Debate Assistant **must avoid making final pass/fail or academic-integrity judgments**; challenges reasoning but does not assign grades.
+  - AI Reasoning / Challenge Support **must avoid making final pass/fail or academic-integrity judgments**; challenges reasoning but does not assign grades.
   - Economic: Total project budget cannot exceed $4,700. Capping debate rounds to 1–2 controls API cost.
   - Human-in-the-loop: Every case must be approved by the lecturer before publication.
 
@@ -107,8 +107,8 @@ The current repository reflects the state after bootstrap scaffolding and docume
 | **RAG Pipeline** | Parse → Chunk → Embed → pgvector → Context | `document_chunks` table, PyPDF/python-docx/LangChain stubs | **Fully Aligned** | LangChain must remain allowed option, not mandatory. |
 | **Decision Tree Model** | Situation → Options → Consequences → Next Node | `CaseNode`, `CaseOption`, Pydantic tree schema, DAG cycle validator | **Fully Aligned** | None. |
 | **Human-in-the-Loop** | Lecturer review & approval before publishing | `CaseStatus` state machine (`DRAFT→REVIEWED→APPROVED→PUBLISHED`) | **Fully Aligned** | None. |
-| **Student Simulator** | Role-play decisions, immediate consequence, argument capture | `SimulationSession`, `StudentArgument`, simulator view shell | **Fully Aligned** | None. |
-| **AI Debate Assistant** | Socratic Devil's Advocate, 1–2 rounds max, no grading | `DebateSession`, max 2 round schema checks, anti-grading rules | **Fully Aligned** | None. |
+| **Branching Case Player** | Role-play decisions, retrospective consequence, reasoning capture | `BranchingAttempt`, `StudentReasoning`, player view shell | **Fully Aligned** | None. |
+| **AI Challenge Support** | Socratic counter-questioning, 1–2 rounds max, no grading | `ChallengeSupportSession`, max 2 round schema checks, anti-grading rules | **Fully Aligned** | None. |
 | **Lecturer Statistics** | Branch selection percentages & argument inspection | Statistics DTO schema, `/lecturer/statistics` view shell | **Fully Aligned** | None. |
 | **Notifications** | Deadlines reminders: Email / In-App | Documented in `FEATURE-NOTIFICATIONS.md` as open options | **Fully Aligned** | Technology unselected pending Owner confirmation. |
 | **Evaluation / Research** | AI vs human case quality rubric (realism, difficulty, alignment) | `EVALUATION-DESIGN.md`, `FEATURE-EVALUATION-AND-RESEARCH.md` | **Partially Aligned** | Implementation method marked "Open / To Be Decided". |
@@ -121,7 +121,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
 ## 5. Scope Audit
 
 ### 5.1 Correct Scope
-- The 11 core feature areas match the Proposal: Auth/Roles, Course/Materials, Document Processing/RAG, Case Generation, Decision Tree Model, Review/Publishing, Simulator/Argument, Debate Assistant, Lecturer Statistics, Notifications, Quantitative Research Evaluation.
+- The 11 core feature areas match the Proposal: Auth/Roles, Course/Materials, Document Processing/RAG, Case Generation, Decision Tree Model, Review/Publishing, Branching Case Player/Reasoning, AI Challenge Support, Lecturer Statistics, Notifications, Quantitative Research Evaluation.
 - The 30 traceability items accurately reflect the functional and pedagogical touchpoints of the Proposal.
 
 ### 5.2 Missing Scope
@@ -169,7 +169,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
 │ (Metadata & DB)  │ └─────────────┘ │ • Document Parser/Chunker │
 └──────────────────┘                 │ • pgvector Semantic Search│
 ┌──────────────────┐                 │ • Structured LLM Case Gen │
-│ Redis 7 (Cache)  │                 │ • AI Debate Assistant     │
+│ Redis 7 (Cache)  │                 │ • AI Challenge Support    │
 └──────────────────┘                 └─────────────┬─────────────┘
                                                    │ HTTPS
                                                    ▼
@@ -219,8 +219,8 @@ The current repository reflects the state after bootstrap scaffolding and docume
 | **4. Case Generation** | Fully Aligned | High (15 sections complete) | Pydantic JSON schema pattern adapted | `Structurally Scaffolded` |
 | **5. Decision Tree Model** | Fully Aligned | High (15 sections complete) | Novel CaseTree domain model | `Structurally Scaffolded` |
 | **6. Case Review & Publishing** | Fully Aligned | High (15 sections complete) | Novel human-in-the-loop workflow | `Structurally Scaffolded` |
-| **7. Simulator & Argument** | Fully Aligned | High (15 sections complete) | Novel role-play & argument capture | `Structurally Scaffolded` |
-| **8. Debate Assistant** | Fully Aligned | High (15 sections complete) | Novel Devil's Advocate Socratic rules | `Structurally Scaffolded` |
+| **7. Branching Case Player & Reasoning** | Fully Aligned | High (15 sections complete) | Novel role-play & reasoning capture | `Structurally Scaffolded` |
+| **8. AI Challenge Support** | Fully Aligned | High (15 sections complete) | Novel Socratic counter-questioning | `Structurally Scaffolded` |
 | **9. Lecturer Statistics** | Fully Aligned | High (15 sections complete) | Scoped to simple cohort stats | `Structurally Scaffolded` |
 | **10. Notifications** | Fully Aligned | High (15 sections complete) | Kept strictly at Proposal options | `Documented` |
 | **11. Evaluation & Research** | Fully Aligned | High (15 sections complete) | Rubric (realism, difficulty, alignment) | `Documented` |
@@ -307,9 +307,9 @@ Verified across the entire codebase:
 | **Courses & Materials**| `backend/.../course/`, `backend/.../material/` | **NOT IMPLEMENTED** (entities exist; no CRUD services or upload streams) |
 | **Case Generation** | `ai-service/app/generation/` | **NOT IMPLEMENTED** (schemas exist; no active LLM prompt chain or route) |
 | **Case Review/Publish**| `backend/.../case_/`, `frontend/.../CaseReviewPage` | **NOT IMPLEMENTED** (view shell exists; no state machine update logic) |
-| **Student Simulator** | `backend/.../simulation/`, `frontend/.../SimulatorPage`| **NOT IMPLEMENTED** (entity exists; no node traversal service) |
-| **Argument Capture** | `backend/.../argument/` | **NOT IMPLEMENTED** (entity exists; no validation or submission service) |
-| **Debate Assistant** | `ai-service/app/debate/`, `backend/.../debate/` | **NOT IMPLEMENTED** (schema exists; no prompt generation or active route) |
+| **Branching Case Player** | `backend/.../branching-attempt/`, `frontend/.../BranchingCasePlayerPage`| **NOT IMPLEMENTED** (controller skeleton; client demo flow) |
+| **Reasoning Capture** | `backend/.../reasoning/`, `frontend/.../BranchingReviewPage` | **NOT IMPLEMENTED** (controller skeleton; client demo flow) |
+| **AI Challenge Support** | `ai-service/app/challenge_support/`, `backend/.../challenge-support/` | **NOT IMPLEMENTED** (schema exists; no prompt generation or active route) |
 | **Statistics** | `backend/.../statistics/`, `frontend/.../StatisticsPage`| **NOT IMPLEMENTED** (view shell exists; no aggregation queries) |
 | **Notifications** | `backend/.../notification/` | **NOT IMPLEMENTED** (package placeholder only) |
 | **Evaluation** | `backend/.../evaluation/` | **NOT IMPLEMENTED** (package placeholder only) |

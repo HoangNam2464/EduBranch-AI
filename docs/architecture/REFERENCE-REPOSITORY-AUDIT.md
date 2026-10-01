@@ -1,4 +1,4 @@
-﻿# Engineering Reference Repository Audit: ai-teacher-copilot
+# Engineering Reference Repository Audit: ai-teacher-copilot
 
 > **Document Status**: Authoritative Engineering Audit  
 > **Source Reference Repository**: `https://github.com/HoangNam2464/ai-teacher-copilot` (`D:\DU_AN_2026\Python\ai-teacher-copilot`)  
@@ -38,7 +38,7 @@ Every inspected file or pattern from `ai-teacher-copilot` is classified under on
 | **`.agents/rules/feature-workspace.md`** | Rules for teacher document workspace and folders. | **`NOT APPLICABLE`** | **Excluded**: Replaced by Edu-Branch-AI Course & Material context model. |
 | **`.agents/rules/feature-export.md`** | Rules for exporting lesson plans to DOCX/PDF via python-docx. | **`NOT APPLICABLE`** | **Excluded**: Exporting lesson plans is not in Edu-Branch-AI MVP scope. |
 | **`backend/` (Spring Boot 3 Implementation)** | Domain entities and business logic for teacher workspaces and quizzes. | **`NOT APPLICABLE`** | **Excluded / Replaced**: Reference implementation code must not be copied. In Edu-Branch-AI, the Backend Gateway is ratified as Node.js (NestJS 10 + TypeScript) per Proposal Sections 7 & 11. The inherited Spring Boot scaffold has been removed. |
-| **`frontend/` (React + Tailwind Pages)** | UI components for lesson planning, quiz card editing, and teacher dashboard. | **`NOT APPLICABLE`** | **Excluded**: Edu-Branch-AI requires custom UI for Case Review (ReactFlow decision tree), Student Simulator, and Debate Assistant. |
+| **`frontend/` (React + Tailwind Pages)** | UI components for lesson planning, quiz card editing, and teacher dashboard. | **`NOT APPLICABLE`** | **Excluded**: Edu-Branch-AI requires custom UI for Case Review (ReactFlow decision tree), Branching Case Player, and Challenge Support. |
 | **`docs/ENGINEERING_KNOWLEDGE.md`** | Technical patterns for JPA, Flyway, Redis caching, and Pydantic validation. | **`REUSABLE ENGINEERING RULE`** | **Adopted**: Pydantic v2 validation for structured JSON, layered service architecture, and Flyway migration practices adopted for Edu-Branch-AI documentation. |
 
 ---

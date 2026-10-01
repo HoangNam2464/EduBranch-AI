@@ -1,4 +1,4 @@
-﻿# Edu-Branch-AI — Technology & Documentation Correction Report
+# Edu-Branch-AI — Technology & Documentation Correction Report
 
 > **Report Type**: Post-Audit Repository Migration & Consistency Report  
 > **Target System**: Edu-Branch-AI (`https://github.com/HoangNam2464/CaseTree-AI`)  
@@ -90,7 +90,7 @@ The repository now adheres to a single, unified technology baseline:
 │ (Metadata & DB)  │ └─────────────┘ │ • Document Parser/Chunker │
 └──────────────────┘                 │ • pgvector Semantic Search│
 ┌──────────────────┐                 │ • Structured LLM Case Gen │
-│ Redis 7 (Cache)  │                 │ • AI Debate Assistant     │
+│ Redis 7 (Cache)  │                 │ • AI Challenge Support    │
 └──────────────────┘                 └─────────────┬─────────────┘
                                                    │ HTTPS
                                                    ▼

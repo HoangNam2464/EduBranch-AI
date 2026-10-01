@@ -1,16 +1,16 @@
 # Feature: Basic Learning-Flow Statistics
 
-> **Authoritative Traceability**: Proposal V1.1 (lines 65, 87)  
+> **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
 > **Target Package / Module**: Backend `statistics/` · Frontend `pages/lecturer/StatisticsPage.tsx`
 
 ---
 
 ## 1. Purpose
-Provides university lecturers with clear, foundational **Learning-Flow Statistics** on how students navigated their published cases. Focuses strictly on meaningful pedagogical metrics defined in Proposal V1.1 without unnecessary analytics complexity.
+Provides university lecturers with clear, foundational **Learning-Flow Statistics** on how students navigated their published cases. Focuses strictly on meaningful pedagogical metrics defined in Proposal V1.2 without unnecessary analytics complexity.
 
 ---
 
-## 2. Core Metrics Defined in Proposal V1.1
+## 2. Core Metrics Defined in Proposal V1.2
 
 1. **Completion**: Proportion and count of student attempts that reached a terminal outcome node (`branching_attempts.is_completed = TRUE`).
 2. **Selected Branch**: Distribution and frequency of student choices at each Decision Point (`student_reasoning.selected_option_id` grouped by `case_options`).

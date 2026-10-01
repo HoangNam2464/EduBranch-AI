@@ -3,7 +3,7 @@
 > **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
 > **Target Platform**: Google Stitch UI Generation + React 19 / TailwindCSS v4 implementation.
 > **Scope**: All Edu-Branch-AI product screens (P0–P4). Does NOT cover the internal "Start Design" tooling — see `SITE.md §7` for its classification.
-> **Source of truth**: Product Direction V2 (Edu-Branch-AI), `C1SE_65-CaseTree-AI-Proposal_V1_1.docx`.
+> **Source of truth**: Product Direction V2 (EduBranch AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
 
 ---
 
@@ -257,7 +257,7 @@ Standalone version of the §2.6 badge, used in filters and page headers to indic
 Horizontal 4-step stepper reflecting `DRAFT → REVIEWED → APPROVED → PUBLISHED`. Completed steps: filled `action-primary` connector line + status color dot for that step's own token (§2.5). Current step: outlined, bold label. Future steps: `text-muted`, gray connector. Used at the top of `/lecturer/cases/:caseId/review`.
 
 ### 6.4. Decision Node (ReactFlow)
-Rectangular card node, `radius-md`, `border-default`, `bg-surface`. Root node gets a small "Start" label chip. Terminal nodes get a distinct visual treatment: `border-strong` + a small flag/checkered icon in `text-muted`, label "Outcome". Non-terminal nodes show a truncated situation preview (`text-body`, 2 lines max) and an option-count badge. Selected/editing node: `border-focus` ring. Never color-code nodes by "correctness" — there is no correct path (Proposal V1.1 guardrail).
+Rectangular card node, `radius-md`, `border-default`, `bg-surface`. Root node gets a small "Start" label chip. Terminal nodes get a distinct visual treatment: `border-strong` + a small flag/checkered icon in `text-muted`, label "Outcome". Non-terminal nodes show a truncated situation preview (`text-body`, 2 lines max) and an option-count badge. Selected/editing node: `border-focus` ring. Never color-code nodes by "correctness" — there is no correct path (Proposal V1.2 guardrail).
 
 ### 6.5. Option Selector (Student, Branching Case Player — Experience Phase)
 List of 2–4 option cards, each `bg-surface`, `border-default`, `radius-md`, full-width, showing the option text as the primary label. When a student selects an option: the selected option gets `border-focus` highlight, then the player advances **immediately and seamlessly** to the next situation. No reasoning form appears between decision points during the Experience phase. Unselected options are not shown after advancing — the player moves to the next situation node.
@@ -301,5 +301,5 @@ Summary number cards (completion rate, attempt count) + a horizontal bar breakdo
 - Indigo/violet (`#6366f1`-family) as an accent, border, or "AI signature" color anywhere.
 - Sparkle/star glyphs (`✦` / `✨`) as decorative or brand elements.
 - Pill-shaped buttons as a default button style (pills are for badges only).
-- Grading marks, score numbers, pass/fail labels, or ranking UI anywhere in the student experience (Proposal V1.1 guardrail — applies to Reasoning, Reflection, and Challenge Support surfaces alike).
+- Grading marks, score numbers, pass/fail labels, or ranking UI anywhere in the student experience (Proposal V1.2 guardrail — applies to Reasoning, Reflection, and Challenge Support surfaces alike).
 - A "debate" framing (chat-bubble avatars, "vs." framing, adversarial styling) for Challenge Support — it is a support panel, not a debate UI.

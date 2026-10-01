@@ -2,7 +2,7 @@
 
 ## 1. Overview & Source of Truth
 
-- **Source of Truth**: Proposal V1.1 (C1SE_65-CaseTree-AI-Proposal_V1_1.docx, lines 35, 59, 76, 84).
+- **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx).
 - **Core Purpose**: In Branching Study, learning occurs through exploration and iterative decision-making. Students navigate branching scenarios, observe consequences, reflect on outcomes, and may choose to **retry** the scenario to explore alternative paths and strategies.
 - **The Concept of an Attempt**:
   - An attempt is an immutable record of one complete or in-progress traversal through a decision tree.
@@ -38,7 +38,7 @@ CONSTRAINT uq_branching_attempt_number
 
 ## 3. Ownership of Reasoning per Attempt (INV-05, INV-06)
 
-- When a student reaches a Decision Point (`node_id`), selects an option (`selected_option_id`), and provides written justification, this is saved to `student_reasoning`.
+- When a student reaches a Decision Point (`node_id`) and selects an option (`selected_option_id`), the choice is saved to `student_reasoning` immediately. Written reasoning is optional and is captured retrospectively during REVIEW.
 - **Structural Owner**: `attempt_id NOT NULL` references `branching_attempts(id)`.
 - Reasoning belongs to the student's **attempt**, NOT to the option or node globally.
 - If a student retries the case (Attempt 2) and chooses the same option, they submit a new reasoning row under Attempt 2.

@@ -1,6 +1,6 @@
-﻿# Edu-Branch-AI — Data Model
+# Edu-Branch-AI — Data Model
 
-**Status**: Aligned with Proposal V1.1 (V2 Migration applied)
+**Status**: Schema aligned with Product Direction; runtime persistence APIs pending
 
 ---
 
@@ -54,7 +54,7 @@
 - `attempt_id`: UUID NOT NULL FK → `branching_attempts(id)` ON DELETE CASCADE
 - `node_id`: UUID NOT NULL FK → `case_nodes(id)`
 - `selected_option_id`: UUID NOT NULL FK → `case_options(id)`
-- `reasoning_text`: TEXT NOT NULL
+- `reasoning_text`: TEXT NULL (populated optionally during the post-journey REVIEW phase)
 - **Constraint**: `uq_reasoning_per_node UNIQUE (attempt_id, node_id)` (one reasoning per decision point per attempt)
 
 ### 3.4 `review_study_submissions`
@@ -95,7 +95,8 @@ Migrations are maintained in SQL files executed against PostgreSQL:
 - Backend migrations directory: `backend/migrations/`
 - Infrastructure migrations directory: `infrastructure/postgres/migrations/`
 - **V1__init_schema.sql**: Initial baseline schema
-- **V2__new_flow_schema.sql**: Proposal V1.1 flow schema (cases extensions, branching_attempts, student_reasoning, review_study_submissions, challenge_support_sessions, challenge_messages, lecturer_feedback)
+- **V2__new_flow_schema.sql**: Proposal V1.2 flow schema (cases extensions, branching_attempts, student_reasoning, review_study_submissions, challenge_support_sessions, challenge_messages, lecturer_feedback)
+- **V3__add_admin_role.sql**: Updates `users.role` check constraint to support `ADMIN` (matches Proposal V1.2 System Context Diagram)
 
 ---
 

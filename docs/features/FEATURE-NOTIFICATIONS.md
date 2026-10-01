@@ -1,4 +1,4 @@
-﻿# Feature: Deadline & Case Notification System
+# Feature: Deadline & Case Notification System
 
 > **Authoritative Traceability**: Item 27 (Proposal Section 4 p. 7)  
 > **Target Package / Module**: Backend `notification/` (Future Extension Boundary)  
@@ -18,11 +18,13 @@ Provides targeted educational reminders to university students to complete assig
 
 ---
 
-## 3. Scope
-- Defining assignment deadlines for published cases.
-- Generating reminder events before deadlines (e.g. 24 hours prior).
-- Documenting candidate delivery channels (**In-App**, **Email**, **Hybrid**).
-- Maintaining notification delivery status (sent, read, pending).
+## 3. Scope & MVP Boundary
+- **MVP Boundary**: For the initial classroom pilot (Weeks 12-13), assignment deadlines are configured on published cases and displayed directly within case headers/badges. Full automated asynchronous notification dispatch (email/in-app push triggers) is documented as an architectural extension point for Phase 2, keeping the MVP focused on core decision and review flows.
+- **Full Scope (Phase 2 Extension)**:
+  - Defining assignment deadlines for published cases.
+  - Generating reminder events before deadlines (e.g. 24 hours prior).
+  - Documenting candidate delivery channels (**In-App**, **Email**, **Hybrid**).
+  - Maintaining notification delivery status (sent, read, pending).
 
 ---
 

@@ -1,6 +1,6 @@
-﻿# Edu-Branch-AI — Proposal Requirement Traceability Matrix
+# Edu-Branch-AI — Proposal Requirement Traceability Matrix
 
-> **Authoritative Source**: `C1SE_65-CaseTree-AI-Proposal_V1_1.docx` (September 21, 2026 — Updated to Edu-Branch-AI: two learning modes)  
+> **Authoritative Source**: `C1SE_65-EduBranch-AI-Proposal_V1.2.docx` (September 28, 2026 — Renamed to EduBranch AI: updated Branching Study & future enhancements)  
 > **Mandatory Status States**:
 > - **`Documented`**: Specification authored in `docs/` according to standard; no code skeleton exists.
 > - **`Structurally Scaffolded`**: Specification documented AND non-business architectural skeleton exists (entity placeholders, DTO records, routing shell, health checks).
@@ -8,7 +8,7 @@
 
 ---
 
-## 1. Traceability Matrix: Core Traceability Items Extracted from Proposal V1.1
+## 1. Traceability Matrix: Core Traceability Items Extracted from Proposal V1.2
 
 | # | Traceability Item | Proposal Source Reference | Authoritative Documentation | Target Implementation Area | Status |
 | :-: | :--- | :--- | :--- | :--- | :--- |

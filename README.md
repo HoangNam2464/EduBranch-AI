@@ -23,7 +23,7 @@
 
 <p align="center">
   <a href="#-overview">Overview</a> ·
-  <a href="#-current-status-structural-skeleton-only">Project Status</a> ·
+    <a href="#-current-status">Project Status</a> ·
   <a href="#️-architecture">Architecture</a> ·
   <a href="#-tech-stack">Tech Stack</a> ·
   <a href="#-repository-structure">Repository</a> ·
@@ -51,15 +51,19 @@ The platform includes embedded **AI Reasoning & Challenge Support** (1–2 round
 
 ---
 
-## ⚠️ Current Status: STRUCTURAL SKELETON ONLY
+## ⚠️ Current Status
 
 > **IMPORTANT NOTICE FOR CONTRIBUTORS AND AUDITORS:**
 >
-> The Edu-Branch-AI repository is currently in the **STRUCTURAL SKELETON ONLY** phase.
-> - ✅ Project structure, module boundaries, routing layouts, and configurations are established.
-> - ✅ Database schemas (V1 Base + V2 New Flow Migration), indexes, vector extensions, and enums are defined.
-> - ✅ Pydantic schemas, TypeScript interfaces, DTO declarations, and health check endpoints (`/health`) are active.
-> - ❌ **NO business logic has been implemented yet.** Feature implementations will be developed incrementally across sprint feature branches.
+> The repository currently contains an **interactive frontend prototype** plus backend and AI-service scaffolding.
+> - ✅ The frontend demonstrates both approved learning-mode flows with sample data in a local Zustand store.
+> - ✅ Database schemas, indexes, vector extensions, and flow invariants are defined.
+> - ✅ Backend and AI-service health/configuration boundaries build successfully.
+> - ⚠️ Backend domain controllers do not yet expose persistent case, attempt, Review Study, reasoning, feedback, or challenge APIs.
+> - ⚠️ The frontend prototype is not yet connected to the backend and its in-memory state is lost on refresh.
+>
+> See [Final Product-Direction Validation](docs/architecture/FINAL-PRODUCT-DIRECTION-VALIDATION.md)
+> for the source-versus-documentation audit and correction plan.
 
 ---
 

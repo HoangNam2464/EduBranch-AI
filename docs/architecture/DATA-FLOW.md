@@ -1,7 +1,7 @@
-﻿# Edu-Branch-AI — System Data Flows & Sequences
+# Edu-Branch-AI — System Data Flows & Sequences
 
 > **Document Status**: Authoritative Architecture Specification  
-> **Source of Truth**: Proposal V1.1 (C1SE_65-CaseTree-AI-Proposal_V1_1.docx)  
+> **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
 > **Purpose**: Traces end-to-end data flows and lifecycle sequences across system components for both learning modes (Branching Study & Review Study).
 
 ---

@@ -1,4 +1,4 @@
-﻿# Feature: Lecturer Case Review, Edit & Publishing Workflow
+# Feature: Lecturer Case Review, Edit & Publishing Workflow
 
 > **Authoritative Traceability**: Items 17, 18, 19 (Proposal Section 2 p. 6, Section 4 p. 7, Section 7 p. 11, Section 10 p. 14)  
 > **Target Package / Module**: Backend `case/` · Frontend `pages/lecturer/CaseReviewPage.tsx`, `features/case-review/`
@@ -88,7 +88,7 @@ Enforces the mandatory **Human-in-the-Loop** governance gate in Edu-Branch-AI. E
 ---
 
 ## 11. Data Involved
-- **`cases.learning_mode` column (Proposal V1.1)**:
+- **`cases.learning_mode` column (Proposal V1.2)**:
   ```sql
   learning_mode VARCHAR(50) NOT NULL DEFAULT 'BRANCHING_STUDY'
       CHECK (learning_mode IN ('BRANCHING_STUDY', 'REVIEW_STUDY'))

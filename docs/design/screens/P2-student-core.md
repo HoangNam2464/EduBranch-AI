@@ -30,7 +30,7 @@ Full-width immersive reading layout (distraction-free decision interface). Top: 
 4. **Terminal reached** (`is_terminal = TRUE`): a distinct Outcome state renders — clearly marks this as the end of the journey, records `outcome_node_id = TRUE`, marks `is_completed = TRUE`. The student is then automatically transitioned to the REVIEW phase (`§1b` below).
 
 ### Retry
-After Reflection (§2), a "Try Another Path" action creates a new attempt (`attempt_number + 1`, `FR-BS-10`). Retrying must be visually framed as exploring an alternative path, not as "fixing a wrong answer" — there is no wrong answer (Proposal V1.1 guardrail).
+After Reflection (§2), a "Try Another Path" action creates a new attempt (`attempt_number + 1`, `FR-BS-10`). Retrying must be visually framed as exploring an alternative path, not as "fixing a wrong answer" — there is no wrong answer (Proposal V1.2 guardrail).
 
 ### Boundary
 No reasoning form between Decision Points. No consequence card between Decision Points. No grading/scoring UI. Consequences are pre-existing lecturer-authored/approved data — never generated live by AI during play.

@@ -1,4 +1,4 @@
-﻿# ADR-001: Technology Stack Selection & Candidate Options
+# ADR-001: Technology Stack Selection & Candidate Options
 
 > **Status**: Candidate Options Documented (Backend pending Project Owner confirmation)  
 > **Date**: 2026-09-11  
@@ -59,7 +59,7 @@ This ADR establishes the current baseline, clearly distinguishing confirmed deci
 - **Selection**: **ReactFlow**
 - **Rationale**:
   - The Proposal explicitly lists *"Visual/graph library: ReactFlow or jsPlumb (for case-tree display)"* (Section 11, p. 16).
-  - ReactFlow is actively maintained, highly optimized for React DOM rendering, and provides built-in node/edge customizability for the Case Review form editor and Simulator navigator.
+  - ReactFlow is actively maintained, highly optimized for React DOM rendering, and provides built-in node/edge customizability for the Case Review form editor and Branching Case Player.
 
 ---
 

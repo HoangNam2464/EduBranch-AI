@@ -1,6 +1,6 @@
 # Feature: Branching Study — Experiential Decision Journey
 
-> **Authoritative Traceability**: Proposal V1.1 (lines 35, 59, 76, 84) · Product Direction V2 (Edu-Branch-AI)
+> **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx) · Product Direction V2 (EduBranch AI)
 > **Target Package / Module**: Backend `branching-attempt/`, `reasoning/` · Frontend `pages/student/BranchingCasePlayerPage.tsx`, `pages/student/BranchingReviewPage.tsx`, `pages/student/ReflectionPage.tsx`
 
 ---

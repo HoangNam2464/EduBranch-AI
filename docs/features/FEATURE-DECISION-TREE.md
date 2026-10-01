@@ -17,7 +17,7 @@ Defines the mathematical and relational domain structure of the **Branching Deci
 
 ## 2. Actors
 - **Lecturer**: Reviews, edits, re-links, or authors decision tree nodes and options.
-- **Student**: Traverses the decision tree step-by-step in the simulator.
+- **Student**: Navigates the decision tree consecutively in the Branching Case Player.
 - **AI Generator**: Synthesizes the initial decision tree topology.
 - **System Validator**: Enforces graph invariants (DAG structure, reachability, terminal nodes).
 

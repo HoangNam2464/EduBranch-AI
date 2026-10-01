@@ -1,6 +1,6 @@
 # Feature: AI Reasoning & Challenge Support
 
-> **Authoritative Traceability**: Proposal V1.1 (lines 40, 63, 78, 86)  
+> **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
 > **Target Package / Module**: AI Service `challenge_support/` · Backend `challenge-support/` · Frontend `pages/student/ChallengeSupportPage.tsx`
 
 ---
@@ -38,7 +38,7 @@ AI Reasoning/Challenge Support supports student reasoning across **both** learni
 ---
 
 ## 5. Main Flow
-1. Student submits written reasoning in Branching Case Player or Review Study page.
+1. Student submits written reasoning (during the Branching Study REVIEW phase, or on the Review Study page).
 2. Backend creates `challenge_support_sessions` with `current_round = 1`.
 3. Backend calls AI Service `POST /internal/v1/challenge-support/question` with `ChallengeRequest`.
 4. AI Service builds the prompt:

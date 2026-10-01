@@ -1,9 +1,9 @@
-﻿# Edu-Branch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
+# Edu-Branch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
 
 > **Document Status**: Authoritative Final Post-Scaffold Self-Audit  
 > **Date**: 2026-09-11  
 > **Authoritative Sources**:
-> 1. `C1SE_65-CaseTree-AI-Proposal_V1_1.docx` (Product Source of Truth — Updated to Proposal V1.1)
+> 1. `C1SE_65-EduBranch-AI-Proposal_V1.2.docx` (Product Source of Truth — Updated to Proposal V1.2)
 > 2. Explicit Project Owner Decisions (Service boundary, PostgreSQL+pgvector, Redis, MinIO, AI-service separation)
 > 3. Repository Governance Rules (`.agents/rules/`, `.github/copilot-instructions.md`)
 
@@ -25,7 +25,7 @@ The repository contains a clean, verified multi-tier skeleton following initial 
 
 A comprehensive audit against `C1SE_65-CaseTree-AI-Proposal_V1.0.docx` confirms:
 - **Project Identity**: Fully compliant. Edu-Branch-AI is established as an AI platform for interactive branching case studies and open review in university teaching (for Lecturers and Students).
-- **Core Value Stream**: Fully compliant. Grounded in teaching material → RAG retrieval → Structured decision tree generation → Mandatory lecturer review & approval → Student simulation → Consequence reveal & argument justification → AI Debate Assistant (Devil's Advocate 1–2 rounds max, no grading) → Lecturer statistics.
+- **Core Value Stream**: Fully compliant. Grounded in teaching material → RAG retrieval → Structured decision tree generation → Mandatory lecturer review & approval → Branching Case Player → Retrospective consequence reveal & reasoning justification → AI Challenge Support (1–2 rounds max, no grading) → Lecturer statistics.
 - **Target Audience**: University education (NOT K-12).
 - **Scope Compliance**:
   - In-Scope features: Completely documented across 11 feature specifications and 30 traceability items.
@@ -93,7 +93,7 @@ The documentation architecture is established without duplicate sources of truth
 3. **Data, AI & Research**:
    - [`docs/database/DATA-MODEL.md`](../database/DATA-MODEL.md): Database schema and constraints.
    - [`docs/ai/RAG-PIPELINE.md`](../ai/RAG-PIPELINE.md): RAG pipeline & sources boundary.
-   - [`docs/ai/DEBATE-ASSISTANT.md`](../ai/DEBATE-ASSISTANT.md): Socratic Devil's Advocate rules.
+   - [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](../ai/REASONING-CHALLENGE-SUPPORT.md): Socratic challenge rules.
    - [`docs/qa/TESTING-STRATEGY.md`](../qa/TESTING-STRATEGY.md): Testing tiers and CI jobs.
    - [`docs/research/EVALUATION-DESIGN.md`](../research/EVALUATION-DESIGN.md): Classroom trial and research questions.
 
@@ -126,10 +126,10 @@ Across **all 11 feature areas and all 30 traceability items**, verified that **N
 | 9. Decision Tree Graph Invariants | **NOT IMPLEMENTED** | BFS validator function stub exists; no database graph assembly or interactive graph editing service. |
 | 10. Lecturer Review & Edit Workflow | **NOT IMPLEMENTED** | `CaseReviewPage.tsx` UI shell exists; no form submission handlers or node update endpoints. |
 | 11. Case Approval & Publishing | **NOT IMPLEMENTED** | `CaseStatus` enum exists; no state transition service or publication gate queries. |
-| 12. Student Interactive Simulator | **NOT IMPLEMENTED** | `BranchingCasePlayerPage.tsx` UI shell exists; no simulation navigation controller. |
+| 12. Branching Case Player | **NOT IMPLEMENTED** | `BranchingCasePlayerPage.tsx` UI shell exists; no simulation navigation controller. |
 | 13. Student Decision & Consequence | **NOT IMPLEMENTED** | Consequence column exists in schema; no decision evaluation or consequence delivery controller. |
-| 14. Student Argument Capture | **NOT IMPLEMENTED** | Student reasoning entity exists; no argument submission or validation endpoints. |
-| 15. AI Debate Assistant | **NOT IMPLEMENTED** | Challenge support session schema exists; no Socratic prompt generation or debate controller. |
+| 14. Student Reasoning Capture | **NOT IMPLEMENTED** | Student reasoning entity exists; no argument submission or validation endpoints. |
+| 15. AI Challenge Support | **NOT IMPLEMENTED** | Challenge support session schema exists; no Socratic prompt generation or debate controller. |
 | 16. Lecturer Statistics & Analytics | **NOT IMPLEMENTED** | `StatisticsPage.tsx` shell exists; no database aggregation queries or statistics endpoints. |
 | 17. Notification Extension Point | **NOT IMPLEMENTED** | Package placeholder only; no email/in-app dispatch logic. |
 | 18. Quantitative Research Evaluation | **NOT IMPLEMENTED** | Boundary documented; no rubric scoring endpoints or trial data export logic. |
@@ -140,7 +140,7 @@ Across **all 11 feature areas and all 30 traceability items**, verified that **N
 
 - **Identified**: None.
 - **Excluded**: Confirmed exclusion of all K-12 specific features from `ai-teacher-copilot` (Lesson Planner, Quiz Generator, Teacher Workspace, Word Export).
-- **Protection**: Prompt injection mitigation strictly documented (`<sources>` tags); autonomous AI grading strictly prohibited; AI Debate Assistant capped at 2 rounds.
+- **Protection**: Prompt injection mitigation strictly documented (`<sources>` tags); autonomous AI grading strictly prohibited; AI Challenge Support capped at 2 rounds.
 
 ---
 

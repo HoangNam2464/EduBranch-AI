@@ -1,6 +1,6 @@
-﻿# Edu-Branch-AI — Decision Tree Domain Model
+# Edu-Branch-AI — Decision Tree Domain Model
 
-**Status**: Scaffolded | **Source of Truth**: Proposal V1.1
+**Status**: Scaffolded | **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
 
 ---
 

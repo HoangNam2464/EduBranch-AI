@@ -1,6 +1,6 @@
 # P1 — Core Lecturer Flow
 
-> **Priority**: NOW. Proposal V1.1 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
+> **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
 > **Covers**: `/lecturer/courses`, `/lecturer/courses/:courseId/materials`, `/lecturer/courses/:courseId/cases`, `/lecturer/cases/:caseId/review`.
 
@@ -86,7 +86,7 @@ Generation is Lecturer-only (`FR-GEN-01`/§9 permissions) — never expose a "Ge
 
 ## 4. Case Review — Decision Tree Editor (`/lecturer/cases/:caseId/review`)
 
-> This is the single most business-critical screen in the product (Proposal V1.1, Discovery Plan §C footnote) — it is the mandatory Human-in-the-Loop gate (`FEATURE-CASE-REVIEW-AND-PUBLISHING.md` BR-REV-01). Give it the deepest spec.
+> This is the single most business-critical screen in the product (Proposal V1.2, Discovery Plan §C footnote) — it is the mandatory Human-in-the-Loop gate (`FEATURE-CASE-REVIEW-AND-PUBLISHING.md` BR-REV-01). Give it the deepest spec.
 
 ### Purpose & Function
 Lets the Lecturer inspect, edit, approve, and publish an AI-generated (or lecturer-authored) case. For `BRANCHING_STUDY` cases: a ReactFlow tree canvas + node-edit side panel. For `REVIEW_STUDY` cases: a simpler form editor (context/problem text) — **no tree**, since Review Study cases have no `case_nodes` (`FEATURE-REVIEW-STUDY.md §4`: "No Decision Tree").
