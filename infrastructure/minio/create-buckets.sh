@@ -1,5 +1,5 @@
-﻿#!/bin/sh
-# Create MinIO buckets for CaseTree AI
+#!/bin/sh
+# Create MinIO buckets for Edu-Branch-AI
 # Run this after MinIO starts
 # Usage: docker exec casetree_minio sh /create-buckets.sh
 
