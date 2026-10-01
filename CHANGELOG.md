@@ -10,10 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 - **Official Identity Alignment**: Standardized project and repository identity to **EduBranch AI** (Repo: EduBranch-AI, Acronym: EBA, Target: Higher Education).
-- **Docker Infrastructure Synchronization**: Synchronized active Docker compose project (dubranch-ai), containers (dubranch_postgres, dubranch_redis, dubranch_minio), network (dubranch_network), database (dubranch_ai), and MinIO bucket (dubranch-materials) while safely preserving persistent volumes and existing data.
+- **Docker Infrastructure Synchronization**: Synchronized active Docker compose project (edubranch-ai), containers (edubranch_postgres, edubranch_redis, edubranch_minio), network (edubranch_network), database (edubranch_ai), and MinIO bucket (edubranch-materials) while safely preserving persistent volumes and existing data.
 - **Learning-Flow Enforcement**: Verified and reinforced uninterrupted experience-first Branching Study (no mid-flow reasoning or consequence reveal), retrospective Journey Review consequence reveals, optional retrospective reasoning, independent Review Study, and 1-2 round non-grading AI Challenge Support per Proposal V1.2.
 - **GitHub Repository Synchronization**: Renamed remote repository to EduBranch-AI, verified remotes, package metadata, and CI/CD configurations.
-- **Product reorientation**: CaseTree-AI → Edu-Branch-AI. Product name, positioning, and all user-facing references updated across README, docs, UI, and source comments.
+- **Product reorientation**: CaseTree-AI → EduBranch-AI. Product name, positioning, and all user-facing references updated across README, docs, UI, and source comments.
 - **Branching Study flow corrected**: Experience phase is now seamless (no reasoning form or consequence card between Decision Points). REVIEW phase (post-journey retrospective) introduced as the primary site for reasoning capture and path analysis. See `docs/features/FEATURE-BRANCHING-STUDY.md`.
 - **AI positioning corrected**: AI Reasoning / Challenge Support replaces "Debate Assistant / Devil's Advocate" in all documentation and source files.
 - **Product positioning corrected**: Edu-Branch-AI is positioned as a case-based learning platform, not a "Branching Decision Tree Simulator".
