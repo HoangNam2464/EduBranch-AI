@@ -1,5 +1,5 @@
 """
-Edu-Branch-AI — FastAPI Core Configuration
+EduBranch AI - FastAPI Core Configuration
 
 All configuration is loaded from environment variables.
 Never hardcode secrets or API keys here.
@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     # =========================================================================
     # Application
     # =========================================================================
-    app_name: str = "Edu-Branch-AI — FastAPI AI Service"
+    app_name: str = "EduBranch AI - FastAPI AI Service"
     app_version: str = "0.0.1"
     debug: bool = False
 
@@ -32,8 +32,8 @@ class Settings(BaseSettings):
     # =========================================================================
     postgres_host: str = "localhost"
     postgres_port: int = 5432
-    postgres_db: str = "casetree_ai"
-    postgres_user: str = "casetree"
+    postgres_db: str = "edubranch_ai"
+    postgres_user: str = "edubranch"
     postgres_password: str = "changeme_db_password"
 
     @property
@@ -59,6 +59,15 @@ class Settings(BaseSettings):
     gemini_embedding_model: str = "text-embedding-004"
 
     # =========================================================================
+    # MinIO — Object Storage
+    # =========================================================================
+    minio_endpoint: str = "localhost:9000"
+    minio_access_key: str = "minioadmin"
+    minio_secret_key: str = "changeme_minio_password"
+    minio_bucket_materials: str = "edubranch-materials"
+    minio_secure: bool = False  # True in production (HTTPS)
+
+    # =========================================================================
     # RAG Configuration
     # =========================================================================
     rag_chunk_size: int = 512
@@ -69,7 +78,6 @@ class Settings(BaseSettings):
     # AI Reasoning / Challenge Support
     # =========================================================================
     challenge_support_max_rounds: int = 2
-    debate_max_rounds: int = 2  # legacy alias
 
 
 # Singleton settings instance

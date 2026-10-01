@@ -1,5 +1,5 @@
 """
-Edu-Branch-AI — OpenAI LLM Provider Implementation.
+EduBranch AI — OpenAI LLM Provider Implementation.
 
 Implements BaseLLMProvider using the OpenAI SDK.
 Used when app.core.config.settings.ai_provider == "openai".

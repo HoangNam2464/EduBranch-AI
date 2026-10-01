@@ -118,7 +118,7 @@ However, `README.md`, `CONTRIBUTING.md`, and `SECURITY.md` portray the old `Fron
 | Health checks | All services | Defined for postgres, redis, minio | CORRECT |
 | Network isolation | Single internal network | `casetree_network` bridge network | CORRECT |
 
-`.env.example` correctly documents `SERVER_PORT=8080` (NestJS), `FASTAPI_PORT=8000` (AI Service), `DEBATE_MAX_ROUNDS=2`, and all infrastructure connection variables. No Spring Boot-specific variables are present.
+`.env.example` correctly documents `SERVER_PORT=8080` (NestJS), `FASTAPI_PORT=8000` (AI Service), `CHALLENGE_SUPPORT_MAX_ROUNDS=2`, and all infrastructure connection variables. No Spring Boot-specific variables are present.
 
 ---
 
@@ -130,7 +130,7 @@ However, `README.md`, `CONTRIBUTING.md`, and `SECURITY.md` portray the old `Fron
 | Structured output / JSON Schema for case generation | `ai-service/app/generation/schemas/decision_tree.py` | SCHEMA PRESENT |
 | Decision tree BFS cycle detection | `decision_tree.py` schema references `validate_tree_structure` | DOCUMENTED |
 | Lecturer review/approval required before publication | `DRAFT -> REVIEWED -> APPROVED -> PUBLISHED` in `00-project-foundation.md` section 4 | RULE ENFORCED |
-| Debate max 2 rounds | `DEBATE_MAX_ROUNDS=2` in `.env.example`; rule in `00-project-foundation.md` section 6 | RULE + CONFIG ENFORCED |
+| Challenge Support max 2 rounds | `CHALLENGE_SUPPORT_MAX_ROUNDS=2` in `.env.example`; rule in `00-project-foundation.md` section 6 | RULE + CONFIG ENFORCED |
 | Debate does not grade | `copilot-instructions.md` section 4; `00-project-foundation.md` section 6; `SECURITY.md` section 6 | RULE ENFORCED |
 | Debate does not decide pass/fail | Same governance files | RULE ENFORCED |
 | Sources boundary | `00-project-foundation.md` section 6 Rule 1; `copilot-instructions.md` section 4 | RULE ENFORCED |

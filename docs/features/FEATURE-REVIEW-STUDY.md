@@ -3,7 +3,7 @@
 ## 1. Overview & Source of Truth
 
 - **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx).
-- **Core Purpose**: Review Study is one of Edu-Branch-AI's two distinct learning modes. In the MVP, it provides a simple, structured case analysis workflow where students receive case context, relevant data, and an open problem, analyze it, propose their own solution, justify it with reasoning, receive lecturer feedback, and engage in reflection.
+- **Core Purpose**: Review Study is one of EduBranch AI's two distinct learning modes. In the MVP, it provides a simple, structured case analysis workflow where students receive case context, relevant data, and an open problem, analyze it, propose their own solution, justify it with reasoning, receive lecturer feedback, and engage in reflection.
 - **Fundamental Principle**: Case study education recognizes multiple valid perspectives. The system **does not determine a single correct answer or reasoning**, nor does AI assign grades.
 
 ---

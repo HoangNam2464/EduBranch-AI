@@ -9,7 +9,7 @@ export function StudentLayout() {
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <h1 className="text-lg font-bold text-gray-900">🌿 Edu-Branch-AI</h1>
+          <h1 className="text-lg font-bold text-gray-900">🌿 EduBranch AI</h1>
           <span className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
             University Case Learning
           </span>

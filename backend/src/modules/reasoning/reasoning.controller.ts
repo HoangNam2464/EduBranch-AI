@@ -1,11 +1,25 @@
-import { Controller } from "@nestjs/common";
+import { Controller, Get, Param } from "@nestjs/common";
+import { ReasoningService } from "./reasoning.service";
 
-/**
- * ReasoningController — Structural Skeleton.
- * Handles student reasoning per attempt in Branching Study.
- * Business logic unpopulated per Capstone MVP scaffolding rules.
- */
-@Controller("reasoning")
+@Controller()
 export class ReasoningController {
-  // Endpoints will be implemented in sprint feature branches
+  constructor(private readonly reasoningService: ReasoningService) {}
+
+  @Get("reasoning/:id")
+  async getReasoningById(@Param("id") id: string) {
+    const data = await this.reasoningService.getReasoningById(id);
+    return {
+      status: "SUCCESS",
+      data,
+    };
+  }
+
+  @Get("branching-attempts/:attemptId/reasonings")
+  async getReasoningsByAttempt(@Param("attemptId") attemptId: string) {
+    const data = await this.reasoningService.getReasoningsByAttempt(attemptId);
+    return {
+      status: "SUCCESS",
+      data,
+    };
+  }
 }

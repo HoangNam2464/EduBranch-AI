@@ -1,6 +1,6 @@
-# Edu-Branch-AI — Project Overview
+# EduBranch AI — Project Overview
 
-**Full Name**: Edu-Branch-AI — AI Platform for Experiential Case-Based Learning in University Teaching
+**Full Name**: EduBranch AI — AI Platform for Experiential Case-Based Learning in University Teaching
 **Version**: 0.0.1-SNAPSHOT (Scaffolded)
 **Repository**: https://github.com/HoangNam2464/EduBranch-AI
 
@@ -8,7 +8,7 @@
 
 ## Problem Statement
 
-University lecturers need engaging, pedagogically rich case studies that challenge students to make decisions under real-world uncertainty. Creating these manually is time-consuming and hard to scale. Edu-Branch-AI automates case generation from existing teaching materials while keeping the lecturer in full control of what students receive and experience.
+University lecturers need engaging, pedagogically rich case studies that challenge students to make decisions under real-world uncertainty. Creating these manually is time-consuming and hard to scale. EduBranch AI automates case generation from existing teaching materials while keeping the lecturer in full control of what students receive and experience.
 
 Students learn not by passively reading outcomes, but by making decisions, completing the full journey, then reviewing *how* each of their choices shaped the result — connecting personal experience to course material.
 

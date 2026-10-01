@@ -1,5 +1,5 @@
 """
-Edu-Branch-AI — AI Reasoning/Challenge Support API Request/Response Schemas.
+EduBranch AI - AI Reasoning/Challenge Support API Request/Response Schemas.
 Source of Truth: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
 
 IMPORTANT: AI Reasoning/Challenge Support generates challenge/counter-questions only.

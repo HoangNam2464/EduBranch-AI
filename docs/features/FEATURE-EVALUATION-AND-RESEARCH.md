@@ -48,7 +48,7 @@ Supports the core empirical research contribution of the Capstone project. Provi
 ---
 
 ## 5. Main Flow (Research Experiment Workflow)
-1. **Case Setup**: The lecturer selects a course topic; one case is authored manually, while a paired case is generated via Edu-Branch-AI's RAG pipeline.
+1. **Case Setup**: The lecturer selects a course topic; one case is authored manually, while a paired case is generated via EduBranch AI's RAG pipeline.
 2. **Classroom Trial**: Students are divided into cohorts to complete cases, make decisions, submit reasoning/solutions, and interact with AI challenge support.
 3. **Rubric Evaluation**: Evaluators assess the cases using the standardized rubric (covering Realism, Difficulty, and Alignment).
 4. **Survey Capture**: Students complete a short post-case questionnaire regarding cognitive load and reasoning challenge.

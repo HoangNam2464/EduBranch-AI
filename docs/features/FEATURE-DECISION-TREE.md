@@ -6,9 +6,9 @@
 ---
 
 ## 1. Purpose
-Defines the mathematical and relational domain structure of the **Branching Decision Tree** — the structural mechanism powering the **Branching Study** learning mode in Edu-Branch-AI. The decision tree models sequential decision-making under uncertainty through structured nodes (`Situation`), directed transitions (`Options`), pre-authored outcomes (`Consequences`), and a terminal outcome (`Outcome Node`).
+Defines the mathematical and relational domain structure of the **Branching Decision Tree** — the structural mechanism powering the **Branching Study** learning mode in EduBranch AI. The decision tree models sequential decision-making under uncertainty through structured nodes (`Situation`), directed transitions (`Options`), pre-authored outcomes (`Consequences`), and a terminal outcome (`Outcome Node`).
 
-> **Scope Clarification**: The Decision Tree domain model (`case_nodes`, `case_options`) belongs **exclusively** to **Branching Study** (`learning_mode = 'BRANCHING_STUDY'`). It is **one of two learning modes** in Edu-Branch-AI — not the defining feature of the entire platform. Cases with `learning_mode = 'REVIEW_STUDY'` do not use decision trees.
+> **Scope Clarification**: The Decision Tree domain model (`case_nodes`, `case_options`) belongs **exclusively** to **Branching Study** (`learning_mode = 'BRANCHING_STUDY'`). It is **one of two learning modes** in EduBranch AI — not the defining feature of the entire platform. Cases with `learning_mode = 'REVIEW_STUDY'` do not use decision trees.
 >
 > The decision tree is a **structural mechanism** — it determines how nodes, options, and consequences are connected. The pedagogical value comes from students experiencing the journey and analyzing their decisions in the REVIEW phase.
 

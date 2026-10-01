@@ -1,4 +1,4 @@
-# Edu-Branch-AI — Data Model
+# EduBranch AI — Data Model
 
 **Status**: Schema aligned with Product Direction; runtime persistence APIs pending
 

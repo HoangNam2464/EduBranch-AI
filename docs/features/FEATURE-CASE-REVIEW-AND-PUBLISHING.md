@@ -6,7 +6,7 @@
 ---
 
 ## 1. Purpose
-Enforces the mandatory **Human-in-the-Loop** governance gate in Edu-Branch-AI. Ensures that AI-generated decision tree cases are never shown directly to university students. A lecturer must inspect the generated situations, options, and consequences, make manual editorial adjustments via an interactive form/canvas editor, formally approve the case, and publish it to the student cohort.
+Enforces the mandatory **Human-in-the-Loop** governance gate in EduBranch AI. Ensures that AI-generated decision tree cases are never shown directly to university students. A lecturer must inspect the generated situations, options, and consequences, make manual editorial adjustments via an interactive form/canvas editor, formally approve the case, and publish it to the student cohort.
 
 ---
 
@@ -33,7 +33,7 @@ Enforces the mandatory **Human-in-the-Loop** governance gate in Edu-Branch-AI. E
 - **FR-REV-03**: The system shall transition case status to `REVIEWED` whenever manual edits are committed to a `DRAFT` case.
 - **FR-REV-04**: The system shall allow the lecturer to approve a case, transitioning status from `REVIEWED` (or `DRAFT`) to `APPROVED`.
 - **FR-REV-05**: The system shall allow the lecturer to publish an `APPROVED` case, transitioning status to `PUBLISHED`.
-- **FR-REV-06**: The system shall reject student simulation requests for any case with status other than `PUBLISHED` with HTTP 403 Forbidden.
+- **FR-REV-06**: The system shall reject Branching Study attempt requests for any case with status other than `PUBLISHED` with HTTP 403 Forbidden.
 
 ---
 

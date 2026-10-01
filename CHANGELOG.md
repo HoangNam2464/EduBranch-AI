@@ -1,6 +1,6 @@
 # Changelog — Edu-Branch-AI
 
-All notable changes to Edu-Branch-AI are documented in this file.
+All notable changes to EduBranch AI are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ## [Unreleased]
 
 ### Changed
+- **Official Identity Alignment**: Standardized project and repository identity to **EduBranch AI** (Repo: EduBranch-AI, Acronym: EBA, Target: Higher Education).
+- **Docker Infrastructure Synchronization**: Synchronized active Docker compose project (dubranch-ai), containers (dubranch_postgres, dubranch_redis, dubranch_minio), network (dubranch_network), database (dubranch_ai), and MinIO bucket (dubranch-materials) while safely preserving persistent volumes and existing data.
+- **Learning-Flow Enforcement**: Verified and reinforced uninterrupted experience-first Branching Study (no mid-flow reasoning or consequence reveal), retrospective Journey Review consequence reveals, optional retrospective reasoning, independent Review Study, and 1-2 round non-grading AI Challenge Support per Proposal V1.2.
+- **GitHub Repository Synchronization**: Renamed remote repository to EduBranch-AI, verified remotes, package metadata, and CI/CD configurations.
 - **Product reorientation**: CaseTree-AI → Edu-Branch-AI. Product name, positioning, and all user-facing references updated across README, docs, UI, and source comments.
 - **Branching Study flow corrected**: Experience phase is now seamless (no reasoning form or consequence card between Decision Points). REVIEW phase (post-journey retrospective) introduced as the primary site for reasoning capture and path analysis. See `docs/features/FEATURE-BRANCHING-STUDY.md`.
 - **AI positioning corrected**: AI Reasoning / Challenge Support replaces "Debate Assistant / Devil's Advocate" in all documentation and source files.

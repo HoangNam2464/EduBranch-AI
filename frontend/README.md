@@ -1,6 +1,6 @@
-# Edu-Branch-AI — Frontend
+# EduBranch AI — Frontend
 
-React 19 + Vite + TypeScript + TailwindCSS v4 UI for the Edu-Branch-AI platform.
+React 19 + Vite + TypeScript + TailwindCSS v4 UI for the EduBranch AI platform.
 
 The current student learning screens are an interactive prototype: they use
 sample case data and a local Zustand store. Persistent attempts, lecturer

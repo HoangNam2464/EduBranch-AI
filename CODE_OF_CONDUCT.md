@@ -1,8 +1,8 @@
-# Code of Conduct — Edu-Branch-AI
+# Code of Conduct — EduBranch AI
 
 ## Our Pledge
 
-We as contributors and maintainers pledge to make participation in the Edu-Branch-AI project a respectful and collaborative experience for everyone.
+We as contributors and maintainers pledge to make participation in the EduBranch AI project a respectful and collaborative experience for everyone.
 
 ## Our Standards
 

@@ -1,8 +1,8 @@
-# Edu-Branch-AI — Global Design System
+# EduBranch AI — Global Design System
 
 > **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
 > **Target Platform**: Google Stitch UI Generation + React 19 / TailwindCSS v4 implementation.
-> **Scope**: All Edu-Branch-AI product screens (P0–P4). Does NOT cover the internal "Start Design" tooling — see `SITE.md §7` for its classification.
+> **Scope**: All EduBranch AI product screens (P0–P4). Does NOT cover the internal "Start Design" tooling — see `SITE.md §7` for its classification.
 > **Source of truth**: Product Direction V2 (EduBranch AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
 
 ---
@@ -10,7 +10,7 @@
 ## 1. Visual Theme & Atmosphere
 
 ### 1.1. Core Philosophy
-Edu-Branch-AI is a professional academic platform for university lecturers and students. The interface must read as **intellectually rigorous, calm, and content-first** — closer to a well-built academic research/authoring tool than a consumer SaaS product.
+EduBranch AI is a professional academic platform for university lecturers and students. The interface must read as **intellectually rigorous, calm, and content-first** — closer to a well-built academic research/authoring tool than a consumer SaaS product.
 
 - **Theme Mode**: **LIGHT ONLY.** No dark mode in this phase. This is a locked decision (Discovery Plan §P.2) — do not design or generate dark-mode variants.
 - **Tone**: Neutral, academic, professional, calm, restrained, natural.
@@ -242,7 +242,7 @@ Minimal, restrained shadows — never a glow/blur decorative effect.
 
 ## 6. Product-Specific Components
 
-These are unique to Edu-Branch-AI's domain and must be specified precisely so Stitch does not improvise product behavior.
+These are unique to EduBranch AI's domain and must be specified precisely so Stitch does not improvise product behavior.
 
 ### 6.1. Case Card
 Used in `/lecturer/courses/:courseId/cases` list and course dashboards.

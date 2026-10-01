@@ -3,7 +3,7 @@
 ## 1. Overview & Source of Truth
 
 - **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx).
-- **Core Purpose**: Reflection is a core pedagogical artifact in Edu-Branch-AI. It encourages meta-cognitive learning, allowing students to evaluate their decision path or solution justification in hindsight.
+- **Core Purpose**: Reflection is a core pedagogical artifact in EduBranch AI. It encourages meta-cognitive learning, allowing students to evaluate their decision path or solution justification in hindsight.
 - **Support Across Both Modes**:
   1. **Branching Study**: Triggered after reaching a terminal outcome node (`outcome_node_id`). Students reflect on the chain of decisions, trade-offs, and resulting outcome before deciding whether to attempt the case again.
   2. **Review Study**: Triggered after the lecturer reviews the submission and provides feedback (`lecturer_feedback`). Students reflect on the feedback, critique their proposed solution, and note areas of improvement.

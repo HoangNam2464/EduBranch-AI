@@ -1,4 +1,4 @@
-# Edu-Branch-AI — Decision Tree Domain Model
+# EduBranch AI — Decision Tree Domain Model
 
 **Status**: Scaffolded | **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
 
@@ -6,7 +6,7 @@
 
 ## 1. Overview
 
-The decision tree is the core data structure of Edu-Branch-AI for `BRANCHING_STUDY` mode.
+The decision tree is the core data structure of EduBranch AI for `BRANCHING_STUDY` mode.
 A Case is composed of CaseNodes connected by CaseOptions.
 
 ## 2. Entity Model

@@ -1,6 +1,6 @@
-﻿# Edu-Branch-AI — Backend Gateway
+﻿# EduBranch AI — Backend Gateway
 
-Node.js (NestJS + TypeScript) REST API Gateway for the Edu-Branch-AI platform.
+Node.js (NestJS + TypeScript) REST API Gateway for the EduBranch AI platform.
 
 ## Responsibilities
 
@@ -8,9 +8,9 @@ Node.js (NestJS + TypeScript) REST API Gateway for the Edu-Branch-AI platform.
 - User and role management
 - Course and teaching material metadata
 - Case lifecycle state machine (`DRAFT → REVIEWED → APPROVED → PUBLISHED`)
-- Student simulation session persistence
-- Student argument capture at decision nodes
-- Debate session history persistence & 2-round cap enforcement
+- Branching Study attempt persistence and navigation
+- Retrospective student reasoning capture in Journey Review
+- AI Challenge Support history persistence with a 1–2 round cap
 - Lecturer statistics aggregations
 - Research evaluation boundary
 - REST API gateway for the React frontend
@@ -46,9 +46,9 @@ backend/src/
     ├── course/              ← Course ownership and management
     ├── material/            ← Teaching material upload and metadata
     ├── case/                ← Case lifecycle, decision tree domain model
-    ├── simulation/          ← Student simulation sessions
-    ├── argument/            ← Student arguments at decision nodes
-    ├── debate/              ← Debate session history persistence
+    ├── branching-attempt/   ← Branching Study attempts and choices
+    ├── reasoning/           ← Retrospective Journey Review reasoning
+    ├── challenge-support/   ← AI counter-question history
     ├── statistics/          ← Lecturer statistics queries
     ├── notification/        ← Notification extension point
     └── evaluation/          ← Research/evaluation data boundary

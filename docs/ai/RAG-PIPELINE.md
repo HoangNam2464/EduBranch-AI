@@ -1,4 +1,4 @@
-﻿# Edu-Branch-AI — RAG Pipeline
+﻿# EduBranch AI — RAG Pipeline
 
 **Status**: Scaffolded
 

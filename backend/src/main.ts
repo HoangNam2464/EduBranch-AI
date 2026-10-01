@@ -29,7 +29,7 @@ async function bootstrap() {
 
   const port = process.env.SERVER_PORT || 8080;
   await app.listen(port);
-  console.log(`Edu-Branch-AI Backend Gateway listening on port ${port} (prefix: /api/v1)`);
+  console.log(`EduBranch AI Backend Gateway listening on port ${port} (prefix: /api/v1)`);
 }
 
 bootstrap();

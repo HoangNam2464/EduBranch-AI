@@ -1,5 +1,5 @@
 ﻿"""
-Edu-Branch-AI — AI Service health endpoint smoke test.
+EduBranch AI — AI Service health endpoint smoke test.
 """
 
 import pytest

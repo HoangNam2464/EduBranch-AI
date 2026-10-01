@@ -1,4 +1,4 @@
-# Edu-Branch-AI — Proposal Requirement Traceability Matrix
+# EduBranch AI — Proposal Requirement Traceability Matrix
 
 > **Authoritative Source**: `C1SE_65-EduBranch-AI-Proposal_V1.2.docx` (September 28, 2026 — Renamed to EduBranch AI: updated Branching Study & future enhancements)  
 > **Mandatory Status States**:

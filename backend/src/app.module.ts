@@ -1,6 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { HealthModule } from "./common/health/health.module";
+import { DatabaseModule } from "./common/database/database.module";
+import { MinioModule } from "./common/minio/minio.module";
+import { AiClientModule } from "./common/ai-client/ai-client.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { UserModule } from "./modules/user/user.module";
 import { CourseModule } from "./modules/course/course.module";
@@ -21,6 +24,9 @@ import { EvaluationModule } from "./modules/evaluation/evaluation.module";
       isGlobal: true,
       envFilePath: [".env.local", ".env"],
     }),
+    DatabaseModule,
+    MinioModule,
+    AiClientModule,
     HealthModule,
     AuthModule,
     UserModule,

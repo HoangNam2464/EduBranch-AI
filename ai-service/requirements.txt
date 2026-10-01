@@ -30,6 +30,9 @@ psycopg2-binary==2.9.9
 asyncpg==0.29.0
 pgvector==0.3.5
 
+# Object Storage (MinIO)
+minio==7.2.9
+
 # HTTP client
 httpx==0.27.2
 

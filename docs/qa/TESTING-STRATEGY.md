@@ -1,4 +1,4 @@
-﻿# Edu-Branch-AI — Testing Strategy
+﻿# EduBranch AI — Testing Strategy
 
 **Status**: Scaffolded
 

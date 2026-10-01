@@ -1,4 +1,4 @@
-﻿# Edu-Branch-AI — System Architecture
+﻿# EduBranch AI — System Architecture
 
 **Status**: Scaffolded
 

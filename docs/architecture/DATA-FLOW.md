@@ -1,4 +1,4 @@
-# Edu-Branch-AI — System Data Flows & Sequences
+# EduBranch AI — System Data Flows & Sequences
 
 > **Document Status**: Authoritative Architecture Specification  
 > **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
@@ -21,7 +21,7 @@ sequenceDiagram
     Lecturer->>FE: Uploads PDF / DOCX file
     FE->>BE: POST /api/v1/courses/{courseId}/materials (Multipart Form)
     BE->>BE: Validate file extension & MIME type
-    BE->>S3: PutObject(bucket="casetree-materials", key=file_uuid)
+    BE->>S3: PutObject(bucket="edubranch-materials", key=file_uuid)
     BE->>DB: INSERT INTO teaching_materials (status='PENDING')
     BE->>AI: POST /internal/v1/ingestion/process (material_id, s3_key, course_id)
     AI->>S3: GetObject(key=file_uuid)

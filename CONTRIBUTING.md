@@ -1,13 +1,13 @@
-# Contributing to Edu-Branch-AI
+# Contributing to EduBranch AI
 
-> Applies to all development on **Edu-Branch-AI — AI Platform for Experiential Case-Based Learning in University Teaching**.
+> Applies to all development on **EduBranch AI — AI Platform for Experiential Case-Based Learning in University Teaching**.
 > All code changes must comply with these standards before being integrated into `develop` or `main`.
 
 ---
 
 ## 🌿 1. Git Branching Strategy
 
-Edu-Branch-AI uses **Git Feature Branch Workflow**. **Never** push code directly to `main` or `develop`.
+EduBranch AI uses **Git Feature Branch Workflow**. **Never** push code directly to `main` or `develop`.
 
 ```
 feature/<name>  →  develop  →  main

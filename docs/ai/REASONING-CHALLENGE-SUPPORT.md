@@ -1,4 +1,4 @@
-# Edu-Branch-AI — AI Reasoning & Challenge Support
+# EduBranch AI — AI Reasoning & Challenge Support
 
 **Status**: Scaffolded | **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
 

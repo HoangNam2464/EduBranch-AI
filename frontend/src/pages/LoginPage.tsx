@@ -50,7 +50,7 @@ export function LoginPage() {
 
   return (
     <div className="card p-8 bg-white shadow-sm border border-gray-200 rounded-xl">
-      <h2 className="text-xl font-bold text-gray-900 mb-2">Đăng nhập Edu-Branch-AI</h2>
+      <h2 className="text-xl font-bold text-gray-900 mb-2">Đăng nhập EduBranch AI</h2>
       <p className="text-sm text-gray-500 mb-6">
         Hệ thống học tập tình huống thực nghiệm bậc Đại học (Case-Based Learning)
       </p>

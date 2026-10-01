@@ -1,5 +1,5 @@
 """
-Edu-Branch-AI — FastAPI AI Service Entry Point.
+EduBranch AI - FastAPI AI Service Entry Point.
 
 IMPORTANT: This service is INTERNAL ONLY.
 It is called exclusively by the NestJS Backend Gateway.
@@ -36,7 +36,7 @@ app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
     description=(
-        "Edu-Branch-AI — Internal FastAPI AI Service. "
+        "EduBranch AI - Internal FastAPI AI Service. "
         "Responsible for: document ingestion, RAG retrieval, "
         "case generation, and AI reasoning/challenge support."
     ),
@@ -78,16 +78,18 @@ async def health():
 
 # ==============================================================================
 # Route registration
-# TODO: Uncomment as feature branches are implemented
 # ==============================================================================
 
-# from app.ingestion.router import router as ingestion_router
-# from app.generation.router import router as generation_router
-# from app.challenge_support.router import router as challenge_support_router
+# Flow 1: Material Ingestion & RAG — IMPLEMENTED
+from app.ingestion.router import router as ingestion_router
+from app.retrieval.router import router as retrieval_router
 
-# app.include_router(ingestion_router, prefix="/ingestion", tags=["Ingestion"])
-# app.include_router(generation_router, prefix="/generation", tags=["Generation"])
-# app.include_router(challenge_support_router, prefix="/challenge-support", tags=["Challenge Support"])
+app.include_router(ingestion_router, prefix="/internal/v1/ingestion", tags=["Ingestion"])
+app.include_router(retrieval_router, prefix="/internal/v1/retrieval", tags=["Retrieval"])
+
+# Flow 2: Case Generation — IMPLEMENTED
+from app.generation.router import router as generation_router
+app.include_router(generation_router, prefix="/internal/v1/generation", tags=["Generation"])
 
 
 # ==============================================================================

@@ -1,5 +1,5 @@
 ﻿"""
-Edu-Branch-AI — Unit Tests for Challenge Support Schemas and Round Constraints.
+EduBranch AI — Unit Tests for Challenge Support Schemas and Round Constraints.
 """
 
 import uuid

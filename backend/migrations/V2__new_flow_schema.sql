@@ -1,5 +1,5 @@
 -- ==============================================================================
--- Edu-Branch-AI — V2 New Flow Schema Migration
+-- EduBranch AI — V2 New Flow Schema Migration
 -- Source of Truth: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
 -- All decisions confirmed: 2026-09-22
 -- ==============================================================================

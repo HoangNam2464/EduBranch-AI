@@ -1,4 +1,4 @@
-/** Edu-Branch-AI — Registration Page. Full implementation: feature/auth */
+/** EduBranch AI — Registration Page. Full implementation: feature/auth */
 export function RegisterPage() {
   return (
     <div className="card p-8">

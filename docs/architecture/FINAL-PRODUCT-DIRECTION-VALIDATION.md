@@ -67,15 +67,17 @@ implemented by the backend.
 
 Status: PARTIALLY VERIFIED.
 
-- Current product identity is normalized to Edu-Branch-AI in the active README,
+- Current product identity is normalized to EduBranch AI in the active README,
   frontend README, layouts, and primary module headers.
-- Technical infrastructure names such as casetree_postgres, casetree_redis,
-  and casetree_minio are intentionally preserved.
+- Active Docker services, network, database defaults, Redis configuration, and
+  MinIO bucket use the EduBranch AI identity. The existing PostgreSQL volume
+  name `casetree-ai_postgres_data` is retained only as a data-preservation
+  alias; it is not a current product identity.
 - Historical proposal filenames, changelog notes, and audit references still
   contain CaseTree-AI; these are provenance references, not current
   user-facing product names.
-- The GitHub repository URL/name is not changed by this audit. That remains a
-  manual Project Owner action.
+- The GitHub repository is already `EduBranch-AI` and the local `origin` remote
+  points to the matching URL.
 
 ## 7. Documentation vs Source Mismatches
 

@@ -14,7 +14,7 @@
 
 ## Scope
 
-- [ ] `backend` (Spring Boot)
+- [ ] `backend` (NestJS Gateway)
 - [ ] `ai-service` (FastAPI)
 - [ ] `frontend` (React)
 - [ ] `infra` (Docker, compose, scripts)
@@ -27,7 +27,9 @@
 - [ ] FastAPI is NOT exposed to the internet
 - [ ] Retrieved document chunks are wrapped in `<sources>...</sources>` (if AI changes)
 - [ ] Case publication gate is maintained (students only access PUBLISHED cases)
-- [ ] AI Debate Assistant does NOT grade or pass/fail students (if debate changes)
+- [ ] AI Challenge Support only asks 1–2 counter-questions and never grades, approves, or determines pass/fail
+- [ ] Branching Study remains experience-first; consequences stay hidden until Journey Review
+- [ ] Review Study remains independent of Branching Study
 
 ### Code Quality
 - [ ] Branch created from `develop` (not `main`)
