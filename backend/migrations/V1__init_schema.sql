@@ -1,7 +1,7 @@
-﻿-- ==============================================================================
+-- ==============================================================================
 -- Edu-Branch-AI — Initial Schema Migration V1
 -- ==============================================================================
--- NOTE: For Proposal V1.1 flow (Branching Study, Review Study, Attempt model,
+-- NOTE: For Proposal V1.2 flow (Branching Study, Review Study, Attempt model,
 -- Student Reasoning, AI Challenge Support, Lecturer Feedback), see V2__new_flow_schema.sql.
 -- ==============================================================================
 -- Establishes the base schema for all core domain entities.
@@ -21,7 +21,7 @@ CREATE TABLE users (
     email           VARCHAR(255) NOT NULL UNIQUE,
     password_hash   VARCHAR(255) NOT NULL,
     full_name       VARCHAR(255) NOT NULL,
-    role            VARCHAR(50)  NOT NULL CHECK (role IN ('LECTURER', 'STUDENT')),
+    role            VARCHAR(50)  NOT NULL CHECK (role IN ('LECTURER', 'STUDENT', 'ADMIN')),
     is_active       BOOLEAN NOT NULL DEFAULT TRUE,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()

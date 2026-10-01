@@ -1,6 +1,6 @@
-﻿-- ==============================================================================
+-- ==============================================================================
 -- Edu-Branch-AI — V2 New Flow Schema Migration
--- Source of Truth: Proposal V1.1 (C1SE_65-CaseTree-AI-Proposal_V1_1.docx)
+-- Source of Truth: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
 -- All decisions confirmed: 2026-09-22
 -- ==============================================================================
 -- Summary of changes from V1:
@@ -66,9 +66,8 @@ CREATE INDEX idx_attempts_student_case ON branching_attempts(student_id, case_id
 -- Reasoning is OWNED by the Attempt, not by the Option.
 --
 -- selected_option_id is NOT NULL:
---   Branching Study flow is always: Select Option -> Own Reasoning.
---   There is no state where a student provides reasoning without first
---   selecting an option at a Decision Point.
+--   Branching Study records the selected option immediately during the
+--   Experience phase. Written reasoning is optional and is captured later.
 --
 -- No student_id or case_id columns: derivable via JOIN to branching_attempts.
 --
@@ -79,12 +78,18 @@ CREATE INDEX idx_attempts_student_case ON branching_attempts(student_id, case_id
 --
 -- selected_option_id must belong to node_id's options:
 --   Enforced at application service layer (not a simple FK constraint).
+--
+-- reasoning_text is NULLABLE:
+--   During Experience phase, option selection is recorded immediately, but
+--   reasoning is captured retrospectively during the REVIEW phase.
+--   Writing reasoning is encouraged for pivotal decisions but not required
+--   for every single node.
 CREATE TABLE student_reasoning (
     id                  UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     attempt_id          UUID NOT NULL REFERENCES branching_attempts(id) ON DELETE CASCADE,
     node_id             UUID NOT NULL REFERENCES case_nodes(id),
     selected_option_id  UUID NOT NULL REFERENCES case_options(id),
-    reasoning_text      TEXT NOT NULL,
+    reasoning_text      TEXT,
     submitted_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT uq_reasoning_per_node UNIQUE (attempt_id, node_id)
 );
@@ -104,7 +109,7 @@ CREATE INDEX idx_reasoning_attempt_id ON student_reasoning(attempt_id);
 --   REVIEWED  -> REFLECTED (when student submits reflection)
 --
 -- Review-Point R2 (CONFIRMED OPTION A):
--- Proposal V1.1 describes "analyze" as part of the student's reasoning process (lines 37, 61),
+-- Proposal V1.2 describes "analyze" as part of the student's reasoning process,
 -- not a separate mandatory submission artifact.
 -- student_analysis remains nullable (TEXT).
 CREATE TABLE review_study_submissions (
