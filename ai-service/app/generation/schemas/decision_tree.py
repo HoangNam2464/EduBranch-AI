@@ -33,7 +33,7 @@ class OptionOutput(BaseModel):
     )
     consequence: str = Field(
         ...,
-        description="The immediate consequence displayed after the student selects this option.",
+        description="The consequence associated with this option, revealed retrospectively to the student during the Journey Review phase.",
         min_length=10,
     )
     next_node_index: Optional[int] = Field(
