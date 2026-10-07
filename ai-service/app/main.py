@@ -91,6 +91,10 @@ app.include_router(retrieval_router, prefix="/internal/v1/retrieval", tags=["Ret
 from app.generation.router import router as generation_router
 app.include_router(generation_router, prefix="/internal/v1/generation", tags=["Generation"])
 
+# Flow 3: AI Reasoning / Challenge Support — IMPLEMENTED
+from app.challenge_support.router import router as challenge_support_router
+app.include_router(challenge_support_router, prefix="/internal/v1/challenge-support", tags=["Challenge Support"])
+
 
 # ==============================================================================
 # Global exception handler

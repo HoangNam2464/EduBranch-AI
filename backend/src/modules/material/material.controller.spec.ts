@@ -92,7 +92,7 @@ describe("MaterialController", () => {
         chunk_count: 5,
       });
 
-      const response = await controller.uploadCourseMaterial(courseId, mockFile);
+      const response = await controller.uploadCourseMaterial(courseId, mockFile, { id: "lecturer-1", role: "LECTURER" });
 
       expect(response.status).toBe("SUCCESS");
       expect(response.data.processing_status).toBe("COMPLETED");
@@ -117,7 +117,7 @@ describe("MaterialController", () => {
       };
 
       await expect(
-        controller.uploadCourseMaterial(courseId, mockFile),
+        controller.uploadCourseMaterial(courseId, mockFile, { id: "lecturer-1", role: "LECTURER" }),
       ).rejects.toThrow("Unsupported file type");
     });
   });

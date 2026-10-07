@@ -19,42 +19,25 @@ export class CaseService {
 
   async generateCase(
     courseId: string,
-    lecturerId: string | undefined,
+    lecturerId: string,
     dto: { materialIds: string[]; topicHint?: string; numNodes?: number },
   ) {
-    // 1. Resolve or ensure valid lecturer user in DB
-    let effectiveLecturerId = lecturerId;
+    // Verify lecturer exists
     const userRes = await this.db.query(
       "SELECT id FROM users WHERE id = $1 AND role = 'LECTURER'",
       [lecturerId],
     );
     if (userRes.rows.length === 0) {
-      const defaultUserRes = await this.db.query(
-        "SELECT id FROM users WHERE role = 'LECTURER' LIMIT 1",
-      );
-      if (defaultUserRes.rows.length > 0) {
-        effectiveLecturerId = defaultUserRes.rows[0].id;
-      } else {
-        const newUserId = randomUUID();
-        await this.db.query(
-          `INSERT INTO users (id, email, password_hash, full_name, role)
-           VALUES ($1, $2, $3, $4, 'LECTURER')
-           ON CONFLICT DO NOTHING`,
-          [newUserId, `lecturer_${newUserId.slice(0, 8)}@university.edu`, "hash", "University Lecturer"],
-        );
-        effectiveLecturerId = newUserId;
-      }
+      throw new ForbiddenException("Only lecturers can generate cases");
     }
 
-    // Ensure course exists
-    const courseRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+    // Verify course exists and belongs to this lecturer
+    const courseRes = await this.db.query(
+      "SELECT id FROM courses WHERE id = $1 AND lecturer_id = $2",
+      [courseId, lecturerId],
+    );
     if (courseRes.rows.length === 0) {
-      await this.db.query(
-        `INSERT INTO courses (id, name, course_code, lecturer_id)
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT DO NOTHING`,
-        [courseId, "University Course", `CRS-${courseId.slice(0, 6)}`, effectiveLecturerId],
-      );
+      throw new NotFoundException(`Course ${courseId} not found or access denied`);
     }
 
     // 2. Call AI Service to generate case draft
@@ -76,7 +59,7 @@ export class CaseService {
       await client.query(
         `INSERT INTO cases (id, title, description, course_id, created_by, status, learning_mode)
          VALUES ($1, $2, $3, $4, $5, 'DRAFT', 'BRANCHING_STUDY')`,
-        [caseId, title, description, courseId, effectiveLecturerId],
+        [caseId, title, description, courseId, lecturerId],
       );
 
       const nodes = aiResponse.nodes || [];

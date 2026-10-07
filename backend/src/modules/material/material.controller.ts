@@ -8,14 +8,16 @@ import {
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { MaterialService } from "./material.service";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
 
 /**
  * MaterialController — Flow 1: Material Ingestion & RAG
  *
- * Endpoints:
- *   POST /api/v1/courses/:courseId/materials  (Upload PDF/DOCX material)
- *   GET  /api/v1/courses/:courseId/materials  (List materials for a course)
- *   GET  /api/v1/materials/:id                (Get material details)
+ * All routes require JWT authentication (global guard).
+ *
+ * POST /api/v1/courses/:courseId/materials  — Upload PDF/DOCX material
+ * GET  /api/v1/courses/:courseId/materials  — List materials for a course
+ * GET  /api/v1/materials/:id               — Get material details
  */
 @Controller()
 export class MaterialController {
@@ -26,8 +28,9 @@ export class MaterialController {
   async uploadCourseMaterial(
     @Param("courseId") courseId: string,
     @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const result = await this.materialService.uploadMaterial(courseId, file);
+    const result = await this.materialService.uploadMaterial(courseId, file, user.id);
     return {
       status: "SUCCESS",
       data: result,

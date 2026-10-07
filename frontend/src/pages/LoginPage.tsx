@@ -1,122 +1,152 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
+import { authService } from "../services/authService";
+import { Button, Alert } from "../components/ui";
 
-/** EduBranch AI — Login Page with Role Demo Shortcuts */
+/**
+ * EduBranch AI — Login Page
+ *
+ * Real authentication via POST /api/v1/auth/login.
+ * Dev quick-access shortcuts preserved for local testing.
+ */
 export function LoginPage() {
+  const navigate = useNavigate();
+  const login = useAuthStore((s) => s.login);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const { setUser, setTokens } = useAuthStore();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Default student login
-    setUser({
-      id: "student-1",
-      email: email || "student@university.edu.vn",
-      fullName: "Nguyễn Văn Sinh Viên",
-      role: "STUDENT",
-    });
-    setTokens("demo-token", "demo-refresh");
-    navigate("/student/cases/case-business-crisis-1/branching-play");
-  };
+    setLoading(true);
+    setError(null);
 
-  const handleQuickStudent = (mode: "branching" | "review") => {
-    setUser({
-      id: "student-1",
-      email: "student@university.edu.vn",
-      fullName: "Nguyễn Văn Sinh Viên",
-      role: "STUDENT",
-    });
-    setTokens("demo-token", "demo-refresh");
-    if (mode === "branching") {
-      navigate("/student/cases/case-business-crisis-1/branching-play");
-    } else {
-      navigate("/student/cases/case-review-study-1/review-study");
+    try {
+      const result = await authService.login({ email, password });
+      login(result.user, result.accessToken);
+      navigate(result.user.role === "LECTURER" ? "/lecturer/courses" : "/student/cases", {
+        replace: true,
+      });
+    } catch (err: any) {
+      const msg = err?.response?.data?.message || "Invalid email or password.";
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleQuickLecturer = () => {
-    setUser({
-      id: "lecturer-1",
-      email: "lecturer@university.edu.vn",
-      fullName: "TS. Trần Giảng Viên",
-      role: "LECTURER",
-    });
-    setTokens("demo-token", "demo-refresh");
-    navigate("/lecturer/courses");
+  // ─── Dev quick-access (bypasses real auth for local UI testing) ───────────
+  const quickAccess = (role: "LECTURER" | "STUDENT") => {
+    login(
+      {
+        id: `dev-${role.toLowerCase()}`,
+        email: `${role.toLowerCase()}@university.edu.vn`,
+        fullName: role === "LECTURER" ? "TS. Trần Giảng Viên" : "Nguyễn Văn Sinh Viên",
+        role,
+      },
+      "dev-bypass-token",
+    );
+    navigate(role === "LECTURER" ? "/lecturer/courses" : "/student/cases");
   };
 
   return (
-    <div className="card p-8 bg-white shadow-sm border border-gray-200 rounded-xl">
-      <h2 className="text-xl font-bold text-gray-900 mb-2">Đăng nhập EduBranch AI</h2>
-      <p className="text-sm text-gray-500 mb-6">
-        Hệ thống học tập tình huống thực nghiệm bậc Đại học (Case-Based Learning)
-      </p>
-
-      <form onSubmit={handleLogin} className="space-y-4 mb-6">
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-            Email đại học
-          </label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="student@university.edu.vn"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="w-full max-w-md">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <h1 className="text-2xl font-bold text-gray-900">EduBranch AI</h1>
+          <p className="mt-2 text-sm text-gray-500">
+            Hệ thống học tập tình huống thực nghiệm bậc Đại học
+          </p>
         </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
-            Mật khẩu
-          </label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm rounded-md transition shadow-sm"
-        >
-          Đăng nhập
-        </button>
-      </form>
 
-      <div className="pt-4 border-t border-gray-200">
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
-          Truy cập nhanh (Dành cho kiểm thử hai chế độ học)
-        </p>
-        <div className="space-y-2">
-          <button
-            type="button"
-            onClick={() => handleQuickStudent("branching")}
-            className="w-full py-2 px-3 text-left bg-blue-50 hover:bg-blue-100 text-blue-800 text-xs font-medium rounded border border-blue-200 flex items-center justify-between"
-          >
-            <span>👉 Vào Mode A: <strong>Branching Study</strong> (Trải nghiệm quyết định liên tục)</span>
-            <span className="text-blue-600">Khám phá →</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickStudent("review")}
-            className="w-full py-2 px-3 text-left bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-medium rounded border border-emerald-200 flex items-center justify-between"
-          >
-            <span>👉 Vào Mode B: <strong>Review Study</strong> (Phân tích & Đề xuất giải pháp)</span>
-            <span className="text-emerald-600">Khám phá →</span>
-          </button>
-          <button
-            type="button"
-            onClick={handleQuickLecturer}
-            className="w-full py-2 px-3 text-left bg-purple-50 hover:bg-purple-100 text-purple-800 text-xs font-medium rounded border border-purple-200 flex items-center justify-between"
-          >
-            <span>👨‍🏫 Vào quyền <strong>Lecturer</strong> (Quản lý học phần & Case)</span>
-            <span className="text-purple-600">Quản trị →</span>
-          </button>
+        {/* Card */}
+        <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
+          {error && <Alert variant="error" className="mb-4">{error}</Alert>}
+
+          <form onSubmit={handleLogin} className="space-y-4" noValidate>
+            <div>
+              <label htmlFor="login-email" className="block text-sm font-medium text-gray-700">
+                Email đại học
+              </label>
+              <input
+                id="login-email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@university.edu.vn"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="login-password" className="block text-sm font-medium text-gray-700">
+                Mật khẩu
+              </label>
+              <input
+                id="login-password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+
+            <Button
+              type="submit"
+              className="w-full"
+              isLoading={loading}
+              id="btn-login-submit"
+            >
+              Đăng nhập
+            </Button>
+          </form>
+
+          <p className="mt-4 text-center text-sm text-gray-500">
+            Chưa có tài khoản?{" "}
+            <Link to="/register" className="font-medium text-blue-600 hover:underline">
+              Đăng ký
+            </Link>
+          </p>
+
+          {/* Dev quick access */}
+          <div className="mt-6 border-t border-gray-200 pt-4">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
+              Truy cập nhanh (local dev only)
+            </p>
+            <div className="space-y-2">
+              <button
+                type="button"
+                id="btn-quick-branching"
+                onClick={() => quickAccess("STUDENT")}
+                className="w-full rounded border border-blue-200 bg-blue-50 px-3 py-2 text-left
+                           text-xs font-medium text-blue-800 hover:bg-blue-100 flex items-center justify-between"
+              >
+                <span>👉 Sinh viên — <strong>Branching Study</strong></span>
+                <span className="text-blue-600">Khám phá →</span>
+              </button>
+              <button
+                type="button"
+                id="btn-quick-lecturer"
+                onClick={() => quickAccess("LECTURER")}
+                className="w-full rounded border border-purple-200 bg-purple-50 px-3 py-2 text-left
+                           text-xs font-medium text-purple-800 hover:bg-purple-100 flex items-center justify-between"
+              >
+                <span>👨‍🏫 Giảng viên — <strong>Quản lý học phần & Case</strong></span>
+                <span className="text-purple-600">Quản trị →</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
