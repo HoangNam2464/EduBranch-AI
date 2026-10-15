@@ -61,7 +61,7 @@ describe("MaterialController", () => {
       // Mock DB: course found
       mockDb.query
         .mockResolvedValueOnce({
-          rows: [{ id: courseId, lecturer_id: "user-123" }],
+          rows: [{ id: courseId, lecturer_id: "lecturer-1" }],
         })
         // Mock DB: insert teaching_materials
         .mockResolvedValueOnce({
@@ -92,7 +92,7 @@ describe("MaterialController", () => {
         chunk_count: 5,
       });
 
-      const response = await controller.uploadCourseMaterial(courseId, mockFile);
+      const response = await controller.uploadCourseMaterial(courseId, mockFile, { id: "lecturer-1", role: "LECTURER" });
 
       expect(response.status).toBe("SUCCESS");
       expect(response.data.processing_status).toBe("COMPLETED");
@@ -117,7 +117,7 @@ describe("MaterialController", () => {
       };
 
       await expect(
-        controller.uploadCourseMaterial(courseId, mockFile),
+        controller.uploadCourseMaterial(courseId, mockFile, { id: "lecturer-1", role: "LECTURER" }),
       ).rejects.toThrow("Unsupported file type");
     });
   });

@@ -29,32 +29,21 @@ export class BranchingAttemptService {
   constructor(private readonly db: DatabaseService) {}
 
   /**
-   * Resolve or create default student for dev/test if not authenticated
+   * Verify student identity from authenticated token
    */
   async resolveStudent(studentId?: string): Promise<string> {
-    if (studentId) {
-      const res = await this.db.query(
-        "SELECT id FROM users WHERE id = $1 AND role = 'STUDENT'",
-        [studentId],
-      );
-      if (res.rows.length > 0) return res.rows[0].id;
+    if (!studentId) {
+      throw new ForbiddenException("Authentication required: student identity missing");
     }
 
-    const defaultStudent = await this.db.query(
-      "SELECT id FROM users WHERE role = 'STUDENT' LIMIT 1",
+    const res = await this.db.query(
+      "SELECT id FROM users WHERE id = $1 AND role = 'STUDENT'",
+      [studentId],
     );
-    if (defaultStudent.rows.length > 0) {
-      return defaultStudent.rows[0].id;
+    if (res.rows.length === 0) {
+      throw new ForbiddenException("Invalid student identity");
     }
-
-    const newId = randomUUID();
-    await this.db.query(
-      `INSERT INTO users (id, email, password_hash, full_name, role)
-       VALUES ($1, $2, $3, $4, 'STUDENT')
-       ON CONFLICT DO NOTHING`,
-      [newId, `student_${newId.slice(0, 8)}@university.edu`, "hash", "University Student"],
-    );
-    return newId;
+    return res.rows[0].id;
   }
 
   /**
@@ -63,7 +52,7 @@ export class BranchingAttemptService {
    * - Finds previous attempts, increments attempt_number.
    * - Sets initial current_node_id to case.root_node_id.
    */
-  async startAttempt(caseId: string, studentId?: string) {
+  async startAttempt(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
 
     const caseRes = await this.db.query(
@@ -106,8 +95,10 @@ export class BranchingAttemptService {
 
   /**
    * Get Attempt Details with Steps and Current Node
+   * - P0-SEC-02: For ongoing attempts, hides next_node_id and consequences.
+   * - Consequences and alternative options are revealed ONLY when is_completed is TRUE (REVIEW phase).
    */
-  async getAttempt(attemptId: string, studentId?: string) {
+  async getAttempt(attemptId: string, studentId?: string, isLecturer = false) {
     const attemptRes = await this.db.query(
       `SELECT a.*, c.title as case_title, c.description as case_description
        FROM branching_attempts a
@@ -121,7 +112,12 @@ export class BranchingAttemptService {
 
     const attempt = attemptRes.rows[0];
 
-    // Fetch steps taken (with option and consequence)
+    // Ownership check: If not lecturer, must be owner student
+    if (!isLecturer && studentId && attempt.student_id !== studentId) {
+      throw new ForbiddenException("You do not have permission to view this attempt");
+    }
+
+    // Fetch steps taken
     const stepsRes = await this.db.query(
       `SELECT r.id as reasoning_id, r.node_id, r.selected_option_id, r.reasoning_text, r.submitted_at,
               n.situation, n.is_terminal, n.node_index,
@@ -136,27 +132,30 @@ export class BranchingAttemptService {
 
     const steps = [];
     for (const step of stepsRes.rows) {
-      // Find other options for this node for alternative review
-      const otherOptionsRes = await this.db.query(
-        "SELECT id, option_text as text FROM case_options WHERE node_id = $1 AND id != $2",
-        [step.node_id, step.selected_option_id],
-      );
+      let otherOptions = [];
+      // Only reveal alternative options and consequences after completion (REVIEW phase)
+      if (attempt.is_completed) {
+        const otherOptionsRes = await this.db.query(
+          "SELECT id, option_text as text FROM case_options WHERE node_id = $1 AND id != $2",
+          [step.node_id, step.selected_option_id],
+        );
+        otherOptions = otherOptionsRes.rows;
+      }
 
       steps.push({
         nodeId: step.node_id,
         situation: step.situation,
         selectedOptionId: step.selected_option_id,
         selectedOptionText: step.option_text,
-        // Consequences are revealed in Journey Review after reaching terminal outcome
         consequence: attempt.is_completed ? step.consequence : undefined,
         reasoningId: step.reasoning_id,
         reasoningText: step.reasoning_text,
         submittedAt: step.submitted_at,
-        otherOptions: otherOptionsRes.rows,
+        otherOptions,
       });
     }
 
-    // Fetch current node info if not completed (no mid-flow consequence reveal)
+    // Fetch current node info if not completed (P0-SEC-02: hide next_node_id and consequence)
     let currentNode = null;
     if (attempt.current_node_id && !attempt.is_completed) {
       const nodeRes = await this.db.query(
@@ -165,13 +164,16 @@ export class BranchingAttemptService {
       );
       if (nodeRes.rows.length > 0) {
         const node = nodeRes.rows[0];
-        // Consequence is hidden during decisions; only revealed in Journey Review
+        // Only return id and text; NO next_node_id, NO consequence
         const optionsRes = await this.db.query(
-          "SELECT id, option_text as text, next_node_id FROM case_options WHERE node_id = $1",
+          "SELECT id, option_text as text FROM case_options WHERE node_id = $1",
           [node.id],
         );
         currentNode = {
-          ...node,
+          id: node.id,
+          situation: node.situation,
+          isTerminal: node.is_terminal,
+          nodeIndex: node.node_index,
           options: optionsRes.rows,
         };
       }
@@ -212,42 +214,51 @@ export class BranchingAttemptService {
 
   /**
    * Flow 4: Experience-First Continuous Navigation
+   * - P0-DATA-04: Protected by database transaction with SELECT ... FOR UPDATE.
+   * - Enforces student ownership check.
    * - Non-blocking: student picks option, recorded immediately in student_reasoning.
    * - Consequence hidden until REVIEW phase.
    * - Transitions to next_node_id.
    * - Automatically completes attempt when terminal node is reached.
    */
-  async chooseOption(attemptId: string, dto: ChooseOptionDto) {
-    const attemptRes = await this.db.query(
-      "SELECT * FROM branching_attempts WHERE id = $1",
-      [attemptId],
-    );
-    if (attemptRes.rows.length === 0) {
-      throw new NotFoundException(`Attempt ${attemptId} not found`);
-    }
-
-    const attempt = attemptRes.rows[0];
-    if (attempt.is_completed) {
-      throw new BadRequestException("This attempt has already reached its terminal outcome");
-    }
-
-    if (attempt.current_node_id !== dto.nodeId) {
-      throw new BadRequestException("Submitted node does not match attempt's current node");
-    }
-
-    // Validate that option belongs to node
-    const optionRes = await this.db.query(
-      "SELECT id, option_text, consequence, next_node_id FROM case_options WHERE id = $1 AND node_id = $2",
-      [dto.selectedOptionId, dto.nodeId],
-    );
-    if (optionRes.rows.length === 0) {
-      throw new BadRequestException("Selected option does not belong to the current node");
-    }
-    const option = optionRes.rows[0];
-
+  async chooseOption(attemptId: string, studentId: string, dto: ChooseOptionDto) {
     const client = await this.db.getClient();
     try {
       await client.query("BEGIN");
+
+      // Pessimistic lock on attempt row
+      const attemptRes = await client.query(
+        "SELECT * FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        [attemptId],
+      );
+      if (attemptRes.rows.length === 0) {
+        throw new NotFoundException(`Attempt ${attemptId} not found`);
+      }
+
+      const attempt = attemptRes.rows[0];
+
+      // Ownership enforcement
+      if (attempt.student_id !== studentId) {
+        throw new ForbiddenException("You do not have permission to modify this attempt");
+      }
+
+      if (attempt.is_completed) {
+        throw new BadRequestException("This attempt has already reached its terminal outcome");
+      }
+
+      if (attempt.current_node_id !== dto.nodeId) {
+        throw new BadRequestException("Submitted node does not match attempt's current node");
+      }
+
+      // Validate that option belongs to node
+      const optionRes = await client.query(
+        "SELECT id, option_text, consequence, next_node_id FROM case_options WHERE id = $1 AND node_id = $2",
+        [dto.selectedOptionId, dto.nodeId],
+      );
+      if (optionRes.rows.length === 0) {
+        throw new BadRequestException("Selected option does not belong to the current node");
+      }
+      const option = optionRes.rows[0];
 
       // Record option selection into student_reasoning
       const reasoningId = randomUUID();
@@ -292,7 +303,7 @@ export class BranchingAttemptService {
       }
 
       await client.query("COMMIT");
-      return this.getAttempt(attemptId);
+      return this.getAttempt(attemptId, studentId);
     } catch (e) {
       await client.query("ROLLBACK");
       this.logger.error(`Error choosing option: ${e.message}`, e.stack);
@@ -304,64 +315,115 @@ export class BranchingAttemptService {
 
   /**
    * Flow 4: Retrospective Reasoning in REVIEW Phase
-   * Students reflect and write reasoning for decisions after reaching the outcome.
+   * - P0-DATA-04: Protected by FOR UPDATE transaction & ownership check.
    */
-  async saveRetrospectiveReasoning(attemptId: string, dto: SaveReasoningDto) {
-    const reasoningRes = await this.db.query(
-      "SELECT id FROM student_reasoning WHERE attempt_id = $1 AND node_id = $2",
-      [attemptId, dto.nodeId],
-    );
-    if (reasoningRes.rows.length === 0) {
-      throw new NotFoundException("Reasoning entry for this decision node does not exist in this attempt");
+  async saveRetrospectiveReasoning(attemptId: string, studentId: string, dto: SaveReasoningDto) {
+    const client = await this.db.getClient();
+    try {
+      await client.query("BEGIN");
+
+      const attemptRes = await client.query(
+        "SELECT student_id, is_completed FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        [attemptId],
+      );
+      if (attemptRes.rows.length === 0) {
+        throw new NotFoundException(`Attempt ${attemptId} not found`);
+      }
+
+      if (attemptRes.rows[0].student_id !== studentId) {
+        throw new ForbiddenException("You do not have permission to modify this attempt");
+      }
+
+      const reasoningRes = await client.query(
+        "SELECT id FROM student_reasoning WHERE attempt_id = $1 AND node_id = $2",
+        [attemptId, dto.nodeId],
+      );
+      if (reasoningRes.rows.length === 0) {
+        throw new NotFoundException("Reasoning entry for this decision node does not exist in this attempt");
+      }
+
+      await client.query(
+        "UPDATE student_reasoning SET reasoning_text = $1 WHERE attempt_id = $2 AND node_id = $3",
+        [dto.reasoningText, attemptId, dto.nodeId],
+      );
+
+      await client.query("COMMIT");
+
+      return {
+        attemptId,
+        nodeId: dto.nodeId,
+        reasoningText: dto.reasoningText,
+        status: "SAVED",
+      };
+    } catch (e) {
+      await client.query("ROLLBACK");
+      this.logger.error(`Error saving retrospective reasoning: ${e.message}`, e.stack);
+      throw e;
+    } finally {
+      client.release();
     }
-
-    await this.db.query(
-      "UPDATE student_reasoning SET reasoning_text = $1 WHERE attempt_id = $2 AND node_id = $3",
-      [dto.reasoningText, attemptId, dto.nodeId],
-    );
-
-    return {
-      attemptId,
-      nodeId: dto.nodeId,
-      reasoningText: dto.reasoningText,
-      status: "SAVED",
-    };
   }
 
   /**
    * Flow 4: Reflection Submission
+   * - P0-DATA-04: Protected by FOR UPDATE transaction.
+   * - Checks ownership, checks is_completed.
+   * - Prevents duplicate overwrite if already SUBMITTED.
    */
-  async submitReflection(attemptId: string, dto: SubmitReflectionDto) {
-    const attemptRes = await this.db.query(
-      "SELECT is_completed FROM branching_attempts WHERE id = $1",
-      [attemptId],
-    );
-    if (attemptRes.rows.length === 0) {
-      throw new NotFoundException(`Attempt ${attemptId} not found`);
+  async submitReflection(attemptId: string, studentId: string, dto: SubmitReflectionDto) {
+    const client = await this.db.getClient();
+    try {
+      await client.query("BEGIN");
+
+      const attemptRes = await client.query(
+        "SELECT student_id, is_completed, reflection_status FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        [attemptId],
+      );
+      if (attemptRes.rows.length === 0) {
+        throw new NotFoundException(`Attempt ${attemptId} not found`);
+      }
+
+      const attempt = attemptRes.rows[0];
+
+      if (attempt.student_id !== studentId) {
+        throw new ForbiddenException("You do not have permission to modify this attempt");
+      }
+
+      if (!attempt.is_completed) {
+        throw new BadRequestException("Cannot submit reflection before reaching a terminal outcome");
+      }
+
+      if (attempt.reflection_status === "SUBMITTED") {
+        throw new BadRequestException("Reflection has already been submitted and cannot be overwritten");
+      }
+
+      await client.query(
+        `UPDATE branching_attempts
+         SET reflection_text = $1, reflection_status = 'SUBMITTED', reflection_submitted_at = NOW(), updated_at = NOW()
+         WHERE id = $2`,
+        [dto.reflectionText, attemptId],
+      );
+
+      await client.query("COMMIT");
+
+      return {
+        attemptId,
+        reflectionStatus: "SUBMITTED",
+        reflectionText: dto.reflectionText,
+      };
+    } catch (e) {
+      await client.query("ROLLBACK");
+      this.logger.error(`Error submitting reflection: ${e.message}`, e.stack);
+      throw e;
+    } finally {
+      client.release();
     }
-
-    if (!attemptRes.rows[0].is_completed) {
-      throw new BadRequestException("Cannot submit reflection before reaching a terminal outcome");
-    }
-
-    await this.db.query(
-      `UPDATE branching_attempts
-       SET reflection_text = $1, reflection_status = 'SUBMITTED', reflection_submitted_at = NOW(), updated_at = NOW()
-       WHERE id = $2`,
-      [dto.reflectionText, attemptId],
-    );
-
-    return {
-      attemptId,
-      reflectionStatus: "SUBMITTED",
-      reflectionText: dto.reflectionText,
-    };
   }
 
   /**
    * List all attempts of a student for a case
    */
-  async getAttemptsByCase(caseId: string, studentId?: string) {
+  async getAttemptsByCase(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
     const res = await this.db.query(
       `SELECT id, attempt_number, is_completed, reflection_status, started_at, completed_at

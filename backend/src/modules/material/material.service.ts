@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   Logger,
   NotFoundException,
@@ -29,7 +30,7 @@ export class MaterialService {
   async uploadMaterial(
     courseId: string,
     file: Express.Multer.File,
-    uploadedBy?: string,
+    uploadedBy: string,
   ) {
     if (!file) {
       throw new BadRequestException("No file provided");
@@ -45,39 +46,18 @@ export class MaterialService {
       throw new BadRequestException("File exceeds maximum allowed size (50MB)");
     }
 
-    // Ensure valid course exists or check ownership
+    // Verify course exists and belongs to the uploader
     const courseRes = await this.db.query(
       "SELECT id, lecturer_id FROM courses WHERE id = $1",
       [courseId],
     );
 
-    let effectiveUserId = uploadedBy;
     if (courseRes.rows.length === 0) {
-      // For development resilience: ensure a default lecturer and course exist if testing with arbitrary UUID
-      const defaultUserRes = await this.db.query(
-        "SELECT id FROM users WHERE role = 'LECTURER' LIMIT 1",
-      );
-      if (defaultUserRes.rows.length > 0) {
-        effectiveUserId = defaultUserRes.rows[0].id;
-      } else {
-        const newUserId = randomUUID();
-        await this.db.query(
-          `INSERT INTO users (id, email, password_hash, full_name, role)
-           VALUES ($1, $2, $3, $4, 'LECTURER')
-           ON CONFLICT DO NOTHING`,
-          [newUserId, `dev_lecturer_${newUserId.slice(0, 8)}@university.edu`, "hash", "University Lecturer"],
-        );
-        effectiveUserId = newUserId;
-      }
+      throw new NotFoundException(`Course ${courseId} not found`);
+    }
 
-      await this.db.query(
-        `INSERT INTO courses (id, name, course_code, lecturer_id)
-         VALUES ($1, $2, $3, $4)
-         ON CONFLICT DO NOTHING`,
-        [courseId, "University Course", `CRS-${courseId.slice(0, 6)}`, effectiveUserId],
-      );
-    } else {
-      effectiveUserId = uploadedBy || courseRes.rows[0].lecturer_id;
+    if (courseRes.rows[0].lecturer_id !== uploadedBy) {
+      throw new ForbiddenException("You can only upload materials to your own courses");
     }
 
     const materialId = randomUUID();
@@ -107,7 +87,7 @@ export class MaterialService {
         file.mimetype,
         file.size,
         courseId,
-        effectiveUserId,
+        uploadedBy,
       ],
     );
 

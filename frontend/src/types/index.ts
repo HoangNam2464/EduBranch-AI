@@ -34,6 +34,13 @@ export interface RegisterRequest {
   role: Role;
 }
 
+export interface AuthResponse {
+  accessToken: string;
+  tokenType: string;
+  expiresIn: number;
+  user: User;
+}
+
 // ============================================================================
 // Course
 // ============================================================================
@@ -78,15 +85,24 @@ export interface Case {
   id: string;
   title: string;
   description?: string;
-  courseId: string;
-  learningMode: LearningMode;
+  courseId?: string;
+  course_id?: string;
+  courseName?: string;
+  course_name?: string;
+  learningMode?: LearningMode;
+  learning_mode?: LearningMode;
   contextText?: string;    // REVIEW_STUDY only
+  context_text?: string;
   problemText?: string;    // REVIEW_STUDY only
+  problem_text?: string;
   status: CaseStatus;
-  version: number;
+  version?: number;
   rootNodeId?: string;     // BRANCHING_STUDY only
-  createdAt: string;
-  updatedAt: string;
+  root_node_id?: string;
+  createdAt?: string;
+  created_at?: string;
+  updatedAt?: string;
+  updated_at?: string;
 }
 
 export interface CaseNode {

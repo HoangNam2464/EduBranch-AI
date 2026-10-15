@@ -5,9 +5,9 @@ import {
   Put,
   Param,
   Body,
-  Req,
   HttpCode,
   HttpStatus,
+  ForbiddenException,
 } from "@nestjs/common";
 import {
   BranchingAttemptService,
@@ -15,17 +15,18 @@ import {
   SaveReasoningDto,
   SubmitReflectionDto,
 } from "./branching-attempt.service";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
 
 /**
  * BranchingAttemptController — Flow 4: Branching Study Lifecycle
  *
  * Routes (prefixed with /api/v1):
- *   POST /api/v1/cases/:caseId/branching-attempts   (Start or retry attempt)
+ *   POST /api/v1/cases/:caseId/branching-attempts   (Start or retry attempt - Student only)
  *   GET  /api/v1/cases/:caseId/attempts             (List student attempts for case)
- *   GET  /api/v1/branching-attempts/:id             (Get attempt details & steps)
- *   POST /api/v1/branching-attempts/:id/step        (Experience phase: pick option)
+ *   GET  /api/v1/branching-attempts/:id             (Get attempt details & steps - Owner only)
+ *   POST /api/v1/branching-attempts/:id/step        (Experience phase: pick option - Owner only)
  *   PUT  /api/v1/branching-attempts/:id/reasoning   (Review phase: save retrospective reasoning)
- *   POST /api/v1/branching-attempts/:id/reflection  (Reflection submission)
+ *   POST /api/v1/branching-attempts/:id/reflection  (Reflection submission - Owner only)
  */
 @Controller()
 export class BranchingAttemptController {
@@ -35,10 +36,12 @@ export class BranchingAttemptController {
   @HttpCode(HttpStatus.CREATED)
   async startAttempt(
     @Param("caseId") caseId: string,
-    @Req() req: any,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const studentId = req.user?.id;
-    const result = await this.attemptService.startAttempt(caseId, studentId);
+    if (user.role !== "STUDENT") {
+      throw new ForbiddenException("Only students can start branching attempts");
+    }
+    const result = await this.attemptService.startAttempt(caseId, user.id);
     return {
       status: "SUCCESS",
       data: result,
@@ -48,10 +51,9 @@ export class BranchingAttemptController {
   @Get("cases/:caseId/attempts")
   async getAttemptsByCase(
     @Param("caseId") caseId: string,
-    @Req() req: any,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const studentId = req.user?.id;
-    const attempts = await this.attemptService.getAttemptsByCase(caseId, studentId);
+    const attempts = await this.attemptService.getAttemptsByCase(caseId, user.id);
     return {
       status: "SUCCESS",
       data: attempts,
@@ -61,10 +63,9 @@ export class BranchingAttemptController {
   @Get("branching-attempts/:id")
   async getAttempt(
     @Param("id") id: string,
-    @Req() req: any,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const studentId = req.user?.id;
-    const result = await this.attemptService.getAttempt(id, studentId);
+    const result = await this.attemptService.getAttempt(id, user.id);
     return {
       status: "SUCCESS",
       data: result,
@@ -75,8 +76,12 @@ export class BranchingAttemptController {
   async chooseOption(
     @Param("id") id: string,
     @Body() body: ChooseOptionDto,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const result = await this.attemptService.chooseOption(id, body);
+    if (user.role !== "STUDENT") {
+      throw new ForbiddenException("Only students can perform branching attempts");
+    }
+    const result = await this.attemptService.chooseOption(id, user.id, body);
     return {
       status: "SUCCESS",
       data: result,
@@ -87,8 +92,12 @@ export class BranchingAttemptController {
   async saveRetrospectiveReasoning(
     @Param("id") id: string,
     @Body() body: SaveReasoningDto,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const result = await this.attemptService.saveRetrospectiveReasoning(id, body);
+    if (user.role !== "STUDENT") {
+      throw new ForbiddenException("Only students can submit reasoning");
+    }
+    const result = await this.attemptService.saveRetrospectiveReasoning(id, user.id, body);
     return {
       status: "SUCCESS",
       data: result,
@@ -99,8 +108,12 @@ export class BranchingAttemptController {
   async submitReflection(
     @Param("id") id: string,
     @Body() body: SubmitReflectionDto,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const result = await this.attemptService.submitReflection(id, body);
+    if (user.role !== "STUDENT") {
+      throw new ForbiddenException("Only students can submit reflections");
+    }
+    const result = await this.attemptService.submitReflection(id, user.id, body);
     return {
       status: "SUCCESS",
       data: result,

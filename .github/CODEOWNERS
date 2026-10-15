@@ -1,0 +1,5 @@
+# EduBranch AI — Code Owners Policy
+# Quy định người chịu trách nhiệm phê duyệt Pull Request cho toàn bộ codebase
+# Mọi PR vào nhánh develop và main bắt buộc phải có sự phê duyệt của @HoangNam2464
+
+* @HoangNam2464

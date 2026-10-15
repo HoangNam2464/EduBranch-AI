@@ -6,22 +6,22 @@ import {
   Patch,
   Body,
   Param,
-  Req,
-  Query,
   HttpCode,
   HttpStatus,
+  ForbiddenException,
 } from "@nestjs/common";
 import { CaseService } from "./case.service";
+import { CurrentUser } from "../auth/decorators/current-user.decorator";
 
 /**
  * CaseController — Flow 2: AI Case Generation & Lecturer Review Lifecycle
  *
  * Routes (automatically prefixed with /api/v1):
- *   POST  /api/v1/cases/generate
- *   GET   /api/v1/courses/:courseId/cases
- *   GET   /api/v1/cases/:id
- *   PUT   /api/v1/cases/:id
- *   PATCH /api/v1/cases/:id/status
+ *   POST  /api/v1/cases/generate         (Lecturer only)
+ *   GET   /api/v1/courses/:courseId/cases (Lecturer or Student)
+ *   GET   /api/v1/cases/:id              (Lecturer: full tree; Student: published metadata only)
+ *   PUT   /api/v1/cases/:id              (Lecturer course owner only)
+ *   PATCH /api/v1/cases/:id/status       (Lecturer course owner only)
  */
 @Controller()
 export class CaseController {
@@ -37,10 +37,12 @@ export class CaseController {
       topicHint?: string;
       numNodes?: number;
     },
-    @Req() req: any,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const lecturerId = req.user?.id;
-    const result = await this.caseService.generateCase(body.courseId, lecturerId, body);
+    if (user.role !== "LECTURER") {
+      throw new ForbiddenException("Only lecturers can generate cases");
+    }
+    const result = await this.caseService.generateCase(body.courseId, user.id, body);
     return {
       status: "SUCCESS",
       data: result,
@@ -50,11 +52,9 @@ export class CaseController {
   @Get("courses/:courseId/cases")
   async getCasesByCourse(
     @Param("courseId") courseId: string,
-    @Req() req: any,
-    @Query("role") role?: string,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const userRole = role || req.user?.role;
-    const cases = await this.caseService.getCasesByCourse(courseId, userRole);
+    const cases = await this.caseService.getCasesByCourse(courseId, user.role);
     return {
       status: "SUCCESS",
       data: cases,
@@ -64,11 +64,9 @@ export class CaseController {
   @Get("cases/:id")
   async getCaseById(
     @Param("id") id: string,
-    @Req() req: any,
-    @Query("role") role?: string,
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const userRole = role || req.user?.role;
-    const caseData = await this.caseService.getCaseById(id, userRole);
+    const caseData = await this.caseService.getCaseById(id, user.role, user.id);
     return {
       status: "SUCCESS",
       data: caseData,
@@ -79,8 +77,12 @@ export class CaseController {
   async updateCase(
     @Param("id") id: string,
     @Body() body: { title?: string; description?: string; nodes?: any[] },
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const updated = await this.caseService.updateCase(id, body);
+    if (user.role !== "LECTURER") {
+      throw new ForbiddenException("Only lecturers can edit cases");
+    }
+    const updated = await this.caseService.updateCase(id, user.id, body);
     return {
       status: "SUCCESS",
       data: updated,
@@ -91,8 +93,12 @@ export class CaseController {
   async updateCaseStatus(
     @Param("id") id: string,
     @Body() body: { status: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED" },
+    @CurrentUser() user: { id: string; role: string },
   ) {
-    const result = await this.caseService.updateCaseStatus(id, body.status);
+    if (user.role !== "LECTURER") {
+      throw new ForbiddenException("Only lecturers can change case lifecycle status");
+    }
+    const result = await this.caseService.updateCaseStatus(id, user.id, body.status);
     return {
       status: "SUCCESS",
       data: result,
