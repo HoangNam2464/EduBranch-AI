@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { authService } from "../services/authService";
 import { useAuthStore } from "../stores/authStore";
 import { RegisterRequest } from "../types";
 import { Button, Alert } from "../components/ui";
+import { resolveSafeReturnUrl } from "../utils/navigation";
 
 export function RegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const login = useAuthStore((s) => s.login);
 
   const [form, setForm] = useState<RegisterRequest>({
@@ -18,6 +20,11 @@ export function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const stateFrom = (location.state as { from?: Location | string })?.from;
+  const returnUrl = stateFrom
+    ? (typeof stateFrom === "string" ? stateFrom : `${stateFrom.pathname}${stateFrom.search || ""}${stateFrom.hash || ""}`)
+    : null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -36,9 +43,8 @@ export function RegisterPage() {
     try {
       const result = await authService.register(form);
       login(result.user, result.accessToken);
-      navigate(result.user.role === "LECTURER" ? "/lecturer/courses" : "/student/cases", {
-        replace: true,
-      });
+      const destination = resolveSafeReturnUrl(returnUrl, result.user.role);
+      navigate(destination, { replace: true });
     } catch (err: any) {
       const msg = err?.response?.data?.message || "Registration failed. Please try again.";
       setError(msg);
@@ -167,7 +173,7 @@ export function RegisterPage() {
 
           <p className="mt-6 text-center text-sm text-gray-500">
             Already have an account?{" "}
-            <Link to="/login" className="font-medium text-blue-600 hover:underline">
+            <Link to="/login" state={location.state} className="font-medium text-blue-600 hover:underline">
               Sign in
             </Link>
           </p>

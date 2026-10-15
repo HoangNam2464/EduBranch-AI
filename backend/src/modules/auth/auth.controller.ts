@@ -1,16 +1,19 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { Public } from "./decorators/public.decorator";
+import { CurrentUser } from "./decorators/current-user.decorator";
 
 /**
  * AuthController — Authentication endpoints.
  *
- * All routes here are @Public() — no JWT required.
+ * Public routes:
+ *   POST /api/v1/auth/register  — Create a new Lecturer or Student account
+ *   POST /api/v1/auth/login     — Authenticate and receive JWT access token
  *
- * POST /api/v1/auth/register  — Create a new Lecturer or Student account
- * POST /api/v1/auth/login     — Authenticate and receive JWT access token
+ * Protected routes:
+ *   GET  /api/v1/auth/me        — Get current user profile (matches EBA-105 AC 3)
  */
 @Controller("auth")
 export class AuthController {
@@ -35,6 +38,15 @@ export class AuthController {
     return {
       status: "SUCCESS",
       data: result,
+    };
+  }
+
+  @Get("me")
+  async getProfile(@CurrentUser() user: { id: string; email: string; role: string }) {
+    const profile = await this.authService.validateToken({ sub: user.id } as any);
+    return {
+      status: "SUCCESS",
+      data: profile,
     };
   }
 }

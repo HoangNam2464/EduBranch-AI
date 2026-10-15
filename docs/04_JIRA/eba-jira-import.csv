@@ -1,0 +1,673 @@
+﻿Summary,Issue Type,Description,Priority,Story Points,Sprint,Master Task ID,Group Task ID,Dependency,Status,Acceptance Criteria
+"[DES-001] Information Architecture for Lecturer, Student & Dual Learning Modes",Task,"Role: DES
+
+Thực hiện công việc [[DES-001] Information Architecture for Lecturer, Student & Dual Learning Modes] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-101
+Group Task ID: DES-001
+Dependency: None",Highest,3,Sprint 1,EBA-101,DES-001,None,DONE,1. Tách rõ Lecturer Portal và Student Portal. 2. Có navigation riêng cho Branching Study và Review Study. 3. Được FE/BE review và phê duyệt.
+"[DES-002] Shared Design States: Loading, Empty, Error & Permissions",Task,"Role: DES
+
+Thực hiện công việc [[DES-002] Shared Design States: Loading, Empty, Error & Permissions] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-102
+Group Task ID: DES-002
+Dependency: is blocked by Master Task EBA-101",High,5,Sprint 1,EBA-102,DES-002,is blocked by Master Task EBA-101,DONE,"1. Thiết kế đầy đủ loading, empty, error, 403 và processing states. 2. Token màu sắc, typography dùng thống nhất theo Design System."
+"[FE-001] Harden authStore, API Client, Route Guards & Session Expiration",Task,"Role: FE
+
+Thực hiện công việc [[FE-001] Harden authStore, API Client, Route Guards & Session Expiration] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-103
+Group Task ID: FE-001
+Dependency: is blocked by Master Task EBA-101",Highest,5,Sprint 1,EBA-103,FE-001,is blocked by Master Task EBA-101,DONE,1. authStore khôi phục session an toàn qua persist middleware. 2. apiClient tự động intercept 401 và gọi refresh token hoặc logout. 3. PrivateRoute chặn truy cập chéo giữa STUDENT và LECTURER.
+"[FE-002] Align Login, Register & Portal Layouts with Permission Matrix",Task,"Role: FE
+
+Thực hiện công việc [[FE-002] Align Login, Register & Portal Layouts with Permission Matrix] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-104
+Group Task ID: FE-002
+Dependency: is blocked by Master Task EBA-102, EBA-103",High,3,Sprint 1,EBA-104,FE-002,"is blocked by Master Task EBA-102, EBA-103",IN PROGRESS,"1. Form validation và submitting states đầy đủ trên LoginPage và RegisterPage. 2. Portal layouts (LecturerLayout, StudentLayout) render đúng vai trò người dùng đại học; sinh viên không thấy các nút tác vụ của giảng viên. 3. Tích hợp màn hình danh sách khóa học (CoursesPage.tsx) hiển thị danh sách khóa học của giảng viên, hỗ trợ Empty State khi chưa có khóa học và modal tạo khóa học mới với client-side validation. 4. Cấu hình 404 Route Catch-All (path: ""*"") trong React Router để bắt mọi URL không tồn tại và hiển thị giao diện 404 Not Found thân thiện kèm nút quay về portal. 5. Thiết lập React Router Error Boundary (errorElement) trên root/layout routes để cô lập các ngoại lệ runtime render hoặc lỗi điều hướng, hiển thị fallback UI an toàn thay vì blank white screen."
+"[BE-001] Implement User Registration, Login & JWT Token Management",Task,"Role: BE
+
+Thực hiện công việc [[BE-001] Implement User Registration, Login & JWT Token Management] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-105
+Group Task ID: BE-001
+Dependency: None",Highest,5,Sprint 1,EBA-105,BE-001,None,DONE,1. API POST /api/v1/auth/register mã hóa BCrypt (12 rounds) và lưu trữ user role. 2. API POST /api/v1/auth/login xác thực credentials và cấp JWT access token (8h). 3. API GET /api/v1/auth/me trả về profile của người dùng đang đăng nhập.
+"[BE-002] Implement Global JwtAuthGuard, Public Route Decorator & Role Enforcement Guard",Task,"Role: BE
+
+Thực hiện công việc [[BE-002] Implement Global JwtAuthGuard, Public Route Decorator & Role Enforcement Guard] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-106
+Group Task ID: BE-002
+Dependency: is blocked by Master Task EBA-105",Highest,5,Sprint 1,EBA-106,BE-002,is blocked by Master Task EBA-105,IN PROGRESS,"1. JwtAuthGuard bảo vệ toàn bộ route mặc định. 2. Decorator @Public() cho phép bỏ qua xác thực trên các route công khai. 3. Đóng gói RolesGuard và decorator @Roles() kiểm tra role thay thế kiểm tra thủ công. 4. Tích hợp cơ chế kiểm soát tần suất truy cập tối thiểu (In-memory Rate Limiting / Throttler) trên các endpoint xác thực nhạy cảm (POST /api/v1/auth/login, POST /api/v1/auth/register) với ngưỡng cấu hình linh hoạt; kiểm thử tự động chứng minh khi vượt ngưỡng giới hạn, hệ thống trả về đúng mã lỗi HTTP 429 Too Many Requests nhằm ngăn chặn brute-force/dò quét cơ bản trong phạm vi Pilot."
+[BE-003] User Profile & Course Management Foundation with Lecturer Ownership Gates,Task,"Role: BE
+
+Thực hiện công việc [[BE-003] User Profile & Course Management Foundation with Lecturer Ownership Gates] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-107
+Group Task ID: BE-003
+Dependency: is blocked by Master Task EBA-105, EBA-106",Highest,5,Sprint 1,EBA-107,BE-003,"is blocked by Master Task EBA-105, EBA-106",DONE,1. CRUD API cho Course (/api/v1/courses) kiểm tra chính xác quyền sở hữu của lecturer_id. 2. Không có fallback user/course giả lập trong logic production. 3. Giảng viên chỉ xem và quản lý các khóa học do chính mình tạo.
+"[OPS-001] PostgreSQL Migration Runner, Environment Validation & Health Checks",Task,"Role: OPS
+
+Thực hiện công việc [[OPS-001] PostgreSQL Migration Runner, Environment Validation & Health Checks] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-108
+Group Task ID: OPS-001
+Dependency: None",High,3,Sprint 1,EBA-108,OPS-001,None,DONE,"1. Migration chạy mượt mà trên PostgreSQL 16 và kích hoạt extension pgvector. 2. Health check endpoint (/api/v1/health) kiểm tra DB và Redis. 3. Server dừng khởi động và báo lỗi nếu thiếu các biến môi trường bắt buộc (.env). 4. Sử dụng cơ chế khóa PostgreSQL Advisory Lock với cặp khóa số nguyên 32-bit pg_advisory_lock(key1, key2) (0x45445542, 0x52414e43 tạo không gian định danh kết hợp 64-bit) để tuần tự hóa việc chạy migration, ngăn chặn race condition khi nhiều instance khởi động đồng thời (đã xác minh qua Unit test mô phỏng; kiểm thử tích hợp thực tế đa instance thuộc phạm vi hạ tầng). 5. Tính toán và kiểm chứng Checksum SHA-256 cho từng file migration để bảo toàn tính toàn vẹn và ngăn chặn sửa đổi mã SQL lịch sử đã áp dụng."
+"[QA-001] Test Matrix for Auth, Course & Permissions",Task,"Role: QA
+
+Thực hiện công việc [[QA-001] Test Matrix for Auth, Course & Permissions] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-109
+Group Task ID: QA-001
+Dependency: is blocked by Master Task EBA-105, EBA-107",High,3,Sprint 1,EBA-109,QA-001,"is blocked by Master Task EBA-105, EBA-107",IN PROGRESS,"1. Ma trận kiểm thử bao phủ toàn bộ Auth, Role RBAC và Course Ownership. 2. Có case positive và negative cho cả hai role LECTURER và STUDENT. 3. Bổ sung bộ kiểm thử dự phòng điều hướng cho FE-002: xác nhận URL không khớp (path: ""*"") điều hướng hiển thị NotFoundPage và cho phép quay về portal phù hợp; xác nhận lỗi route/render được xử lý bởi errorElement, hiển thị fallback UI an toàn thay vì màn hình trắng (blank screen)."
+"[QA-002] Token Expiry, Role Denial & Ownership Leak Regression Suite",Task,"Role: QA
+
+Thực hiện công việc [[QA-002] Token Expiry, Role Denial & Ownership Leak Regression Suite] thuộc phân hệ Foundation trong khuôn khổ Sprint 1 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-110
+Group Task ID: QA-002
+Dependency: is blocked by Master Task EBA-103, EBA-106, EBA-107",Highest,5,Sprint 1,EBA-110,QA-002,"is blocked by Master Task EBA-103, EBA-106, EBA-107",TO DO,1. Token hết hạn hoặc sai chữ ký bị chặn lập tức với HTTP 401. 2. Truy cập tài nguyên của user khác bị từ chối với HTTP 403. 3. Có test evidence và log kiểm thử tự động.
+[DES-003] Material Library & Upload Interaction Flow Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-003] Material Library & Upload Interaction Flow Design] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-201
+Group Task ID: DES-003
+Dependency: is blocked by Master Task EBA-102",Highest,3,Sprint 2,EBA-201,DES-003,is blocked by Master Task EBA-102,TO DO,1. Thiết kế modal tải lên tài liệu hỗ trợ Drag-and-Drop cho định dạng PDF và DOCX. 2. Thiết kế bảng danh sách tài liệu hiển thị metadata và thanh tìm kiếm/lọc.
+"[DES-004] Material Processing, Progress Bar & Failure Recovery States",Task,"Role: DES
+
+Thực hiện công việc [[DES-004] Material Processing, Progress Bar & Failure Recovery States] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-202
+Group Task ID: DES-004
+Dependency: is blocked by Master Task EBA-201",High,3,Sprint 2,EBA-202,DES-004,is blocked by Master Task EBA-201,TO DO,"1. Thiết kế các trạng thái tiến độ: Pending, Processing (Parsing/Embedding), Completed, Failed. 2. Thiết kế thông báo lỗi và nút bấm Retry khi xử lý tài liệu thất bại."
+[DES-005] RAG Grounding Evidence & Source Inspection UI Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-005] RAG Grounding Evidence & Source Inspection UI Design] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-203
+Group Task ID: DES-005
+Dependency: is blocked by Master Task EBA-201",High,3,Sprint 2,EBA-203,DES-005,is blocked by Master Task EBA-201,TO DO,"1. Thiết kế modal/drawer hiển thị các đoạn văn bản trích dẫn nguồn (evidence chunks) đã retrieval. 2. Tuyệt đối không để lộ thông tin nhạy cảm (API keys, system prompt, internal ID)."
+[FE-003] Implement Material Upload Modal with Client-Side Validation,Story,"Role: FE
+
+Thực hiện công việc [[FE-003] Implement Material Upload Modal with Client-Side Validation] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-204
+Group Task ID: FE-003
+Dependency: is blocked by Master Task EBA-201, EBA-107",Highest,3,Sprint 2,EBA-204,FE-003,"is blocked by Master Task EBA-201, EBA-107",TO DO,1. Hỗ trợ chọn hoặc kéo thả tệp định dạng .pdf hoặc .docx. 2. Validate kích thước tệp tối đa 50MB và MIME type ngay tại client trước khi upload. 3. Hiển thị thanh phần trăm tiến độ upload khi gửi tới API.
+[FE-004] Implement Materials Table with Metadata & Processing Status Indicators,Story,"Role: FE
+
+Thực hiện công việc [[FE-004] Implement Materials Table with Metadata & Processing Status Indicators] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-205
+Group Task ID: FE-004
+Dependency: is blocked by Master Task EBA-202, EBA-204",Highest,5,Sprint 2,EBA-205,FE-004,"is blocked by Master Task EBA-202, EBA-204",IN PROGRESS,"1. Hiển thị danh sách tài liệu của khóa học với tên file, định dạng (PDF/DOCX), kích thước, số lượng chunks và ngày tải lên. 2. Hiển thị badge trạng thái động (Pending, Processing, Completed, Failed) theo processing_status; tự động polling hoặc cập nhật trạng thái khi tài liệu đang xử lý. 3. Cung cấp bộ lọc client-side cho danh sách tài liệu theo trạng thái xử lý (PENDING, PROCESSING, COMPLETED, FAILED) và theo định dạng tệp (PDF, DOCX) phù hợp với quy mô Pilot học phần (<50 tài liệu)."
+[FE-005] Implement Material Delete & Failure Retry Actions with API Integration,Task,"Role: FE
+
+Thực hiện công việc [[FE-005] Implement Material Delete & Failure Retry Actions with API Integration] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-206
+Group Task ID: FE-005
+Dependency: is blocked by Master Task EBA-205",High,3,Sprint 2,EBA-206,FE-005,is blocked by Master Task EBA-205,TO DO,1. Kết nối nút xóa tài liệu với API DELETE /api/v1/courses/:courseId/materials/:id kèm dialog xác nhận. 2. Cung cấp nút Retry gọi API xử lý lại đối với tài liệu có trạng thái FAILED. 3. Hiển thị thông báo toast thành công hoặc lỗi tương ứng.
+[FE-006] Implement RAG Source Chunk Viewer Modal for Grounded Evidence,Task,"Role: FE
+
+Thực hiện công việc [[FE-006] Implement RAG Source Chunk Viewer Modal for Grounded Evidence] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-207
+Group Task ID: FE-006
+Dependency: is blocked by Master Task EBA-203",High,3,Sprint 2,EBA-207,FE-006,is blocked by Master Task EBA-203,TO DO,1. Hiển thị modal xem chi tiết các chunk văn bản trích dẫn kèm số trang/chỉ số đoạn. 2. Cho phép giảng viên đối chiếu nguồn tài liệu gốc khi chuẩn bị tạo case study.
+[BE-005] Implement Material CRUD & Ownership Authorization Gates,Story,"Role: BE
+
+Thực hiện công việc [[BE-005] Implement Material CRUD & Ownership Authorization Gates] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-208
+Group Task ID: BE-005
+Dependency: is blocked by Master Task EBA-107",Highest,3,Sprint 2,EBA-208,BE-005,is blocked by Master Task EBA-107,IN PROGRESS,"1. Quản lý bản ghi trong teaching_materials (tên, dung lượng, MIME type, status). 2. Kiểm tra quyền sở hữu của Course tại Backend Gateway; chỉ owner mới được upload và xóa tài liệu. 3. Bắt buộc kiểm tra quyền sở hữu khóa học trên toàn bộ các route đọc (GET /api/v1/courses/:courseId/materials và GET /api/v1/materials/:id) để ngăn chặn lỗ hổng IDOR giữa các giảng viên. 4. Trả về đúng mã lỗi 403 Forbidden nếu truy cập tài liệu khóa học của giảng viên khác."
+[OPS-002] Implement MinIO Storage Service with Secure Object Key Naming,Task,"Role: OPS
+
+Thực hiện công việc [[OPS-002] Implement MinIO Storage Service with Secure Object Key Naming] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-209
+Group Task ID: OPS-002
+Dependency: is blocked by Master Task EBA-208",Highest,3,Sprint 2,EBA-209,OPS-002,is blocked by Master Task EBA-208,IN PROGRESS,1. Lưu trữ file an toàn trong bucket edubranch-materials trên MinIO. 2. Sử dụng object key dạng UUID không thể đoán trước (non-guessable keys). 3. Hỗ trợ streaming file upload và dọn dẹp file an toàn khi bị xóa.
+[BE-007] Implement PDF Document Parser with Text Extraction & Normalization,Task,"Role: BE
+
+Thực hiện công việc [[BE-007] Implement PDF Document Parser with Text Extraction & Normalization] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-210
+Group Task ID: BE-007
+Dependency: is blocked by Master Task EBA-209",Highest,5,Sprint 2,EBA-210,BE-007,is blocked by Master Task EBA-209,IN PROGRESS,"1. Trích xuất văn bản từ tệp PDF nhiều trang tại ai-service/app/ingestion/parser.py. 2. Làm sạch khoảng trắng thừa, ký tự điều khiển và chuẩn hóa định dạng UTF-8. 3. Bắt ngoại lệ và gán trạng thái FAILED nếu file PDF bị hỏng hoặc mã hóa mật khẩu."
+[BE-008] Implement DOCX Document Parser with Text Extraction & Normalization,Task,"Role: BE
+
+Thực hiện công việc [[BE-008] Implement DOCX Document Parser with Text Extraction & Normalization] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-211
+Group Task ID: BE-008
+Dependency: is blocked by Master Task EBA-209",Highest,3,Sprint 2,EBA-211,BE-008,is blocked by Master Task EBA-209,IN PROGRESS,1. Trích xuất văn bản từ tệp DOCX qua python-docx tại app/ingestion/parser.py. 2. Giữ nguyên cấu trúc phân đoạn văn bản và tiêu đề. 3. Bắt lỗi đối với định dạng docx rỗng hoặc không hợp lệ.
+[BE-009] Implement Recursive Document Chunking Pipeline,Task,"Role: BE
+
+Thực hiện công việc [[BE-009] Implement Recursive Document Chunking Pipeline] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-212
+Group Task ID: BE-009
+Dependency: is blocked by Master Task EBA-210, EBA-211",Highest,3,Sprint 2,EBA-212,BE-009,"is blocked by Master Task EBA-210, EBA-211",IN PROGRESS,1. Chia nhỏ văn bản thành các chunk kích thước 500-1000 tokens với overlap 100 tokens. 2. Bảo toàn ranh giới câu và đoạn văn qua RecursiveCharacterTextSplitter. 3. Gắn chỉ số tuần tự chunk_index và metadata tài liệu cho từng chunk.
+[BE-010] Implement Vector Embedding Generation via Provider Abstraction,Task,"Role: BE
+
+Thực hiện công việc [[BE-010] Implement Vector Embedding Generation via Provider Abstraction] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-213
+Group Task ID: BE-010
+Dependency: is blocked by Master Task EBA-212",Highest,5,Sprint 2,EBA-213,BE-010,is blocked by Master Task EBA-212,IN PROGRESS,1. Sinh vector embeddings qua Gemini text-embedding-004 (768-dim) hoặc OpenAI (1536-dim). 2. Gọi mô hình thông qua Provider Abstraction Interface. 3. Xử lý batching embeddings để tối ưu hóa thời gian và tránh rate limit.
+[OPS-003] Implement Document Chunks Persistence & HNSW Vector Indexing,Task,"Role: OPS
+
+Thực hiện công việc [[OPS-003] Implement Document Chunks Persistence & HNSW Vector Indexing] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-214
+Group Task ID: OPS-003
+Dependency: is blocked by Master Task EBA-213",Highest,5,Sprint 2,EBA-214,OPS-003,is blocked by Master Task EBA-213,IN PROGRESS,1. Lưu trữ các chunk và vector vào bảng document_chunks trong PostgreSQL. 2. Xây dựng và duy trì chỉ mục HNSW vector_cosine_ops để tìm kiếm tương đồng nhanh. 3. Đảm bảo ràng buộc khóa ngoại và CASCADE khi tài liệu bị xóa.
+[BE-012] Implement Grounded Vector Retrieval with Course Isolation & <sources> Wrapping,Task,"Role: BE
+
+Thực hiện công việc [[BE-012] Implement Grounded Vector Retrieval with Course Isolation & <sources> Wrapping] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-215
+Group Task ID: BE-012
+Dependency: is blocked by Master Task EBA-214",Highest,5,Sprint 2,EBA-215,BE-012,is blocked by Master Task EBA-214,IN PROGRESS,1. API POST /internal/v1/retrieval/query tìm kiếm vector tương đồng cosine. 2. Lọc bắt buộc theo course_id để cô lập dữ liệu theo quyền sở hữu khóa học. 3. Đánh dấu rõ nội dung tài liệu trích xuất là untrusted context bên trong khối <sources>...</sources> để LLM phân biệt với system instruction.
+[BE-013] Fix Material Controller Spec Mock Data for Ownership Regression,Bug,"Role: BE
+
+Thực hiện công việc [[BE-013] Fix Material Controller Spec Mock Data for Ownership Regression] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-216
+Group Task ID: BE-013
+Dependency: is blocked by Master Task EBA-208",High,2,Sprint 2,EBA-216,BE-013,is blocked by Master Task EBA-208,IN PROGRESS,1. Cập nhật mock dữ liệu trong material.controller.spec.ts để khớp đúng lecturer_id người tạo. 2. Đảm bảo toàn bộ 4 test suite trong backend chạy vượt qua (PASS).
+"[QA-003] Test Suite for Material Upload Validation, File Types & Size Bounds",Task,"Role: QA
+
+Thực hiện công việc [[QA-003] Test Suite for Material Upload Validation, File Types & Size Bounds] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-217
+Group Task ID: QA-003
+Dependency: is blocked by Master Task EBA-204, EBA-208",High,3,Sprint 2,EBA-217,QA-003,"is blocked by Master Task EBA-204, EBA-208",TO DO,"1. Kiểm thử thành công upload file PDF và DOCX hợp lệ. 2. Kiểm thử từ chối các file sai MIME type, file dung lượng >50MB. 3. Kiểm thử xử lý lỗi mạng và hiển thị trạng thái retry."
+[QA-004] Security & Authorization Tests for Material Storage & Tenant Isolation,Task,"Role: QA
+
+Thực hiện công việc [[QA-004] Security & Authorization Tests for Material Storage & Tenant Isolation] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-218
+Group Task ID: QA-004
+Dependency: is blocked by Master Task EBA-208, EBA-209",Highest,5,Sprint 2,EBA-218,QA-004,"is blocked by Master Task EBA-208, EBA-209",TO DO,"1. Kiểm thử Lecturer B không thể đọc, tải hoặc xóa tài liệu của Lecturer A. 2. Kiểm thử không thể đoán được URL/key tài liệu trên MinIO. 3. Kiểm thử tính toàn vẹn khi xóa khóa học thì tài liệu liên quan bị xóa an toàn."
+[QA-005] Integration Test Suite for End-to-End Ingestion Pipeline (Upload to pgvector),Task,"Role: QA
+
+Thực hiện công việc [[QA-005] Integration Test Suite for End-to-End Ingestion Pipeline (Upload to pgvector)] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-219
+Group Task ID: QA-005
+Dependency: is blocked by Master Task EBA-214",Highest,5,Sprint 2,EBA-219,QA-005,is blocked by Master Task EBA-214,TO DO,1. Kiểm thử tự động xuyên suốt: Upload file → MinIO → Parsing → Chunking → Embeddings lưu vào pgvector. 2. Kiểm thử khả năng phục hồi khi file rỗng hoặc chứa ký tự đặc biệt.
+[QA-006] Vector Retrieval Relevance & Prompt Injection Boundary Testing,Task,"Role: QA
+
+Thực hiện công việc [[QA-006] Vector Retrieval Relevance & Prompt Injection Boundary Testing] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-220
+Group Task ID: QA-006
+Dependency: is blocked by Master Task EBA-215",Highest,5,Sprint 2,EBA-220,QA-006,is blocked by Master Task EBA-215,TO DO,1. Kiểm thử độ chính xác truy xuất RAG theo cosine similarity. 2. Kiểm thử cô lập dữ liệu nghiêm ngặt giữa các course_id. 3. Kiểm thử ranh giới ngữ cảnh untrusted trong <sources>: đảm bảo generation prompt chỉ dẫn LLM coi tài liệu là tham khảo thuần túy và không thực thi chỉ thị độc hại bên trong nguồn.
+[DES-006] Case Generation Modal & Parameter Configuration Flow Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-006] Case Generation Modal & Parameter Configuration Flow Design] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-301
+Group Task ID: DES-006
+Dependency: is blocked by Master Task EBA-203",Highest,3,Sprint 3,EBA-301,DES-006,is blocked by Master Task EBA-203,TO DO,"1. Thiết kế picker chọn tài liệu tham khảo trong khóa học. 2. Thiết kế trường nhập chủ đề gợi ý (topic hint), số lượng node mong muốn và chọn chế độ học. 3. Thiết kế trạng thái spinner đang tạo case kèm thông báo tiến độ."
+[DES-007] ReactFlow Decision Tree Visualization & Topology Layout Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-007] ReactFlow Decision Tree Visualization & Topology Layout Design] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-302
+Group Task ID: DES-007
+Dependency: is blocked by Master Task EBA-301",Highest,5,Sprint 3,EBA-302,DES-007,is blocked by Master Task EBA-301,TO DO,"1. Thiết kế trực quan sơ đồ cây trên canvas ReactFlow (Root node, Decision node, Terminal node). 2. Thiết kế màu sắc, icon phân biệt các nhánh và đường nối (edges) thể hiện lựa chọn. 3. Hỗ trợ thao tác zoom, pan và căn chỉnh tự động cây quyết định."
+[DES-008] Side-by-Side Node & Option Form Editor UX Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-008] Side-by-Side Node & Option Form Editor UX Design] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-303
+Group Task ID: DES-008
+Dependency: is blocked by Master Task EBA-302",Highest,3,Sprint 3,EBA-303,DES-008,is blocked by Master Task EBA-302,TO DO,"1. Thiết kế drawer/panel bên phải để xem và chỉnh sửa chi tiết từng node khi click trên canvas. 2. Thiết kế các trường chỉnh sửa: Situation text, Option text, Consequence explanation. 3. Thiết kế nút lưu thay đổi và hiển thị tức thì trên sơ đồ cây."
+[DES-009] Case Governance Lifecycle Action Bar & Approval Status Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-009] Case Governance Lifecycle Action Bar & Approval Status Design] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-304
+Group Task ID: DES-009
+Dependency: is blocked by Master Task EBA-302",Highest,3,Sprint 3,EBA-304,DES-009,is blocked by Master Task EBA-302,TO DO,"1. Thiết kế thanh công cụ hiển thị trạng thái hiện tại (DRAFT, REVIEWED, APPROVED, PUBLISHED). 2. Thiết kế các nút hành động chuyển trạng thái có điều kiện (Mark as Reviewed, Approve, Publish). 3. Thiết kế hộp thoại xác nhận xuất bản kèm link chia sẻ cho sinh viên."
+[FE-007] Implement Case Generation Trigger Modal & Progress Tracking,Story,"Role: FE
+
+Thực hiện công việc [[FE-007] Implement Case Generation Trigger Modal & Progress Tracking] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-305
+Group Task ID: FE-007
+Dependency: is blocked by Master Task EBA-301, EBA-205",Highest,3,Sprint 3,EBA-305,FE-007,"is blocked by Master Task EBA-301, EBA-205",TO DO,"1. Xây dựng trang danh mục tình huống (CasesPage.tsx) tại đường dẫn /lecturer/courses/:courseId/cases, hiển thị danh sách case kèm badge trạng thái vòng đời (DRAFT, REVIEWED, APPROVED, PUBLISHED) và chế độ học (BRANCHING_STUDY, REVIEW_STUDY). 2. Hỗ trợ Empty State chuyên dụng khi khóa học chưa có tình huống nào, hướng dẫn giảng viên khởi tạo ca học và có nút kích hoạt Modal sinh case. 3. Điều hướng chính xác từ từng card case trong danh sách tới màn hình biên tập/phê duyệt cây quyết định (/lecturer/cases/:caseId/review), và nút liên kết nhanh tới màn hình quản lý tài liệu học phần (/lecturer/courses/:courseId/materials). 4. Modal sinh case AI (CaseGenerationModal.tsx hoặc embedded trong CasesPage) cho phép chọn tài liệu học phần đã ingestion (COMPLETED), nhập gợi ý chủ đề (topic hint), tùy chỉnh số lượng node rẽ nhánh, hiển thị loading spinner khi gọi API POST /cases/generate, và tự động điều hướng sang CaseReviewPage khi tạo bản nháp thành công."
+[FE-008] Implement ReactFlow Decision Tree Visual Canvas Component,Story,"Role: FE
+
+Thực hiện công việc [[FE-008] Implement ReactFlow Decision Tree Visual Canvas Component] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-306
+Group Task ID: FE-008
+Dependency: is blocked by Master Task EBA-302, EBA-305",Highest,5,Sprint 3,EBA-306,FE-008,"is blocked by Master Task EBA-302, EBA-305",IN PROGRESS,1. Tích hợp ReactFlow hiển thị topo cây quyết định với custom nodes và edges. 2. Đánh dấu nổi bật Root Node và các Terminal Nodes. 3. Xử lý sự kiện click vào node để kích hoạt form chỉnh sửa chi tiết.
+"[FE-009] Implement Interactive Node, Option & Consequence Editor Form",Story,"Role: FE
+
+Thực hiện công việc [[FE-009] Implement Interactive Node, Option & Consequence Editor Form] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-307
+Group Task ID: FE-009
+Dependency: is blocked by Master Task EBA-303, EBA-306",Highest,5,Sprint 3,EBA-307,FE-009,"is blocked by Master Task EBA-303, EBA-306",TO DO,"1. Form cho phép giảng viên biên tập tình huống (situation), nội dung phương án và hệ quả. 2. Gọi API PUT /api/v1/cases/:id/nodes/:nodeId để lưu thay đổi. 3. Cập nhật ngay nhãn trên canvas sau khi lưu mà không cần reload trang."
+[FE-010] Implement Graph Mutation Capabilities (Add/Remove Node & Option Re-linking),Story,"Role: FE
+
+Thực hiện công việc [[FE-010] Implement Graph Mutation Capabilities (Add/Remove Node & Option Re-linking)] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-308
+Group Task ID: FE-010
+Dependency: is blocked by Master Task EBA-307",High,5,Sprint 3,EBA-308,FE-010,is blocked by Master Task EBA-307,TO DO,1. Cho phép thêm phương án lựa chọn mới cho một node. 2. Cho phép kéo thả nối cạnh (edge) sang node mục tiêu tiếp theo hoặc tạo node mới. 3. Chặn các thao tác tạo chu trình hoặc ngắt kết nối khỏi Root Node.
+[FE-011] Implement Case Approval State Transition Workflow UI,Story,"Role: FE
+
+Thực hiện công việc [[FE-011] Implement Case Approval State Transition Workflow UI] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-309
+Group Task ID: FE-011
+Dependency: is blocked by Master Task EBA-304, EBA-307",Highest,3,Sprint 3,EBA-309,FE-011,"is blocked by Master Task EBA-304, EBA-307",TO DO,"1. Giao diện chuyển đổi trạng thái: DRAFT → REVIEWED → APPROVED → PUBLISHED. 2. Ẩn nút Publish nếu cây chưa có ít nhất 1 Terminal node hoặc Root node không hợp lệ. 3. Khi PUBLISHED, hiển thị modal sao chép đường link trực tiếp cấp cho sinh viên."
+[BE-014] Implement Pydantic Decision Tree Schema & DFS Graph Cycle Validator,Task,"Role: BE
+
+Thực hiện công việc [[BE-014] Implement Pydantic Decision Tree Schema & DFS Graph Cycle Validator] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-310
+Group Task ID: BE-014
+Dependency: is blocked by Master Task EBA-215",Highest,5,Sprint 3,EBA-310,BE-014,is blocked by Master Task EBA-215,IN PROGRESS,"1. Định nghĩa CaseGenerationOutput, CaseNode, CaseOption Pydantic schemas tại app/generation/schemas/decision_tree.py. 2. Thuật toán DFS 3 màu phát hiện và từ chối tuyệt đối cây có chu trình (cycles). 3. Xác thực không có nút mồ côi (unreachable nodes) và có ít nhất 1 terminal path."
+[BE-015] Implement AI Case Generation Service with Grounded Syllabus Prompting,Task,"Role: BE
+
+Thực hiện công việc [[BE-015] Implement AI Case Generation Service with Grounded Syllabus Prompting] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-311
+Group Task ID: BE-015
+Dependency: is blocked by Master Task EBA-310",Highest,5,Sprint 3,EBA-311,BE-015,is blocked by Master Task EBA-310,IN PROGRESS,"1. Xây dựng prompt có cấu trúc tích hợp ngữ cảnh RAG từ <sources> tài liệu của giảng viên. 2. Yêu cầu LLM trả về Structured Output JSON tuân thủ đúng schema cây quyết định. 3. Tự động retry gọi LLM nếu kết quả sinh ra vi phạm ràng buộc đồ thị. 4. Thiết lập cơ chế giới hạn thời gian chờ (HTTP Timeout thực thi trong đường gọi dịch vụ, cấu hình linh hoạt qua biến môi trường, đề xuất ban đầu 30s–60s) và giới hạn tối đa 3 lần gọi tổng cộng (1 lần gọi ban đầu + tối đa 2 lần retry đối với các lỗi mạng/quá tải tạm thời như 429, 503, timeout; không retry đối với lỗi 4xx client). Bảo đảm tính idempotency (tính lũy đẳng): Các lần retry của cùng một yêu cầu phải sử dụng định danh ổn định hoặc cơ chế chống trùng tương đương, tránh tạo nhiều case hoặc lưu cùng một kết quả nhiều lần, kể cả khi lần gọi trước đã được xử lý nhưng phản hồi bị timeout; nếu thất bại hoàn toàn, hệ thống kết thúc có kiểm soát (graceful failure) và ghi log lỗi rõ ràng."
+[BE-016] Implement Multi-Table Decision Tree Persistence with Transaction Rollback,Story,"Role: BE
+
+Thực hiện công việc [[BE-016] Implement Multi-Table Decision Tree Persistence with Transaction Rollback] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-312
+Group Task ID: BE-016
+Dependency: is blocked by Master Task EBA-311",Highest,5,Sprint 3,EBA-312,BE-016,is blocked by Master Task EBA-311,IN PROGRESS,"1. Lưu bản nháp vào cases, case_nodes, case_options trong 1 Database Transaction duy nhất. 2. Ánh xạ chính xác node_index tạm thời sang UUID và cập nhật root_node_id. 3. Thực hiện ROLLBACK ngay lập tức nếu bất kỳ bước lưu node/option nào thất bại."
+[BE-017] Implement Case Node & Option CRUD APIs with Topology Integrity Check,Story,"Role: BE
+
+Thực hiện công việc [[BE-017] Implement Case Node & Option CRUD APIs with Topology Integrity Check] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-313
+Group Task ID: BE-017
+Dependency: is blocked by Master Task EBA-312",Highest,5,Sprint 3,EBA-313,BE-017,is blocked by Master Task EBA-312,IN PROGRESS,1. API PUT /api/v1/cases/:id/nodes/:nodeId cập nhật tình huống và danh sách options mà không tự ý thay đổi lifecycle state của case. 2. Kiểm tra tính toàn vẹn tô pô (DFS cycle check) trước khi persistence để đảm bảo không tạo chu trình. 3. Case giữ nguyên trạng thái DRAFT cho đến khi giảng viên thực hiện action Review riêng biệt (do EBA-314 quản lý).
+[BE-018] Implement Case Lifecycle State Machine Enforcement (DRAFT to PUBLISHED),Story,"Role: BE
+
+Thực hiện công việc [[BE-018] Implement Case Lifecycle State Machine Enforcement (DRAFT to PUBLISHED)] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-314
+Group Task ID: BE-018
+Dependency: is blocked by Master Task EBA-313",Highest,5,Sprint 3,EBA-314,BE-018,is blocked by Master Task EBA-313,IN PROGRESS,1. API PATCH /api/v1/cases/:id/status thực thi cỗ máy trạng thái DRAFT → REVIEWED → APPROVED → PUBLISHED. 2. Ngăn chặn các bước nhảy trạng thái trái phép (ví dụ DRAFT nhảy thẳng lên PUBLISHED). 3. Chỉ giảng viên sở hữu khóa học mới có quyền thực hiện chuyển đổi trạng thái.
+[BE-019] Implement Database-Level Student Access Gate for Published-Only Cases,Task,"Role: BE
+
+Thực hiện công việc [[BE-019] Implement Database-Level Student Access Gate for Published-Only Cases] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-315
+Group Task ID: BE-019
+Dependency: is blocked by Master Task EBA-314",Highest,3,Sprint 3,EBA-315,BE-019,is blocked by Master Task EBA-314,IN PROGRESS,"1. Query kiểm tra trạng thái case ở tầng DB: sinh viên chỉ được đọc case khi status = 'PUBLISHED'. 2. Mọi truy vấn case DRAFT, REVIEWED, APPROVED từ role STUDENT đều bị chặn với HTTP 403. 3. Loại bỏ hoàn toàn nguy cơ rò rỉ đề bài chưa duyệt qua API."
+[QA-007] Contract & Schema Validation Tests for AI Case Generation Output,Task,"Role: QA
+
+Thực hiện công việc [[QA-007] Contract & Schema Validation Tests for AI Case Generation Output] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-316
+Group Task ID: QA-007
+Dependency: is blocked by Master Task EBA-310, EBA-311",High,3,Sprint 3,EBA-316,QA-007,"is blocked by Master Task EBA-310, EBA-311",TO DO,1. Kiểm thử định dạng JSON sinh ra từ AI Service với các bộ dữ liệu tài liệu mẫu. 2. Kiểm thử khả năng phục hồi và từ chối khi mô hình trả về JSON sai cấu trúc.
+[QA-008] Graph Theory Validation Test Suite for Decision Tree Invariants,Task,"Role: QA
+
+Thực hiện công việc [[QA-008] Graph Theory Validation Test Suite for Decision Tree Invariants] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-317
+Group Task ID: QA-008
+Dependency: is blocked by Master Task EBA-310, EBA-313",Highest,5,Sprint 3,EBA-317,QA-008,"is blocked by Master Task EBA-310, EBA-313",TO DO,1. Kiểm thử phát hiện chu trình (cycle detection) với các ca kiểm thử đồ thị phức tạp. 2. Kiểm thử phát hiện nút mồ côi (orphan nodes) và thiếu đường đi đến terminal node. 3. Kiểm thử tính bất biến của cây quyết định khi chỉnh sửa qua API.
+[QA-009] State Machine & Lifecycle Transition Boundary Test Suite,Task,"Role: QA
+
+Thực hiện công việc [[QA-009] State Machine & Lifecycle Transition Boundary Test Suite] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-318
+Group Task ID: QA-009
+Dependency: is blocked by Master Task EBA-314",Highest,5,Sprint 3,EBA-318,QA-009,is blocked by Master Task EBA-314,TO DO,1. Kiểm thử các bước chuyển trạng thái hợp lệ từ DRAFT đến PUBLISHED. 2. Kiểm thử từ chối các bước chuyển không hợp lệ (nhảy cóc trạng thái). 3. Kiểm thử phân quyền: tài khoản không sở hữu không thể duyệt case.
+[QA-010] Security Test Suite for Student Access Restriction to Unpublished Cases,Task,"Role: QA
+
+Thực hiện công việc [[QA-010] Security Test Suite for Student Access Restriction to Unpublished Cases] thuộc phân hệ Flow 2 trong khuôn khổ Sprint 3 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-319
+Group Task ID: QA-010
+Dependency: is blocked by Master Task EBA-315",Highest,5,Sprint 3,EBA-319,QA-010,is blocked by Master Task EBA-315,TO DO,"1. Kiểm thử tự động sinh viên truy cập trực tiếp ID case ở trạng thái DRAFT, REVIEWED, APPROVED nhận 403. 2. Kiểm thử sinh viên truy cập thành công ngay khi trạng thái chuyển sang PUBLISHED."
+[DES-010] Branching Case Player Experience-First UI/UX Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-010] Branching Case Player Experience-First UI/UX Design] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-401
+Group Task ID: DES-010
+Dependency: is blocked by Master Task EBA-309",Highest,3,Sprint 4,EBA-401,DES-010,is blocked by Master Task EBA-309,TO DO,"1. Thiết kế màn hình ra quyết định tập trung, không phân tâm. 2. Tuyệt đối không hiển thị thẻ hệ quả (consequence card) giữa chừng. 3. Tuyệt đối không có form bắt buộc nhập lập luận (reasoning form) giữa các bước."
+[DES-011] Journey Review Path Visualization & Consequence Reveal Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-011] Journey Review Path Visualization & Consequence Reveal Design] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-402
+Group Task ID: DES-011
+Dependency: is blocked by Master Task EBA-401",Highest,5,Sprint 4,EBA-402,DES-011,is blocked by Master Task EBA-401,TO DO,1. Thiết kế lộ trình toàn bộ các bước đã đi qua theo thứ tự thời gian. 2. Mở khóa và hiển thị đầy đủ văn bản hệ quả (consequences) lần đầu tiên tại màn hình Review. 3. Thiết kế form nhập lập luận hồi cứu (retrospective reasoning) cho các quyết định then chốt.
+[DES-012] Retry & New Attempt Initiation UX Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-012] Retry & New Attempt Initiation UX Design] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-403
+Group Task ID: DES-012
+Dependency: is blocked by Master Task EBA-402",High,2,Sprint 4,EBA-403,DES-012,is blocked by Master Task EBA-402,TO DO,1. Thiết kế nút và modal Retry bắt đầu lượt chơi mới. 2. Truyền đạt rõ ràng việc lượt chơi cũ được bảo lưu trọn vẹn và không bị ghi đè.
+[DES-013] Review Study Open Analysis & Solution Proposal UI Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-013] Review Study Open Analysis & Solution Proposal UI Design] thuộc phân hệ Review Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-404
+Group Task ID: DES-013
+Dependency: is blocked by Master Task EBA-102",High,3,Sprint 4,EBA-404,DES-013,is blocked by Master Task EBA-102,TO DO,"1. Thiết kế giao diện hiển thị ngữ cảnh & dữ liệu thực tế (context) và bài toán mở (problem). 2. Thiết kế form nhập phân tích, đề xuất giải pháp và giải thích lập luận. 3. Không sử dụng cây quyết định hay câu hỏi trắc nghiệm đúng/sai."
+[DES-014] Lecturer Qualitative Feedback & Review Dashboard Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-014] Lecturer Qualitative Feedback & Review Dashboard Design] thuộc phân hệ Review Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-405
+Group Task ID: DES-014
+Dependency: is blocked by Master Task EBA-404",High,3,Sprint 4,EBA-405,DES-014,is blocked by Master Task EBA-404,TO DO,1. Thiết kế dashboard cho giảng viên xem các bài nộp của sinh viên (cả Branching và Review Study). 2. Thiết kế khung soạn thảo nhận xét định tính (qualitative feedback). 3. Thiết kế giao diện cho sinh viên đọc nhận xét và viết bài phản tư (reflection).
+[DES-015] AI Challenge Support Socratic Interaction UI Design,Task,"Role: DES
+
+Thực hiện công việc [[DES-015] AI Challenge Support Socratic Interaction UI Design] thuộc phân hệ Challenge Support trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-406
+Group Task ID: DES-015
+Dependency: is blocked by Master Task EBA-402, EBA-404",High,3,Sprint 4,EBA-406,DES-015,"is blocked by Master Task EBA-402, EBA-404",TO DO,"1. Thiết kế giao diện hội thoại câu hỏi gợi mở phản biện của AI (tối đa 2 vòng). 2. Hiển thị rõ ranh giới: AI chỉ đặt câu hỏi chất vấn giả định, tuyệt đối không chấm điểm. 3. Thiết kế thanh tiến trình 2 vòng rõ ràng."
+[FE-012] Implement Continuous Branching Case Player Component,Story,"Role: FE
+
+Thực hiện công việc [[FE-012] Implement Continuous Branching Case Player Component] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-407
+Group Task ID: FE-012
+Dependency: is blocked by Master Task EBA-401, EBA-309",Highest,5,Sprint 4,EBA-407,FE-012,"is blocked by Master Task EBA-401, EBA-309",IN PROGRESS,"1. Hiển thị tình huống hiện tại và các phương án lựa chọn. 2. Khi sinh viên bấm chọn phương án, chuyển mượt mà ngay lập tức sang tình huống tiếp theo. 3. Tuyệt đối không ngắt quãng bởi thẻ hệ quả hay form lập luận giữa chừng."
+[FE-013] Implement Attempt Terminal Detection & Navigation to Journey Review,Story,"Role: FE
+
+Thực hiện công việc [[FE-013] Implement Attempt Terminal Detection & Navigation to Journey Review] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-408
+Group Task ID: FE-013
+Dependency: is blocked by Master Task EBA-407",Highest,3,Sprint 4,EBA-408,FE-013,is blocked by Master Task EBA-407,IN PROGRESS,1. Nhận biết khi sinh viên chạm nút kết thúc (is_terminal = true). 2. Gọi API hoàn thành attempt và tự động chuyển hướng sang /student/cases/:caseId/review. 3. Ngăn chặn sinh viên đi tiếp khi đã đạt nút kết thúc.
+[FE-014] Implement Journey Review Replay Canvas with Consequence Reveal,Story,"Role: FE
+
+Thực hiện công việc [[FE-014] Implement Journey Review Replay Canvas with Consequence Reveal] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-409
+Group Task ID: FE-014
+Dependency: is blocked by Master Task EBA-402, EBA-408",Highest,5,Sprint 4,EBA-409,FE-014,"is blocked by Master Task EBA-402, EBA-408",IN PROGRESS,1. Tái hiện lại danh sách toàn bộ các quyết định đã chọn theo đúng trình tự thời gian. 2. Hiển thị các phương án thay thế chưa chọn. 3. Tiết lộ văn bản hệ quả (consequences) của từng lựa chọn đã đưa ra.
+[FE-015] Implement Retrospective Reasoning Capture on Pivotal Decisions,Story,"Role: FE
+
+Thực hiện công việc [[FE-015] Implement Retrospective Reasoning Capture on Pivotal Decisions] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-410
+Group Task ID: FE-015
+Dependency: is blocked by Master Task EBA-409",Highest,3,Sprint 4,EBA-410,FE-015,is blocked by Master Task EBA-409,IN PROGRESS,"1. Cung cấp ô nhập lập luận hồi cứu tại từng điểm quyết định trên trang Review. 2. Lập luận là tùy chọn (không bắt buộc nhập mọi node, khuyến khích node bước ngoặt). 3. Lưu lập luận hồi cứu an toàn về backend qua API."
+[FE-016] Implement Retry Action Generating New Independent Branching Attempt,Story,"Role: FE
+
+Thực hiện công việc [[FE-016] Implement Retry Action Generating New Independent Branching Attempt] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-411
+Group Task ID: FE-016
+Dependency: is blocked by Master Task EBA-409",High,3,Sprint 4,EBA-411,FE-016,is blocked by Master Task EBA-409,IN PROGRESS,1. Nút Retry kích hoạt API tạo một lượt chơi mới với attempt_number tăng thêm 1. 2. Đưa sinh viên về Root Node của case để trải nghiệm hướng đi mới. 3. Lưu trữ đầy đủ lịch sử các lượt chơi trước trong Zustand store / API history.
+[FE-017] Implement Post-Review Overall Reflection Submission Page,Story,"Role: FE
+
+Thực hiện công việc [[FE-017] Implement Post-Review Overall Reflection Submission Page] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-412
+Group Task ID: FE-017
+Dependency: is blocked by Master Task EBA-410",Highest,3,Sprint 4,EBA-412,FE-017,is blocked by Master Task EBA-410,IN PROGRESS,1. Màn hình cho phép sinh viên viết bài phản tư tổng thể (Reflection) sau khi hoàn tất Review. 2. Gọi API nộp bài phản tư và cập nhật trạng thái reflection_status = 'SUBMITTED'. 3. Khóa chỉnh sửa bài phản tư sau khi đã nộp thành công.
+[FE-018] Implement Review Study Independent Analysis & Submission Page,Story,"Role: FE
+
+Thực hiện công việc [[FE-018] Implement Review Study Independent Analysis & Submission Page] thuộc phân hệ Review Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-413
+Group Task ID: FE-018
+Dependency: is blocked by Master Task EBA-404",High,5,Sprint 4,EBA-413,FE-018,is blocked by Master Task EBA-404,IN PROGRESS,"1. Hiển thị bối cảnh thực tế (context_text) và vấn đề mở (problem_text). 2. Form nhập bài phân tích, giải pháp đề xuất và giải thích lập luận. 3. Gọi API nộp bài và quản lý trạng thái SUBMITTED (mỗi sinh viên 1 bài duy nhất)."
+[FE-019] Implement Lecturer Feedback Dashboard & Submission Review View,Story,"Role: FE
+
+Thực hiện công việc [[FE-019] Implement Lecturer Feedback Dashboard & Submission Review View] thuộc phân hệ Lecturer Feedback trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-414
+Group Task ID: FE-019
+Dependency: is blocked by Master Task EBA-405, EBA-413",High,5,Sprint 4,EBA-414,FE-019,"is blocked by Master Task EBA-405, EBA-413",IN PROGRESS,"1. Hiển thị danh sách sinh viên đã nộp bài Review Study và các attempt hoàn thành Branching Study kèm thời gian nộp và trạng thái xét duyệt. 2. Cung cấp bộ lọc client-side cho danh sách bài nộp theo Chế độ học (All, Branching Study, Review Study) và theo trường trạng thái riêng biệt của từng loại dữ liệu: đối với Review Study lọc theo trạng thái bài nộp SUBMITTED (hiển thị nhãn giao diện PENDING_REVIEW), REVIEWED (Đã phản hồi), REFLECTED (Đã hoàn tất phản tư); đối với Branching Study lọc riêng biệt theo trạng thái hành trình (is_completed = true / COMPLETED) và trạng thái bài phản tư (reflection_status = 'SUBMITTED' vs Chưa nộp bài phản tư). 3. Khung soạn thảo nhận xét định tính chi tiết cho giảng viên, lưu nhận xét và chuyển trạng thái bài nộp sang REVIEWED."
+[FE-020] Implement Student Review Feedback & Reflection Workflow,Story,"Role: FE
+
+Thực hiện công việc [[FE-020] Implement Student Review Feedback & Reflection Workflow] thuộc phân hệ Review Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-415
+Group Task ID: FE-020
+Dependency: is blocked by Master Task EBA-414",High,3,Sprint 4,EBA-415,FE-020,is blocked by Master Task EBA-414,IN PROGRESS,1. Màn hình hiển thị nhận xét định tính của giảng viên cho sinh viên sau khi giảng viên phản hồi (trạng thái REVIEWED). 2. Mở khóa ô nhập bài phản tư dựa trên nhận xét của giảng viên. 3. Nộp bài phản tư và cập nhật trạng thái bài làm sang REFLECTED.
+[FE-021] Implement AI Challenge Support Socratic Dialogue Component (Max 2 Rounds),Story,"Role: FE
+
+Thực hiện công việc [[FE-021] Implement AI Challenge Support Socratic Dialogue Component (Max 2 Rounds)] thuộc phân hệ Challenge Support trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-416
+Group Task ID: FE-021
+Dependency: is blocked by Master Task EBA-406, EBA-410",High,5,Sprint 4,EBA-416,FE-021,"is blocked by Master Task EBA-406, EBA-410",IN PROGRESS,"1. Giao diện nhận câu hỏi gợi mở phản biện từ AI sau khi sinh viên nhập lập luận. 2. Hỗ trợ tối đa 2 vòng phản hồi (Round 1 & Round 2), sau đó khóa phiên. 3. Tuyệt đối không hiển thị điểm số, xếp loại hay đánh giá đúng/sai."
+[FE-022] Implement Learning-Flow Statistics Dashboard with Visual Charts,Story,"Role: FE
+
+Thực hiện công việc [[FE-022] Implement Learning-Flow Statistics Dashboard with Visual Charts] thuộc phân hệ Statistics trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-417
+Group Task ID: FE-022
+Dependency: is blocked by Master Task EBA-408",High,3,Sprint 4,EBA-417,FE-022,is blocked by Master Task EBA-408,IN PROGRESS,1. Màn hình StatisticsPage hiển thị tỷ lệ hoàn thành (Completion rate). 2. Biểu đồ phân bổ nhánh quyết định sinh viên lựa chọn (Branch selection distribution). 3. Thống kê số lượt thử (Attempts) và kết cục cuối cùng (Terminal outcomes).
+[BE-020] Implement Branching Attempt Initialization & Resumption APIs,Story,"Role: BE
+
+Thực hiện công việc [[BE-020] Implement Branching Attempt Initialization & Resumption APIs] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-418
+Group Task ID: BE-020
+Dependency: is blocked by Master Task EBA-309",Highest,5,Sprint 4,EBA-418,BE-020,is blocked by Master Task EBA-309,IN PROGRESS,"1. API POST /api/v1/cases/:id/branching-attempts tạo bản ghi mới trong branching_attempts. 2. Xác thực case đang ở trạng thái PUBLISHED, tự động tăng attempt_number. 3. Gán current_node_id bằng root_node_id của cây quyết định."
+[BE-021] Implement Real-Time Option Selection & Path Traversal Persistence,Story,"Role: BE
+
+Thực hiện công việc [[BE-021] Implement Real-Time Option Selection & Path Traversal Persistence] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-419
+Group Task ID: BE-021
+Dependency: is blocked by Master Task EBA-418",Highest,5,Sprint 4,EBA-419,BE-021,is blocked by Master Task EBA-418,IN PROGRESS,1. API ghi nhận lựa chọn option của sinh viên vào bảng student_reasoning. 2. Cập nhật current_node_id sang node tiếp theo. 3. Giữ trường reasoning_text là null trong giai đoạn Experience.
+[BE-022] Implement Terminal Node Completion & Outcome Recording API,Story,"Role: BE
+
+Thực hiện công việc [[BE-022] Implement Terminal Node Completion & Outcome Recording API] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-420
+Group Task ID: BE-022
+Dependency: is blocked by Master Task EBA-419",Highest,3,Sprint 4,EBA-420,BE-022,is blocked by Master Task EBA-419,IN PROGRESS,"1. Phát hiện khi lựa chọn dẫn tới node có is_terminal = true. 2. Cập nhật is_completed = true, outcome_node_id và completed_at. 3. Mở khóa quyền truy cập vào endpoint Journey Review."
+[BE-023] Implement Journey Review Data Assembly & Consequence Unlocking API,Story,"Role: BE
+
+Thực hiện công việc [[BE-023] Implement Journey Review Data Assembly & Consequence Unlocking API] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-421
+Group Task ID: BE-023
+Dependency: is blocked by Master Task EBA-420",Highest,5,Sprint 4,EBA-421,BE-023,is blocked by Master Task EBA-420,IN PROGRESS,1. API GET /api/v1/cases/:id/branching-attempts/:attemptId/review tổng hợp toàn bộ lộ trình. 2. Truy vấn và mở khóa văn bản hệ quả (consequences) của các option đã chọn. 3. Chặn truy cập nếu attempt chưa hoàn thành (is_completed = false).
+[BE-024] Implement Retrospective Reasoning Update & Reflection Submission APIs,Story,"Role: BE
+
+Thực hiện công việc [[BE-024] Implement Retrospective Reasoning Update & Reflection Submission APIs] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-422
+Group Task ID: BE-024
+Dependency: is blocked by Master Task EBA-421",Highest,3,Sprint 4,EBA-422,BE-024,is blocked by Master Task EBA-421,IN PROGRESS,1. API cập nhật reasoning_text hồi cứu cho các node trong student_reasoning. 2. API PATCH /api/v1/branching-attempts/:id/reflection lưu bài phản tư tổng kết. 3. Cập nhật reflection_status = 'SUBMITTED' và ghi nhận thời gian nộp.
+[BE-025] Implement Review Study Submission Lifecycle & Unique Student Gate,Story,"Role: BE
+
+Thực hiện công việc [[BE-025] Implement Review Study Submission Lifecycle & Unique Student Gate] thuộc phân hệ Review Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-423
+Group Task ID: BE-025
+Dependency: is blocked by Master Task EBA-309",High,5,Sprint 4,EBA-423,BE-025,is blocked by Master Task EBA-309,IN PROGRESS,"1. API POST /api/v1/cases/:id/review-study/submit xác thực case đang ở trạng thái PUBLISHED và lưu bài nộp vào review_study_submissions. 2. Áp dụng ràng buộc UNIQUE(student_id, case_id) — mỗi sinh viên chỉ nộp 1 bài duy nhất. 3. Quản lý vòng đời trạng thái bài nộp: SUBMITTED → REVIEWED → REFLECTED."
+[BE-026] Implement Lecturer Feedback Authoring & Status Progression API,Story,"Role: BE
+
+Thực hiện công việc [[BE-026] Implement Lecturer Feedback Authoring & Status Progression API] thuộc phân hệ Lecturer Feedback trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-424
+Group Task ID: BE-026
+Dependency: is blocked by Master Task EBA-423",High,5,Sprint 4,EBA-424,BE-026,is blocked by Master Task EBA-423,IN PROGRESS,1. API POST /api/v1/lecturer-feedback lưu nhận xét định tính vào lecturer_feedback. 2. Ràng buộc toàn vẹn chk_feedback_one_target (gắn với attempt hoặc review_submission). 3. Tự động chuyển submission_status của Review Study sang REVIEWED khi feedback được lưu.
+[BE-027] Implement AI Challenge Support Assistant Service & 2-Round Cap Enforcer,Story,"Role: BE
+
+Thực hiện công việc [[BE-027] Implement AI Challenge Support Assistant Service & 2-Round Cap Enforcer] thuộc phân hệ Challenge Support trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-425
+Group Task ID: BE-027
+Dependency: is blocked by Master Task EBA-422, EBA-423",High,5,Sprint 4,EBA-425,BE-027,"is blocked by Master Task EBA-422, EBA-423",IN PROGRESS,"1. FastAPI service sinh câu hỏi phản biện gợi mở từ lập luận của sinh viên. 2. Backend Gateway và DB thực thi ràng buộc cứng tối đa 2 vòng phản biện. 3. Tuyệt đối không chứa bất kỳ logic hoặc trường dữ liệu nào liên quan đến chấm điểm/xếp loại. 4. Cấu hình HTTP Timeout thực tế trong lời gọi API (cấu hình linh hoạt qua biến môi trường, đề xuất ban đầu 15s–30s) và giới hạn tối đa 3 lần gọi tổng cộng (1 lần gọi ban đầu + tối đa 2 lần retry đối với lỗi mạng/quá tải tạm thời). Bảo đảm tính idempotency (tính lũy đẳng): Các lần retry của cùng một yêu cầu phải sử dụng định danh ổn định hoặc cơ chế chống trùng tương đương, tránh ghi nhận trùng lặp lượt phản biện hoặc lưu dữ liệu hai lần, kể cả khi lần gọi trước đã được xử lý nhưng phản hồi bị timeout; nếu timeout hoặc AI Service không phản hồi, xử lý kết thúc có kiểm soát và trả về thông báo lỗi thân thiện cho sinh viên."
+[BE-028] Implement Learning-Flow Statistics Aggregation Queries,Story,"Role: BE
+
+Thực hiện công việc [[BE-028] Implement Learning-Flow Statistics Aggregation Queries] thuộc phân hệ Statistics trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-426
+Group Task ID: BE-028
+Dependency: is blocked by Master Task EBA-420, EBA-423",High,5,Sprint 4,EBA-426,BE-028,"is blocked by Master Task EBA-420, EBA-423",IN PROGRESS,1. Truy vấn tính toán tỷ lệ hoàn thành (Completion rate) trên tổng số attempt. 2. Gom nhóm đếm tần suất lựa chọn từng option tại mỗi Decision Point. 3. Thống kê phân bổ lượt làm (Attempts per student) và kết cục đạt được (Outcomes).
+[QA-011] E2E Integration Suite: Branching Study Complete Traversal to Review,Task,"Role: QA
+
+Thực hiện công việc [[QA-011] E2E Integration Suite: Branching Study Complete Traversal to Review] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-427
+Group Task ID: QA-011
+Dependency: is blocked by Master Task EBA-408, EBA-421",Highest,5,Sprint 4,EBA-427,QA-011,"is blocked by Master Task EBA-408, EBA-421",TO DO,1. Kiểm thử E2E tự động: Mở case PUBLISHED → Chọn các option liên tục → Chạm terminal → Mở trang Review. 2. Xác minh dữ liệu lộ trình hiển thị chính xác 100% so với các bước sinh viên đã bấm. 3. Lưu bằng chứng kiểm thử E2E đạt chuẩn Definition of Done.
+[QA-012] Pedagogical Invariant Regression: Mid-Flow Consequence & Reasoning Absence,Task,"Role: QA
+
+Thực hiện công việc [[QA-012] Pedagogical Invariant Regression: Mid-Flow Consequence & Reasoning Absence] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-428
+Group Task ID: QA-012
+Dependency: is blocked by Master Task EBA-407, EBA-419",Highest,3,Sprint 4,EBA-428,QA-012,"is blocked by Master Task EBA-407, EBA-419",TO DO,1. Khẳng định không có bất kỳ văn bản hệ quả nào bị rò rỉ trước khi chạm terminal node. 2. Khẳng định sinh viên không bị chặn bởi form lập luận giữa các lần chọn phương án. 3. Kiểm thử trên cả API response và DOM giao diện client.
+[QA-013] Data Integrity Tests for Retry Isolation & Historical Attempt Preservation,Task,"Role: QA
+
+Thực hiện công việc [[QA-013] Data Integrity Tests for Retry Isolation & Historical Attempt Preservation] thuộc phân hệ Branching Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-429
+Group Task ID: QA-013
+Dependency: is blocked by Master Task EBA-411, EBA-418",High,3,Sprint 4,EBA-429,QA-013,"is blocked by Master Task EBA-411, EBA-418",TO DO,"1. Kiểm thử thao tác Retry tạo ra bản ghi attempt mới với attempt_number tăng dần. 2. Xác minh dữ liệu các lượt chơi cũ (path, reasoning, reflection) được giữ nguyên vẹn. 3. Không xảy ra tình trạng ghi đè hoặc xáo trộn giữa các lượt chơi của cùng một sinh viên."
+"[QA-014] End-to-End Test Suite for Review Study, Lecturer Feedback & Reflection",Task,"Role: QA
+
+Thực hiện công việc [[QA-014] End-to-End Test Suite for Review Study, Lecturer Feedback & Reflection] thuộc phân hệ Review Study trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-430
+Group Task ID: QA-014
+Dependency: is blocked by Master Task EBA-414, EBA-424",High,5,Sprint 4,EBA-430,QA-014,"is blocked by Master Task EBA-414, EBA-424",TO DO,1. Kiểm thử E2E luồng Review Study: Sinh viên nộp bài (SUBMITTED) → Giảng viên gửi feedback (REVIEWED) → Sinh viên nộp phản tư (REFLECTED). 2. Kiểm thử chặn nộp bài lần 2 cho cùng 1 case (ràng buộc unique submission). 3. Xác minh không có logic tự động chấm điểm nào diễn ra.
+[QA-015] Security & Safety Audit for AI Challenge Support (2-Round Bound & Zero Grading),Task,"Role: QA
+
+Thực hiện công việc [[QA-015] Security & Safety Audit for AI Challenge Support (2-Round Bound & Zero Grading)] thuộc phân hệ Challenge Support trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-431
+Group Task ID: QA-015
+Dependency: is blocked by Master Task EBA-416, EBA-425",High,3,Sprint 4,EBA-431,QA-015,"is blocked by Master Task EBA-416, EBA-425",TO DO,"1. Kiểm thử tự động hệ thống dừng chính xác sau tối đa 2 vòng phản biện (Round 3 bị chặn). 2. Kiểm tra câu trả lời của AI: tuyệt đối không chứa điểm số, nhãn đúng/sai hay lời khen/chê học lực. 3. Kiểm tra bảo vệ prompt injection qua nội dung lập luận của sinh viên."
+"[QA-016] Cross-Role Integration, Security & Performance Load Testing",Task,"Role: QA
+
+Thực hiện công việc [[QA-016] Cross-Role Integration, Security & Performance Load Testing] thuộc phân hệ Release trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-432
+Group Task ID: QA-016
+Dependency: is blocked by Master Task EBA-427, EBA-430",High,5,Sprint 4,EBA-432,QA-016,"is blocked by Master Task EBA-427, EBA-430",TO DO,1. Kiểm thử tải đồng thời mô phỏng nhiều sinh viên cùng truy cập làm bài tình huống. 2. Giám sát độ trễ API và mức tiêu hao token/chi phí gọi LLM. 3. Đảm bảo hệ thống phản hồi ổn định dưới tải trọng của một lớp học 40-50 sinh viên.
+[QA-017] User Acceptance Testing (UAT) Execution & Defect Triage,Task,"Role: QA
+
+Thực hiện công việc [[QA-017] User Acceptance Testing (UAT) Execution & Defect Triage] thuộc phân hệ Release trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-433
+Group Task ID: QA-017
+Dependency: is blocked by Master Task EBA-432",Highest,5,Sprint 4,EBA-433,QA-017,is blocked by Master Task EBA-432,TO DO,"1. Thực hiện kịch bản kiểm thử chấp nhận người dùng (UAT) với các persona Giảng viên và Sinh viên. 2. Ghi nhận, phân loại mức độ nghiêm trọng và xử lý dứt điểm các lỗi phát hiện. 3. Đạt 100% tiêu chí chấp nhận người dùng của Capstone 1."
+[QA-018] WCAG 2.1 AA Accessibility & Cross-Browser Compliance Audit,Task,"Role: QA
+
+Thực hiện công việc [[QA-018] WCAG 2.1 AA Accessibility & Cross-Browser Compliance Audit] thuộc phân hệ Release trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-434
+Group Task ID: QA-018
+Dependency: is blocked by Master Task EBA-427",High,3,Sprint 4,EBA-434,QA-018,is blocked by Master Task EBA-427,TO DO,"1. Kiểm thử điều hướng hoàn toàn bằng bàn phím (Keyboard navigation) trên Branching Player. 2. Kiểm tra độ tương phản màu sắc theo chuẩn WCAG 2.1 AA. 3. Kiểm tra khả năng tương thích hiển thị trên Chrome, Firefox và Edge."
+"[QA-019] Final Release Readiness Verification, Demo Script Validation & Production Smoke Tests",Task,"Role: QA
+
+Thực hiện công việc [[QA-019] Final Release Readiness Verification, Demo Script Validation & Production Smoke Tests] thuộc phân hệ Release trong khuôn khổ Sprint 4 của dự án EduBranch AI.
+Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học (Higher Education Only).
+
+Master Task ID: EBA-435
+Group Task ID: QA-019
+Dependency: is blocked by Master Task EBA-433, EBA-434",Highest,3,Sprint 4,EBA-435,QA-019,"is blocked by Master Task EBA-433, EBA-434",TO DO,"1. Thực hiện bộ smoke test trên môi trường staging trước buổi bảo vệ. 2. Rà soát và diễn tập thành công 100% kịch bản demo trực tiếp cho hội đồng. 3. Xác nhận sản phẩm sẵn sàng nghiệm thu và phát hành (Release Readiness). 4. Xây dựng quy trình hướng dẫn sao lưu cơ sở dữ liệu dự phòng bằng pg_dump và thực hiện diễn tập khôi phục (restore rehearsal) trên môi trường thử nghiệm biệt lập (isolated environment), xác minh toàn vẹn dữ liệu sau phục hồi và lưu lại báo cáo bằng chứng; tuyệt đối không thực hiện thử nghiệm phá hủy trên cơ sở dữ liệu đang vận hành thật."

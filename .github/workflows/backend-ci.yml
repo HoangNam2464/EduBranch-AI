@@ -38,3 +38,11 @@ jobs:
       - name: Build
         working-directory: backend
         run: npm run build
+
+      - name: Unit Tests
+        working-directory: backend
+        run: npm test -- --runInBand
+
+      - name: HTTP Security E2E Tests
+        working-directory: backend
+        run: npm run test:e2e -- --runInBand

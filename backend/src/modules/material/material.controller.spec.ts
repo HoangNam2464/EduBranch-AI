@@ -61,7 +61,7 @@ describe("MaterialController", () => {
       // Mock DB: course found
       mockDb.query
         .mockResolvedValueOnce({
-          rows: [{ id: courseId, lecturer_id: "user-123" }],
+          rows: [{ id: courseId, lecturer_id: "lecturer-1" }],
         })
         // Mock DB: insert teaching_materials
         .mockResolvedValueOnce({

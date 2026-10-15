@@ -2,6 +2,7 @@ import {
   Injectable,
   ForbiddenException,
   NotFoundException,
+  BadRequestException,
   Logger,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
@@ -103,7 +104,7 @@ export class CaseService {
 
       await client.query("COMMIT");
 
-      return this.getCaseById(caseId);
+      return this.getCaseById(caseId, "LECTURER", lecturerId);
     } catch (e) {
       await client.query("ROLLBACK");
       this.logger.error("Failed to persist generated case:", e);
@@ -113,15 +114,39 @@ export class CaseService {
     }
   }
 
-  async getCaseById(caseId: string, role?: string) {
-    const caseRes = await this.db.query("SELECT * FROM cases WHERE id = $1", [caseId]);
+  async getCaseById(caseId: string, role?: string, _userId?: string) {
+    const caseRes = await this.db.query(
+      `SELECT c.*, co.lecturer_id
+       FROM cases c
+       JOIN courses co ON c.course_id = co.id
+       WHERE c.id = $1`,
+      [caseId],
+    );
     if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
     const caseData = caseRes.rows[0];
 
-    if (role === "STUDENT" && caseData.status !== "PUBLISHED") {
-      throw new ForbiddenException("Students can only access PUBLISHED cases");
+    // P0-SEC-01 & P0-SEC-02: Strict role gating and data masking for students
+    if (role === "STUDENT") {
+      if (caseData.status !== "PUBLISHED") {
+        throw new ForbiddenException("Students can only access PUBLISHED cases");
+      }
+      // P0-SEC-02: Never leak decision tree, options, or consequences to students
+      // Students play through /branching-attempts endpoints step-by-step
+      return {
+        id: caseData.id,
+        title: caseData.title,
+        description: caseData.description,
+        course_id: caseData.course_id,
+        status: caseData.status,
+        learning_mode: caseData.learning_mode,
+        context_text: caseData.context_text,
+        problem_text: caseData.problem_text,
+        created_at: caseData.created_at,
+        updated_at: caseData.updated_at,
+      };
     }
 
+    // For lecturers: retrieve full decision tree for ReactFlow review editor
     const nodesRes = await this.db.query(
       "SELECT * FROM case_nodes WHERE case_id = $1 ORDER BY node_index ASC",
       [caseId],
@@ -167,12 +192,25 @@ export class CaseService {
 
   async updateCase(
     caseId: string,
+    lecturerId: string,
     dto: { title?: string; description?: string; nodes?: any[] },
   ) {
-    const caseRes = await this.db.query("SELECT status FROM cases WHERE id = $1", [caseId]);
+    // P0-DATA-03: Ownership check
+    const caseRes = await this.db.query(
+      `SELECT c.status, co.lecturer_id
+       FROM cases c
+       JOIN courses co ON c.course_id = co.id
+       WHERE c.id = $1`,
+      [caseId],
+    );
     if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
-    const status = caseRes.rows[0].status;
+    const caseRow = caseRes.rows[0];
 
+    if (caseRow.lecturer_id !== lecturerId) {
+      throw new ForbiddenException("You can only edit cases in your own courses");
+    }
+
+    const status = caseRow.status;
     if (status === "APPROVED" || status === "PUBLISHED") {
       throw new ForbiddenException("Cannot edit an APPROVED or PUBLISHED case directly. Revert to DRAFT first.");
     }
@@ -220,7 +258,7 @@ export class CaseService {
       }
 
       await client.query("COMMIT");
-      return this.getCaseById(caseId);
+      return this.getCaseById(caseId, "LECTURER", lecturerId);
     } catch (e) {
       await client.query("ROLLBACK");
       throw e;
@@ -231,16 +269,68 @@ export class CaseService {
 
   async updateCaseStatus(
     caseId: string,
+    lecturerId: string,
     newStatus: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED",
   ) {
+    // P0-DATA-03: Verify course ownership
     const caseRes = await this.db.query(
-      "SELECT status, root_node_id FROM cases WHERE id = $1",
+      `SELECT c.id, c.status, c.learning_mode, c.root_node_id, c.context_text, c.problem_text, co.lecturer_id
+       FROM cases c
+       JOIN courses co ON c.course_id = co.id
+       WHERE c.id = $1`,
       [caseId],
     );
     if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
+    const caseRow = caseRes.rows[0];
 
-    if (newStatus === "PUBLISHED" && !caseRes.rows[0].root_node_id) {
-      throw new ForbiddenException("Cannot publish case without a designated root node");
+    if (caseRow.lecturer_id !== lecturerId) {
+      throw new ForbiddenException("You can only change the status of cases in your own courses");
+    }
+
+    // P0-DATA-03: Enforce valid state machine transitions (DRAFT -> REVIEWED -> APPROVED -> PUBLISHED)
+    const ALLOWED_TRANSITIONS: Record<string, string[]> = {
+      DRAFT: ["REVIEWED"],
+      REVIEWED: ["APPROVED", "DRAFT"],
+      APPROVED: ["PUBLISHED", "DRAFT"],
+      PUBLISHED: ["DRAFT"],
+    };
+
+    const currentStatus = caseRow.status;
+    if (currentStatus !== newStatus) {
+      const allowed = ALLOWED_TRANSITIONS[currentStatus];
+      if (!allowed || !allowed.includes(newStatus)) {
+        throw new BadRequestException(
+          `Invalid status transition from ${currentStatus} to ${newStatus}. Permitted transitions: ${allowed ? allowed.join(", ") : "none"}`
+        );
+      }
+    }
+
+    // P0-DATA-03: Publishing gates differentiated by learning_mode (Proposal V1.2 & INV-02/INV-03)
+    if (newStatus === "PUBLISHED") {
+      const mode = caseRow.learning_mode || "BRANCHING_STUDY";
+
+      if (mode === "REVIEW_STUDY") {
+        if (!caseRow.context_text || !caseRow.context_text.trim()) {
+          throw new BadRequestException("Cannot publish Review Study case: Context text must be provided");
+        }
+        if (!caseRow.problem_text || !caseRow.problem_text.trim()) {
+          throw new BadRequestException("Cannot publish Review Study case: Problem text must be provided");
+        }
+      } else {
+        // BRANCHING_STUDY requires root node and at least one terminal node
+        if (!caseRow.root_node_id) {
+          throw new ForbiddenException("Cannot publish case without a designated root node");
+        }
+
+        const terminalRes = await this.db.query(
+          "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
+          [caseId],
+        );
+        const terminalCount = parseInt(terminalRes.rows[0]?.count || "0", 10);
+        if (terminalCount === 0) {
+          throw new BadRequestException("Cannot publish case: The decision tree must contain at least one terminal node");
+        }
+      }
     }
 
     await this.db.query("UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2", [newStatus, caseId]);

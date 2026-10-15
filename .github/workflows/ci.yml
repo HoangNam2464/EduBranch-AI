@@ -19,11 +19,13 @@ jobs:
           node-version: "20"
           cache: npm
           cache-dependency-path: backend/package.json
-      - name: Install and build
+      - name: Install, build and test
         working-directory: backend
         run: |
           npm ci
           npm run build
+          npm test -- --runInBand
+          npm run test:e2e -- --runInBand
 
   ai-service:
     name: AI Service (FastAPI)

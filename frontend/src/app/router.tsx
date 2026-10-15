@@ -23,6 +23,25 @@ import { ReviewStudyPage } from "../pages/student/ReviewStudyPage";
 import { ReviewFeedbackPage } from "../pages/student/ReviewFeedbackPage";
 import { PrivateRoute } from "../components/ui/PrivateRoute";
 
+function StudentDirectLinkNotice() {
+  return (
+    <div className="mx-auto mt-12 max-w-lg rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-2xl">
+        🔗
+      </div>
+      <h2 className="mt-4 text-lg font-semibold text-gray-900">
+        Yêu cầu liên kết trực tiếp từ Giảng viên
+      </h2>
+      <p className="mt-2 text-sm text-gray-600 leading-relaxed">
+        EduBranch AI hoạt động theo cơ chế liên kết trực tiếp (Direct Link). Vui lòng sử dụng đường dẫn tình huống (Branching Study hoặc Review Study) do Giảng viên học phần cung cấp qua bài giảng hoặc thông báo môn học để tham gia thực hành.
+      </p>
+      <div className="mt-6 rounded-md bg-gray-50 p-3 text-xs text-gray-500 border border-gray-100">
+        Nếu bạn mở liên kết tình huống trước khi đăng nhập, hệ thống sẽ tự động đưa bạn trở lại bài làm sau khi hoàn tất xác thực.
+      </div>
+    </div>
+  );
+}
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -57,6 +76,7 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
+      { index: true, element: <StudentDirectLinkNotice /> },
       { path: "cases/:caseId/branching-play", element: <BranchingCasePlayerPage /> },
       { path: "cases/:caseId/attempt/:attemptId/review", element: <BranchingReviewPage /> },
       { path: "cases/:caseId/attempt/:attemptId/reflect", element: <ReflectionPage /> },
