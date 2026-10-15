@@ -48,7 +48,7 @@ The following explicit Project Owner decisions have been verified and applied:
 
 ## 4. Architectural Governance & System Boundaries
 
-Architectural boundaries and engineering standards are established in [`docs/architecture/ARCHITECTURAL-GOVERNANCE.md`](ARCHITECTURAL-GOVERNANCE.md):
+Architectural boundaries and engineering standards are established in [`docs/architecture/ARCHITECTURAL-GOVERNANCE.md`](../ARCHITECTURAL-GOVERNANCE.md):
 - **Core Engineering Rules**: Git Feature Branch workflow (`feature/* → develop → main`), Conventional Commits (`type(scope): description`), PR checklist templates, PEP8 / Black / Flake8 standards, layered backend architecture, and untrusted data prompt boundaries (`<sources>...</sources>`).
 - **Architectural Patterns**: LLM Provider Abstraction (`providers/factory.py`), internal service API token authentication (`X-Internal-API-Key`), pgvector cosine similarity retrieval queries, and Pydantic v2 structured output validation.
 - **Scope Guardrails**: Strictly aligned with Proposal V1.2 for experiential case-based learning, excluding unrelated features.
@@ -57,7 +57,7 @@ Architectural boundaries and engineering standards are established in [`docs/arc
 
 ## 5. Architecture
 
-The confirmed system architecture is documented in [`SYSTEM-ARCHITECTURE.md`](SYSTEM-ARCHITECTURE.md), [`SERVICE-BOUNDARIES.md`](SERVICE-BOUNDARIES.md), and [`DATA-FLOW.md`](DATA-FLOW.md):
+The confirmed system architecture is documented in [`SYSTEM-ARCHITECTURE.md`](../SYSTEM-ARCHITECTURE.md), [`SERVICE-BOUNDARIES.md`](../SERVICE-BOUNDARIES.md), and [`DATA-FLOW.md`](../DATA-FLOW.md):
 - **Client Tier**: React 18 + Vite + TypeScript + TailwindCSS + ReactFlow.
 - **Backend Gateway**: Candidate Options: Spring Boot 3 (scaffolded) / Node.js (NestJS) / Python FastAPI. Acts as the single external API gateway for the frontend.
 - **AI Service**: Python 3.12 + FastAPI (internal only). Owns document parsing, chunking, embeddings, pgvector retrieval, case generation prompt engineering, and debate assistance.
@@ -70,14 +70,14 @@ The confirmed system architecture is documented in [`SYSTEM-ARCHITECTURE.md`](SY
 
 The documentation architecture is established without duplicate sources of truth:
 1. **Architecture & Standards**:
-   - [`ADR-001-TECHNOLOGY-STACK.md`](ADR-001-TECHNOLOGY-STACK.md): Full stack classification & candidate options.
-   - [`SYSTEM-ARCHITECTURE.md`](SYSTEM-ARCHITECTURE.md): Multi-tier architecture overview.
-   - [`SERVICE-BOUNDARIES.md`](SERVICE-BOUNDARIES.md): Protocol contracts and responsibility matrix.
-   - [`DATA-FLOW.md`](DATA-FLOW.md): End-to-end sequence diagrams.
-   - [`DECISION-TREE-MODEL.md`](DECISION-TREE-MODEL.md): Graph invariants and JSON output format.
-   - [`ARCHITECTURAL-GOVERNANCE.md`](ARCHITECTURAL-GOVERNANCE.md): Architectural governance and system boundaries.
+   - [`ADR-001-TECHNOLOGY-STACK.md`](../ADR-001-TECHNOLOGY-STACK.md): Full stack classification & candidate options.
+   - [`SYSTEM-ARCHITECTURE.md`](../SYSTEM-ARCHITECTURE.md): Multi-tier architecture overview.
+   - [`SERVICE-BOUNDARIES.md`](../SERVICE-BOUNDARIES.md): Protocol contracts and responsibility matrix.
+   - [`DATA-FLOW.md`](../DATA-FLOW.md): End-to-end sequence diagrams.
+   - [`DECISION-TREE-MODEL.md`](../DECISION-TREE-MODEL.md): Graph invariants and JSON output format.
+   - [`ARCHITECTURAL-GOVERNANCE.md`](../ARCHITECTURAL-GOVERNANCE.md): Architectural governance and system boundaries.
 2. **Requirements & Features**:
-   - [`REQUIREMENT-TRACEABILITY.md`](../requirements/REQUIREMENT-TRACEABILITY.md): 30 Proposal items traced.
+   - [`REQUIREMENT-TRACEABILITY.md`](../../requirements/REQUIREMENT-TRACEABILITY.md): 30 Proposal items traced.
    - 11 Feature Specifications under `docs/features/`:
      - `FEATURE-AUTH-AND-ROLES.md`
      - `FEATURE-COURSE-AND-MATERIALS.md`
@@ -91,10 +91,10 @@ The documentation architecture is established without duplicate sources of truth
      - `FEATURE-NOTIFICATIONS.md`
      - `FEATURE-EVALUATION-AND-RESEARCH.md`
 3. **Data, AI & Research**:
-   - [`docs/database/DATA-MODEL.md`](../database/DATA-MODEL.md): Database schema and constraints.
-   - [`docs/ai/RAG-PIPELINE.md`](../ai/RAG-PIPELINE.md): RAG pipeline & sources boundary.
-   - [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](../ai/REASONING-CHALLENGE-SUPPORT.md): Socratic challenge rules.
-   - [`docs/qa/TESTING-STRATEGY.md`](../qa/TESTING-STRATEGY.md): Testing tiers and CI jobs.
+   - [`docs/database/DATA-MODEL.md`](../../database/DATA-MODEL.md): Database schema and constraints.
+   - [`docs/ai/RAG-PIPELINE.md`](../../ai/RAG-PIPELINE.md): RAG pipeline & sources boundary.
+   - [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](../../ai/REASONING-CHALLENGE-SUPPORT.md): Socratic challenge rules.
+   - [`docs/qa/TESTING-STRATEGY.md`](../../qa/TESTING-STRATEGY.md): Testing tiers and CI jobs.
    - [`docs/research/EVALUATION-DESIGN.md`](../research/EVALUATION-DESIGN.md): Classroom trial and research questions.
 
 ---

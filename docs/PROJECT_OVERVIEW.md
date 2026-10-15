@@ -128,7 +128,7 @@ Student submits overall Reflection
 | | [Service Boundaries](architecture/SERVICE-BOUNDARIES.md) | Inter-service contracts, protocols & security |
 | | [System Data Flows](architecture/DATA-FLOW.md) | End-to-end sequence diagrams & lifecycle |
 | | [Decision Tree Model](architecture/DECISION-TREE-MODEL.md) | Invariants & JSON schema for branching cases |
-| | [Bootstrap Audit](architecture/BOOTSTRAP-AUDIT.md) | Comprehensive 11-section self-audit |
+| | [Architecture Audits & Reports](architecture/audits/README.md) | Historical audits, baseline validations & migration reports |
 | **Features** | [Feature Specifications](features/) | Comprehensive per-feature specifications |
 | **Data & AI** | [Data Model](database/DATA-MODEL.md) | PostgreSQL schema & SQL migration guide |
 | | [RAG Pipeline](ai/RAG-PIPELINE.md) | Document parsing, chunking, retrieval & sources |
