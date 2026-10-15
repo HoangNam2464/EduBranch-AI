@@ -1,4 +1,4 @@
-﻿# EduBranch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
+# EduBranch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
 
 > **Document Status**: Authoritative Final Post-Scaffold Self-Audit  
 > **Date**: 2026-09-11  
@@ -95,7 +95,7 @@ The documentation architecture is established without duplicate sources of truth
    - [`docs/ai/RAG-PIPELINE.md`](../../ai/RAG-PIPELINE.md): RAG pipeline & sources boundary.
    - [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](../../ai/REASONING-CHALLENGE-SUPPORT.md): Socratic challenge rules.
    - [`docs/qa/TESTING-STRATEGY.md`](../../qa/TESTING-STRATEGY.md): Testing tiers and CI jobs.
-   - [`docs/research/EVALUATION-DESIGN.md`](../research/EVALUATION-DESIGN.md): Classroom trial and research questions.
+   - [`docs/research/EVALUATION-DESIGN.md`](../../research/EVALUATION-DESIGN.md): Classroom trial and research questions.
 
 ---
 
