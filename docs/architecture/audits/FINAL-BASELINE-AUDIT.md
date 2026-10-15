@@ -1,4 +1,4 @@
-# FINAL BASELINE AUDIT — Edu-Branch-AI
+﻿# FINAL BASELINE AUDIT — EduBranch-AI
 # Post-Technology-Migration Verification Report
 
 > **Audit Date**: 2026-09-11
@@ -11,7 +11,7 @@
 
 ## 1. Executive Summary
 
-This audit independently verifies the entire Edu-Branch-AI repository against the confirmed Final Technology Baseline, following the technology migration from Java 17 / Spring Boot 3 to Node.js / NestJS 10.
+This audit independently verifies the entire EduBranch-AI repository against the confirmed Final Technology Baseline, following the technology migration from Java 17 / Spring Boot 3 to Node.js / NestJS 10.
 
 **Overall Outcome: YELLOW**
 
@@ -165,7 +165,7 @@ All entries above are structural skeleton and documentation only. No functional 
 | Quiz generation | Not found in source or rules |
 | Exam generation | Not found in source or rules |
 | Bloom's taxonomy | Found only in historical audit docs explicitly marking it as EXCLUDED |
-| K-12 functionality | Not found in active source or rules |
+| Generic curriculum packaging | Not found in active source or rules |
 | Autonomous grading | Not found in source; explicitly forbidden in rules |
 | LMS integration | Not found |
 | Social login | Not found |
@@ -275,7 +275,7 @@ Full repository scan (excluding `node_modules/`, `.pytest_cache/`, `dist/`):
 | `Spring Boot` | `CONTRIBUTING.md` (Section B heading, Section 5 table, Section 6 rule) | CONFLICTING |
 | `Spring Boot` | `SECURITY.md` (Sections 1, 2, 4, 10) | CONFLICTING |
 | `Spring Boot` | `CHANGELOG.md` (scaffold entry) | VALID HISTORICAL RECORD |
-| `Spring Boot` | `docs/architecture/PROJECT-DIRECTION-AUDIT.md`, `TECHNOLOGY-CORRECTION-REPORT.md`, `BOOTSTRAP-AUDIT.md`, `REFERENCE-REPOSITORY-AUDIT.md` | VALID HISTORICAL RECORD |
+| `Spring Boot` | `docs/architecture/PROJECT-DIRECTION-AUDIT.md`, `TECHNOLOGY-CORRECTION-REPORT.md`, `BOOTSTRAP-AUDIT.md`, `ARCHITECTURAL-GOVERNANCE.md` | VALID HISTORICAL RECORD |
 | `Spring Boot` | `docs/architecture/ADR-001-TECHNOLOGY-STACK.md` Section 4 ("Inherited Spring Boot... removed") | VALID HISTORICAL RECORD |
 | `backend/target/` | Empty Maven directory tree (4 subdirs, 0 files) | ACCIDENTAL REMNANT |
 | `React 18` | `README.md` badge only | CONFLICTING |
@@ -379,7 +379,7 @@ All 14 `.agents/rules/` files are correctly updated. Zero Spring Boot, Java, Rea
 
 ### Product Scope: GREEN
 
-No out-of-scope functionality (lesson planning, quiz generation, K-12 features, autonomous grading, LMS integration) is present in any active source file or rule. All Bloom's taxonomy references exist only in historical audit documents that explicitly mark it as excluded.
+No out-of-scope functionality (lesson planning, quiz generation, autonomous grading, LMS integration) is present in any active source file or rule. All Bloom's taxonomy references exist only in historical audit documents that explicitly mark it as excluded.
 
 ### Business Implementation: STRUCTURAL SKELETON ONLY (CONFIRMED)
 
@@ -473,7 +473,7 @@ Decision tree Pydantic schema structure, field definitions, `validate_tree_struc
 
 **Status: FIXED**
 
-Action: `Remove-Item -Recurse -Force "d:\CAPSTONE_2026\CaseTree-AI\backend\target"` — **exit code 0**.
+Action: `Remove-Item -Recurse -Force "d:\CAPSTONE_2026\EduBranch-AI\backend\target"` — **exit code 0**.
 
 The empty Maven build output directory (`target/generated-sources/`, `target/test-classes/`, etc.) has been deleted. Verified: no `.class`, `.jar`, or active source files were present in the directory.
 
@@ -545,5 +545,5 @@ No business feature logic was added during this correction session. The reposito
 > **CORRECTIONS COMPLETE**
 > Findings C-01 through C-07 have been resolved.
 > All validation checks passed.
-> Repository documentation is now consistent with the approved Edu-Branch-AI Technology Baseline.
+> Repository documentation is now consistent with the approved EduBranch-AI Technology Baseline.
 

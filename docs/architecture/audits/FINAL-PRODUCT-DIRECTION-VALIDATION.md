@@ -1,4 +1,4 @@
-# Final Product-Direction Validation
+﻿# Final Product-Direction Validation
 
 Date: 2026-09-28
 
@@ -6,7 +6,7 @@ Date: 2026-09-28
 
 Status: PARTIALLY IMPLEMENTED.
 
-The repository now names Edu-Branch-AI as a university Case-Based Learning
+The repository now names EduBranch-AI as a university Case-Based Learning
 platform with two independent learning modes:
 
 - Branching Study: experience continuously, complete the journey, REVIEW,
@@ -154,7 +154,7 @@ sessions.
    adapter without changing the approved user flows.
 5. Add integration tests for the two state machines and publication guards.
 6. Replace remaining active EduBranch AI header/comment variants with the
-   canonical Edu-Branch-AI spelling where they are user-facing or current
+   canonical EduBranch-AI spelling where they are user-facing or current
    technical labels.
 
 ## 13. Feature Expansion Candidates Ranked by Implementation Relevance

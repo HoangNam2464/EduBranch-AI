@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for AI Reasoning / Challenge Support in Edu-Branch-AI.
+description: Rules for AI Reasoning / Challenge Support in EduBranch-AI.
 trigger: keyword
 keywords: [challenge support, counter-question, ai reasoning, challenge question, reasoning support]
 ---

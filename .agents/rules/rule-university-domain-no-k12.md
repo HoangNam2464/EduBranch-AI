@@ -1,28 +1,26 @@
 ---
-description: Strict rule enforcing University / Higher Education domain and prohibiting any K-12 concepts in EduBranch AI.
+description: Pedagogical domain rule for EduBranch-AI emphasizing experiential case-based learning, decision-making scenarios, and terminology standards.
 trigger: always_on
-keywords: [k-12, k12, lesson plan, lesson planner, teacher, school, curriculum, grade, pupil]
+keywords: [case study, branching study, review study, decision tree, learning process, reasoning, lecturer, student]
 ---
 
-# Domain Rule: Strictly University Education — Absolute Ban on K-12
+# Pedagogical Domain Rule: Experiential Case-Based Learning
 
-## 1. Core Rule
-**EduBranch AI is strictly and exclusively a University / Higher Education Case-Based Learning Platform.**
-Under NO circumstances shall any K-12 concepts, workflows, terminology, or reference tasks be applied to this project.
+## 1. Core Mission
+**EduBranch-AI is an educational technology platform engineered to support active, experiential case-based learning processes.**
+Rather than passive theory reading or rigid curriculum memorization, the platform immerses learners into realistic decision-making scenarios, allowing them to experience the multi-directional consequences of their choices and cultivate analytical reflection.
 
-## 2. Forbidden Concepts & Terminology (NEVER USE)
-| Forbidden (K-12 / ai-teacher-copilot) | Allowed (EduBranch AI) | Rationale |
+## 2. Pedagogical Terminology Standards
+| Non-Case / General Terms | Standardized EduBranch-AI Terms | Pedagogical Role |
 |---|---|---|
-| `K-12`, `Grade 1-12`, `Primary/Secondary/High School` | `University`, `Higher Education` | Target is university students (Proposal V1.2) |
-| `Teacher Copilot` | `EduBranch AI` | Distinct product identity |
-| `Lesson Plan`, `Lesson Planner`, `Lesson Planning` | `Case Study Authoring / Generation` | University case method, not lesson planning |
-| `Pupil`, `School Children` | `Student` (Sinh viên đại học) | University learners |
-| `Teacher` (Giáo viên trường phổ thông) | `Lecturer` (Giảng viên đại học) | University faculty role |
-| `Curriculum Standards` (MOET K-12, Common Core) | `Syllabus`, `Course Materials` | University course content |
-| `Warm-up / Homework sheets` | `Student Reasoning`, `Reflection`, `Review Submission` | Deep pedagogical analysis |
-| `Debate Assistant`, `Devil's Advocate` | `AI Reasoning / Challenge Support` | Support function, not debate platform |
+| Generic Schooling / Grade Levels | `Experiential Learning`, `Higher & Advanced Learning` | Target environment focusing on case analysis |
+| Teacher / Assistant | `Lecturer` / `Instructor` (Giảng viên / Người hướng dẫn) | Facilitates and oversees the case learning lifecycle |
+| Pupil / Schoolchild | `Student` / `Learner` (Sinh viên / Người học) | Navigates decision points and articulates reasoning |
+| Lesson Plan / Weekly Schedule | `Case Study Authoring / Generation` | Creation of branching or review case scenarios |
+| Curriculum Blueprint | `Syllabus`, `Course Teaching Materials` | Ingested source documents providing authentic case context |
+| Homework / Quizzes | `Student Reasoning`, `Reflection`, `Review Submission` | Deep qualitative analysis of dilemmas and consequences |
+| Debate Platform / Adversarial Bot | `AI Reasoning / Challenge Support` | Socratic questioning (max 2 rounds) to stimulate critical thinking without grading |
 
-## 3. Strict Rule on Reference Repositories
-- The repository `ai-teacher-copilot` is a reference repository for **architectural patterns only** (e.g. multi-tier structure, provider abstraction).
-- **DO NOT** copy sprint tasks, user stories, prompts, or domain models from `ai-teacher-copilot` (`01_MASTER-TASKS.md`, `02_SPRINT-TASKS.md`, `03_TASK-DETAILS.md`).
-- All requirements, sprint backlogs, schemas, and features for EduBranch AI MUST originate strictly from **`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`** (Proposal V1.2).
+## 3. Product Governance
+- All requirements, sprint backlogs, schemas, and features for EduBranch-AI derive strictly from **`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`** (Proposal V1.2).
+- The learning flow emphasizes student autonomy in decision-making, followed by retrospective reasoning capture and lecturer-guided qualitative feedback.

@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for student reasoning capture in Edu-Branch-AI.
+description: Rules for student reasoning capture in EduBranch-AI.
 trigger: keyword
 keywords: [reasoning, student reasoning, justification, written response]
 ---

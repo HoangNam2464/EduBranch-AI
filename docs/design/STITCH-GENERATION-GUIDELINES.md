@@ -2,7 +2,7 @@
 
 > **Status**: CANONICAL — supersedes the single-screen prompt conventions in the retired `.stitch/next-prompt.md`.
 > **Purpose**: Every Stitch prompt written for any EduBranch AI screen (P0–P4) must be assembled using the nine fields below, in order. This keeps generation grounded in approved product behavior instead of improvising UI or functionality.
-> **Source**: `CaseTree-AI_UX-Redesign_Discovery-Plan.md` §I, generalized from one screen to the full product.
+> **Source**: `EduBranch-AI_UX-Redesign_Discovery-Plan.md` §I, generalized from one screen to the full product.
 
 ---
 

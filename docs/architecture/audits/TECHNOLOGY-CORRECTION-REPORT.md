@@ -1,8 +1,8 @@
-# Edu-Branch-AI — Technology & Documentation Correction Report
+﻿# EduBranch-AI — Technology & Documentation Correction Report
 
 > **Report Type**: Post-Audit Repository Migration & Consistency Report  
-> **Target System**: Edu-Branch-AI (`https://github.com/HoangNam2464/CaseTree-AI`)  
-> **Primary Authority (Priority 1)**: `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`  
+> **Target System**: EduBranch-AI (`https://github.com/HoangNam2464/EduBranch-AI`)  
+> **Primary Authority (Priority 1)**: `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`  
 > **Project Owner Decisions (Priority 2)**: Ratified Backend Gateway (Node.js/NestJS), React 19 + TailwindCSS v4 baseline, 3-tier boundary, PostgreSQL+pgvector, Redis 7, MinIO, separate internal AI Service, structural skeleton only.  
 > **Date of Execution**: 2026-09-11  
 > **Final Consistency Verdict**: **GREEN** (All contradictions resolved, single coherent technology baseline established across Proposal, Architecture, Technology, Rules, Source Structure, and Documentation).
@@ -11,7 +11,7 @@
 
 ## 1. Original Problem
 
-During the initial bootstrap scaffolding phase, structural code and architectural documentation were created by referencing the engineering patterns of `ai-teacher-copilot`. This resulted in three major architectural contradictions:
+During the initial bootstrap scaffolding phase, structural code and architectural documentation were created by referencing an initial engineering scaffold template. This resulted in three major architectural contradictions:
 1. **Backend Framework Divergence**: The repository inherited a Java 17 / Spring Boot 3 Maven scaffold. However, the authoritative **Proposal (Sections 7 & 11)** explicitly defines the backend as **`Node.js (NestJS/Express) or Python FastAPI`**. Spring Boot only appeared as an external reference link in Table 5 and was never an approved backend technology.
 2. **Rule Contradictions**: All 14 rule files in `.agents/rules/*.md` hardcoded Spring Boot 3 as a mandatory constraint, creating a direct conflict with `ADR-001-TECHNOLOGY-STACK.md` (which marked backend as an open candidate option) and with the Proposal itself.
 3. **Frontend Version Drift**: `frontend/package.json` installed React 19 (`^19.2.8`) and TailwindCSS v4 (`^4.3.3`), while rules and documentation still prescribed React 18 and TailwindCSS v3.
@@ -19,9 +19,9 @@ During the initial bootstrap scaffolding phase, structural code and architectura
 
 ---
 
-## 2. Technology Inherited from `ai-teacher-copilot`
+## 2. Technology Inherited from Initial Scaffold Template
 
-The following technology and structural assets originated from the reference repository:
+The following technology and structural assets originated from the initial scaffold template:
 
 | Inherited Item | Location | Classification | Disposition | Rationale |
 | :--- | :--- | :---: | :---: | :--- |
@@ -36,9 +36,9 @@ The following technology and structural assets originated from the reference rep
 
 ---
 
-## 3. What the Edu-Branch-AI Proposal Actually Allows
+## 3. What the EduBranch-AI Proposal Actually Allows
 
-Extracted directly from `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`:
+Extracted directly from `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`:
 
 - **Backend** (Section 7, p. 11 & Section 11, p. 16):
   > *"Backend: Node.js (NestJS/Express) or Python FastAPI"*  
@@ -127,7 +127,7 @@ The repository now adheres to a single, unified technology baseline:
 10. `docs/architecture/ADR-001-TECHNOLOGY-STACK.md` — Formally ratified NestJS Backend Gateway and React 19 / TailwindCSS v4; documented deprecation of Spring Boot.
 11. `docs/architecture/SERVICE-BOUNDARIES.md` — Updated diagrams and service layer descriptions.
 12. `docs/architecture/SYSTEM-ARCHITECTURE.md` — Updated diagrams and technology mapping.
-13. `docs/architecture/REFERENCE-REPOSITORY-AUDIT.md` — Updated backend classification to `NOT APPLICABLE / REPLACED`.
+13. `docs/architecture/ARCHITECTURAL-GOVERNANCE.md` — Ratified backend classification as NestJS 10 + TypeScript.
 14. `docs/qa/TESTING-STRATEGY.md` — Updated backend testing to Jest / Supertest / `@nestjs/testing`.
 15. `docs/ai/RAG-PIPELINE.md` — Replaced "Spring Boot" with "Backend Gateway".
 16. `docs/ai/DEBATE-ASSISTANT.md` — Replaced "Spring Boot" with "Backend Gateway".
@@ -180,7 +180,7 @@ All Java / Spring Boot / Maven files from the initial bootstrap scaffold:
 
 ## 8. Rules Updated
 
-All 14 files under [`.agents/rules/`](file:///d:/CAPSTONE_2026/CaseTree-AI/.agents/rules) were systematically updated:
+All 14 files under [`.agents/rules/`](file:///d:/CAPSTONE_2026/EduBranch-AI/.agents/rules) were systematically updated:
 
 | Rule File | Nature of Correction |
 | :--- | :--- |
@@ -241,10 +241,10 @@ The following product-level choices from the Proposal remain open for future spr
 
 ### **GREEN**
 
-The Edu-Branch-AI repository now presents a **100% unified, consistent, and Proposal-compliant technical direction**:
+The EduBranch-AI repository now presents a **100% unified, consistent, and Proposal-compliant technical direction**:
 - **Proposal** defines Node.js (NestJS/Express) backend and React/Tailwind frontend.
 - **Architecture** ADR-001 ratifies NestJS and React 19 + TailwindCSS v4.
 - **Rules** in `.agents/rules/` enforce NestJS, FastAPI, and React 19.
 - **Source Code** in `backend/`, `ai-service/`, and `frontend/` cleanly compiles under these stacks.
 - **Documentation** across `docs/` describes this exact system without contradictory claims.
-- **Business Scope** remains 100% focused on university branching case studies and AI debate, with strictly zero K-12 leaks and zero premature feature implementation.
+- **Business Scope** remains 100% focused on experiential branching case studies, with strictly zero external leaks and zero premature feature implementation.

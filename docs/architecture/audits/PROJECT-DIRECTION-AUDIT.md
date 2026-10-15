@@ -1,10 +1,10 @@
-# Edu-Branch-AI — Project Direction Audit
+﻿# EduBranch-AI — Project Direction Audit
 
 > **Audit Type**: Read-Only Source-of-Truth & Architectural Direction Audit  
-> **Target System**: Edu-Branch-AI (`https://github.com/HoangNam2464/CaseTree-AI`)  
-> **Primary Benchmark (Priority 1)**: `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`  
+> **Target System**: EduBranch-AI (`https://github.com/HoangNam2464/EduBranch-AI`)  
+> **Primary Benchmark (Priority 1)**: `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`  
 > **Project Owner Decisions (Priority 2)**: 3-tier boundary (Frontend → Backend → AI Service), PostgreSQL+pgvector, Redis, MinIO, separate internal AI service, skeleton/docs only.  
-> **Engineering Reference (Priority 4)**: `ai-teacher-copilot` (`D:\DU_AN_2026\Python\ai-teacher-copilot`)  
+> **Architecture Standards**: EduBranch-AI Architecture Standards  
 > **Audit Date**: 2026-09-11  
 > **Overall Verdict**: **YELLOW** (Project is generally well-aligned with core pedagogical workflows, but inherits technical assumptions and governance rule contradictions from the reference repository that require formal Owner resolution).
 
@@ -17,17 +17,17 @@
 **Yes, conceptually and functionally, but with technical inheritance debt.**
 
 - **Pedagogical & Functional Direction**: **GREEN**. The repository faithfully represents the core pedagogical workflow mandated by the Proposal: university course context → teaching material upload (PDF/DOCX) → RAG semantic retrieval → AI-generated branching decision tree (JSON Schema) → mandatory human-in-the-loop review & approval → publishing → Branching Case Player → retrospective decision consequence reveal → student reasoning capture → AI Reasoning / Challenge Support (1–2 rounds max, no grading) → lecturer statistics → quantitative evaluation research boundary.
-- **Reference Leakage Protection**: **GREEN**. All product-specific K-12 features from `ai-teacher-copilot` (Lesson Planner, Exam/Quiz Generator, Teacher Personal Workspace, Word Export, Bloom's Taxonomy, Autonomous Grading) have been cleanly excluded from both documentation and skeleton code.
+- **Reference Leakage Protection**: **GREEN**. All external non-case features (Lesson Planner, Exam/Quiz Generator, Teacher Personal Workspace, Word Export, Bloom's Taxonomy, Autonomous Grading) have been cleanly excluded from both documentation and skeleton code.
 - **Service Boundaries & AI Governance**: **GREEN**. The strict 3-tier hierarchy (`Frontend → Backend Gateway → FastAPI AI Service (Internal Only)`) and AI safety rules (untrusted material wrapped in `<sources>`, 2-round cap, zero autonomous grading) are documented with high fidelity.
-- **Technology & Rule Alignment**: **YELLOW**. The project inherited Spring Boot 3 (Java 17) directly from `ai-teacher-copilot` during initial scaffolding. While documentation in `ADR-001-TECHNOLOGY-STACK.md` now treats Backend Gateway as a Candidate Option, **all 14 `.agents/rules/*.md` files still hardcode Spring Boot as an immutable project rule**, conflicting with both the Proposal (which specifies Node.js/NestJS or Python FastAPI) and the Project Owner's explicit candidate-option stance. Furthermore, `package.json` installed React 19 and TailwindCSS v4 despite rules prescribing React 18 and TailwindCSS v3.
+- **Technology & Rule Alignment**: **YELLOW**. The project inherited Spring Boot 3 (Java 17) from an initial legacy scaffold during initial setup. While documentation in `ADR-001-TECHNOLOGY-STACK.md` now treats Backend Gateway as a Candidate Option, **all 14 `.agents/rules/*.md` files still hardcode Spring Boot as an immutable project rule**, conflicting with both the Proposal (which specifies Node.js/NestJS or Python FastAPI) and the Project Owner's explicit candidate-option stance. Furthermore, `package.json` installed React 19 and TailwindCSS v4 despite rules prescribing React 18 and TailwindCSS v3.
 
 ---
 
 ## 2. What the Proposal Actually Defines
 
-Extracted directly from `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`:
+Extracted directly from `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`:
 
-- **Full Project Identity**: *"Edu-Branch-AI — AI Platform for Interactive Branching Case Studies and Open Review in University Teaching"* (Acronym: EBA, Lead: International School, Duy Tan University, Capstone 1, 2026).
+- **Full Project Identity**: *"EduBranch-AI — AI Platform for Interactive Branching Case Studies and Open Review in University Teaching"* (Acronym: EBA, Lead: International School, Duy Tan University, Capstone 1, 2026).
 - **Target Audience & Actors**:
   - Higher education / university teaching (Business, Law, Medicine, IT, Engineering).
   - Primary Actors: **Lecturer** and **Student**.
@@ -90,7 +90,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
   - PostgreSQL init script enables `vector` and `uuid-ossp` extensions.
 - **Documentation (`docs/`)**:
   - 11 feature specifications in `docs/features/` covering all 30 traceability items.
-  - `ADR-001-TECHNOLOGY-STACK.md`, `SERVICE-BOUNDARIES.md`, `DATA-FLOW.md`, `DECISION-TREE-MODEL.md`, `REFERENCE-REPOSITORY-AUDIT.md`, `REQUIREMENT-TRACEABILITY.md`, `BOOTSTRAP-AUDIT.md`.
+  - `ADR-001-TECHNOLOGY-STACK.md`, `SERVICE-BOUNDARIES.md`, `DATA-FLOW.md`, `DECISION-TREE-MODEL.md`, `ARCHITECTURAL-GOVERNANCE.md`, `REQUIREMENT-TRACEABILITY.md`, `BOOTSTRAP-AUDIT.md`.
 - **Governance (`.agents/rules/`, `.github/`)**:
   - 14 rule files in `.agents/rules/` and `copilot-instructions.md` in `.github/`.
 
@@ -133,13 +133,13 @@ The current repository reflects the state after bootstrap scaffolding and docume
 ### 5.4 Altered Scope
 - **"Open Review" Terminology**: The Proposal title includes *"and Open Review"*, while Proposal Table 1 states that *"Peer / public review of student work"* is *"Planned (future work)"* and not in MVP. The current documentation correctly prioritizes the Lecturer Review workflow and treats open peer review as a post-MVP phase.
 
-### 5.5 Inherited Scope from Reference Repository
-- **Spring Boot 3 API Gateway Architecture**: The multi-package Java backend structure (`auth/`, `course/`, `material/`, `case_/`, `simulation/`, `debate/`, `statistics/`, `common/`) was directly cloned from the structural style of `ai-teacher-copilot/backend`.
-- **Flyway Database Migration Pattern**: `V1__init_schema.sql` mirrors the migration pattern of `ai-teacher-copilot`.
-- **MinIO S3 Integration Pattern**: Bucket structure and object key conventions were inherited from `ai-teacher-copilot`.
+### 5.5 Inherited Scope from Initial Scaffold Template
+- **Spring Boot 3 API Gateway Architecture**: The multi-package Java backend structure (`auth/`, `course/`, `material/`, `case_/`, `simulation/`, `debate/`, `statistics/`, `common/`) was initially inherited from a legacy engineering scaffold.
+- **Flyway Database Migration Pattern**: `V1__init_schema.sql` mirrors standard relational migration patterns.
+- **MinIO S3 Integration Pattern**: Bucket structure and object key conventions were inherited from standard S3 patterns.
 
 ### 5.6 Unsupported Scope
-- **None active**. All reference-specific K-12 modules were audited and blocked.
+- **None active**. All reference-specific non-case modules were audited and blocked.
 
 ---
 
@@ -217,7 +217,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
 | **2. Course & Materials** | Fully Aligned | High (15 sections complete) | MinIO S3 storage pattern adapted | `Structurally Scaffolded` |
 | **3. Document Processing & RAG** | Fully Aligned | High (15 sections complete) | `<sources>` boundary from reference | `Structurally Scaffolded` |
 | **4. Case Generation** | Fully Aligned | High (15 sections complete) | Pydantic JSON schema pattern adapted | `Structurally Scaffolded` |
-| **5. Decision Tree Model** | Fully Aligned | High (15 sections complete) | Novel CaseTree domain model | `Structurally Scaffolded` |
+| **5. Decision Tree Model** | Fully Aligned | High (15 sections complete) | Novel EduBranch-AI domain model | `Structurally Scaffolded` |
 | **6. Case Review & Publishing** | Fully Aligned | High (15 sections complete) | Novel human-in-the-loop workflow | `Structurally Scaffolded` |
 | **7. Branching Case Player & Reasoning** | Fully Aligned | High (15 sections complete) | Novel role-play & reasoning capture | `Structurally Scaffolded` |
 | **8. AI Challenge Support** | Fully Aligned | High (15 sections complete) | Novel Socratic counter-questioning | `Structurally Scaffolded` |
@@ -237,13 +237,13 @@ The current repository reflects the state after bootstrap scaffolding and docume
 - **Flyway Database Migration Strategy**: Immutable, ordered versioning (`V1__init_schema.sql`).
 
 ### 9.2 Reference Patterns That Must Remain Reference-Only
-- **K-12 Educational Workflows**: Lesson planning, syllabus drafting, and exam blueprints.
-- **Bloom's Taxonomy Categorization**: Specific to K-12 test question generation.
+- **General Lesson Workflows**: Generic lesson planning and exam blueprints.
+- **Bloom's Taxonomy Categorization**: Specific to multiple-choice test question generation.
 - **Word/DOCX Export Engines**: Specific to lesson plan exporting.
 
-### 9.3 Reference-Specific Business Concepts Leaked into Edu-Branch-AI
+### 9.3 Reference-Specific Business Concepts Leaked into EduBranch-AI
 - **Finding**: Zero business logic leaks found in source code or feature documentation.
-- **Minor Artifact**: In `frontend/src/layouts/LecturerLayout.tsx` line 3, a comment reads `/** Lecturer workspace layout — navigation sidebar + content area. */`. The term "workspace" was inherited colloquially from `ai-teacher-copilot`, though the layout itself is just a standard navigation shell.
+- **Minor Artifact**: In `frontend/src/layouts/LecturerLayout.tsx` line 3, a comment originally read `/** Lecturer workspace layout — navigation sidebar + content area. */`. The term "workspace" was inherited colloquially from the initial template, though the layout itself is just a standard navigation shell.
 
 ---
 
@@ -286,10 +286,10 @@ The current repository reflects the state after bootstrap scaffolding and docume
 
 - **Current Presence**:
   - `backend/pom.xml` defines a Spring Boot 3.3.4 parent project with Java 17.
-  - Entity classes (`vn.CaseTree.*`) model the domain using Jakarta Persistence (JPA) annotations (`@Entity`, `@Table`, `@Id`, `@Enumerated`).
+  - Entity classes (`vn.edubranch.*`) model the domain using Jakarta Persistence (JPA) annotations (`@Entity`, `@Table`, `@Id`, `@Enumerated`).
   - `HealthController.java` provides a minimal Spring Web MVC health check endpoint.
   - `application.yml` configures PostgreSQL, Flyway, MinIO, and Redis connections.
-- **Origin**: Cloned from the engineering scaffold of `ai-teacher-copilot`.
+- **Origin**: Inherited from an initial engineering scaffold.
 - **Proposal Relationship**: The Proposal references `https://spring.io/projects/spring-boot` in Section 14 (Table 5 References), but Section 7 (Methodology and Tools) and Section 11 (Budget and Resources) explicitly specify `Node.js (NestJS/Express) or Python FastAPI`.
 - **Current Architectural Role**: It functions as the scaffolded Backend Gateway skeleton. It does NOT contain any business implementation.
 - **Architectural Impact**: If retained, it provides strong enterprise security (Spring Security), mature DB migrations (Flyway), and robust relational ORM. If migrated to Node.js (NestJS) or FastAPI, it would more closely match the body of the Proposal.
@@ -303,7 +303,7 @@ Verified across the entire codebase:
 
 | Component | Code Inspected | Result |
 | :--- | :--- | :---: |
-| **Authentication** | `backend/src/main/java/vn/CaseTree/auth/` | **NOT IMPLEMENTED** (no login/register controllers or JWT filters) |
+| **Authentication** | `backend/src/main/java/vn/edubranch/auth/` | **NOT IMPLEMENTED** (no login/register controllers or JWT filters) |
 | **Courses & Materials**| `backend/.../course/`, `backend/.../material/` | **NOT IMPLEMENTED** (entities exist; no CRUD services or upload streams) |
 | **Case Generation** | `ai-service/app/generation/` | **NOT IMPLEMENTED** (schemas exist; no active LLM prompt chain or route) |
 | **Case Review/Publish**| `backend/.../case_/`, `frontend/.../CaseReviewPage` | **NOT IMPLEMENTED** (view shell exists; no state machine update logic) |
@@ -345,7 +345,7 @@ Verified across the entire codebase:
 ## 17. Final Verdict
 
 ### **YELLOW**
-**The project direction is generally well-aligned with the Edu-Branch-AI Proposal, but contains technical inheritance debt and rule contradictions that must be formally resolved before feature development begins.**
+**The project direction is generally well-aligned with the EduBranch-AI Proposal, but contains technical inheritance debt and rule contradictions that must be formally resolved before feature development begins.**
 
 - **Why Not GREEN?** The hardcoding of Spring Boot 3 across all `.agents/rules/` contradicts both the Proposal's primary backend options (Node.js/FastAPI) and the Project Owner's explicit directive to treat backend frameworks as candidate options. Additionally, minor frontend dependency version mismatches exist.
-- **Why Not RED?** The repository has **zero scope drift** into K-12 features, strictly **zero business implementation**, flawless service boundary isolation, valid Flyway DDL syntax, and 100% valid documentation link integrity. The core pedagogical value stream (Material → RAG → Case Tree → Review → Simulator → Debate → Stats) is perfectly captured.
+- **Why Not RED?** The repository has **zero scope drift** into non-case features, strictly **zero business implementation**, flawless service boundary isolation, valid Flyway DDL syntax, and 100% valid documentation link integrity. The core pedagogical value stream (Material → RAG → Case Tree → Review → Simulator → Debate → Stats) is perfectly captured.

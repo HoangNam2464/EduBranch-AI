@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for lecturer case review, edit, and publication workflow in Edu-Branch-AI.
+description: Rules for lecturer case review, edit, and publication workflow in EduBranch-AI.
 trigger: keyword
 keywords: [case review, approve, publish, edit case, case lifecycle, draft, approved, published]
 ---

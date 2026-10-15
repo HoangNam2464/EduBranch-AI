@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for the notification extension point in Edu-Branch-AI.
+description: Rules for the notification extension point in EduBranch-AI.
 trigger: keyword
 keywords: [notification, email, reminder, deadline, assignment]
 ---

@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for the research evaluation boundary in Edu-Branch-AI.
+description: Rules for the research evaluation boundary in EduBranch-AI.
 trigger: keyword
 keywords: [evaluation, research, rubric, survey, dataset, export]
 ---

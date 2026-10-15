@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for the Review Study learning mode in Edu-Branch-AI.
+description: Rules for the Review Study learning mode in EduBranch-AI.
 trigger: keyword
 keywords: [review study, case analysis, proposed solution, review submission]
 ---

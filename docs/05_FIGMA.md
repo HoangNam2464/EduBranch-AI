@@ -1,11 +1,11 @@
-# EduBranch AI — Figma UI/UX Design Catalog (15 Tasks / 50 Story Points)
+# EduBranch-AI — Figma UI/UX Design Catalog (15 Tasks / 50 Story Points)
 
-> **Dự án**: EduBranch AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học  
+> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
 > **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
 > **Tài liệu tham chiếu thiết kế**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`  
 > **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma)  
 > **Quy mô**: 15 Tasks | 50 Story Points (14.88% toàn dự án)  
-> **Ranh giới nghiệp vụ**: Giáo dục đại học (Higher Education ONLY) — Tuyệt đối không dùng phong cách K-12.  
+> **Quy chuẩn thiết kế**: Chuẩn mực học tập tình huống chuyên sâu & chuyên nghiệp (EduBranch-AI Design Standards).  
 
 ---
 

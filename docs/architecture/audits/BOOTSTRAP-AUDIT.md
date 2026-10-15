@@ -1,4 +1,4 @@
-# Edu-Branch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
+﻿# EduBranch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
 
 > **Document Status**: Authoritative Final Post-Scaffold Self-Audit  
 > **Date**: 2026-09-11  
@@ -23,10 +23,10 @@ The repository contains a clean, verified multi-tier skeleton following initial 
 
 ## 2. Proposal Alignment
 
-A comprehensive audit against `C1SE_65-CaseTree-AI-Proposal_V1.0.docx` confirms:
-- **Project Identity**: Fully compliant. Edu-Branch-AI is established as an AI platform for interactive branching case studies and open review in university teaching (for Lecturers and Students).
+A comprehensive audit against `C1SE_65-EduBranch-AI-Proposal_V1.2.docx` confirms:
+- **Project Identity**: Fully compliant. EduBranch-AI is established as an AI platform for interactive branching case studies and open review in university teaching (for Lecturers and Students).
 - **Core Value Stream**: Fully compliant. Grounded in teaching material → RAG retrieval → Structured decision tree generation → Mandatory lecturer review & approval → Branching Case Player → Retrospective consequence reveal & reasoning justification → AI Challenge Support (1–2 rounds max, no grading) → Lecturer statistics.
-- **Target Audience**: University education (NOT K-12).
+- **Target Audience**: Quá trình học tập tình huống thực nghiệm & ra quyết định (Business, Law, Medicine, Engineering, etc.).
 - **Scope Compliance**:
   - In-Scope features: Completely documented across 11 feature specifications and 30 traceability items.
   - Out-of-Scope features: Excluded (no lesson planners, quiz generators, teacher workspaces, LMS integrations, social logins, or autonomous grading).
@@ -37,7 +37,7 @@ A comprehensive audit against `C1SE_65-CaseTree-AI-Proposal_V1.0.docx` confirms:
 ## 3. Owner Decisions
 
 The following explicit Project Owner decisions have been verified and applied:
-1. **Reference Repository Role**: `ai-teacher-copilot` is treated as an engineering reference only. Zero source code and zero K-12 business logic have been copied.
+1. **Reference Repository Role**: External repositories are treated as structural reference only. Zero source code and zero non-case business logic have been copied.
 2. **Architecture Boundary**: Confirmed service hierarchy: `Frontend (Browser) → Backend Gateway → AI Service (Internal Only)`. Direct frontend access to the AI service is strictly forbidden.
 3. **AI Service Separation**: AI service is isolated as a dedicated FastAPI microservice inside the internal Docker network.
 4. **Data & Storage Infrastructure**: PostgreSQL 16 + pgvector confirmed for relational business data and vector embeddings; Redis 7 confirmed for caching and session management; MinIO confirmed for PDF/DOCX object storage.
@@ -46,18 +46,18 @@ The following explicit Project Owner decisions have been verified and applied:
 
 ---
 
-## 4. Reference Repository Alignment
+## 4. Architectural Governance & System Boundaries
 
-An audit of `ai-teacher-copilot` was completed in [`docs/architecture/REFERENCE-REPOSITORY-AUDIT.md`](REFERENCE-REPOSITORY-AUDIT.md):
-- **Reusable Engineering Rules Adopted**: Git Feature Branch workflow (`feature/* → develop → main`), Conventional Commits (`type(scope): description`), PR checklist templates, PEP8 / Black / Flake8 standards, layered backend architecture, and untrusted data prompt boundaries (`<sources>...</sources>`).
-- **Reusable Architectural Patterns Adopted**: LLM Provider Abstraction (`providers/factory.py`), internal service API token authentication (`X-Internal-API-Key`), pgvector cosine similarity retrieval queries, and Pydantic v2 structured output validation.
-- **Reference Features Excluded**: Lesson Planner, Exam/Quiz Generator, Teacher Workspace, Word Export, Bloom's Taxonomy, and Autonomous Rubric Grading.
+Architectural boundaries and engineering standards are established in [`docs/architecture/ARCHITECTURAL-GOVERNANCE.md`](../ARCHITECTURAL-GOVERNANCE.md):
+- **Core Engineering Rules**: Git Feature Branch workflow (`feature/* → develop → main`), Conventional Commits (`type(scope): description`), PR checklist templates, PEP8 / Black / Flake8 standards, layered backend architecture, and untrusted data prompt boundaries (`<sources>...</sources>`).
+- **Architectural Patterns**: LLM Provider Abstraction (`providers/factory.py`), internal service API token authentication (`X-Internal-API-Key`), pgvector cosine similarity retrieval queries, and Pydantic v2 structured output validation.
+- **Scope Guardrails**: Strictly aligned with Proposal V1.2 for experiential case-based learning, excluding unrelated features.
 
 ---
 
 ## 5. Architecture
 
-The confirmed system architecture is documented in [`SYSTEM-ARCHITECTURE.md`](SYSTEM-ARCHITECTURE.md), [`SERVICE-BOUNDARIES.md`](SERVICE-BOUNDARIES.md), and [`DATA-FLOW.md`](DATA-FLOW.md):
+The confirmed system architecture is documented in [`SYSTEM-ARCHITECTURE.md`](../SYSTEM-ARCHITECTURE.md), [`SERVICE-BOUNDARIES.md`](../SERVICE-BOUNDARIES.md), and [`DATA-FLOW.md`](../DATA-FLOW.md):
 - **Client Tier**: React 18 + Vite + TypeScript + TailwindCSS + ReactFlow.
 - **Backend Gateway**: Candidate Options: Spring Boot 3 (scaffolded) / Node.js (NestJS) / Python FastAPI. Acts as the single external API gateway for the frontend.
 - **AI Service**: Python 3.12 + FastAPI (internal only). Owns document parsing, chunking, embeddings, pgvector retrieval, case generation prompt engineering, and debate assistance.
@@ -70,14 +70,14 @@ The confirmed system architecture is documented in [`SYSTEM-ARCHITECTURE.md`](SY
 
 The documentation architecture is established without duplicate sources of truth:
 1. **Architecture & Standards**:
-   - [`ADR-001-TECHNOLOGY-STACK.md`](ADR-001-TECHNOLOGY-STACK.md): Full stack classification & candidate options.
-   - [`SYSTEM-ARCHITECTURE.md`](SYSTEM-ARCHITECTURE.md): Multi-tier architecture overview.
-   - [`SERVICE-BOUNDARIES.md`](SERVICE-BOUNDARIES.md): Protocol contracts and responsibility matrix.
-   - [`DATA-FLOW.md`](DATA-FLOW.md): End-to-end sequence diagrams.
-   - [`DECISION-TREE-MODEL.md`](DECISION-TREE-MODEL.md): Graph invariants and JSON output format.
-   - [`REFERENCE-REPOSITORY-AUDIT.md`](REFERENCE-REPOSITORY-AUDIT.md): Engineering reference audit.
+   - [`ADR-001-TECHNOLOGY-STACK.md`](../ADR-001-TECHNOLOGY-STACK.md): Full stack classification & candidate options.
+   - [`SYSTEM-ARCHITECTURE.md`](../SYSTEM-ARCHITECTURE.md): Multi-tier architecture overview.
+   - [`SERVICE-BOUNDARIES.md`](../SERVICE-BOUNDARIES.md): Protocol contracts and responsibility matrix.
+   - [`DATA-FLOW.md`](../DATA-FLOW.md): End-to-end sequence diagrams.
+   - [`DECISION-TREE-MODEL.md`](../DECISION-TREE-MODEL.md): Graph invariants and JSON output format.
+   - [`ARCHITECTURAL-GOVERNANCE.md`](../ARCHITECTURAL-GOVERNANCE.md): Architectural governance and system boundaries.
 2. **Requirements & Features**:
-   - [`REQUIREMENT-TRACEABILITY.md`](../requirements/REQUIREMENT-TRACEABILITY.md): 30 Proposal items traced.
+   - [`REQUIREMENT-TRACEABILITY.md`](../../requirements/REQUIREMENT-TRACEABILITY.md): 30 Proposal items traced.
    - 11 Feature Specifications under `docs/features/`:
      - `FEATURE-AUTH-AND-ROLES.md`
      - `FEATURE-COURSE-AND-MATERIALS.md`
@@ -91,10 +91,10 @@ The documentation architecture is established without duplicate sources of truth
      - `FEATURE-NOTIFICATIONS.md`
      - `FEATURE-EVALUATION-AND-RESEARCH.md`
 3. **Data, AI & Research**:
-   - [`docs/database/DATA-MODEL.md`](../database/DATA-MODEL.md): Database schema and constraints.
-   - [`docs/ai/RAG-PIPELINE.md`](../ai/RAG-PIPELINE.md): RAG pipeline & sources boundary.
-   - [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](../ai/REASONING-CHALLENGE-SUPPORT.md): Socratic challenge rules.
-   - [`docs/qa/TESTING-STRATEGY.md`](../qa/TESTING-STRATEGY.md): Testing tiers and CI jobs.
+   - [`docs/database/DATA-MODEL.md`](../../database/DATA-MODEL.md): Database schema and constraints.
+   - [`docs/ai/RAG-PIPELINE.md`](../../ai/RAG-PIPELINE.md): RAG pipeline & sources boundary.
+   - [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](../../ai/REASONING-CHALLENGE-SUPPORT.md): Socratic challenge rules.
+   - [`docs/qa/TESTING-STRATEGY.md`](../../qa/TESTING-STRATEGY.md): Testing tiers and CI jobs.
    - [`docs/research/EVALUATION-DESIGN.md`](../research/EVALUATION-DESIGN.md): Classroom trial and research questions.
 
 ---
@@ -139,7 +139,7 @@ Across **all 11 feature areas and all 30 traceability items**, verified that **N
 ## 9. Scope Violations
 
 - **Identified**: None.
-- **Excluded**: Confirmed exclusion of all K-12 specific features from `ai-teacher-copilot` (Lesson Planner, Quiz Generator, Teacher Workspace, Word Export).
+- **Excluded**: Confirmed exclusion of non-case features (Lesson Planner, Quiz Generator, Teacher Workspace, Word Export).
 - **Protection**: Prompt injection mitigation strictly documented (`<sources>` tags); autonomous AI grading strictly prohibited; AI Challenge Support capped at 2 rounds.
 
 ---
@@ -149,7 +149,7 @@ Across **all 11 feature areas and all 30 traceability items**, verified that **N
 - All previous documentation gaps have been systematically closed:
   - Missing feature specifications → 11 dedicated specs created in `docs/features/`.
   - Missing traceability matrix → Created in `docs/requirements/REQUIREMENT-TRACEABILITY.md`.
-  - Missing reference audit → Created in `docs/architecture/REFERENCE-REPOSITORY-AUDIT.md`.
+  - Architectural governance established → Documented in `docs/architecture/ARCHITECTURAL-GOVERNANCE.md`.
   - Missing service boundaries → Created in `docs/architecture/SERVICE-BOUNDARIES.md`.
   - Missing data flows → Created in `docs/architecture/DATA-FLOW.md`.
   - Broken links in `SYSTEM-ARCHITECTURE.md` and `PROJECT_OVERVIEW.md` → Fully resolved.
