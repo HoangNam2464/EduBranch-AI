@@ -1,9 +1,9 @@
-# EduBranch AI — Sprint Tasks Tree & Role Breakdown (84 Tasks / 336 Story Points)
+# EduBranch-AI — Sprint Tasks Tree & Role Breakdown (84 Tasks / 336 Story Points)
 
-> **Dự án**: EduBranch AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học  
+> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
 > **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
 > **Cơ cấu chuẩn hóa**: 5 Nhóm chuyên môn (DES, FE, BE, OPS, QA) | 84 Tasks | 336 Story Points  
-> **Phạm vi nghiệp vụ**: Đại học / Sau đại học (Higher Education ONLY)  
+> **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)  
 
 ---
 

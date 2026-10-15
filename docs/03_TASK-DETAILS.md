@@ -1,10 +1,10 @@
-# EduBranch AI — Task Details Specification (84 Tasks / 336 Story Points)
+# EduBranch-AI — Task Details Specification (84 Tasks / 336 Story Points)
 
-> **Dự án**: EduBranch AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học  
+> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
 > **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
 > **Quy chuẩn định dạng Summary**: `[GROUP-###] Work name` (Không chèn mã `[EBA-###]` vào Summary)  
 > **Quy mô chuẩn hóa**: 4 Sprints | 84 Tasks | 336 Story Points  
-> **Phạm vi nghiệp vụ**: Đại học / Sau đại học (Higher Education ONLY)  
+> **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)  
 
 ---
 
@@ -22,7 +22,7 @@
 - **Dependencies**: None
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Canvas: `EduBranch-Design-System` / Frame: `Information Architecture & User Flow Matrix` (Lecturer Portal vs. Student Portal, Dual Learning Modes).
@@ -48,7 +48,7 @@ Figma Canvas: `EduBranch-Design-System` / Frame: `Information Architecture & Use
 - **Dependencies**: is blocked by Master Task EBA-101 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Component Library: `Shared UI States` (Loading skeleton, Empty state, Error alert, 403 Forbidden banner, Async Processing states).
@@ -73,7 +73,7 @@ Figma Component Library: `Shared UI States` (Loading skeleton, Empty state, Erro
 - **Dependencies**: is blocked by Master Task EBA-101 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/stores/authStore.ts`, `frontend/src/services/apiClient.ts`, `frontend/src/components/ui/PrivateRoute.tsx`.
@@ -99,7 +99,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-102, EBA-103 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/LoginPage.tsx`, `frontend/src/pages/RegisterPage.tsx`, `frontend/src/layouts/LecturerLayout.tsx`, `frontend/src/layouts/StudentLayout.tsx`, `frontend/src/pages/lecturer/CoursesPage.tsx`, `frontend/src/app/router.tsx`.
@@ -127,7 +127,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: None
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/auth/auth.controller.ts`, `backend/src/modules/auth/auth.service.ts`, `backend/src/modules/auth/dto/login.dto.ts`.
@@ -153,7 +153,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-105 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/common/guards/jwt-auth.guard.ts`, `backend/src/common/guards/roles.guard.ts`, `backend/src/common/decorators/public.decorator.ts`.
@@ -180,7 +180,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-105, EBA-106 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/course/course.controller.ts`, `backend/src/modules/course/course.service.ts`, `backend/src/modules/course/guards/course-ownership.guard.ts`.
@@ -206,7 +206,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: None
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/common/database/migration-runner.ts`, `backend/src/common/health/health.controller.ts`, `backend/migrations/`.
@@ -234,7 +234,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân 
 - **Dependencies**: is blocked by Master Task EBA-105, EBA-107 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/auth-matrix.spec.ts` (Auth, Course & Permissions test matrix).
@@ -260,7 +260,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-103, EBA-106, EBA-107 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Foundation** trong khuôn khổ **Sprint 1** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/security-regression.spec.ts` (Token expiry, role denial & ownership leak HTTP test suite).
@@ -286,7 +286,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-102 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Frame: `Material Library & Upload Modal Flow` (Drag & drop zone, file validation visual cues, course material list).
@@ -311,7 +311,7 @@ Figma Frame: `Material Library & Upload Modal Flow` (Drag & drop zone, file vali
 - **Dependencies**: is blocked by Master Task EBA-201 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Component: `Material Processing & Failure Recovery States` (Progress indicators, parsing/chunking status badges, retry actions).
@@ -336,7 +336,7 @@ Figma Component: `Material Processing & Failure Recovery States` (Progress indic
 - **Dependencies**: is blocked by Master Task EBA-201 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Frame: `RAG Grounding Evidence & Source Inspection Modal` (Retrieved chunk citation badges, text preview, source metadata).
@@ -361,7 +361,7 @@ Figma Frame: `RAG Grounding Evidence & Source Inspection Modal` (Retrieved chunk
 - **Dependencies**: is blocked by Master Task EBA-201, EBA-107 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/materials/MaterialUploadModal.tsx`, `frontend/src/services/materialService.ts`.
@@ -387,7 +387,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-202, EBA-204 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/MaterialsPage.tsx`, `frontend/src/components/materials/MaterialsTable.tsx`.
@@ -413,7 +413,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-205 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/materials/MaterialDeleteDialog.tsx`, `frontend/src/components/materials/MaterialRetryButton.tsx`.
@@ -439,7 +439,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-203 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/materials/SourceChunkViewerModal.tsx`.
@@ -464,7 +464,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-107 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/material/material.controller.ts`, `backend/src/modules/material/material.service.ts`.
@@ -491,7 +491,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-208 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/common/storage/minio.service.ts`, `backend/src/common/storage/storage.module.ts`.
@@ -517,7 +517,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân 
 - **Dependencies**: is blocked by Master Task EBA-209 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/app/ingestion/parser.py` (PDF Parser module).
@@ -543,7 +543,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-209 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/app/ingestion/parser.py` (DOCX Parser module).
@@ -569,7 +569,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-210, EBA-211 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/app/ingestion/chunker.py` (Recursive Character Text Splitter).
@@ -595,7 +595,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-212 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/app/ingestion/embedder.py`, `ai-service/app/providers/factory.py` (Embedding provider abstraction).
@@ -621,7 +621,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-213 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/migrations/V002__pgvector_hnsw_indexes.sql`, `ai-service/app/ingestion/vector_store.py`.
@@ -647,7 +647,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **OPS** phục vụ phân 
 - **Dependencies**: is blocked by Master Task EBA-214 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/app/retrieval/retriever.py`, `ai-service/app/routers/retrieval.py` (`<sources>` boundary wrapping).
@@ -673,7 +673,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-208 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/material/material.controller.spec.ts` (Mock data regression test).
@@ -698,7 +698,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-204, EBA-208 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/material-upload.spec.ts` (File type, size bounds & validation test suite).
@@ -724,7 +724,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-208, EBA-209 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/material-storage-security.spec.ts` (MinIO non-guessable key & tenant isolation test suite).
@@ -750,7 +750,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-214 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/ingestion-pipeline-integration.spec.ts` (End-to-End ingestion upload to pgvector).
@@ -775,7 +775,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-215 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 1** trong khuôn khổ **Sprint 2** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/tests/test_retrieval_boundary.py` (Vector retrieval relevance & prompt injection boundary tests).
@@ -801,7 +801,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-203 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Modal: `Case Generation Trigger & Parameter Configuration` (Course context select, syllabus prompt, difficulty slider, learning mode choice).
@@ -827,7 +827,7 @@ Figma Modal: `Case Generation Trigger & Parameter Configuration` (Course context
 - **Dependencies**: is blocked by Master Task EBA-301 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Interactive Canvas: `ReactFlow Decision Tree Topology` (Node types: root, decision, terminal; Edge types: option consequences; minimap).
@@ -853,7 +853,7 @@ Figma Interactive Canvas: `ReactFlow Decision Tree Topology` (Node types: root, 
 - **Dependencies**: is blocked by Master Task EBA-302 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Component: `Side-by-Side Node & Option Form Editor` (Situation text editor, option branching controls, consequence preview pane).
@@ -879,7 +879,7 @@ Figma Component: `Side-by-Side Node & Option Form Editor` (Situation text editor
 - **Dependencies**: is blocked by Master Task EBA-302 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Action Bar: `Case Governance Lifecycle Bar` (Draft, Reviewed, Approved, Published status pills, approval confirmation dialog).
@@ -905,7 +905,7 @@ Figma Action Bar: `Case Governance Lifecycle Bar` (Draft, Reviewed, Approved, Pu
 - **Dependencies**: is blocked by Master Task EBA-301, EBA-205 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/lecturer/CasesPage.tsx`, `frontend/src/components/cases/CaseGenerationModal.tsx`, `frontend/src/services/caseService.ts`.
@@ -932,7 +932,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-302, EBA-305 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/cases/DecisionTreeCanvas.tsx` (ReactFlow canvas component).
@@ -958,7 +958,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-303, EBA-306 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/cases/NodeOptionEditorForm.tsx`.
@@ -984,7 +984,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-307 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/cases/GraphMutationControls.tsx`.
@@ -1010,7 +1010,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-304, EBA-307 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/cases/CaseApprovalActionBar.tsx`.
@@ -1036,7 +1036,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-215 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/app/generation/schemas.py`, `ai-service/app/generation/tree_validator.py` (DFS 3-color cycle detection).
@@ -1062,7 +1062,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-310 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/app/generation/case_generator.py`, `ai-service/app/routers/generation.py`.
@@ -1089,7 +1089,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-311 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/case/case-tree-persistence.service.ts` (Transactional multi-table persistence).
@@ -1115,7 +1115,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-312 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/case/case-node.controller.ts`, `backend/src/modules/case/case-node.service.ts`.
@@ -1141,7 +1141,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-313 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/case/case-lifecycle.service.ts` (State machine DRAFT -> REVIEWED -> APPROVED -> PUBLISHED).
@@ -1167,7 +1167,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-314 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/case/case.repository.ts`, `backend/src/modules/case/case.controller.ts` (Published-only gate at DB query level).
@@ -1193,7 +1193,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-310, EBA-311 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/tests/test_case_generation_schema.py` (Pydantic schema validation for AI case output).
@@ -1218,7 +1218,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-310, EBA-313 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `ai-service/tests/test_graph_invariants.py` (DFS cycle, reachability, terminal node invariants test suite).
@@ -1244,7 +1244,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-314 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/case-lifecycle-statemachine.spec.ts` (State machine transition boundary tests).
@@ -1270,7 +1270,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-315 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/student-published-only-gate.spec.ts` (Security test suite preventing student access to non-published cases).
@@ -1295,7 +1295,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-309 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Flow: `Branching Case Player Experience-First UI/UX` (Immersive situation card, clean radio option cards, zero mid-flow consequence distraction).
@@ -1321,7 +1321,7 @@ Figma Flow: `Branching Case Player Experience-First UI/UX` (Immersive situation 
 - **Dependencies**: is blocked by Master Task EBA-401 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Canvas: `Journey Review Path Visualization & Consequence Reveal` (Node traversal history, revealed consequence cards, decision path replay).
@@ -1347,7 +1347,7 @@ Figma Canvas: `Journey Review Path Visualization & Consequence Reveal` (Node tra
 - **Dependencies**: is blocked by Master Task EBA-402 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Flow: `Retry & New Attempt Initiation UX` (New attempt prompt, attempt counter badge, immutable attempt history viewer).
@@ -1372,7 +1372,7 @@ Figma Flow: `Retry & New Attempt Initiation UX` (New attempt prompt, attempt cou
 - **Dependencies**: is blocked by Master Task EBA-102 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Page: `Review Study Open Analysis & Solution Proposal Form` (Case document reader, open analysis text area, solution proposal panel).
@@ -1398,7 +1398,7 @@ Figma Page: `Review Study Open Analysis & Solution Proposal Form` (Case document
 - **Dependencies**: is blocked by Master Task EBA-404 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Dashboard: `Lecturer Qualitative Feedback & Review Dashboard` (Student submission list, rubrics-free qualitative feedback input, status pill).
@@ -1424,7 +1424,7 @@ Figma Dashboard: `Lecturer Qualitative Feedback & Review Dashboard` (Student sub
 - **Dependencies**: is blocked by Master Task EBA-402, EBA-404 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **DES** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 Figma Chat Interface: `AI Challenge Support Socratic Interaction Modal` (2-round hard cap counter-question UI, round badge, reflection box).
@@ -1450,7 +1450,7 @@ Figma Chat Interface: `AI Challenge Support Socratic Interaction Modal` (2-round
 - **Dependencies**: is blocked by Master Task EBA-401, EBA-309 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/BranchingPlayPage.tsx`, `frontend/src/components/player/ContinuousNodePlayer.tsx`.
@@ -1476,7 +1476,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-407 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/player/TerminalCompletionGate.tsx`.
@@ -1502,7 +1502,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-402, EBA-408 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/JourneyReviewPage.tsx`, `frontend/src/components/player/ConsequenceRevealCanvas.tsx`.
@@ -1528,7 +1528,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-409 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/player/RetrospectiveReasoningModal.tsx`.
@@ -1554,7 +1554,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-409 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/components/player/RetryAttemptAction.tsx`.
@@ -1580,7 +1580,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-410 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/ReflectionPage.tsx`, `frontend/src/services/reflectionService.ts`.
@@ -1606,7 +1606,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-404 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/ReviewStudyPage.tsx`, `frontend/src/services/reviewStudyService.ts`.
@@ -1632,7 +1632,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-405, EBA-413 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Lecturer Feedback** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Lecturer Feedback** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/LecturerFeedbackPage.tsx`, `frontend/src/components/feedback/SubmissionReviewList.tsx`.
@@ -1658,7 +1658,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-414 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/student/ReviewFeedbackPage.tsx`, `frontend/src/components/feedback/StudentReviewFeedbackView.tsx`.
@@ -1684,7 +1684,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-406, EBA-410 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/ChallengeSupportPage.tsx`, `frontend/src/components/challenge/SocraticDialoguePanel.tsx`.
@@ -1710,7 +1710,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-408 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Statistics** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân hệ **Statistics** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `frontend/src/pages/StatisticsPage.tsx`, `frontend/src/components/stats/BranchStatsChart.tsx`.
@@ -1736,7 +1736,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-309 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/branching-attempt/branching-attempt.controller.ts`, `branching-attempt.service.ts`.
@@ -1762,7 +1762,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-418 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/branching-attempt/traversal.service.ts` (Real-time traversal & path persistence).
@@ -1788,7 +1788,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-419 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/branching-attempt/terminal-completion.service.ts`.
@@ -1814,7 +1814,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-420 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/branching-attempt/journey-review.service.ts` (Consequence unlocking & path assembly).
@@ -1840,7 +1840,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-421 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/reasoning/reasoning.controller.ts`, `backend/src/modules/reasoning/reasoning.service.ts`.
@@ -1866,7 +1866,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-309 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/review-study/review-study.controller.ts`, `backend/src/modules/review-study/review-study.service.ts`.
@@ -1892,7 +1892,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-423 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Lecturer Feedback** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Lecturer Feedback** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/lecturer-feedback/lecturer-feedback.controller.ts`, `lecturer-feedback.service.ts`.
@@ -1918,7 +1918,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-422, EBA-423 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/challenge-support/challenge-support.service.ts`, `ai-service/app/routers/challenge.py` (2-round cap).
@@ -1945,7 +1945,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-420, EBA-423 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Statistics** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Statistics** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/src/modules/statistics/statistics.controller.ts`, `backend/src/modules/statistics/statistics.service.ts`.
@@ -1971,7 +1971,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-408, EBA-421 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/branching-study-e2e.spec.ts` (Complete continuous traversal to review flow).
@@ -1997,7 +1997,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-407, EBA-419 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/pedagogical-invariants.spec.ts` (Verification of zero mid-flow consequence or reasoning).
@@ -2023,7 +2023,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-411, EBA-418 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Branching Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/retry-isolation.spec.ts` (Immutable historical attempts & retry isolation tests).
@@ -2049,7 +2049,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-414, EBA-424 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Review Study** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/review-study-feedback-e2e.spec.ts` (Review Study, Lecturer Feedback & Reflection suite).
@@ -2075,7 +2075,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-416, EBA-425 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Challenge Support** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/challenge-support-safety.spec.ts` (2-round hard cap, non-grading boundary audit).
@@ -2101,7 +2101,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-427, EBA-430 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `backend/test/cross-role-security-load.spec.ts` (Cross-role isolation & performance stress tests).
@@ -2127,7 +2127,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-432 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `docs/qa/UAT-EXECUTION-REPORT.md` (User Acceptance Testing scripts & defect triage matrix).
@@ -2153,7 +2153,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-427 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `docs/qa/ACCESSIBILITY-AUDIT.md` (WCAG 2.1 AA audit report & keyboard navigation test log).
@@ -2179,7 +2179,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Dependencies**: is blocked by Master Task EBA-433, EBA-434 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
-Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree), không sử dụng các khái niệm K-12. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
+Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân hệ **Release** trong khuôn khổ **Sprint 4** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
 `docs/qa/RELEASE-READINESS-REPORT.md` (Final smoke test run log & demo validation script).

@@ -23,10 +23,10 @@ The repository contains a clean, verified multi-tier skeleton following initial 
 
 ## 2. Proposal Alignment
 
-A comprehensive audit against `C1SE_65-CaseTree-AI-Proposal_V1.0.docx` confirms:
+A comprehensive audit against `C1SE_65-EduBranch-AI-Proposal_V1.2.docx` confirms:
 - **Project Identity**: Fully compliant. Edu-Branch-AI is established as an AI platform for interactive branching case studies and open review in university teaching (for Lecturers and Students).
 - **Core Value Stream**: Fully compliant. Grounded in teaching material → RAG retrieval → Structured decision tree generation → Mandatory lecturer review & approval → Branching Case Player → Retrospective consequence reveal & reasoning justification → AI Challenge Support (1–2 rounds max, no grading) → Lecturer statistics.
-- **Target Audience**: University education (NOT K-12).
+- **Target Audience**: Quá trình học tập tình huống thực nghiệm & ra quyết định (Business, Law, Medicine, Engineering, etc.).
 - **Scope Compliance**:
   - In-Scope features: Completely documented across 11 feature specifications and 30 traceability items.
   - Out-of-Scope features: Excluded (no lesson planners, quiz generators, teacher workspaces, LMS integrations, social logins, or autonomous grading).
@@ -37,7 +37,7 @@ A comprehensive audit against `C1SE_65-CaseTree-AI-Proposal_V1.0.docx` confirms:
 ## 3. Owner Decisions
 
 The following explicit Project Owner decisions have been verified and applied:
-1. **Reference Repository Role**: `ai-teacher-copilot` is treated as an engineering reference only. Zero source code and zero K-12 business logic have been copied.
+1. **Reference Repository Role**: External repositories are treated as structural reference only. Zero source code and zero non-case business logic have been copied.
 2. **Architecture Boundary**: Confirmed service hierarchy: `Frontend (Browser) → Backend Gateway → AI Service (Internal Only)`. Direct frontend access to the AI service is strictly forbidden.
 3. **AI Service Separation**: AI service is isolated as a dedicated FastAPI microservice inside the internal Docker network.
 4. **Data & Storage Infrastructure**: PostgreSQL 16 + pgvector confirmed for relational business data and vector embeddings; Redis 7 confirmed for caching and session management; MinIO confirmed for PDF/DOCX object storage.
@@ -139,7 +139,7 @@ Across **all 11 feature areas and all 30 traceability items**, verified that **N
 ## 9. Scope Violations
 
 - **Identified**: None.
-- **Excluded**: Confirmed exclusion of all K-12 specific features from `ai-teacher-copilot` (Lesson Planner, Quiz Generator, Teacher Workspace, Word Export).
+- **Excluded**: Confirmed exclusion of non-case features (Lesson Planner, Quiz Generator, Teacher Workspace, Word Export).
 - **Protection**: Prompt injection mitigation strictly documented (`<sources>` tags); autonomous AI grading strictly prohibited; AI Challenge Support capped at 2 rounds.
 
 ---

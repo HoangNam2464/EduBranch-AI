@@ -1,8 +1,8 @@
 # Edu-Branch-AI — Technology & Documentation Correction Report
 
 > **Report Type**: Post-Audit Repository Migration & Consistency Report  
-> **Target System**: Edu-Branch-AI (`https://github.com/HoangNam2464/CaseTree-AI`)  
-> **Primary Authority (Priority 1)**: `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`  
+> **Target System**: Edu-Branch-AI (`https://github.com/HoangNam2464/EduBranch-AI`)  
+> **Primary Authority (Priority 1)**: `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`  
 > **Project Owner Decisions (Priority 2)**: Ratified Backend Gateway (Node.js/NestJS), React 19 + TailwindCSS v4 baseline, 3-tier boundary, PostgreSQL+pgvector, Redis 7, MinIO, separate internal AI Service, structural skeleton only.  
 > **Date of Execution**: 2026-09-11  
 > **Final Consistency Verdict**: **GREEN** (All contradictions resolved, single coherent technology baseline established across Proposal, Architecture, Technology, Rules, Source Structure, and Documentation).
@@ -38,7 +38,7 @@ The following technology and structural assets originated from the reference rep
 
 ## 3. What the Edu-Branch-AI Proposal Actually Allows
 
-Extracted directly from `C1SE_65-CaseTree-AI-Proposal_V1.0.docx`:
+Extracted directly from `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`:
 
 - **Backend** (Section 7, p. 11 & Section 11, p. 16):
   > *"Backend: Node.js (NestJS/Express) or Python FastAPI"*  
@@ -180,7 +180,7 @@ All Java / Spring Boot / Maven files from the initial bootstrap scaffold:
 
 ## 8. Rules Updated
 
-All 14 files under [`.agents/rules/`](file:///d:/CAPSTONE_2026/CaseTree-AI/.agents/rules) were systematically updated:
+All 14 files under [`.agents/rules/`](file:///d:/CAPSTONE_2026/EduBranch-AI/.agents/rules) were systematically updated:
 
 | Rule File | Nature of Correction |
 | :--- | :--- |
@@ -247,4 +247,4 @@ The Edu-Branch-AI repository now presents a **100% unified, consistent, and Prop
 - **Rules** in `.agents/rules/` enforce NestJS, FastAPI, and React 19.
 - **Source Code** in `backend/`, `ai-service/`, and `frontend/` cleanly compiles under these stacks.
 - **Documentation** across `docs/` describes this exact system without contradictory claims.
-- **Business Scope** remains 100% focused on university branching case studies and AI debate, with strictly zero K-12 leaks and zero premature feature implementation.
+- **Business Scope** remains 100% focused on experiential branching case studies, with strictly zero external leaks and zero premature feature implementation.

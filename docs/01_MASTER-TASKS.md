@@ -1,10 +1,10 @@
-# EduBranch AI — Master Tasks Catalog (84 Tasks / 336 Story Points)
+# EduBranch-AI — Master Tasks Catalog (84 Tasks / 336 Story Points)
 
-> **Dự án**: EduBranch AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo dục đại học  
+> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
 > **Nguồn quản trị gốc (Single Source of Truth)**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
 > **Quy mô chuẩn hóa**: 4 Sprints cố định | 84 Master Tasks | 336 Story Points  
 > **Thời gian thực thi**: 07/10/2026 – 15/12/2026 (10 tuần)  
-> **Phạm vi nghiệp vụ**: Đại học / Sau đại học (Higher Education ONLY — Không áp dụng K-12)  
+> **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)  
 
 ---
 

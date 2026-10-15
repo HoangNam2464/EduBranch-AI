@@ -3,7 +3,7 @@
 > **Tài liệu bàn giao chuyên dụng cho AI Assistant (AI Handover & Alignment Directive)**  
 > **Dự án áp dụng**: EduBranch AI (Capstone C1SE.65 — Đại học Duy Tân)  
 > **Thư mục làm việc của dự án**: `D:\CAPSTONE_2026\EduBranch-AI`  
-> **Nguồn đối chiếu chuẩn (Reference Project)**: `D:\DU_AN_2026\Python\ai-teacher-copilot`  
+> **Nguồn pháp lý & nghiệp vụ chuẩn**: Proposal V1.2 (C1SE.65 — Đại học Duy Tân)  
 > **Ngày phê duyệt**: 2026-10-12  
 
 ---
@@ -22,16 +22,14 @@
 * Master Task ID: `EBA-101` $\rightarrow$ `EBA-435`.
 * Nguồn quản trị gốc (Single Source of Truth): `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`.
 
-### 3. RANH GIỚI NGHIỆP VỤ SỐNG CÒN: ĐẠI HỌC 100% — CẤM TUYỆT ĐỐI KHÁI NIỆM K-12:
-* Dự án EduBranch AI được thiết kế **dành riêng cho Giáo dục Đại học (Higher Education Only)** phục vụ phương pháp giảng dạy tình huống rẽ nhánh (Interactive Branching Case Studies) cho sinh viên đại học (Kinh doanh, Luật, Y khoa, Kỹ thuật...).
-* **NGHIÊM CẤM TUYỆT ĐỐI** mang các khái niệm từ dự án mẫu K-12 (`ai-teacher-copilot`) sang:
-  * ❌ **CẤM DÙNG**: `K-12`, `Lớp 1-12`, `Tiểu học / THCS / THPT`, `Học sinh phổ thông`, `Soạn giáo án`, `Lesson Plan`, `Đề thi trắc nghiệm Bloom`, `Chuẩn chương trình GDPT`.
-  * ✅ **BẮT BUỘC DÙNG THUẬT NGỮ ĐẠI HỌC**:
-    * Đối tượng: **Lecturer** (Giảng viên) và **Student** (Sinh viên đại học).
-    * Bối cảnh: **Course** (Học phần/Khóa học đại học) và **Teaching Materials** (Syllabus, giáo trình, case tài liệu).
-    * Hoạt động cốt lõi: **Case Study** gồm 2 chế độ:
-      * `Branching Study`: Sinh viên nhập vai đưa ra quyết định rẽ nhánh theo cây quyết định (Decision Tree - ReactFlow).
-      * `Review Study`: Phản biện mở, xem lại toàn bộ hành trình đã chọn (Journey Review), tự suy ngẫm (Reflection), và nhận nhận xét định tính từ giảng viên (Lecturer Feedback).
+### 3. ĐỊNH HƯỚNG SƯ PHẠM CỐT LÕI: QUÁ TRÌNH HỌC TẬP TÌNH HUỐNG THỰC NGHIỆM:
+* Dự án EduBranch-AI được thiết kế tối ưu cho **Quá trình học tập tình huống thực nghiệm và rèn luyện tư duy phản biện (Experiential Case-Based Learning & Decision-Making Process)**, giúp người học trải nghiệm các quyết định đa chiều trong môi trường đào tạo chuyên sâu (Kinh doanh, Luật, Y khoa, Kỹ thuật, Quản trị...).
+* **CHUẨN HÓA THUẬT NGỮ VÀ MÔ HÌNH HỌC TẬP CHUYÊN NGHIỆP**:
+  * Đối tượng: **Lecturer** (Giảng viên / Người hướng dẫn) và **Student** (Sinh viên / Người học).
+  * Bối cảnh: **Course** (Học phần / Khóa học) và **Teaching Materials** (Syllabus, giáo trình, case tài liệu).
+  * Hoạt động cốt lõi: **Case Study** gồm 2 chế độ:
+    * `Branching Study`: Người học nhập vai đưa ra quyết định rẽ nhánh theo cây quyết định (Decision Tree - ReactFlow).
+    * `Review Study`: Phản biện mở, xem lại toàn bộ hành trình đã chọn (Journey Review), tự suy ngẫm (Reflection), và nhận nhận xét định tính từ giảng viên (Lecturer Feedback).
 
 ---
 
@@ -73,7 +71,7 @@ AI nhận nhiệm vụ cần biết chính xác hệ thống đang ở trạng t
 ## 3. MỤC TIÊU BIG UPDATE: CHUẨN HÓA CẤU TRÚC `docs/` THÀNH 6 FILE CHUẨN
 
 Hiện tại thư mục `docs/` của EduBranch AI đang bị phân mảnh và dồn toàn bộ 84 tasks vào file `SPRINT-BACKLOG.md` (65 KB).  
-**Nhiệm vụ của AI**: Chuẩn hóa hệ thống tài liệu thành bộ 6 file chuẩn (đánh số `01` đến `06`) theo khuôn mẫu thành công của `ai-teacher-copilot`, **bảo toàn nguyên vẹn 100% nội dung các tài liệu kiến trúc hiện có** (`architecture/`, `features/`, `database/`):
+**Nhiệm vụ của AI**: Chuẩn hóa hệ thống tài liệu thành bộ 6 file chuẩn (đánh số `01` đến `06`) theo chuẩn quản trị chuyên nghiệp của EduBranch AI, **bảo toàn nguyên vẹn 100% nội dung các tài liệu kiến trúc hiện có** (`architecture/`, `features/`, `database/`):
 
 ### Bản Đồ Ánh Xạ 6 File Chuẩn Hóa:
 

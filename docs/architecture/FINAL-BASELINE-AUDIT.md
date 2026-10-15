@@ -165,7 +165,7 @@ All entries above are structural skeleton and documentation only. No functional 
 | Quiz generation | Not found in source or rules |
 | Exam generation | Not found in source or rules |
 | Bloom's taxonomy | Found only in historical audit docs explicitly marking it as EXCLUDED |
-| K-12 functionality | Not found in active source or rules |
+| Generic curriculum packaging | Not found in active source or rules |
 | Autonomous grading | Not found in source; explicitly forbidden in rules |
 | LMS integration | Not found |
 | Social login | Not found |
@@ -379,7 +379,7 @@ All 14 `.agents/rules/` files are correctly updated. Zero Spring Boot, Java, Rea
 
 ### Product Scope: GREEN
 
-No out-of-scope functionality (lesson planning, quiz generation, K-12 features, autonomous grading, LMS integration) is present in any active source file or rule. All Bloom's taxonomy references exist only in historical audit documents that explicitly mark it as excluded.
+No out-of-scope functionality (lesson planning, quiz generation, autonomous grading, LMS integration) is present in any active source file or rule. All Bloom's taxonomy references exist only in historical audit documents that explicitly mark it as excluded.
 
 ### Business Implementation: STRUCTURAL SKELETON ONLY (CONFIRMED)
 
@@ -473,7 +473,7 @@ Decision tree Pydantic schema structure, field definitions, `validate_tree_struc
 
 **Status: FIXED**
 
-Action: `Remove-Item -Recurse -Force "d:\CAPSTONE_2026\CaseTree-AI\backend\target"` — **exit code 0**.
+Action: `Remove-Item -Recurse -Force "d:\CAPSTONE_2026\EduBranch-AI\backend\target"` — **exit code 0**.
 
 The empty Maven build output directory (`target/generated-sources/`, `target/test-classes/`, etc.) has been deleted. Verified: no `.class`, `.jar`, or active source files were present in the directory.
 

@@ -25,7 +25,7 @@
 | **Định dạng Summary chuẩn Jira** | `[GROUP-###] Work name` (Không có `[EBA-###]`) | **84/84 tasks** tuân thủ nghiêm ngặt (0 lỗi) | ✅ **PASS** |
 | **Tính toàn vẹn Dependencies** | Giữ nguyên Master Task ID | Không tự sinh Issue Key giả lập | ✅ **PASS** |
 | **Bảo toàn Acceptance Criteria** | 100% điều kiện nghiệm thu gốc | Không làm mất tiêu chí nào khi định dạng | ✅ **PASS** |
-| **Ranh giới nghiệp vụ giáo dục** | Higher Education ONLY | Không có từ khóa hay workflow K-12 | ✅ **PASS** |
+| **Ranh giới nghiệp vụ giáo dục** | Case-Based Learning Process | Chuẩn hóa quy trình học tập tình huống thực nghiệm | ✅ **PASS** |
 
 ---
 

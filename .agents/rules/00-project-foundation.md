@@ -6,31 +6,29 @@ description: >-
 trigger: always_on
 ---
 
-# Edu-Branch-AI — Global Project Rules
+# EduBranch-AI — Global Project Rules
 
-## 1. Project Identity & Strict Domain Boundary
+## 1. Project Identity & Pedagogical Domain
 
-- **Name**: Edu-Branch-AI
-- **Full Name**: Edu-Branch-AI — AI Platform for Experiential Case-Based Learning in University Teaching
-- **Target**: University / Higher Education ONLY (**ABSOLUTE BAN ON K-12**)
-- **Users**: Lecturers and Students
+- **Name**: EduBranch-AI
+- **Full Name**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios
+- **Target**: Quá trình học tập tình huống thực nghiệm & rèn luyện tư duy phản biện (Experiential Case-Based Learning Process)
+- **Users**: Lecturers (Giảng viên / Người hướng dẫn) and Students (Sinh viên / Người học)
 - **Stack**: Node.js (NestJS 10 + TypeScript) + FastAPI (Python 3.12) + React 19 (Vite + TailwindCSS v4)
 - **Database**: PostgreSQL 16 + pgvector | MinIO (Object Storage) | SQL Migrations | Redis 7 (Cache)
 - **AI / LLM**: Gemini 2.0 Flash / OpenAI GPT-4o-mini via Provider Abstraction
 - **RAG**: LangChain (text splitters + retrieval orchestration)
 - **Decision Tree Visualization**: ReactFlow (used in Lecturer Case Review editor and REVIEW phase)
 
-### CRITICAL RULE: STRICTLY HIGHER EDUCATION — ZERO K-12 CONCEPTS
-1. **Higher Education Only**: Edu-Branch-AI is designed exclusively for university case-based learning (Business, Law, Medicine, Management, Engineering, etc.).
-2. **Prohibited K-12 Terms & Workflows**:
-   - ❌ **NEVER** use: `K-12`, `Grade 1-12`, `Primary/Secondary/High School`, `Pupil`, `Teacher Copilot`.
-   - ❌ **NEVER** use: `Lesson Plan`, `Lesson Planner`, `Lesson Planning`, `Curriculum Standards` (MOET, Common Core), `Homework Sheets`.
-3. **No Reference Repo Pollution**:
-   - ❌ **NEVER** import or mix tasks, schemas, or components from reference repositories designed for K-12 (such as `ai-teacher-copilot`). All Edu-Branch-AI work derives strictly from the Edu-Branch-AI Proposal V1.1 (C1SE.65) and Product Direction V2.
-4. **Mandatory University Terminology**:
-   - Users: **Lecturer** (Giảng viên) and **Student** (Sinh viên đại học).
-   - Setting: **Course** (Học phần/Khóa học đại học) and **Teaching Materials** (Syllabus, giáo trình, case tài liệu đại học).
+### CORE PEDAGOGICAL MODEL: EXPERIENTIAL CASE-BASED LEARNING
+1. **Learning Process Orientation**: EduBranch-AI is engineered to support active learning processes through case studies and multi-branch decision trees (Business, Law, Medicine, Management, Engineering, etc.).
+2. **Professional Learning Terminology**:
+   - Users: **Lecturer** (Giảng viên / Người hướng dẫn) and **Student** (Sinh viên / Người học).
+   - Setting: **Course** (Học phần / Khóa học) and **Teaching Materials** (Syllabus, giáo trình, case tài liệu).
    - Core Activity: **Case Study** (`Branching Study` & `Review Study`).
+   - Reasoning & Reflection: **Student Reasoning**, **Reflection**, **Review Submission**.
+3. **Independent Project Standards**:
+   - All tasks, schemas, and features derive strictly from the EduBranch-AI Proposal V1.2 (C1SE.65) and Product Direction V2, without mixing concepts from external reference projects.
 
 ---
 
@@ -161,4 +159,4 @@ docs/<topic>             →  develop
 Authentication · Courses · Teaching Materials · Document Processing · RAG · Case Generation · Case Review & Publishing (Branching Study & Review Study) · Branching Case Player · Student Reasoning · Review Study Submissions · AI Reasoning / Challenge Support (1-2 rounds, no grading) · Student Reflection · Lecturer Feedback · Lecturer Statistics (simple) · Evaluation/Research boundary · Notification extension point
 
 ### OUT OF SCOPE
-**K-12 education · Lesson planning · K-12 curriculum alignment** · Social login · Payment · Subscription · Generic chatbot · LMS integration · Multi-tenant admin · Real-time collaboration · Mobile app · Recommendation engine · Web search · Fine-tuning · Multi-agent orchestration · Autonomous grading · Auto pass/fail · Large analytics dashboards
+Lesson planning · General curriculum alignment · Social login · Payment · Subscription · Generic chatbot · LMS integration · Multi-tenant admin · Real-time collaboration · Mobile app · Recommendation engine · Web search · Fine-tuning · Multi-agent orchestration · Autonomous grading · Auto pass/fail · Large analytics dashboards

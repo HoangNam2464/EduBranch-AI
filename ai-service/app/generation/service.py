@@ -57,7 +57,7 @@ Context:
 You are an expert university professor creating a branching case study.
 Generate a valid JSON object conforming to the provided schema.
 The case must have a root node, multiple decision paths, and at least one terminal node (a node with no options, or an option with next_node_index=None).
-The case must strictly be for Higher Education / University level. No K-12 concepts.
+The case must focus on experiential problem-solving, critical reasoning, and practical decision-making scenarios suitable for professional and higher-level learners.
 """
 
     if has_api_key:
