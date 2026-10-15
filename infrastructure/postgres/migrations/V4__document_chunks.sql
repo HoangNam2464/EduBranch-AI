@@ -1,5 +1,5 @@
--- ==============================================================================
--- EduBranch AI — V4 Migration: document_chunks table for pgvector RAG
+﻿-- ==============================================================================
+-- EduBranch-AI — V4 Migration: document_chunks table for pgvector RAG
 -- Source of Truth: FEATURE-DOCUMENT-PROCESSING-AND-RAG.md (FR-RAG-04)
 -- ==============================================================================
 -- Creates the document_chunks table required for the Material Ingestion & RAG

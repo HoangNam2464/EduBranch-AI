@@ -1,5 +1,5 @@
-#!/bin/sh
-# Create MinIO buckets for EduBranch AI
+﻿#!/bin/sh
+# Create MinIO buckets for EduBranch-AI
 # Run this after MinIO starts
 # Usage: docker exec edubranch_minio sh /create-buckets.sh
 

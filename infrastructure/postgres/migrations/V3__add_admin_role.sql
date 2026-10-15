@@ -1,5 +1,5 @@
--- ==============================================================================
--- EduBranch AI — V3 Migration: Add ADMIN to User Role Check Constraint
+﻿-- ==============================================================================
+-- EduBranch-AI — V3 Migration: Add ADMIN to User Role Check Constraint
 -- Source of Truth: Proposal V1.2 Figure 1 (System Context Diagram)
 -- ==============================================================================
 -- Ensures that existing database volumes/instances that ran V1/V2 can accept
