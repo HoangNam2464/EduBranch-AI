@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for lecturer statistics in Edu-Branch-AI.
+description: Rules for lecturer statistics in EduBranch-AI.
 trigger: keyword
 keywords: [statistics, analytics, branch selection, participation, completion]
 ---

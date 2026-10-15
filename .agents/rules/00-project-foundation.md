@@ -1,6 +1,6 @@
 ---
 description: >-
-  Global project rules for Edu-Branch-AI. Always loaded when working in this
+  Global project rules for EduBranch-AI. Always loaded when working in this
   repository. Enforces architecture boundaries, coding standards, Git workflow,
   security rules, and engineering principles.
 trigger: always_on
@@ -35,7 +35,7 @@ trigger: always_on
 ## 2. Repository Structure
 
 ```
-Edu-Branch-AI/
+EduBranch-AI/
 ├── backend/                    ← Node.js (NestJS) API Gateway
 ├── ai-service/                 ← FastAPI AI / RAG Service (INTERNAL)
 ├── frontend/                   ← React 19 + Vite + TailwindCSS v4

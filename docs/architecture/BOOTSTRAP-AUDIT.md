@@ -1,4 +1,4 @@
-# Edu-Branch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
+﻿# EduBranch-AI — Post-Scaffold Audit, Alignment & Self-Audit Report
 
 > **Document Status**: Authoritative Final Post-Scaffold Self-Audit  
 > **Date**: 2026-09-11  
@@ -24,7 +24,7 @@ The repository contains a clean, verified multi-tier skeleton following initial 
 ## 2. Proposal Alignment
 
 A comprehensive audit against `C1SE_65-EduBranch-AI-Proposal_V1.2.docx` confirms:
-- **Project Identity**: Fully compliant. Edu-Branch-AI is established as an AI platform for interactive branching case studies and open review in university teaching (for Lecturers and Students).
+- **Project Identity**: Fully compliant. EduBranch-AI is established as an AI platform for interactive branching case studies and open review in university teaching (for Lecturers and Students).
 - **Core Value Stream**: Fully compliant. Grounded in teaching material → RAG retrieval → Structured decision tree generation → Mandatory lecturer review & approval → Branching Case Player → Retrospective consequence reveal & reasoning justification → AI Challenge Support (1–2 rounds max, no grading) → Lecturer statistics.
 - **Target Audience**: Quá trình học tập tình huống thực nghiệm & ra quyết định (Business, Law, Medicine, Engineering, etc.).
 - **Scope Compliance**:

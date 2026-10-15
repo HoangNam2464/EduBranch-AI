@@ -1,5 +1,5 @@
 ﻿---
-description: Rules for the Course domain in Edu-Branch-AI.
+description: Rules for the Course domain in EduBranch-AI.
 trigger: keyword
 keywords: [course, lecturer course, course management, course ownership]
 ---
