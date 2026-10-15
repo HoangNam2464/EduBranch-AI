@@ -1,8 +1,8 @@
-name: edubranch-ai
+﻿name: edubranch-ai
 
 
 # ==============================================================================
-# EduBranch AI — Local Development Infrastructure
+# EduBranch-AI — Local Development Infrastructure
 # ==============================================================================
 # Starts infrastructure services only:
 #   - PostgreSQL 16 + pgvector   (business data + vector embeddings)
@@ -98,7 +98,7 @@ volumes:
   postgres_data:
     driver: local
     # Preserve the existing PostgreSQL data volume while the service identity
-    # moves to EduBranch AI. Do not let Compose create a fresh empty database.
+    # moves to EduBranch-AI. Do not let Compose create a fresh empty database.
     name: casetree-ai_postgres_data
   redis_data:
     driver: local

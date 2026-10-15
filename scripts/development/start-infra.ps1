@@ -1,7 +1,7 @@
-#!/usr/bin/env pwsh
+﻿#!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    EduBranch AI — Start infrastructure services (Windows PowerShell version).
+    EduBranch-AI — Start infrastructure services (Windows PowerShell version).
 .DESCRIPTION
     Starts PostgreSQL 16 + pgvector, Redis 7, and MinIO via Docker Compose.
     Backend (NestJS) and AI Service (FastAPI) are started separately in dev mode.
@@ -11,7 +11,7 @@
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "🚀 Starting EduBranch AI infrastructure..." -ForegroundColor Cyan
+Write-Host "🚀 Starting EduBranch-AI infrastructure..." -ForegroundColor Cyan
 
 # Check Docker is running
 try {

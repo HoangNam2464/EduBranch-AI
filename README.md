@@ -1,5 +1,5 @@
-<p align="center">
-  <h1 align="center">🌿 EduBranch AI</h1>
+﻿<p align="center">
+  <h1 align="center">🌿 EduBranch-AI</h1>
   <p align="center">
     <strong>AI Platform for Experiential Case-Based Learning in University Teaching</strong>
   </p>
@@ -37,13 +37,13 @@
 
 ## 📖 Overview
 
-**EduBranch AI** is a university-focused AI platform that helps lecturers design and facilitate experiential case-based learning directly from their teaching materials (PDF / DOCX). It supports two distinct learning modes:
+**EduBranch-AI** is a university-focused AI platform that helps lecturers design and facilitate experiential case-based learning directly from their teaching materials (PDF / DOCX). It supports two distinct learning modes:
 
 1. **Branching Study** — Students experience a realistic situation, make a series of consecutive decisions, and complete the full journey before entering a structured REVIEW phase. In Review, students look back at every decision they made, understand how each choice shaped the outcome, write their reasoning in retrospect, and reflect. They may then retry with a new attempt to explore a different path.
 
 2. **Review Study** — Students receive real-world case context and data, analyze the situation, propose a solution with reasoning, receive qualitative lecturer feedback, and complete a reflection.
 
-### Why EduBranch AI, not just reading a textbook or doing a quiz?
+### Why EduBranch-AI, not just reading a textbook or doing a quiz?
 
 Because students see the direct consequences of **their own** decisions — not generic outcomes from a textbook — and they revisit every choice in the REVIEW phase to understand *why* it led to that result. This turns passive knowledge into active decision-making experience.
 
@@ -356,7 +356,7 @@ npm run dev
 
 ## 🔒 Git Safety & Secret Protection
 
-EduBranch AI enforces strict repository rules to prevent the accidental leakage of secrets, keys, and environment files.
+EduBranch-AI enforces strict repository rules to prevent the accidental leakage of secrets, keys, and environment files.
 
 ### 1. Pre-commit Hook Safeguard
 A zero-dependency pre-commit hook is provided in `.githooks/pre-commit`. It scans staged files and rejects commits containing:
