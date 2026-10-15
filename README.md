@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <h1 align="center">🌿 EduBranch-AI</h1>
   <p align="center">
     <strong>AI Platform for Experiential Case-Based Learning in University Teaching</strong>
@@ -62,7 +62,7 @@ The platform includes embedded **AI Reasoning & Challenge Support** (1–2 round
 > - ⚠️ Backend domain controllers do not yet expose persistent case, attempt, Review Study, reasoning, feedback, or challenge APIs.
 > - ⚠️ The frontend prototype is not yet connected to the backend and its in-memory state is lost on refresh.
 >
-> See [Final Product-Direction Validation](docs/architecture/FINAL-PRODUCT-DIRECTION-VALIDATION.md)
+> See [Final Product-Direction Validation](docs/architecture/audits/FINAL-PRODUCT-DIRECTION-VALIDATION.md)
 > for the source-versus-documentation audit and correction plan.
 
 ---

@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 # ==============================================================================
 # EduBranch-AI - Lightweight Pre-commit Git Hook
 # Safeguard against accidental secret and credential commits
