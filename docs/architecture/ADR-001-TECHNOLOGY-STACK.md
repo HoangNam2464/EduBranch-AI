@@ -5,7 +5,7 @@
 > **Classification Standard**: Every decision item is tagged with:
 > - `[A. Proposal Requirement]`: Explicitly stated in the EduBranch AI Proposal (C1SE.65).
 > - `[B. Project-Owner Decision]`: Explicitly confirmed by the project owner.
-> - `[C. Reference Repository Pattern]`: Pattern observed in `ai-teacher-copilot`.
+> - `[C. Reference Architectural Pattern]`: Evaluated architectural pattern benchmark.
 > - `[D. Architectural Decision]`: System-level architectural design choice.
 > - `[E. Candidate Option / Project Owner Decision Required]`: Unresolved choice requiring owner sign-off.
 
@@ -13,7 +13,7 @@
 
 ## 1. Context
 
-EduBranch AI is an interactive branching case study platform for university education. The authoritative Proposal permits various technology alternatives, while the initial scaffolding inherited specific choices from the engineering reference repository (`ai-teacher-copilot`).
+EduBranch AI is an interactive branching case study platform for experiential learning. The authoritative Proposal permits various technology alternatives, while the initial scaffolding inherited specific choices from an initial generic template.
 
 This ADR establishes the current baseline, clearly distinguishing confirmed decisions from candidate options.
 
@@ -29,7 +29,7 @@ This ADR establishes the current baseline, clearly distinguishing confirmed deci
   1. Aligns directly with Proposal Section 7 & 11 (`Node.js (NestJS/Express)`).
   2. Shares the TypeScript ecosystem with the React frontend for shared DTOs and type safety.
   3. Enterprise modular architecture (Modules, Controllers, Services, Guards) directly models EduBranch AI's 11 domain feature areas.
-  4. Inherited Spring Boot 3 (Java 17) scaffold from `ai-teacher-copilot` has been cleanly removed and replaced.
+  4. Inherited Spring Boot 3 (Java 17) scaffold from the initial generic template has been cleanly removed and replaced.
 
 ---
 

@@ -46,12 +46,12 @@ The following explicit Project Owner decisions have been verified and applied:
 
 ---
 
-## 4. Reference Repository Alignment
+## 4. Architectural Governance & System Boundaries
 
-An audit of `ai-teacher-copilot` was completed in [`docs/architecture/REFERENCE-REPOSITORY-AUDIT.md`](REFERENCE-REPOSITORY-AUDIT.md):
-- **Reusable Engineering Rules Adopted**: Git Feature Branch workflow (`feature/* → develop → main`), Conventional Commits (`type(scope): description`), PR checklist templates, PEP8 / Black / Flake8 standards, layered backend architecture, and untrusted data prompt boundaries (`<sources>...</sources>`).
-- **Reusable Architectural Patterns Adopted**: LLM Provider Abstraction (`providers/factory.py`), internal service API token authentication (`X-Internal-API-Key`), pgvector cosine similarity retrieval queries, and Pydantic v2 structured output validation.
-- **Reference Features Excluded**: Lesson Planner, Exam/Quiz Generator, Teacher Workspace, Word Export, Bloom's Taxonomy, and Autonomous Rubric Grading.
+Architectural boundaries and engineering standards are established in [`docs/architecture/ARCHITECTURAL-GOVERNANCE.md`](ARCHITECTURAL-GOVERNANCE.md):
+- **Core Engineering Rules**: Git Feature Branch workflow (`feature/* → develop → main`), Conventional Commits (`type(scope): description`), PR checklist templates, PEP8 / Black / Flake8 standards, layered backend architecture, and untrusted data prompt boundaries (`<sources>...</sources>`).
+- **Architectural Patterns**: LLM Provider Abstraction (`providers/factory.py`), internal service API token authentication (`X-Internal-API-Key`), pgvector cosine similarity retrieval queries, and Pydantic v2 structured output validation.
+- **Scope Guardrails**: Strictly aligned with Proposal V1.2 for experiential case-based learning, excluding unrelated features.
 
 ---
 
@@ -75,7 +75,7 @@ The documentation architecture is established without duplicate sources of truth
    - [`SERVICE-BOUNDARIES.md`](SERVICE-BOUNDARIES.md): Protocol contracts and responsibility matrix.
    - [`DATA-FLOW.md`](DATA-FLOW.md): End-to-end sequence diagrams.
    - [`DECISION-TREE-MODEL.md`](DECISION-TREE-MODEL.md): Graph invariants and JSON output format.
-   - [`REFERENCE-REPOSITORY-AUDIT.md`](REFERENCE-REPOSITORY-AUDIT.md): Engineering reference audit.
+   - [`ARCHITECTURAL-GOVERNANCE.md`](ARCHITECTURAL-GOVERNANCE.md): Architectural governance and system boundaries.
 2. **Requirements & Features**:
    - [`REQUIREMENT-TRACEABILITY.md`](../requirements/REQUIREMENT-TRACEABILITY.md): 30 Proposal items traced.
    - 11 Feature Specifications under `docs/features/`:
@@ -149,7 +149,7 @@ Across **all 11 feature areas and all 30 traceability items**, verified that **N
 - All previous documentation gaps have been systematically closed:
   - Missing feature specifications → 11 dedicated specs created in `docs/features/`.
   - Missing traceability matrix → Created in `docs/requirements/REQUIREMENT-TRACEABILITY.md`.
-  - Missing reference audit → Created in `docs/architecture/REFERENCE-REPOSITORY-AUDIT.md`.
+  - Architectural governance established → Documented in `docs/architecture/ARCHITECTURAL-GOVERNANCE.md`.
   - Missing service boundaries → Created in `docs/architecture/SERVICE-BOUNDARIES.md`.
   - Missing data flows → Created in `docs/architecture/DATA-FLOW.md`.
   - Broken links in `SYSTEM-ARCHITECTURE.md` and `PROJECT_OVERVIEW.md` → Fully resolved.

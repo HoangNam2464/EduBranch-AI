@@ -275,7 +275,7 @@ Full repository scan (excluding `node_modules/`, `.pytest_cache/`, `dist/`):
 | `Spring Boot` | `CONTRIBUTING.md` (Section B heading, Section 5 table, Section 6 rule) | CONFLICTING |
 | `Spring Boot` | `SECURITY.md` (Sections 1, 2, 4, 10) | CONFLICTING |
 | `Spring Boot` | `CHANGELOG.md` (scaffold entry) | VALID HISTORICAL RECORD |
-| `Spring Boot` | `docs/architecture/PROJECT-DIRECTION-AUDIT.md`, `TECHNOLOGY-CORRECTION-REPORT.md`, `BOOTSTRAP-AUDIT.md`, `REFERENCE-REPOSITORY-AUDIT.md` | VALID HISTORICAL RECORD |
+| `Spring Boot` | `docs/architecture/PROJECT-DIRECTION-AUDIT.md`, `TECHNOLOGY-CORRECTION-REPORT.md`, `BOOTSTRAP-AUDIT.md`, `ARCHITECTURAL-GOVERNANCE.md` | VALID HISTORICAL RECORD |
 | `Spring Boot` | `docs/architecture/ADR-001-TECHNOLOGY-STACK.md` Section 4 ("Inherited Spring Boot... removed") | VALID HISTORICAL RECORD |
 | `backend/target/` | Empty Maven directory tree (4 subdirs, 0 files) | ACCIDENTAL REMNANT |
 | `React 18` | `README.md` badge only | CONFLICTING |

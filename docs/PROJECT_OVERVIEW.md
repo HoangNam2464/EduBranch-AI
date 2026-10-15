@@ -121,7 +121,7 @@ Student submits overall Reflection
 
 | Category | Document | Description |
 |---|---|---|
-| **Audit & Requirements** | [Boundary & Compliance Audit](architecture/REFERENCE-REPOSITORY-AUDIT.md) | Architectural boundary & domain compliance audit |
+| **Audit & Requirements** | [Architectural Governance](architecture/ARCHITECTURAL-GOVERNANCE.md) | Architectural governance & system boundaries |
 | | [Requirement Traceability](requirements/REQUIREMENT-TRACEABILITY.md) | 30 Proposal items mapped to documentation |
 | **Architecture** | [Technology Stack ADR](architecture/ADR-001-TECHNOLOGY-STACK.md) | Technology choices & candidate options |
 | | [System Architecture](architecture/SYSTEM-ARCHITECTURE.md) | Multi-tier overview & design principles |

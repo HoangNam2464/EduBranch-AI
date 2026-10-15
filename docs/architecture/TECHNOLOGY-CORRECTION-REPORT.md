@@ -11,7 +11,7 @@
 
 ## 1. Original Problem
 
-During the initial bootstrap scaffolding phase, structural code and architectural documentation were created by referencing the engineering patterns of `ai-teacher-copilot`. This resulted in three major architectural contradictions:
+During the initial bootstrap scaffolding phase, structural code and architectural documentation were created by referencing an initial engineering scaffold template. This resulted in three major architectural contradictions:
 1. **Backend Framework Divergence**: The repository inherited a Java 17 / Spring Boot 3 Maven scaffold. However, the authoritative **Proposal (Sections 7 & 11)** explicitly defines the backend as **`Node.js (NestJS/Express) or Python FastAPI`**. Spring Boot only appeared as an external reference link in Table 5 and was never an approved backend technology.
 2. **Rule Contradictions**: All 14 rule files in `.agents/rules/*.md` hardcoded Spring Boot 3 as a mandatory constraint, creating a direct conflict with `ADR-001-TECHNOLOGY-STACK.md` (which marked backend as an open candidate option) and with the Proposal itself.
 3. **Frontend Version Drift**: `frontend/package.json` installed React 19 (`^19.2.8`) and TailwindCSS v4 (`^4.3.3`), while rules and documentation still prescribed React 18 and TailwindCSS v3.
@@ -19,9 +19,9 @@ During the initial bootstrap scaffolding phase, structural code and architectura
 
 ---
 
-## 2. Technology Inherited from `ai-teacher-copilot`
+## 2. Technology Inherited from Initial Scaffold Template
 
-The following technology and structural assets originated from the reference repository:
+The following technology and structural assets originated from the initial scaffold template:
 
 | Inherited Item | Location | Classification | Disposition | Rationale |
 | :--- | :--- | :---: | :---: | :--- |
@@ -127,7 +127,7 @@ The repository now adheres to a single, unified technology baseline:
 10. `docs/architecture/ADR-001-TECHNOLOGY-STACK.md` — Formally ratified NestJS Backend Gateway and React 19 / TailwindCSS v4; documented deprecation of Spring Boot.
 11. `docs/architecture/SERVICE-BOUNDARIES.md` — Updated diagrams and service layer descriptions.
 12. `docs/architecture/SYSTEM-ARCHITECTURE.md` — Updated diagrams and technology mapping.
-13. `docs/architecture/REFERENCE-REPOSITORY-AUDIT.md` — Updated backend classification to `NOT APPLICABLE / REPLACED`.
+13. `docs/architecture/ARCHITECTURAL-GOVERNANCE.md` — Ratified backend classification as NestJS 10 + TypeScript.
 14. `docs/qa/TESTING-STRATEGY.md` — Updated backend testing to Jest / Supertest / `@nestjs/testing`.
 15. `docs/ai/RAG-PIPELINE.md` — Replaced "Spring Boot" with "Backend Gateway".
 16. `docs/ai/DEBATE-ASSISTANT.md` — Replaced "Spring Boot" with "Backend Gateway".

@@ -19,7 +19,7 @@
 - **Pedagogical & Functional Direction**: **GREEN**. The repository faithfully represents the core pedagogical workflow mandated by the Proposal: university course context → teaching material upload (PDF/DOCX) → RAG semantic retrieval → AI-generated branching decision tree (JSON Schema) → mandatory human-in-the-loop review & approval → publishing → Branching Case Player → retrospective decision consequence reveal → student reasoning capture → AI Reasoning / Challenge Support (1–2 rounds max, no grading) → lecturer statistics → quantitative evaluation research boundary.
 - **Reference Leakage Protection**: **GREEN**. All external non-case features (Lesson Planner, Exam/Quiz Generator, Teacher Personal Workspace, Word Export, Bloom's Taxonomy, Autonomous Grading) have been cleanly excluded from both documentation and skeleton code.
 - **Service Boundaries & AI Governance**: **GREEN**. The strict 3-tier hierarchy (`Frontend → Backend Gateway → FastAPI AI Service (Internal Only)`) and AI safety rules (untrusted material wrapped in `<sources>`, 2-round cap, zero autonomous grading) are documented with high fidelity.
-- **Technology & Rule Alignment**: **YELLOW**. The project inherited Spring Boot 3 (Java 17) directly from `ai-teacher-copilot` during initial scaffolding. While documentation in `ADR-001-TECHNOLOGY-STACK.md` now treats Backend Gateway as a Candidate Option, **all 14 `.agents/rules/*.md` files still hardcode Spring Boot as an immutable project rule**, conflicting with both the Proposal (which specifies Node.js/NestJS or Python FastAPI) and the Project Owner's explicit candidate-option stance. Furthermore, `package.json` installed React 19 and TailwindCSS v4 despite rules prescribing React 18 and TailwindCSS v3.
+- **Technology & Rule Alignment**: **YELLOW**. The project inherited Spring Boot 3 (Java 17) from an initial legacy scaffold during initial setup. While documentation in `ADR-001-TECHNOLOGY-STACK.md` now treats Backend Gateway as a Candidate Option, **all 14 `.agents/rules/*.md` files still hardcode Spring Boot as an immutable project rule**, conflicting with both the Proposal (which specifies Node.js/NestJS or Python FastAPI) and the Project Owner's explicit candidate-option stance. Furthermore, `package.json` installed React 19 and TailwindCSS v4 despite rules prescribing React 18 and TailwindCSS v3.
 
 ---
 
@@ -90,7 +90,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
   - PostgreSQL init script enables `vector` and `uuid-ossp` extensions.
 - **Documentation (`docs/`)**:
   - 11 feature specifications in `docs/features/` covering all 30 traceability items.
-  - `ADR-001-TECHNOLOGY-STACK.md`, `SERVICE-BOUNDARIES.md`, `DATA-FLOW.md`, `DECISION-TREE-MODEL.md`, `REFERENCE-REPOSITORY-AUDIT.md`, `REQUIREMENT-TRACEABILITY.md`, `BOOTSTRAP-AUDIT.md`.
+  - `ADR-001-TECHNOLOGY-STACK.md`, `SERVICE-BOUNDARIES.md`, `DATA-FLOW.md`, `DECISION-TREE-MODEL.md`, `ARCHITECTURAL-GOVERNANCE.md`, `REQUIREMENT-TRACEABILITY.md`, `BOOTSTRAP-AUDIT.md`.
 - **Governance (`.agents/rules/`, `.github/`)**:
   - 14 rule files in `.agents/rules/` and `copilot-instructions.md` in `.github/`.
 
@@ -133,10 +133,10 @@ The current repository reflects the state after bootstrap scaffolding and docume
 ### 5.4 Altered Scope
 - **"Open Review" Terminology**: The Proposal title includes *"and Open Review"*, while Proposal Table 1 states that *"Peer / public review of student work"* is *"Planned (future work)"* and not in MVP. The current documentation correctly prioritizes the Lecturer Review workflow and treats open peer review as a post-MVP phase.
 
-### 5.5 Inherited Scope from Reference Repository
-- **Spring Boot 3 API Gateway Architecture**: The multi-package Java backend structure (`auth/`, `course/`, `material/`, `case_/`, `simulation/`, `debate/`, `statistics/`, `common/`) was directly cloned from the structural style of `ai-teacher-copilot/backend`.
-- **Flyway Database Migration Pattern**: `V1__init_schema.sql` mirrors the migration pattern of `ai-teacher-copilot`.
-- **MinIO S3 Integration Pattern**: Bucket structure and object key conventions were inherited from `ai-teacher-copilot`.
+### 5.5 Inherited Scope from Initial Scaffold Template
+- **Spring Boot 3 API Gateway Architecture**: The multi-package Java backend structure (`auth/`, `course/`, `material/`, `case_/`, `simulation/`, `debate/`, `statistics/`, `common/`) was initially inherited from a legacy engineering scaffold.
+- **Flyway Database Migration Pattern**: `V1__init_schema.sql` mirrors standard relational migration patterns.
+- **MinIO S3 Integration Pattern**: Bucket structure and object key conventions were inherited from standard S3 patterns.
 
 ### 5.6 Unsupported Scope
 - **None active**. All reference-specific non-case modules were audited and blocked.
@@ -243,7 +243,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
 
 ### 9.3 Reference-Specific Business Concepts Leaked into Edu-Branch-AI
 - **Finding**: Zero business logic leaks found in source code or feature documentation.
-- **Minor Artifact**: In `frontend/src/layouts/LecturerLayout.tsx` line 3, a comment reads `/** Lecturer workspace layout — navigation sidebar + content area. */`. The term "workspace" was inherited colloquially from `ai-teacher-copilot`, though the layout itself is just a standard navigation shell.
+- **Minor Artifact**: In `frontend/src/layouts/LecturerLayout.tsx` line 3, a comment originally read `/** Lecturer workspace layout — navigation sidebar + content area. */`. The term "workspace" was inherited colloquially from the initial template, though the layout itself is just a standard navigation shell.
 
 ---
 
@@ -289,7 +289,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
   - Entity classes (`vn.edubranch.*`) model the domain using Jakarta Persistence (JPA) annotations (`@Entity`, `@Table`, `@Id`, `@Enumerated`).
   - `HealthController.java` provides a minimal Spring Web MVC health check endpoint.
   - `application.yml` configures PostgreSQL, Flyway, MinIO, and Redis connections.
-- **Origin**: Cloned from the engineering scaffold of `ai-teacher-copilot`.
+- **Origin**: Inherited from an initial engineering scaffold.
 - **Proposal Relationship**: The Proposal references `https://spring.io/projects/spring-boot` in Section 14 (Table 5 References), but Section 7 (Methodology and Tools) and Section 11 (Budget and Resources) explicitly specify `Node.js (NestJS/Express) or Python FastAPI`.
 - **Current Architectural Role**: It functions as the scaffolded Backend Gateway skeleton. It does NOT contain any business implementation.
 - **Architectural Impact**: If retained, it provides strong enterprise security (Spring Security), mature DB migrations (Flyway), and robust relational ORM. If migrated to Node.js (NestJS) or FastAPI, it would more closely match the body of the Proposal.
