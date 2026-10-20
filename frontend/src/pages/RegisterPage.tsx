@@ -28,12 +28,20 @@ export function RegisterPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (form.password !== confirmPassword) {
-      setError("Passwords do not match.");
+    if (!form.fullName.trim()) {
+      setError("Họ và tên không được để trống.");
+      return;
+    }
+    if (!form.email.trim()) {
+      setError("Email đại học không được để trống.");
       return;
     }
     if (form.password.length < 8) {
-      setError("Password must be at least 8 characters.");
+      setError("Mật khẩu phải có ít nhất 8 ký tự.");
+      return;
+    }
+    if (form.password !== confirmPassword) {
+      setError("Mật khẩu xác nhận không khớp.");
       return;
     }
 
@@ -41,12 +49,16 @@ export function RegisterPage() {
     setError(null);
 
     try {
-      const result = await authService.register(form);
+      const result = await authService.register({
+        ...form,
+        fullName: form.fullName.trim(),
+        email: form.email.trim(),
+      });
       login(result.user, result.accessToken);
       const destination = resolveSafeReturnUrl(returnUrl, result.user.role);
       navigate(destination, { replace: true });
     } catch (err: any) {
-      const msg = err?.response?.data?.message || "Registration failed. Please try again.";
+      const msg = err?.response?.data?.message || "Đăng ký không thành công. Vui lòng thử lại.";
       setError(msg);
     } finally {
       setLoading(false);
@@ -81,8 +93,9 @@ export function RegisterPage() {
                 type="text"
                 autoComplete="name"
                 required
+                disabled={loading}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 placeholder="Nguyen Van A"
                 value={form.fullName}
                 onChange={(e) => setForm({ ...form, fullName: e.target.value })}
@@ -99,8 +112,9 @@ export function RegisterPage() {
                 type="email"
                 autoComplete="email"
                 required
+                disabled={loading}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 placeholder="name@university.edu.vn"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -114,8 +128,9 @@ export function RegisterPage() {
               </label>
               <select
                 id="register-role"
+                disabled={loading}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value as "LECTURER" | "STUDENT" })}
               >
@@ -135,8 +150,9 @@ export function RegisterPage() {
                 autoComplete="new-password"
                 required
                 minLength={8}
+                disabled={loading}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 placeholder="Min. 8 characters"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -153,8 +169,9 @@ export function RegisterPage() {
                 type="password"
                 autoComplete="new-password"
                 required
+                disabled={loading}
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
                 placeholder="Repeat your password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
