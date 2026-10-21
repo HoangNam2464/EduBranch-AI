@@ -118,18 +118,27 @@ DRAFT → REVIEWED → APPROVED → PUBLISHED
 
 ---
 
-## 7. Git Workflow
+## 7. Git Workflow & Branch Naming Rules
 
+### 7.1. Git Branching Model
 ```
-feature/<module>-<name>  →  develop  →  main
+feature/<feature-name>   →  develop  →  main
 fix/<description>        →  develop
 hotfix/<description>     →  main
 refactor/<module>        →  develop
 docs/<topic>             →  develop
 ```
 
-**Commit format**: `type(scope): description`
-**Scopes**: `backend` · `ai-service` · `frontend` · `infra` · `docs`
+### 7.2. Strict Branch Naming Rules (MANDATORY)
+1. **TUYỆT ĐỐI KHÔNG dùng mã task** (như `TASK-123`, `BE-001`, `FE-010`, `EBA-105`) để đặt tên nhánh Git.
+2. **Tên nhánh BẮT BUỘC theo domain/feature chung**: format `feature/<feature-name>` (ví dụ: `feature/auth`, `feature/branching-attempt`, `feature/course`, `feature/material`, `feature/case-review`).
+3. **Tính bền vững của nhánh**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task đơn lẻ.
+
+### 7.3. Commit Format with Task ID
+- **Format**: `type(scope): description [TASK-ID]`
+  - *Ví dụ*: `feat(auth): implement rate limiter guard [BE-012]` hoặc `feat(course): implement course management [BE-003]`
+- **Mã task CHỈ ĐƯỢC XUẤT HIỆN trong Commit Message**, tuyệt đối không đưa vào tên branch.
+- **Scopes**: `backend` · `ai-service` · `frontend` · `infra` · `docs` hoặc tên feature domain (`auth`, `course`, `case`, `material`, etc.)
 
 ---
 
