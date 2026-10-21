@@ -38,4 +38,7 @@ async function bootstrap() {
   console.log(`EduBranch AI Backend Gateway listening on port ${port} (prefix: /api/v1)`);
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error("FATAL: Application failed to start:", err.message);
+  process.exit(1);
+});

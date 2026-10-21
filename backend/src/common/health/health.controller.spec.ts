@@ -99,4 +99,23 @@ describe('HealthController', () => {
       }),
     );
   });
+
+  it('should return 503 DEGRADED when both database and redis fail', async () => {
+    mockDbService.query.mockRejectedValueOnce(new Error('PostgreSQL connection refused'));
+    jest.spyOn(controller as any, 'checkTcpConnection').mockResolvedValueOnce(false);
+
+    const res = mockResponse();
+    await controller.getHealth(res);
+
+    expect(res.status).toHaveBeenCalledWith(503);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        status: 'DEGRADED',
+        services: {
+          database: 'DOWN',
+          redis: 'DOWN',
+        },
+      }),
+    );
+  });
 });

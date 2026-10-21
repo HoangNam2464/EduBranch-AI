@@ -198,4 +198,67 @@ describe('MigrationRunner Hardened', () => {
       expect(mockClient.release).toHaveBeenCalledWith(true);
     });
   });
+
+  describe('PostgreSQL Advisory Lock (0x45445542, 0x52414e43)', () => {
+    it('should use fixed 32-bit integer keys 0x45445542 and 0x52414e43', () => {
+      expect(MIGRATION_LOCK_ID_1).toBe(0x45445542);
+      expect(MIGRATION_LOCK_ID_1).toBe(1162106178);
+      expect(MIGRATION_LOCK_ID_2).toBe(0x52414e43);
+      expect(MIGRATION_LOCK_ID_2).toBe(1380011587);
+    });
+
+    it('should acquire and release advisory lock using the exact key pair', async () => {
+      const dir = runner.getMigrationsDirectory();
+      const migrations = runner.discoverMigrations(dir);
+
+      mockClient.query
+        .mockResolvedValueOnce({}) // pg_advisory_lock
+        .mockResolvedValueOnce({}) // CREATE TABLE IF NOT EXISTS
+        .mockResolvedValueOnce({}) // ALTER TABLE
+        .mockResolvedValueOnce({ rows: [] }); // getAppliedMigrations
+
+      for (let i = 0; i < migrations.length; i++) {
+        mockClient.query
+          .mockResolvedValueOnce({}) // BEGIN
+          .mockResolvedValueOnce({}) // SQL execution
+          .mockResolvedValueOnce({}) // INSERT schema_migrations
+          .mockResolvedValueOnce({}); // COMMIT
+      }
+
+      mockClient.query.mockResolvedValueOnce({}); // pg_advisory_unlock
+
+      await runner.run();
+
+      expect(mockClient.query).toHaveBeenNthCalledWith(
+        1,
+        'SELECT pg_advisory_lock($1, $2)',
+        [0x45445542, 0x52414e43],
+      );
+
+      expect(mockClient.query).toHaveBeenCalledWith(
+        'SELECT pg_advisory_unlock($1, $2)',
+        [0x45445542, 0x52414e43],
+      );
+    });
+
+    it('should release advisory lock even when migration execution encounters an error', async () => {
+      mockClient.query
+        .mockResolvedValueOnce({}) // pg_advisory_lock
+        .mockResolvedValueOnce({}) // CREATE TABLE IF NOT EXISTS
+        .mockResolvedValueOnce({}) // ALTER TABLE
+        .mockResolvedValueOnce({ rows: [] }) // getAppliedMigrations
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockRejectedValueOnce(new Error('Syntax error in migration SQL file')) // SQL execution fails
+        .mockResolvedValueOnce({}) // ROLLBACK
+        .mockResolvedValueOnce({}); // pg_advisory_unlock in finally
+
+      await expect(runner.run()).rejects.toThrow('Syntax error in migration SQL file');
+
+      expect(mockClient.query).toHaveBeenCalledWith(
+        'SELECT pg_advisory_unlock($1, $2)',
+        [0x45445542, 0x52414e43],
+      );
+      expect(mockClient.release).toHaveBeenCalled();
+    });
+  });
 });
