@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "npx tsx --test src/utils/navigation.spec.ts src/stores/authStore.spec.ts src/services/apiClient.spec.ts src/components/ui/PrivateRoute.spec.ts src/pages/lecturer/CoursesPage.spec.ts src/app/router.spec.ts"
+    "test": "npx tsx --test src/utils/navigation.spec.ts src/stores/authStore.spec.ts src/services/apiClient.spec.ts src/components/ui/PrivateRoute.spec.ts src/pages/lecturer/CoursesPage.spec.ts src/app/router.spec.ts src/qa/qa-matrix.spec.ts"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",
