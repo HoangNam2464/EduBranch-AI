@@ -1,4 +1,4 @@
-﻿# Contributing to EduBranch-AI
+# Contributing to EduBranch-AI
 
 > Applies to all development on **EduBranch-AI — AI Platform for Experiential Case-Based Learning in University Teaching**.
 > All code changes must comply with these standards before being integrated into `develop` or `main`.
@@ -23,27 +23,35 @@ feature/<name>  →  develop  →  main
 | `refactor/*` | Code restructuring without adding features. |
 | `docs/*` | Documentation updates. |
 
-### Branch Naming
+### Branch Naming (Strict Rules)
+
+> [!IMPORTANT]
+> **Quy tắc đặt tên nhánh nghiêm ngặt:**
+> - **TUYỆT ĐỐI KHÔNG dùng mã task** (như `TASK-123`, `BE-001`, `FE-010`, `EBA-105`) để đặt tên nhánh Git.
+> - **Tên nhánh BẮT BUỘC đặt theo tên domain/feature chung**: format `feature/<feature-name>` (ví dụ: `feature/auth`, `feature/branching-attempt`, `feature/course`, `feature/material`).
+> - **Tính bền vững**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task.
 
 | Type | Pattern | Example |
 | :--- | :--- | :--- |
-| Feature | `feature/<module>-<short-name>` | `feature/rag-case-generator` |
-| Bug fix | `fix/<module>-<description>` | `fix/branching-node-traversal` |
+| Feature | `feature/<feature-name>` | `feature/auth`, `feature/course`, `feature/material` |
+| Bug fix | `fix/<feature-name>-<description>` | `fix/auth-token-refresh` |
 | Hotfix | `hotfix/<description>` | `hotfix/jwt-expiry` |
-| Refactor | `refactor/<module>` | `refactor/challenge-support-api` |
+| Refactor | `refactor/<feature-name>` | `refactor/challenge-support` |
 | Docs | `docs/<topic>` | `docs/branching-study-review-phase` |
 
 ---
 
 ## 📝 2. Commit Convention (Conventional Commits)
 
-Every commit message must follow:
+Mã task **CHỈ ĐƯỢC XUẤT HIỆN trong Commit Message**, format:
 
 ```
-<type>(<scope>): <short description>
+<type>(<scope>): <short description> [<TASK-ID>]
 ```
 
-**Scopes:** `backend` · `ai-service` · `frontend` · `infra` · `docs`
+*Ví dụ:* `feat(auth): implement rate limiter guard [BE-012]` hoặc `feat(course): implement course management [BE-003]`
+
+**Scopes:** `backend` · `ai-service` · `frontend` · `infra` · `docs` hoặc tên feature domain (`auth`, `course`, `material`, `case`)
 
 | Type | Purpose | Example |
 | :--- | :--- | :--- |
