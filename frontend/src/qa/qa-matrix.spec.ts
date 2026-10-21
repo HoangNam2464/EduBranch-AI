@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import type { Role, User } from "../types";
-import { resolveSafeReturnUrl, DEFAULT_ROLE_REDIRECT } from "../utils/navigation";
+import { resolveSafeReturnUrl } from "../utils/navigation";
 
 /**
  * [QA-001] Frontend Test Matrix: Auth, Course & Permissions
