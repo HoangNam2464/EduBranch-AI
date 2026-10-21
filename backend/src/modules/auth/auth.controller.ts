@@ -1,16 +1,18 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { Public } from "./decorators/public.decorator";
 import { CurrentUser } from "./decorators/current-user.decorator";
+import { RateLimit } from "./decorators/rate-limit.decorator";
+import { RateLimiterGuard } from "./guards/rate-limiter.guard";
 
 /**
  * AuthController — Authentication endpoints.
  *
  * Public routes:
- *   POST /api/v1/auth/register  — Create a new Lecturer or Student account
- *   POST /api/v1/auth/login     — Authenticate and receive JWT access token
+ *   POST /api/v1/auth/register  — Create a new Lecturer or Student account (rate limited)
+ *   POST /api/v1/auth/login     — Authenticate and receive JWT access token (rate limited)
  *
  * Protected routes:
  *   GET  /api/v1/auth/me        — Get current user profile (matches EBA-105 AC 3)
@@ -20,6 +22,8 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Public()
+  @UseGuards(RateLimiterGuard)
+  @RateLimit()
   @Post("register")
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
@@ -31,6 +35,8 @@ export class AuthController {
   }
 
   @Public()
+  @UseGuards(RateLimiterGuard)
+  @RateLimit()
   @Post("login")
   @HttpCode(HttpStatus.OK)
   async login(@Body() dto: LoginDto) {
