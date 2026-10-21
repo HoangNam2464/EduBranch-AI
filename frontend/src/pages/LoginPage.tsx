@@ -28,11 +28,20 @@ export function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim()) {
+      setError("Email đại học không được để trống.");
+      return;
+    }
+    if (!password) {
+      setError("Mật khẩu không được để trống.");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
     try {
-      const result = await authService.login({ email, password });
+      const result = await authService.login({ email: email.trim(), password });
       login(result.user, result.accessToken);
       const destination = resolveSafeReturnUrl(returnUrl, result.user.role);
       navigate(destination, { replace: true });
@@ -84,11 +93,12 @@ export function LoginPage() {
                 type="email"
                 autoComplete="email"
                 required
+                disabled={loading}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@university.edu.vn"
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -101,11 +111,12 @@ export function LoginPage() {
                 type="password"
                 autoComplete="current-password"
                 required
+                disabled={loading}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 

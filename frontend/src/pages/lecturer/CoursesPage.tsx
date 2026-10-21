@@ -13,6 +13,7 @@ export function CoursesPage() {
   const [error, setError] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [modalError, setModalError] = useState<string | null>(null);
   const [form, setForm] = useState({ name: "", description: "", courseCode: "" });
 
   useEffect(() => {
@@ -34,19 +35,23 @@ export function CoursesPage() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name.trim()) return;
+    if (!form.name.trim()) {
+      setModalError("Tên khóa học không được để trống.");
+      return;
+    }
     try {
       setCreating(true);
+      setModalError(null);
       const newCourse = await courseService.createCourse({
-        name: form.name,
-        description: form.description || undefined,
-        courseCode: form.courseCode || undefined,
+        name: form.name.trim(),
+        description: form.description?.trim() || undefined,
+        courseCode: form.courseCode?.trim() || undefined,
       });
       setCourses((prev) => [newCourse, ...prev]);
       setShowCreate(false);
       setForm({ name: "", description: "", courseCode: "" });
-    } catch {
-      setError("Failed to create course.");
+    } catch (err: any) {
+      setModalError(err?.response?.data?.message || "Failed to create course.");
     } finally {
       setCreating(false);
     }
@@ -58,7 +63,13 @@ export function CoursesPage() {
         title="My Courses"
         description="Manage your university courses and teaching materials."
         actions={
-          <Button onClick={() => setShowCreate(true)} id="btn-create-course">
+          <Button
+            onClick={() => {
+              setModalError(null);
+              setShowCreate(true);
+            }}
+            id="btn-create-course"
+          >
             + New Course
           </Button>
         }
@@ -72,7 +83,16 @@ export function CoursesPage() {
         <EmptyState
           title="No courses yet"
           description="Create your first course to start uploading teaching materials and generating case studies."
-          action={<Button onClick={() => setShowCreate(true)}>Create First Course</Button>}
+          action={
+            <Button
+              onClick={() => {
+                setModalError(null);
+                setShowCreate(true);
+              }}
+            >
+              Create First Course
+            </Button>
+          }
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -124,25 +144,42 @@ export function CoursesPage() {
 
       <Modal
         isOpen={showCreate}
-        onClose={() => setShowCreate(false)}
+        onClose={() => {
+          setShowCreate(false);
+          setModalError(null);
+        }}
         title="Create New Course"
         footer={
           <>
-            <Button variant="secondary" onClick={() => setShowCreate(false)}>Cancel</Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowCreate(false);
+                setModalError(null);
+              }}
+              disabled={creating}
+            >
+              Cancel
+            </Button>
             <Button onClick={handleCreate} isLoading={creating} id="btn-submit-course">
               Create
             </Button>
           </>
         }
       >
+        {modalError && <Alert variant="error" className="mb-4">{modalError}</Alert>}
         <form onSubmit={handleCreate} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Course Name *</label>
             <input
               id="input-course-name"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              disabled={creating}
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              onChange={(e) => {
+                setForm({ ...form, name: e.target.value });
+                if (modalError) setModalError(null);
+              }}
               placeholder="e.g. Business Strategy Analysis"
               required
             />
@@ -151,7 +188,8 @@ export function CoursesPage() {
             <label className="block text-sm font-medium text-gray-700">Course Code</label>
             <input
               id="input-course-code"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              disabled={creating}
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               value={form.courseCode}
               onChange={(e) => setForm({ ...form, courseCode: e.target.value })}
               placeholder="e.g. BUS301"
@@ -161,7 +199,8 @@ export function CoursesPage() {
             <label className="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               id="input-course-description"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              disabled={creating}
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={3}

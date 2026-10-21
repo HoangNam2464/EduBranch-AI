@@ -18,7 +18,7 @@ interface AuthState {
   // Actions
   setUser: (user: User) => void;
   setTokens: (accessToken: string, refreshToken?: string) => void;
-  login: (user: User, accessToken: string) => void;
+  login: (user: User, accessToken: string, refreshToken?: string) => void;
   logout: () => void;
 
   // Computed helpers
@@ -39,8 +39,13 @@ export const useAuthStore = create<AuthState>()(
       setTokens: (accessToken, refreshToken) =>
         set({ accessToken, refreshToken: refreshToken ?? null }),
 
-      login: (user, accessToken) =>
-        set({ user, accessToken, isAuthenticated: true }),
+      login: (user, accessToken, refreshToken) =>
+        set({
+          user,
+          accessToken,
+          refreshToken: refreshToken ?? null,
+          isAuthenticated: true,
+        }),
 
       logout: () =>
         set({
@@ -56,8 +61,8 @@ export const useAuthStore = create<AuthState>()(
     {
       name: "edubranch-auth",   // localStorage key
       partialize: (state) => ({
-        // Only persist token — user profile is re-fetched on mount
         accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
