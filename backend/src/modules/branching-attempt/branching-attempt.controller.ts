@@ -9,13 +9,9 @@ import {
   HttpStatus,
   ForbiddenException,
 } from "@nestjs/common";
-import {
-  BranchingAttemptService,
-  ChooseOptionDto,
-  SaveReasoningDto,
-  SubmitReflectionDto,
-} from "./branching-attempt.service";
+import { BranchingAttemptService, ChooseOptionDto, SaveReasoningDto, SubmitReflectionDto } from "./branching-attempt.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { Roles } from "../auth/decorators/roles.decorator";
 
 /**
  * BranchingAttemptController — Flow 4: Branching Study Lifecycle
@@ -32,6 +28,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 export class BranchingAttemptController {
   constructor(private readonly attemptService: BranchingAttemptService) {}
 
+  @Roles("STUDENT")
   @Post("cases/:caseId/branching-attempts")
   @HttpCode(HttpStatus.CREATED)
   async startAttempt(
@@ -72,6 +69,7 @@ export class BranchingAttemptController {
     };
   }
 
+  @Roles("STUDENT")
   @Post("branching-attempts/:id/step")
   async chooseOption(
     @Param("id") id: string,
@@ -88,6 +86,7 @@ export class BranchingAttemptController {
     };
   }
 
+  @Roles("STUDENT")
   @Put("branching-attempts/:id/reasoning")
   async saveRetrospectiveReasoning(
     @Param("id") id: string,
@@ -104,6 +103,7 @@ export class BranchingAttemptController {
     };
   }
 
+  @Roles("STUDENT")
   @Post("branching-attempts/:id/reflection")
   async submitReflection(
     @Param("id") id: string,

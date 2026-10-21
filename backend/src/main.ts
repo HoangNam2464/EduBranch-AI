@@ -2,6 +2,7 @@ import { NestFactory, Reflector } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./app.module";
 import { JwtAuthGuard } from "./modules/auth/jwt-auth.guard";
+import { RolesGuard } from "./modules/auth/guards/roles.guard";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,9 +19,9 @@ async function bootstrap() {
     }),
   );
 
-  // Global JWT guard — all routes require authentication unless decorated @Public()
+  // Global guards — JWT authentication by default, followed by Role-based authorization
   const reflector = app.get(Reflector);
-  app.useGlobalGuards(new JwtAuthGuard(reflector));
+  app.useGlobalGuards(new JwtAuthGuard(reflector), new RolesGuard(reflector));
 
   // Enable CORS
   const corsOrigins = process.env.CORS_ALLOWED_ORIGINS

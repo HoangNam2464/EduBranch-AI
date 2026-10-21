@@ -4,6 +4,9 @@ import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 
+import { RateLimiterGuard } from "./guards/rate-limiter.guard";
+import { RateLimiterService } from "./rate-limiter/rate-limiter.service";
+
 describe("AuthController", () => {
   let controller: AuthController;
 
@@ -16,8 +19,17 @@ describe("AuthController", () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [{ provide: AuthService, useValue: mockAuthService }],
-    }).compile();
+      providers: [
+        { provide: AuthService, useValue: mockAuthService },
+        {
+          provide: RateLimiterService,
+          useValue: { checkLimit: jest.fn().mockReturnValue({ allowed: true }) },
+        },
+      ],
+    })
+      .overrideGuard(RateLimiterGuard)
+      .useValue({ canActivate: () => true })
+      .compile();
 
     controller = module.get<AuthController>(AuthController);
   });

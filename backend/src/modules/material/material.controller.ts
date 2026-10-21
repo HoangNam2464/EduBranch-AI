@@ -9,6 +9,7 @@ import {
 import { FileInterceptor } from "@nestjs/platform-express";
 import { MaterialService } from "./material.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { Roles } from "../auth/decorators/roles.decorator";
 
 /**
  * MaterialController — Flow 1: Material Ingestion & RAG
@@ -23,6 +24,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 export class MaterialController {
   constructor(private readonly materialService: MaterialService) {}
 
+  @Roles("LECTURER")
   @Post("courses/:courseId/materials")
   @UseInterceptors(FileInterceptor("file"))
   async uploadCourseMaterial(

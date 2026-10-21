@@ -12,6 +12,7 @@ import {
 } from "@nestjs/common";
 import { CaseService } from "./case.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { Roles } from "../auth/decorators/roles.decorator";
 
 /**
  * CaseController — Flow 2: AI Case Generation & Lecturer Review Lifecycle
@@ -27,6 +28,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 export class CaseController {
   constructor(private readonly caseService: CaseService) {}
 
+  @Roles("LECTURER")
   @Post("cases/generate")
   @HttpCode(HttpStatus.CREATED)
   async generateCase(
@@ -73,6 +75,7 @@ export class CaseController {
     };
   }
 
+  @Roles("LECTURER")
   @Put("cases/:id")
   async updateCase(
     @Param("id") id: string,
@@ -89,6 +92,7 @@ export class CaseController {
     };
   }
 
+  @Roles("LECTURER")
   @Patch("cases/:id/status")
   async updateCaseStatus(
     @Param("id") id: string,
