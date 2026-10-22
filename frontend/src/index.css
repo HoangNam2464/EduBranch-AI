@@ -1,19 +1,84 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
+
+@theme {
+  /* ========================================================================
+   * EduBranch AI Canonical Design Tokens (GLOBAL-DESIGN-SYSTEM.md)
+   * Light theme only. Pure CSS-first Tailwind v4 tokens.
+   * ======================================================================== */
+
+  /* Surface & Background */
+  --color-eb-canvas: #f9fafb;
+  --color-eb-surface: #ffffff;
+  --color-eb-surface-muted: #f3f4f6;
+  --color-eb-surface-hover: #f3f4f6;
+
+  /* Typography / Text Colors */
+  --color-eb-text-primary: #111827;
+  --color-eb-text-secondary: #4b5563;
+  --color-eb-text-muted: #9ca3af;
+  --color-eb-text-inverse: #ffffff;
+  --color-eb-text-link: #2563eb;
+
+  /* Borders & Dividers */
+  --color-eb-border-default: #e5e7eb;
+  --color-eb-border-strong: #d1d5db;
+  --color-eb-border-focus: #2563eb;
+
+  /* Primary Action Accents */
+  --color-eb-action-primary: #2563eb;
+  --color-eb-action-primary-hover: #1d4ed8;
+  --color-eb-action-primary-active: #1e40af;
+  --color-eb-action-primary-disabled: #93c5fd;
+  --color-eb-action-primary-subtle: #eff6ff;
+
+  /* Case Lifecycle Status Tokens (Paired Background & Text) */
+  --color-eb-status-draft-bg: #f3f4f6;
+  --color-eb-status-draft-text: #4b5563;
+  --color-eb-status-reviewed-bg: #eff6ff;
+  --color-eb-status-reviewed-text: #1d4ed8;
+  --color-eb-status-approved-bg: #fffbeb;
+  --color-eb-status-approved-text: #92400e;
+  --color-eb-status-published-bg: #f0fdf4;
+  --color-eb-status-published-text: #166534;
+
+  /* Learning Mode Tokens */
+  --color-eb-mode-branching-bg: #f0fdfa;
+  --color-eb-mode-branching-text: #0f766e;
+  --color-eb-mode-review-bg: #fdf2f8;
+  --color-eb-mode-review-text: #be185d;
+
+  /* AI Support Marker (Muted, non-glow) */
+  --color-eb-ai-bg: #f3f4f6;
+  --color-eb-ai-text: #4b5563;
+
+  /* Semantic Feedback */
+  --color-eb-semantic-success: #16a34a;
+  --color-eb-semantic-warning: #d97706;
+  --color-eb-semantic-error: #dc2626;
+  --color-eb-semantic-info: #2563eb;
+
+  /* System Font Stack (Canonical GLOBAL-DESIGN-SYSTEM.md §3) */
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
 
 @layer base {
   body {
-    font-family: system-ui, sans-serif;
-    background-color: #f9fafb;
-    color: #111827;
+    font-family: var(--font-sans);
+    background-color: var(--color-eb-canvas, #f9fafb);
+    color: var(--color-eb-text-primary, #111827);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     letter-spacing: -0.025em;
+    color: var(--color-eb-text-primary, #111827);
   }
 }
 
 @layer components {
+  /* Backwards-compatible utility classes preserved for existing views */
   .btn-primary {
     display: inline-flex;
     align-items: center;
@@ -25,8 +90,10 @@
     font-weight: 500;
     color: white;
     cursor: pointer;
+    transition: background-color 150ms ease-in-out;
   }
   .btn-primary:hover { background-color: #1d4ed8; }
+  .btn-primary:active { background-color: #1e40af; }
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .btn-secondary {
@@ -40,8 +107,12 @@
     font-size: 0.875rem;
     font-weight: 500;
     color: #374151;
+    cursor: pointer;
+    transition: background-color 150ms ease-in-out;
   }
   .btn-secondary:hover { background-color: #f9fafb; }
+  .btn-secondary:active { background-color: #f3f4f6; }
+  .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .card {
     background-color: white;
