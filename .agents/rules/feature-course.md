@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for the Course domain in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [course, lecturer course, course management, course ownership]
 ---
 

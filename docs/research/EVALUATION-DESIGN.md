@@ -1,4 +1,4 @@
-﻿# EduBranch AI — Evaluation & Research Design
+# EduBranch AI — Evaluation & Research Design
 
 **Status**: Scaffolded (architectural boundary only)
 
@@ -8,7 +8,7 @@
 
 This boundary supports the quantitative research dimension of EduBranch AI,
 enabling comparison between AI-generated cases and lecturer-authored cases,
-and tracking student engagement with the debate mechanism.
+and tracking student engagement with the AI Reasoning / Challenge Support mechanism.
 
 ---
 
@@ -30,7 +30,7 @@ and tracking student engagement with the debate mechanism.
 - Anonymized export of:
   - Branch selection patterns
   - Argument quality (rubric scores)
-  - Debate engagement metrics
+  - AI Reasoning / Challenge Support engagement metrics
   - AI-generated vs lecturer-authored case comparison
 
 ---

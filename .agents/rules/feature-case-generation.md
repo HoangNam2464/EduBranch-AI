@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for AI case generation in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [case generation, ai generate, decision tree generation, rag, case generator, structured output]
 ---
 

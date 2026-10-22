@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for lecturer statistics in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [statistics, analytics, branch selection, participation, completion]
 ---
 

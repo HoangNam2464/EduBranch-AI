@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for the Review Study learning mode in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [review study, case analysis, proposed solution, review submission]
 ---
 

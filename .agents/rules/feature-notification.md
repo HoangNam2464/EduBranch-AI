@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for the notification extension point in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [notification, email, reminder, deadline, assignment]
 ---
 

@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for the Branching Case Player and branching attempt/retry model in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [branching attempt, branching case player, branching study, student, decision, node, consequence, navigate, case play, retry]
 ---
 
