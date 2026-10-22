@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for Student Reflection in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [reflection, student reflection, post-outcome, reflection text, reflect]
 ---
 

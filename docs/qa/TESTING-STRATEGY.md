@@ -1,4 +1,4 @@
-﻿# EduBranch AI — Testing Strategy
+# EduBranch AI — Testing Strategy
 
 **Status**: Scaffolded
 
@@ -18,8 +18,8 @@
 
 - Auth: login success/failure, JWT validation, role access control
 - Case: status transition (valid and invalid), student cannot access non-PUBLISHED cases
-- Simulation: session creation, node navigation, terminal detection
-- Debate: round enforcement (max 2), completed session rejection
+- Branching Attempt: attempt creation, node navigation, terminal detection
+- Challenge Support: round enforcement (max 2), completed session rejection
 - Statistics: ownership enforcement (lecturer sees only own courses)
 
 ---
@@ -35,7 +35,7 @@
 
 - Decision tree schema: valid tree, invalid cycle, orphan node, no terminal node
 - Provider abstraction: mock provider returns correct structure
-- Debate: counter-question does not contain grade/pass-fail language
+- Challenge Support: counter-question does not contain grade/pass-fail language
 
 ---
 

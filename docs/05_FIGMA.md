@@ -20,6 +20,9 @@
 
 ### 1.2. Bảng mã màu chuẩn (Design Tokens)
 
+Tuân thủ nghiêm ngặt theo `docs/design/GLOBAL-DESIGN-SYSTEM.md §2`:
+
+#### Tokens Nền & Nội dung cơ bản
 | Token Name | Mã Hex | Vai trò & Mục đích sử dụng |
 |---|:---:|---|
 | `bg-canvas` | `#F9FAFB` | Màu nền toàn bộ trang web (Page background) |
@@ -29,10 +32,31 @@
 | `text-secondary` | `#4B5563` | Văn bản phụ trợ, nhãn mô tả, nội dung diễn giải |
 | `text-muted` | `#9CA3AF` | Placeholder, timestamp, chú thích phụ |
 | `border-default` | `#E5E7EB` | Đường viền Card, đường phân cách bảng, viền ô nhập liệu |
+| `border-strong` | `#D1D5DB` | Viền hover của thẻ tương tác, ô nhập liệu |
+
+#### Accent & Semantic Tokens
+| Token Name | Mã Hex | Vai trò & Mục đích sử dụng |
+|---|:---:|---|
 | `action-primary` | `#2563EB` | Màu nhấn hành động chính (Nút chính, tab active, link) |
-| `action-success` | `#059669` | Trạng thái Approved, Published, Completed |
-| `action-warning` | `#D97706` | Trạng thái Review, Processing, Cảnh báo rẽ nhánh |
-| `action-danger` | `#DC2626` | Trạng thái Failed, Error, Hành động hủy bỏ |
+| `action-primary-hover` | `#1D4ED8` | Trạng thái hover nút chính |
+| `semantic-success` | `#16A34A` | Thông báo thành công, xác nhận hoàn thành (thay thế `#059669`) |
+| `semantic-warning` | `#D97706` | Cảnh báo, thông báo lưu ý |
+| `semantic-error` | `#DC2626` | Báo lỗi validation, hủy bỏ, thông báo thất bại |
+| `semantic-info` | `#2563EB` | Thông tin chỉ dẫn (đồng nhất tông với action-primary) |
+
+#### Trạng thái vòng đời Case (Case Status Badge Pairs)
+| Status | Badge BG | Badge Text | Dot Hex | Ý nghĩa |
+|---|:---:|:---:|:---:|---|
+| `status-draft` | `#F3F4F6` | `#4B5563` | `#9CA3AF` | AI sinh hoặc mới tạo, chưa qua duyệt |
+| `status-reviewed` | `#EFF6FF` | `#1D4ED8` | `#2563EB` | Giảng viên đã chỉnh sửa, chưa phê duyệt |
+| `status-approved` | `#FFFBEB` | `#92400E` | `#D97706` | Giảng viên đã duyệt, chưa công bố |
+| `status-published` | `#F0FDF4` | `#166534` | `#16A34A` | Đã công bố, sinh viên có thể học |
+
+#### Chế độ học tập (Learning Mode Badges)
+| Mode | Badge BG | Badge Text | Ý nghĩa |
+|---|:---:|:---:|---|
+| `mode-branching` | `#F0FDFA` | `#0F766E` | Branching Study — Tình huống rẽ nhánh đa hướng |
+| `mode-review` | `#FDF2F8` | `#BE185D` | Review Study — Phân tích tình huống mở & giải pháp |
 
 ---
 

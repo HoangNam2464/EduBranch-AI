@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for lecturer case review, edit, and publication workflow in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [case review, approve, publish, edit case, case lifecycle, draft, approved, published]
 ---
 

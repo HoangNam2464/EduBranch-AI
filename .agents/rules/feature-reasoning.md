@@ -1,6 +1,6 @@
-﻿---
+---
 description: Rules for student reasoning capture in EduBranch-AI.
-trigger: keyword
+trigger: model_decision
 keywords: [reasoning, student reasoning, justification, written response]
 ---
 
