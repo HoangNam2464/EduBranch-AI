@@ -46,19 +46,20 @@ UI must be: **simple, clean, functional, and consistent.**
 - `/lecturer/statistics` — simple participation and branch statistics
 
 ### Student Pages
-- `/student/cases/:caseId/branching-play` — Branching Case Player (situation ? options ? reasoning ? consequence ? next node ? outcome)
-- `/student/cases/:caseId/attempt/:attemptId/reflect` — post-outcome reflection
+- `/student/cases/:caseId/branching-play` — Branching Case Player (Experience phase: situation → option choice → next situation; seamless progression without mid-flow blocking)
+- `/student/cases/:caseId/attempt/:attemptId/review` — Branching REVIEW Phase (post-journey timeline: revealed consequences, retrospective reasoning)
+- `/student/cases/:caseId/attempt/:attemptId/reflect` — Post-outcome reflection
 - `/student/cases/:caseId/challenge/:sessionId` — AI Reasoning / Challenge Support (max 2 rounds; supports both Branching Study and Review Study targets)
 - `/student/cases/:caseId/review-study` — Review Study case analysis, proposed solution, and reasoning
-- `/student/cases/:caseId/review-study/:submissionId/feedback` — lecturer feedback + reflection for a Review Study submission
+- `/student/cases/:caseId/review-study/:submissionId/feedback` — Lecturer feedback + reflection for a Review Study submission
 
 ## 6. Decision Tree Visualization
 
-- Use ReactFlow for interactive decision tree display in Case Review (lecturer, editable) and the Branching Case Player (student, read-only navigation)
+- Use ReactFlow for interactive decision tree display exclusively in Case Review (lecturer, editable)
 - Nodes represent `CaseNode` (situation)
 - Edges represent `CaseOption` (decision + consequence)
-- Lecturer view: editable, node click opens edit panel
-- Student view: read-only navigation, highlight current node
+- Lecturer view: editable graph canvas, node/edge click opens edit panel
+- Student view (Branching Case Player): distraction-free card selection UI (no ReactFlow map during experience phase)
 
 ## 7. Security
 

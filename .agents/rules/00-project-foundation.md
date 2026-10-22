@@ -18,7 +18,7 @@ trigger: always_on
 - **Database**: PostgreSQL 16 + pgvector | MinIO (Object Storage) | SQL Migrations | Redis 7 (Cache)
 - **AI / LLM**: Gemini 2.0 Flash / OpenAI GPT-4o-mini via Provider Abstraction
 - **RAG**: LangChain (text splitters + retrieval orchestration)
-- **Decision Tree Visualization**: ReactFlow (used in Lecturer Case Review editor and REVIEW phase)
+- **Decision Tree Visualization**: ReactFlow (used in Lecturer Case Review editor)
 
 ### CORE PEDAGOGICAL MODEL: EXPERIENTIAL CASE-BASED LEARNING
 1. **Learning Process Orientation**: EduBranch-AI is engineered to support active learning processes through case studies and multi-branch decision trees (Business, Law, Medicine, Management, Engineering, etc.).

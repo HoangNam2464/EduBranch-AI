@@ -8,14 +8,15 @@ keywords: [branching attempt, branching case player, branching study, student, d
 
 ## Scope
 Backend Gateway (NestJS `backend/`) — `branching-attempt/` module.
-Frontend — `pages/student/BranchingCasePlayerPage.tsx` (ReactFlow-adjacent read-only player, not the lecturer's editor).
+Frontend — `pages/student/BranchingCasePlayerPage.tsx` (content-first card navigation player; ReactFlow is not used in the player).
 
 ## Included
 - Student loads a `PUBLISHED` case with `learning_mode = 'BRANCHING_STUDY'`
-- Student sees the current situation (`CaseNode`) and its available `CaseOption` choices
-- Student selects an option, submits required reasoning (see `feature-reasoning.md`), then sees the lecturer-authored `consequence`
-- System advances the attempt to `option.next_node_id`
-- System detects terminal node (`is_terminal = TRUE`) and records `outcome_node_id`, `is_completed = TRUE`
+- **Experience-first navigation**: Student sees the current situation (`CaseNode`) and its available `CaseOption` choices
+- Student selects an option: `selected_option_id` is recorded immediately, and the player advances directly to `option.next_node_id` with NO blocking steps in between (no mid-flow reasoning form, no consequence card revealed mid-flow)
+- System advances the attempt through consecutive Decision Points until reaching a terminal node (`is_terminal = TRUE`)
+- System detects terminal node, records `outcome_node_id`, and sets `is_completed = TRUE`
+- **REVIEW phase** (`/student/cases/:caseId/attempt/:attemptId/review`): Consequence text and full decision analysis are revealed here for the first time, and retrospective reasoning is captured (see `feature-reasoning.md`)
 - Attempt state persisted: `attempt_number`, `current_node_id`, `outcome_node_id`, `is_completed`, `reflection_text`, `reflection_status`
 - Student may retry: a retry creates a NEW `branching_attempts` row with `attempt_number = previous + 1` (`UNIQUE(student_id, case_id, attempt_number)`)
 - Past attempts are immutable history — never overwritten or mutated retrospectively
@@ -28,8 +29,8 @@ Frontend — `pages/student/BranchingCasePlayerPage.tsx` (ReactFlow-adjacent rea
 - **No Attempt Scoring**: no scoring columns on `branching_attempts`, no grading of the path taken
 
 ## Service Owner
-Backend Gateway: attempt persistence, node traversal logic, retry/versioning.
-Frontend: Branching Case Player UI (situation/option/consequence display, reasoning capture handoff, outcome/reflection handoff).
+Backend Gateway: attempt persistence, node traversal logic, retry/versioning, retrospective reasoning PUT/PATCH.
+Frontend: Branching Case Player UI (distraction-free experience player, seamless option selection, terminal outcome handoff, review timeline with revealed consequences, reflection handoff).
 
 ## Constraints
 - Only `PUBLISHED` cases can be loaded (`INV-01`)

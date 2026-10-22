@@ -65,8 +65,9 @@ Based on the verified routing architecture (`frontend/src/app/router.tsx`):
 - `/lecturer/statistics` — Branch selection distribution, participation metrics, and attempt analytics.
 
 ### 5.3. Student Portal (`/student`)
-- `/student/cases/:caseId/branching-play` — Branching Case Player (Situation → Dilemma Options → Consequence → Next Node).
-- `/student/cases/:caseId/attempt/:attemptId/reflect` — Post-attempt reflection prompt and justification submission.
+- `/student/cases/:caseId/branching-play` — Branching Case Player (Phase 1 Experience: Situation → Dilemma Options → Next Situation without mid-flow blocking).
+- `/student/cases/:caseId/attempt/:attemptId/review` — Branching REVIEW Phase (Phase 2: Sequential path replay, revealed consequences, retrospective reasoning).
+- `/student/cases/:caseId/attempt/:attemptId/reflect` — Post-attempt reflection prompt and justification submission (Phase 3).
 - `/student/cases/:caseId/challenge/:sessionId` — AI Reasoning / Challenge Support interface (1–2 rounds of targeted challenge/counter-questions).
 - `/student/cases/:caseId/review-study` — Review Study case analysis, proposed solution formulation, and reasoning submission.
 - `/student/cases/:caseId/review-study/:submissionId/feedback` — Inspection of lecturer feedback on review study.
@@ -85,8 +86,10 @@ Teaching material / lecturer-provided case context → RAG retrieves course chun
 Workflow 3: Human-in-the-Loop Review
 Lecturer verifies and edits case draft → Validates Branching Study tree structure (no cycles, reachable nodes, valid terminal nodes) or Review Study content → Moves through REVIEWED → APPROVED → PUBLISHED.
 
-Workflow 4: Branching Study
-Context/Data → Decision Point → Select Option → Student Reasoning per Attempt → Lecturer-authored/approved Consequence → Next Node → Outcome → Student Reflection → New Attempt / Retry.
+Workflow 4: Branching Study (Experience-First Flow)
+Phase 1 (Experience): Context/Data → Decision Point → Select Option → Next Node (uninterrupted, no mid-flow consequence card or reasoning form) → Terminal Outcome.
+Phase 2 (REVIEW): Full Journey Replay → Revealed Consequences → Retrospective Reasoning Capture on key choices.
+Phase 3 (Reflection & Retry): Student Reflection → [Optional: AI Challenge Support] → [Optional: New Attempt / Retry from root].
 
 Workflow 5: Review Study
 Context/Data → Problem → Student Analysis → Proposed Solution → Student Reasoning → Lecturer Review / Feedback → Student Reflection.
