@@ -106,36 +106,55 @@ sequenceDiagram
     participant BE as Backend Gateway
     participant DB as PostgreSQL
 
+    %% Phase 1: Experience (Seamless, no interruptions mid-flow)
+    Note over Student,FE: Phase 1 — Experience (Seamless, Uninterrupted)
     Student->>FE: Starts Branching Case (/student/cases/:caseId/branching-play)
     FE->>BE: POST /api/v1/cases/{caseId}/branching-attempts
     BE->>DB: Verify case status is PUBLISHED
     BE->>DB: INSERT INTO branching_attempts (student_id, case_id, attempt_number=1, current_node_id=root_node_id)
-    BE-->>FE: 200 OK (root CaseNode: situation, options)
+    BE-->>FE: 201 Created (root CaseNode: situation, options)
     
-    loop At each Decision Point
-        Student->>FE: Selects Option, enters written reasoning per attempt
-        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, selectedOptionId, reasoningText)
-        BE->>DB: INSERT INTO student_reasoning (attempt_id, node_id, selected_option_id, reasoning_text)
+    loop At each Decision Point (No mid-flow blocking)
+        Student->>FE: Selects Option
+        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/step (nodeId, selectedOptionId)
+        BE->>DB: INSERT INTO student_reasoning (attempt_id, node_id, selected_option_id, reasoning_text=null)
         BE->>DB: UPDATE branching_attempts SET current_node_id=option.next_node_id
-        BE-->>FE: 200 OK (Reveals lecturer-authored consequence card)
-        opt Optional Challenge Support
-            FE->>BE: Initiate Challenge Support (see Flow 6)
-        end
+        BE-->>FE: 200 OK (Next CaseNode: situation, options — no consequence card mid-flow)
     end
 
     Note over Student,DB: Student reaches terminal node (is_terminal=TRUE)
     BE->>DB: UPDATE branching_attempts SET outcome_node_id=terminalNodeId, is_completed=TRUE
-    FE->>Student: Displays final outcome summary
-    Student->>FE: Navigates to Reflection (/student/cases/:caseId/attempt/:attemptId/reflect)
+    BE-->>FE: 200 OK (Terminal outcome reached)
+
+    %% Phase 2: REVIEW (Retrospective Journey Review & Consequence Reveal)
+    Note over Student,FE: Phase 2 — REVIEW (/student/cases/:caseId/attempt/:attemptId/review)
+    Student->>FE: Navigates to Review Phase
+    FE->>BE: GET /api/v1/branching-attempts/{attemptId}
+    BE->>DB: Fetch full traversal path, options chosen, and revealed consequences
+    BE-->>FE: 200 OK (Full journey replay: consequences revealed)
+    opt Retrospective Reasoning Capture
+        Student->>FE: Enters written reasoning for key/pivotal decisions
+        FE->>BE: PUT /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, reasoningText)
+        BE->>DB: UPDATE student_reasoning SET reasoning_text=... WHERE attempt_id=... AND node_id=...
+        BE-->>FE: 200 OK
+    end
+    opt Optional AI Challenge Support
+        FE->>BE: Initiate Challenge Support (see Flow 6)
+    end
+
+    %% Phase 3: Reflection & Retry
+    Note over Student,FE: Phase 3 — Reflection & Retry (/student/cases/:caseId/attempt/:attemptId/reflect)
+    Student->>FE: Navigates to Reflection
     Student->>FE: Submits reflection text
     FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reflection (reflectionText)
     BE->>DB: UPDATE branching_attempts SET reflection_text=..., reflection_status='SUBMITTED'
     BE-->>FE: 200 OK
 
     opt Student Decides to Retry
-        Student->>FE: Clicks "Retry Case"
+        Student->>FE: Clicks "Try Another Path"
         FE->>BE: POST /api/v1/cases/{caseId}/branching-attempts (starts Attempt #2)
         BE->>DB: INSERT INTO branching_attempts (attempt_number=2, ...)
+        BE-->>FE: 201 Created (Restart from root node)
     end
 ```
 

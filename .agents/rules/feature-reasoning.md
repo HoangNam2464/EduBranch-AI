@@ -7,15 +7,17 @@ keywords: [reasoning, student reasoning, justification, written response]
 # Feature Rules: Student Reasoning Capture
 
 ## Scope
-Backend Gateway (NestJS `backend/`) — `reasoning/` module.
-Frontend — `pages/student/BranchingCasePlayerPage.tsx` (Reasoning Input component).
+Backend Gateway (NestJS `backend/`) — `reasoning/` and `branching-attempt/` modules.
+Frontend — `/student/cases/:caseId/attempt/:attemptId/review` (REVIEW Phase — Decision Reasoning Input component).
 
 ## Included
-- After selecting a `CaseOption` at a Decision Point, the student submits written reasoning justifying that choice
-- Reasoning is persisted to `student_reasoning`, owned strictly by `attempt_id NOT NULL` (`branching_attempts`) — NOT by the option or node globally (INV-05)
+- **Two-phase reasoning capture in Branching Study**:
+  1. **Selection capture (Experience phase)**: Selecting a `CaseOption` immediately records `selected_option_id` to `student_reasoning`, owned strictly by `attempt_id NOT NULL` (`branching_attempts`) — NOT by the option or node globally (INV-05).
+  2. **Retrospective reasoning (REVIEW phase)**: After completing the journey (reaching terminal node), student may write reflective reasoning justifying their decisions (`reasoning_text` via PUT/PATCH, encouraged for pivotal decisions, not blocking mid-flow, optional per node).
+- **Reasoning capture in Review Study**: Student submits `proposed_solution` along with mandatory `reasoning_text` (`NOT NULL` in `review_study_submissions`).
 - One reasoning record per Decision Point per Attempt: `UNIQUE(attempt_id, node_id)` (INV-06)
 - `selected_option_id` must belong to `node_id`'s options (service-layer validation, INV-07)
-- Reasoning is the trigger for optional AI Reasoning / Challenge Support (see `feature-challenge-support.md`)
+- Reasoning text is the trigger for optional AI Reasoning / Challenge Support (see `feature-challenge-support.md`)
 - Student may view their own submitted reasoning for their own attempts
 
 ## Excluded
@@ -28,7 +30,8 @@ Frontend — `pages/student/BranchingCasePlayerPage.tsx` (Reasoning Input compon
 Backend Gateway (NestJS `backend/`) — `reasoning/` module.
 
 ## Constraints
-- Reasoning text should have a minimum length (10 chars) and maximum length (2000 chars)
+- **Branching Study**: Writing reasoning is encouraged for pivotal decisions but is **optional** overall; `reasoning_text` may be null. If provided, length must be between 10 and 2,000 characters.
+- **Review Study**: `reasoning_text` is **mandatory** (required, 10–2,000 characters).
 - Reasoning is stored as plain text (no HTML, sanitize on input)
 - `studentId` is always derived from JWT via the owning `attempt` — never trust a client-provided student ID
 - Retrying a case creates a NEW `branching_attempts` row; a new attempt means new reasoning rows, even for the same option chosen again — past attempts and their reasoning are immutable (INV-12)
