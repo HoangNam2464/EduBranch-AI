@@ -10,6 +10,7 @@
 | Report / Document | Description | Date / Phase | Status |
 | :--- | :--- | :--- | :--- |
 | [**`FINAL-BASELINE-AUDIT.md`**](FINAL-BASELINE-AUDIT.md) | Comprehensive audit validating 100% compliance across backend, frontend, rules, and documentation against Proposal V1.2. | Final Baseline | ✅ **Authoritative Baseline** |
+| [**`UX-REDESIGN-DISCOVERY-AUDIT.md`**](UX-REDESIGN-DISCOVERY-AUDIT.md) | UI/UX discovery audit & screen inventory analyzing Stitch tooling boundaries, routing, and light-first design direction. | UX Redesign Audit | ✅ **Archived Reference** |
 | [**`FINAL-PRODUCT-DIRECTION-VALIDATION.md`**](FINAL-PRODUCT-DIRECTION-VALIDATION.md) | Validation of experiential case-based learning model and product positioning. | V2 Direction | ✅ **Approved** |
 | [**`TECHNOLOGY-CORRECTION-REPORT.md`**](TECHNOLOGY-CORRECTION-REPORT.md) | Migration and consistency report documenting the transition to NestJS 10, React 19, and TailwindCSS v4. | Migration Report | ✅ **Complete** |
 | [**`PROJECT-DIRECTION-AUDIT.md`**](PROJECT-DIRECTION-AUDIT.md) | Initial evaluation comparing proposal requirements with structural scaffold. | Bootstrap Phase | 📜 Historical Audit |

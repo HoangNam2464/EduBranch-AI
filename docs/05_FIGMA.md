@@ -1,8 +1,8 @@
-# EduBranch-AI — Figma UI/UX Design Catalog (15 Tasks / 50 Story Points)
+ EduBranch-AI — Figma UI/UX Design Catalog (15 Tasks / 50 Story Points)
 
 > **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
-> **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
-> **Tài liệu tham chiếu thiết kế**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`  
+> **Nguồn quản trị gốc**: `docs/01_MASTER-TASKS.md` · `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
+> **Tài liệu tham chiếu thiết kế**: [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](design/GLOBAL-DESIGN-SYSTEM.md) · [`.agents/rules/01-01-ui-design-standards.md`](../.agents/rules/01-01-ui-design-standards.md) · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md)  
 > **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma)  
 > **Quy mô**: 15 Tasks | 50 Story Points (14.88% toàn dự án)  
 > **Quy chuẩn thiết kế**: Chuẩn mực học tập tình huống chuyên sâu & chuyên nghiệp (EduBranch-AI Design Standards).  
@@ -13,26 +13,40 @@
 
 ### 1.1. Triết lý thẩm mỹ học thuật đại học
 - **Light Theme Only**: Giao diện sáng, tinh tế, trang nhã, tập trung vào nội dung học thuật chuyên sâu. Không áp dụng dark mode trong giai đoạn này.
-- **Không lạm dụng biểu tượng AI**: AI là một tính năng hỗ trợ, không phải nhận diện thương hiệu. Tuyệt đối không dùng avatar hoạt hình, biểu tượng lấp lánh (sparkles), viền neon, hoặc typing animation gây xao nhãng.
+- **Không lạm dụng biểu tượng AI & Chống "AI-Slop"**: AI là một tính năng hỗ trợ, không phải nhận diện thương hiệu. Tuyệt đối cấm dùng:
+  1. Emoji Unicode (`🌿`, `📭`, `🤖`, `✍️`, `🏁`, `💡`, v.v.) hoặc ký tự ASCII giả làm icon (`->`, `&times;`, `✕`). Bắt buộc dùng **Vector Outline SVG (`lucide-react`, `strokeWidth={1.75}`)**.
+  2. Màu tím/indigo (`#6366F1`, `purple-*`, `indigo-*`, `violet-*`), hiệu ứng phát sáng neon, gradient lòe loẹt, hoặc typing animation.
+  3. Các hộp callout giảng giải dài dòng ("Preachy AI callouts") trên màn hình sinh viên.
 - **Phân định rõ 2 cổng người dùng**:
-  - **Lecturer Portal**: Tập trung vào quản lý học phần (Course), tải lên giáo trình (Teaching Materials), sinh case bằng AI, biên tập cây quyết định (Decision Tree via ReactFlow), và duyệt bài (Review & Qualitative Feedback).
-  - **Student Portal**: Trải nghiệm giải quyết tình huống rẽ nhánh (Branching Case Player) liên tục không gián đoạn, xem lại hành trình (Journey Review & Consequence Reveal), phản biện mở (Review Study), và tương tác Socratic (AI Challenge Support tối đa 2 vòng).
+  - **Lecturer Portal (`LecturerLayout` — `240px` Left Sidebar + `max-w-7xl` Workspace)**: Tập trung vào quản lý học phần (Course), tải lên giáo trình (Teaching Materials), sinh case bằng AI, biên tập cây quyết định (Decision Tree via ReactFlow `60/40` split-screen), và duyệt bài (Review & Qualitative Feedback).
+  - **Student Portal (`StudentLayout` — `56px` Compact Top Header + `max-w-3xl` Reading Container)**: Trải nghiệm giải quyết tình huống rẽ nhánh 3 giai đoạn (`Phase 1: Experience` không gián đoạn → `Phase 2: REVIEW` tiết lộ hệ quả & ghi nhận lập luận hồi cứu → `Phase 3: Reflection & Retry`), phản biện mở (Review Study), và tương tác Socratic (AI Challenge Support tối đa 2 vòng).
 
-### 1.2. Bảng mã màu chuẩn (Design Tokens)
+### 1.2. Bảng mã màu chuẩn (Design Tokens — Đồng bộ 100% với `GLOBAL-DESIGN-SYSTEM.md`)
 
 | Token Name | Mã Hex | Vai trò & Mục đích sử dụng |
 |---|:---:|---|
 | `bg-canvas` | `#F9FAFB` | Màu nền toàn bộ trang web (Page background) |
 | `bg-surface` | `#FFFFFF` | Nền các thẻ Card, Modal, Panel, Bảng dữ liệu |
 | `bg-surface-muted` | `#F3F4F6` | Nền khối trích dẫn, hàng bảng xen kẽ, ô disabled |
+| `bg-surface-hover` | `#F3F4F6` | Trạng thái hover cho hàng bảng và danh sách |
+| `bg-surface-selected` | `#EFF6FF` | Trạng thái đang chọn (Active nav item, Selected option card, Selected ReactFlow node) |
 | `text-primary` | `#111827` | Tiêu đề chính, văn bản trọng tâm, nội dung tình huống |
 | `text-secondary` | `#4B5563` | Văn bản phụ trợ, nhãn mô tả, nội dung diễn giải |
 | `text-muted` | `#9CA3AF` | Placeholder, timestamp, chú thích phụ |
-| `border-default` | `#E5E7EB` | Đường viền Card, đường phân cách bảng, viền ô nhập liệu |
-| `action-primary` | `#2563EB` | Màu nhấn hành động chính (Nút chính, tab active, link) |
-| `action-success` | `#059669` | Trạng thái Approved, Published, Completed |
-| `action-warning` | `#D97706` | Trạng thái Review, Processing, Cảnh báo rẽ nhánh |
-| `action-danger` | `#DC2626` | Trạng thái Failed, Error, Hành động hủy bỏ |
+| `border-default` | `#E5E7EB` | Đường viền Card, đường phân cách bảng, viền ô nhập liệu (`1px solid`) |
+| `border-strong` | `#D1D5DB` | Viền nhấn mạnh nhẹ (Input hover, Terminal node border) |
+| `border-focus` | `#2563EB` | Viền focus (`2px`) cho Input, Option đang chọn, Node đang sửa |
+| `action-primary` | `#2563EB` | Màu nhấn hành động chính duy nhất (Nút chính, tab active, link — Hover `#1D4ED8`) |
+| `status-draft` | `#F3F4F6` / `#374151` | Badge trạng thái `DRAFT` (Nền xám nhạt / Chữ xám đậm) |
+| `status-reviewed` | `#FEF3C7` / `#92400E` | Badge trạng thái `REVIEWED` (Nền vàng hổ phách nhạt / Chữ nâu hổ phách) |
+| `status-approved` | `#DBEAFE` / `#1E40AF` | Badge trạng thái `APPROVED` (Nền xanh lam nhạt / Chữ xanh lam đậm) |
+| `status-published` | `#DCFCE7` / `#166534` | Badge trạng thái `PUBLISHED` (Nền xanh lá nhạt / Chữ xanh lá đậm) |
+| `mode-branching` | `#CCFBF1` / `#0F766E` | Badge chế độ `BRANCHING_STUDY` & viền trái khối Consequence (`4px solid #0F766E`) |
+| `mode-review` | `#FCE7F3` / `#9D174D` | Badge chế độ `REVIEW_STUDY` |
+| `ai-support` | `#F3F4F6` / `#4B5563` | Nhãn trung tính đánh dấu nội dung do AI khởi tạo (Bản nháp AI hoặc câu hỏi Socratic) |
+| `semantic-success` | `#16A34A` | Thông báo thành công, hoàn thành |
+| `semantic-warning` | `#D97706` | Cảnh báo nghiệp vụ, trạng thái đang xử lý |
+| `semantic-error` | `#DC2626` | Lỗi xác thực biểu mẫu, trạng thái thất bại, hành động xóa/hủy |
 
 ---
 

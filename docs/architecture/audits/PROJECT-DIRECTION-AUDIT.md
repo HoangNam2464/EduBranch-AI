@@ -1,4 +1,4 @@
-﻿# EduBranch-AI — Project Direction Audit
+ EduBranch-AI — Project Direction Audit
 
 > **Audit Type**: Read-Only Source-of-Truth & Architectural Direction Audit  
 > **Target System**: EduBranch-AI (`https://github.com/HoangNam2464/EduBranch-AI`)  
@@ -253,7 +253,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
 | :--- | :--- | :---: | :--- | :---: |
 | **Backend Framework in Rules** | `.agents/rules/*.md` (14 files) | **`CONFLICTING`** | `.agents/rules/` states Spring Boot is the mandatory stack, whereas Proposal specifies Node.js/FastAPI and ADR-001 marks it as a Candidate Option. | **High** |
 | **React Version Drift** | `frontend/package.json` | **`INFERRED`** | Package has `react: ^19.2.8`, whereas rules and documentation specify `React 18`. | **Low** |
-| **TailwindCSS Version Drift** | `frontend/package.json` | **`INFERRED`** | Package has `tailwindcss: ^4.3.3`, whereas `ui-design-standards.md` explicitly mandates `TailwindCSS v3`. | **Medium** |
+| **TailwindCSS Version Drift** | `frontend/package.json` | **`INFERRED`** | Package has `tailwindcss: ^4.3.3`, whereas `01-ui-design-standards.md` explicitly mandates `TailwindCSS v3`. | **Medium** |
 | **"Open Review" Scope in MVP** | `docs/PROJECT_OVERVIEW.md` | **`INFERRED`** | Project title includes "Open Review", but Proposal Table 1 marks peer review as post-MVP. Handled in docs, but needs consistent explanation. | **Low** |
 | **Debate Message DB Table** | `V1__init_schema.sql` L148 | **`SUPPORTED`** | Proposal Section 4 explicitly specifies 1–2 rounds of counter-questioning; table supports message history. | **None** |
 
@@ -267,7 +267,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
    - *Impact*: Future AI agents following `.agents/rules/` will assume Spring Boot is an unchangeable requirement, conflicting with the Project Owner's directive that backend choices are **Candidate Options only**.
 2. **TailwindCSS v4 PostCSS Configuration**:
    - *Evidence*: `frontend/package.json` includes `@tailwindcss/postcss: ^4.3.3` and `tailwindcss: ^4.3.3`.
-   - *Impact*: TailwindCSS v4 has breaking syntax differences from TailwindCSS v3 (which is mandated by `.agents/rules/ui-design-standards.md`).
+   - *Impact*: TailwindCSS v4 has breaking syntax differences from TailwindCSS v3 (which is mandated by `.agents/rules/01-ui-design-standards.md`).
 
 ---
 
@@ -277,7 +277,7 @@ The current repository reflects the state after bootstrap scaffolding and docume
 | :--- | :--- | :--- | :--- |
 | **Proposal Section 7 & 11** ("Backend: Node.js or Python FastAPI") | **`.agents/rules/00-project-foundation.md`** ("Stack: Spring Boot 3") | Backend Framework | Direct conflict: Proposal specifies Node.js or FastAPI; project rule specifies Spring Boot. |
 | **`ADR-001-TECHNOLOGY-STACK.md`** (Backend is a Candidate Option) | **`.agents/rules/feature-*.md`** (All 11 feature rule files specify Spring Boot) | Backend Finality | Inconsistency: Architectural ADR treats backend as undecided; governance rules treat Spring Boot as finalized. |
-| **`ui-design-standards.md`** ("TailwindCSS v3 for all styling") | **`frontend/package.json`** (`"tailwindcss": "^4.3.3"`) | Styling Tooling | Version mismatch: Rules mandate v3; installed dependency is v4. |
+| **`01-ui-design-standards.md`** ("TailwindCSS v3 for all styling") | **`frontend/package.json`** (`"tailwindcss": "^4.3.3"`) | Styling Tooling | Version mismatch: Rules mandate v3; installed dependency is v4. |
 | **`00-project-foundation.md`** ("React 18") | **`frontend/package.json`** (`"react": "^19.2.8"`) | Frontend Tooling | Version mismatch: Rules mandate React 18; installed dependency is React 19. |
 
 ---
@@ -327,7 +327,7 @@ Verified across the entire codebase:
 3. **DEC-03 (Classroom Trial Evaluation Method)**:
    - *Question*: For the Capstone research trial comparing AI vs. human cases, should evaluation rubrics be scored **in-platform via UI forms** or exported as **structured CSV/JSON data** for external statistical analysis?
 4. **DEC-04 (Frontend Dependency Alignment)**:
-   - *Question*: Should `frontend/package.json` be pinned to React 18 and TailwindCSS v3 to match `.agents/rules/ui-design-standards.md`, or should the rules be updated to permit React 19 and TailwindCSS v4?
+   - *Question*: Should `frontend/package.json` be pinned to React 18 and TailwindCSS v3 to match `.agents/rules/01-ui-design-standards.md`, or should the rules be updated to permit React 19 and TailwindCSS v4?
 
 ---
 
@@ -336,7 +336,7 @@ Verified across the entire codebase:
 | # | Severity | Problem Area | Evidence | Recommended Correction (When Approved) | Owner Approval Needed? |
 | :-: | :---: | :--- | :--- | :--- | :---: |
 | **1** | **HIGH** | Hardcoded Spring Boot in `.agents/rules/` | `.agents/rules/*.md` mandate Spring Boot across 14 files | Update `.agents/rules/*.md` to use neutral "Backend Gateway" terminology, reflecting ADR-001 candidate options. | **Yes** |
-| **2** | **MEDIUM**| TailwindCSS version mismatch | `package.json` has v4.3.3; rules specify v3 | Align `package.json` to TailwindCSS v3.4.x OR update `ui-design-standards.md` to approve v4. | **Yes** |
+| **2** | **MEDIUM**| TailwindCSS version mismatch | `package.json` has v4.3.3; rules specify v3 | Align `package.json` to TailwindCSS v3.4.x OR update `01-ui-design-standards.md` to approve v4. | **Yes** |
 | **3** | **LOW** | React version mismatch | `package.json` has v19.2.8; rules specify v18 | Align `package.json` to React 18.3.x OR update project foundation rule to approve React 19. | **Yes** |
 | **4** | **LOW** | Colloquial "workspace" comment | `LecturerLayout.tsx` line 3 uses "workspace" | Change comment to "Lecturer layout — navigation sidebar + content area". | **No** |
 

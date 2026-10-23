@@ -96,36 +96,50 @@ sequenceDiagram
 
 ---
 
-## 4. Flow 4: Branching Study (Player, Attempt, Reasoning, Outcome, Reflection & Retry)
+## 4. Flow 4: Branching Study — 3-Phase Experience-First Model (Player → REVIEW → Reflection & Retry)
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor Student
-    participant FE as React Frontend (BranchingCasePlayerPage)
+    participant FE as React Frontend (BranchingCasePlayerPage / BranchingReviewPage)
     participant BE as Backend Gateway
     participant DB as PostgreSQL
 
+    Note over Student,DB: Phase 1 — Experience (/student/cases/:caseId/branching-play)
     Student->>FE: Starts Branching Case (/student/cases/:caseId/branching-play)
     FE->>BE: POST /api/v1/cases/{caseId}/branching-attempts
     BE->>DB: Verify case status is PUBLISHED
     BE->>DB: INSERT INTO branching_attempts (student_id, case_id, attempt_number=1, current_node_id=root_node_id)
     BE-->>FE: 200 OK (root CaseNode: situation, options)
     
-    loop At each Decision Point
-        Student->>FE: Selects Option, enters written reasoning per attempt
-        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, selectedOptionId, reasoningText)
-        BE->>DB: INSERT INTO student_reasoning (attempt_id, node_id, selected_option_id, reasoning_text)
+    loop At each Decision Point (Consecutive choices — NO mid-flow reasoning or consequence reveal)
+        Student->>FE: Selects Option & clicks "Confirm & Continue"
+        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, selectedOptionId, reasoningText=null)
+        BE->>DB: INSERT INTO student_reasoning (attempt_id, node_id, selected_option_id, reasoning_text=NULL)
         BE->>DB: UPDATE branching_attempts SET current_node_id=option.next_node_id
-        BE-->>FE: 200 OK (Reveals lecturer-authored consequence card)
-        opt Optional Challenge Support
-            FE->>BE: Initiate Challenge Support (see Flow 6)
-        end
+        BE-->>FE: 200 OK (Advances immediately to next CaseNode)
     end
 
     Note over Student,DB: Student reaches terminal node (is_terminal=TRUE)
     BE->>DB: UPDATE branching_attempts SET outcome_node_id=terminalNodeId, is_completed=TRUE
-    FE->>Student: Displays final outcome summary
+    FE->>Student: Displays Terminal Outcome Card & "Proceed to Review & Analysis"
+
+    Note over Student,DB: Phase 2 — REVIEW (/student/cases/:caseId/attempt/:attemptId/review)
+    Student->>FE: Navigates to REVIEW screen (/student/cases/:caseId/attempt/:attemptId/review)
+    FE->>BE: GET /api/v1/branching-attempts/{attemptId}
+    BE-->>FE: 200 OK (Full decision path + lecturer-authored consequence for each chosen option)
+    loop Per Decision Point in REVIEW Timeline
+        Student->>FE: Enters retrospective written reasoning (10–2000 chars)
+        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, selectedOptionId, reasoningText)
+        BE->>DB: UPSERT student_reasoning SET reasoning_text=... WHERE attempt_id=... AND node_id=...
+        BE-->>FE: 200 OK
+        opt Optional Challenge Support (max 2 rounds per node)
+            FE->>BE: Initiate Challenge Support (see Flow 6)
+        end
+    end
+
+    Note over Student,DB: Phase 3 — Reflection & Retry (/student/cases/:caseId/attempt/:attemptId/reflect)
     Student->>FE: Navigates to Reflection (/student/cases/:caseId/attempt/:attemptId/reflect)
     Student->>FE: Submits reflection text
     FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reflection (reflectionText)
@@ -133,7 +147,7 @@ sequenceDiagram
     BE-->>FE: 200 OK
 
     opt Student Decides to Retry
-        Student->>FE: Clicks "Retry Case"
+        Student->>FE: Clicks "Retry Case (New Attempt)"
         FE->>BE: POST /api/v1/cases/{caseId}/branching-attempts (starts Attempt #2)
         BE->>DB: INSERT INTO branching_attempts (attempt_number=2, ...)
     end

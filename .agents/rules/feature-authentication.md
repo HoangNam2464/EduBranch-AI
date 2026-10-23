@@ -1,7 +1,6 @@
-﻿---
+--
 description: Rules for authentication and authorization implementation in EduBranch-AI.
-trigger: keyword
-keywords: [auth, login, register, jwt, security, role, permission, password]
+trigger: model_decision
 ---
 
 # Feature Rules: Authentication & Role Management

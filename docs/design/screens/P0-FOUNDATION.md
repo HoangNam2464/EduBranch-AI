@@ -1,4 +1,4 @@
-﻿# P0 — Global Foundation
+ P0 — Global Foundation
 
 > **Priority**: NOW. Nothing else can be built consistently without this.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md` (all tokens/components referenced below live there).
@@ -13,7 +13,7 @@ Provides the persistent frame (sidebar/nav + content area) that every authentica
 
 ### User & Context
 - **Lecturer** sees `LecturerLayout`: full management nav (Courses, Statistics) plus contextual sub-nav once inside a course (Materials, Cases, Review, Feedback).
-- **Student** sees `StudentLayout`: a lighter nav, since students mostly deep-link into a specific case from an external LMS/course link rather than browsing a dashboard — case is a required route param on every student route (`SITE.md §5.3`).
+- **Student** sees `StudentLayout`: a lighter nav, since students mostly deep-link into a specific case from an external LMS/course link rather than browsing a dashboard — case is a required route param on every student route (`SITE-ARCHITECTURE.md §5.3`).
 - **When used**: On every authenticated screen; this is the persistent frame, not a standalone route.
 
 ### Information Hierarchy & Layout

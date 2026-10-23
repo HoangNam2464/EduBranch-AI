@@ -1,7 +1,6 @@
-﻿---
+--
 description: Rules for AI Reasoning / Challenge Support in EduBranch-AI.
-trigger: keyword
-keywords: [challenge support, counter-question, ai reasoning, challenge question, reasoning support]
+trigger: model_decision
 ---
 
 # Feature Rules: AI Reasoning / Challenge Support

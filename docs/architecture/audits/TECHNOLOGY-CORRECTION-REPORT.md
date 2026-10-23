@@ -1,4 +1,4 @@
-﻿# EduBranch-AI — Technology & Documentation Correction Report
+ EduBranch-AI — Technology & Documentation Correction Report
 
 > **Report Type**: Post-Audit Repository Migration & Consistency Report  
 > **Target System**: EduBranch-AI (`https://github.com/HoangNam2464/EduBranch-AI`)  
@@ -185,7 +185,7 @@ All 14 files under [`.agents/rules/`](file:///d:/CAPSTONE_2026/EduBranch-AI/.age
 | Rule File | Nature of Correction |
 | :--- | :--- |
 | `00-project-foundation.md` | Replaced Spring Boot 3 (Java 17) with Node.js (NestJS 10 + TypeScript). Replaced React 18 with React 19 + TailwindCSS v4. Replaced Java coding standards with TypeScript/NestJS standards. Updated service boundary tables. |
-| `ui-design-standards.md` | Updated tech stack to React 19 + TailwindCSS v4. |
+| `01-ui-design-standards.md` | Updated tech stack to React 19 + TailwindCSS v4. |
 | `feature-authentication.md` | Updated scope and service owner to Backend Gateway (NestJS `backend/`). |
 | `feature-course.md` | Updated scope and service owner to Backend Gateway (NestJS `backend/`). |
 | `feature-material.md` | Updated scope and service owner to Backend Gateway (NestJS `backend/`). |

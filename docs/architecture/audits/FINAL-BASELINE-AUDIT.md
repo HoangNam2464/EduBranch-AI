@@ -1,4 +1,4 @@
-﻿# FINAL BASELINE AUDIT — EduBranch-AI
+ FINAL BASELINE AUDIT — EduBranch-AI
 # Post-Technology-Migration Verification Report
 
 > **Audit Date**: 2026-09-11
@@ -244,7 +244,7 @@ All 14 `.agents/rules/` files were audited by direct inspection and full-reposit
 | Rule File | Spring Boot? | Java? | React 18? | Tailwind v3? | Status |
 |---|---|---|---|---|---|
 | `00-project-foundation.md` | None | None | None | None | CORRECT |
-| `ui-design-standards.md` | None | None | None | None | CORRECT |
+| `01-ui-design-standards.md` | None | None | None | None | CORRECT |
 | `feature-authentication.md` | None | None | n/a | n/a | CORRECT |
 | `feature-case-generation.md` | None | None | n/a | n/a | CORRECT |
 | `feature-case-review.md` | None | None | n/a | n/a | CORRECT |

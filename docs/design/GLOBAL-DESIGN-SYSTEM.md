@@ -1,9 +1,10 @@
-# EduBranch AI — Global Design System
+ EduBranch-AI — Global Design System
 
 > **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
 > **Target Platform**: Google Stitch UI Generation + React 19 / TailwindCSS v4 implementation.
-> **Scope**: All EduBranch AI product screens (P0–P4). Does NOT cover the internal "Start Design" tooling — see `SITE.md §7` for its classification.
-> **Source of truth**: Product Direction V2 (EduBranch AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
+> **Companion Agent Rule**: [`.agents/rules/01-01-ui-design-standards.md`](../../.agents/rules/01-01-ui-design-standards.md)
+> **Scope**: All EduBranch-AI product screens (14 routes across P0–P4). Does NOT cover the internal "Start Design" tooling — see [`SITE-ARCHITECTURE.md §7`](SITE-ARCHITECTURE.md) for its classification.
+> **Source of truth**: Product Direction V2 (EduBranch-AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
 
 ---
 
@@ -123,16 +124,18 @@ semantic-error       → text-red-600 / bg-red-600 (#DC2626)
 semantic-success     → text-green-600 (#16A34A)
 semantic-warning     → text-amber-600 (#D97706)
 ```
-Do not introduce arbitrary hex values outside this table in Stitch prompts or component code — this matches the existing `ui-design-standards.md §3.5` rule.
+Do not introduce arbitrary hex values outside this table in Stitch prompts or component code — this matches [`.agents/rules/01-01-ui-design-standards.md §3`](../../.agents/rules/01-01-ui-design-standards.md).
 
 ---
 
-## 3. Typography
+## 3. Typography, Icon System & Microcopy
+
+### 3.1. Typography Scale
 
 System font stack — no custom webfont load (keeps the academic tool feeling fast and utilitarian, not "designed"):
 
 ```
-font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 ```
 
 | Token | Size / Line-height | Weight | Usage |
@@ -148,14 +151,38 @@ font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helve
 
 Rules:
 - Never use color alone to indicate emphasis where weight can do the job (e.g. don't make a label blue to "stand out" — make it `text-body-strong` gray instead).
-- Line length for long-form reading content (case situation text, reasoning text, reflection text) should be capped at a readable measure (~65–80 characters) via a `max-w-prose`-equivalent container.
+- Line length for long-form reading content (case situation text, reasoning text, reflection text) should be capped at a readable measure (~65–75 characters) via a `max-w-3xl` container (`text-[15px] leading-[24px]`).
+
+### 3.2. Icon System (Vector SVG Standard — ZERO Emojis / ZERO ASCII Hacks)
+
+- **Library**: Use **`lucide-react`** (or a dedicated clean SVG icon wrapper in `frontend/src/components/ui/Icon.tsx`) with consistent outline geometry: `viewBox="0 0 24 24"`, `fill="none"`, `stroke="currentColor"`, `strokeWidth={1.75}`, `strokeLinecap="round"`, `strokeLinejoin="round"`.
+- **Sizes**:
+  - `xs` (`14px` / `w-3.5 h-3.5`): Inside status/mode badges and compact metadata pills.
+  - `sm` (`16px` / `w-4 h-4`): Inside standard buttons (`40px` height), table action buttons, and breadcrumbs.
+  - `md` (`20px` / `w-5 h-5`): Sidebar navigation items, card headers, modal close buttons.
+  - `lg` (`24px` / `w-6 h-6`): Empty-state illustrations (inside a `40px` `bg-gray-100` rounded-lg container).
+- **Strict Prohibitions**:
+  - **NEVER** use Unicode emojis (`🌿`, `📭`, `📚`, `📋`, `✅`, `🎯`, `📝`, `🏁`, `📊`, `💡`, `📍`, `⚡`, `✍️`, `🤖`, `🔒`, `👤`, `❓`, `👨‍🏫`, `👉`).
+  - **NEVER** use raw ASCII character hacks (`->`, `<-`, `&rarr;`, `&times;`, `✕`, `↑`).
+- **Canonical Domain Icon Map**:
+  - Brand Mark: `GitBranch` (`16px` white inside `28px` `bg-blue-600 rounded-md` container)
+  - Courses: `BookOpen` · Materials: `FileText` / `Upload` · Cases: `FolderGit2`
+  - Branching Study Mode: `GitFork` · Review Study Mode: `FileCheck2`
+  - Terminal Outcome Node: `Flag` · Socratic Challenge Support: `MessageSquareQuestion` / `HelpCircle`
+  - Lecturer Feedback: `UserCheck` · Student Reflection: `PenLine` · Statistics: `BarChart3`
+  - Retry / New Attempt: `RotateCcw` · Close / Dismiss: `X` · Navigation: `ArrowLeft`, `ArrowRight`, `ChevronRight`
+
+### 3.3. Language & Microcopy Consistency
+
+- **Zero Language Mixing on the Same Screen**: Never mix English navigation/chrome with Vietnamese page content or vice versa on the same screen.
+- **No Preachy Instructional Callout Spam**: Do not place multi-sentence colored callout boxes explaining how the app works above every textarea or card. Use a single concise helper caption (`12px`, `text-gray-500`) if needed.
 
 ---
 
 ## 4. Spacing, Radii, Elevation
 
 ### 4.1. Spacing Scale
-Follows the existing `ui-design-standards.md` rule — the Tailwind default scale, no arbitrary values:
+Follows the existing `01-ui-design-standards.md` rule — the Tailwind default scale, no arbitrary values:
 `4px · 8px · 12px · 16px · 24px · 32px · 48px · 64px`
 
 - Inner card/panel padding: `24px` desktop, `16px` mobile.
@@ -236,7 +263,7 @@ Minimal, restrained shadows — never a glow/blur decorative effect.
 ### 5.11. Empty / Loading / Error States
 - **Empty**: centered icon (outline, `text-muted`) + one-sentence `text-secondary` message + primary action if applicable (e.g. "No courses yet" + "Create your first course" button).
 - **Loading**: skeleton blocks in `bg-surface-muted` with a subtle pulse — never a spinner-only blank screen for content that has a known shape (tables, cards). A centered spinner is acceptable only for full-page auth transitions.
-- **Error**: `semantic-error` icon + plain-language message (never raw server error text/stack traces — matches `ui-design-standards.md §7` security rule) + retry action where applicable.
+- **Error**: `semantic-error` icon + plain-language message (never raw server error text/stack traces — matches `01-ui-design-standards.md §7` security rule) + retry action where applicable.
 
 ---
 
@@ -298,8 +325,10 @@ Summary number cards (completion rate, attempt count) + a horizontal bar breakdo
 ## 8. Explicit Exclusions (do not generate)
 
 - Dark mode / dark theme variants of any screen.
-- Indigo/violet (`#6366f1`-family) as an accent, border, or "AI signature" color anywhere.
-- Sparkle/star glyphs (`✦` / `✨`) as decorative or brand elements.
+- Indigo/violet/purple (`#6366f1`, `purple-*`, `indigo-*`, `violet-*`) as an accent, border, button, badge, or "AI signature" color anywhere.
+- Unicode emojis (`🌿`, `📭`, `🤖`, `✍️`, `🏁`, etc.), sparkle/star glyphs (`✦` / `✨`), or ASCII symbol hacks (`->`, `&times;`) anywhere in the UI.
+- Preachy multi-sentence instructional callout boxes explaining how the app works.
 - Pill-shaped buttons as a default button style (pills are for badges only).
 - Grading marks, score numbers, pass/fail labels, or ranking UI anywhere in the student experience (Proposal V1.2 guardrail — applies to Reasoning, Reflection, and Challenge Support surfaces alike).
 - A "debate" framing (chat-bubble avatars, "vs." framing, adversarial styling) for Challenge Support — it is a support panel, not a debate UI.
+- ReactFlow graphs on student screens (ReactFlow is exclusively for the Lecturer Case Review editor `/lecturer/cases/:caseId/review` when `learning_mode = 'BRANCHING_STUDY'`).

@@ -1,20 +1,20 @@
-﻿---
+--
 description: Rules for lecturer case review, edit, and publication workflow in EduBranch-AI.
-trigger: keyword
-keywords: [case review, approve, publish, edit case, case lifecycle, draft, approved, published]
+trigger: model_decision
 ---
 
 # Feature Rules: Lecturer Review & Edit
 
 ## Scope
 Backend Gateway (NestJS `backend/`) — `case/` module.
-Frontend — `features/case-review/`.
+Frontend — `pages/lecturer/CaseReviewPage.tsx`.
 
 ## Included
-- Lecturer sees generated case in DRAFT status
-- Lecturer can inspect all nodes and options
-- Lecturer can edit case title, description, node situations, option text, consequence
-- Lifecycle transitions: DRAFT → REVIEWED → APPROVED → PUBLISHED
+- Lecturer sees generated case in `DRAFT` status
+- For `BRANCHING_STUDY`: Lecturer inspects all nodes and options on a split-screen ReactFlow canvas (`60%` canvas + `40%` slide-over Node Inspector Drawer)
+- For `REVIEW_STUDY`: Lecturer inspects and edits the linear narrative and analysis prompt in a structured form editor (no ReactFlow canvas)
+- Lecturer can edit case title, description, node situations, option text, consequence, and review prompt
+- Lifecycle transitions: `DRAFT → REVIEWED → APPROVED → PUBLISHED`
 - Version increment on each significant edit
 - Basic version/history support
 
@@ -25,16 +25,16 @@ Frontend — `features/case-review/`.
 
 ## Service Owner
 Backend Gateway (NestJS) — enforces lifecycle transitions
-Frontend — case tree visualization (ReactFlow) and edit UI
+Frontend — `pages/lecturer/CaseReviewPage.tsx` (ReactFlow decision tree visualization for Branching Study and form editor for Review Study)
 
 ## Constraints
-- **STUDENTS MUST NEVER SEE CASES THAT ARE NOT PUBLISHED**
+- **STUDENTS MUST NEVER SEE CASES THAT ARE NOT PUBLISHED** (`INV-01`)
 - This check must be at the repository query level
-- A case can only transition forward in the lifecycle (DRAFT→REVIEWED→APPROVED→PUBLISHED)
-- Rollback to DRAFT is allowed for editing
-- Published cases cannot be edited (must unpublish first → create new version)
+- A case can only transition forward in the lifecycle (`DRAFT → REVIEWED → APPROVED → PUBLISHED`)
+- Rollback to `DRAFT` is allowed for editing
+- Published cases cannot be edited directly (must unpublish first → create new version)
 
 ## Testing Expectations
 - Status transition tests (valid and invalid transitions)
-- Confirm student endpoint returns 404 for non-PUBLISHED cases
-- Confirm lecturer can edit only their own courses'' cases
+- Confirm student endpoint returns 404 for non-`PUBLISHED` cases
+- Confirm lecturer can edit only their own courses' cases
