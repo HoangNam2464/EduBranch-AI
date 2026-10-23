@@ -1,4 +1,4 @@
- P0 — Global Foundation
+# P0 — Global Foundation
 
 > **Priority**: NOW. Nothing else can be built consistently without this.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md` (all tokens/components referenced below live there).

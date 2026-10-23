@@ -1,4 +1,4 @@
- P1 — Core Lecturer Flow
+# P1 — Core Lecturer Flow
 
 > **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
