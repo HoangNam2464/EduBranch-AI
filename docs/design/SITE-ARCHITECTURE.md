@@ -48,13 +48,14 @@ The system strictly serves two distinct academic user roles:
 
 ---
 
-## 5. Canonical Application Sitemap (14 Routes)
+## 5. Canonical Application Sitemap (15 Routes — Full Figma Template Coverage)
 
-Verified against `frontend/src/app/router.tsx`:
+Because the Sprint Backlog tasks focus on core functional workflows, the Figma Master Template (`docs/05_FIGMA.md`) explicitly covers both the **foundational/public screens** (`/`, `/login`, `/register`, App Shells, Course Catalog, 403/404) and the **core academic feature screens**:
 
-### 5.1. Public Routes (`PublicLayout`)
-- `/login` — Sign in with university credentials (`Pages/auth/LoginPage.tsx`).
-- `/register` — Account registration (`Pages/auth/RegisterPage.tsx`).
+### 5.1. Public & Onboarding Routes (`PublicLayout`)
+- `/` — **Product Landing & Academic Introduction Page**: Introduces EduBranch-AI, compares `Branching Study` vs `Review Study`, illustrates the 4-step Human-in-the-Loop workflow, and provides direct entry (`Sign In` / `Create Account`).
+- `/login` — **Sign In Page**: University email & password authentication (`pages/auth/LoginPage.tsx`).
+- `/register` — **Account Registration Page**: University account creation with explicit `Lecturer` / `Student` role selection (`pages/auth/RegisterPage.tsx`).
 
 ### 5.2. Lecturer Portal (`LecturerLayout` — `240px` Left Sidebar)
 - `/lecturer/courses` — Course catalog & creation interface (`CoursesPage.tsx`).

@@ -84,6 +84,12 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
      - Logo Brand: Icon `git-branch` (`16px` trắng) đặt trong hộp vuông `28×28px` (`#2563EB`, bo góc `6px`) + chữ `EduBranch AI` (`16px SemiBold #111827`).
      - Menu & Nghiệp vụ: `book-open` (Courses), `file-text` / `upload` (Materials), `folder-git-2` (Cases), `git-fork` (Branching Study), `file-check-2` (Review Study), `flag` (Terminal Node), `message-square-question` (Challenge Support), `user-check` (Lecturer Feedback), `pen-line` (Reflection), `bar-chart-3` (Statistics), `rotate-ccw` (Retry), `x` (Close).
 
+### 1.5. Nguyên tắc "Khuôn Mẫu Figma Toàn Diện" (Bao phủ cả các Trang Ngoài Task Chức năng)
+
+> **Lưu ý đặc biệt quan trọng**: Trong bộ tài liệu quản lý task (`01_MASTER-TASKS.md`, `02_SPRINT-TASKS.md`), các mã task chỉ đặt tên theo **các tính năng nghiệp vụ cốt lõi** (Upload tài liệu, Sinh Case, Cây quyết định ReactFlow, Branching Player, Review Study, Socratic Challenge...). Các trang nền tảng bao quanh như **Trang Giới thiệu (`/`)**, **Trang Đăng nhập (`/login`)**, **Trang Đăng ký (`/register`)**, **Trang Danh sách & Tạo Học phần (`/lecturer/courses`)**, **Trang Thống kê (`/lecturer/statistics`)**, và **Trang Lỗi (`403 / 404`)** không được tách thành mã task riêng lẻ.
+>
+> Vì toàn bộ giao diện Frontend sẽ **dựa trực tiếp vào Link Figma để làm khuôn mẫu đập đi xây lại**, File Figma của dự án bắt buộc phải thiết kế đầy đủ **cả các trang nền tảng này** (được gom chính thức vào `Page 00` — `DES-001` và `Page 01` — `DES-002` dưới đây) để tạo thành một bộ khuôn mẫu khép kín 100%, không bỏ trống bất kỳ màn hình nào.
+
 ---
 
 ## 2. MA TRẬN PHÂN BỔ 15 TASKS THIẾT KẾ FIGMA THEO SPRINT
@@ -119,22 +125,34 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 - **Dependencies**: None
 - **Tài liệu đối chiếu**: [`SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md) · [`P0-FOUNDATION.md §1–3`](design/screens/P0-FOUNDATION.md)
 
-#### Danh sách Frames cần thiết kế trên Figma
-1. **`Frame 00.1 — Application Sitemap & User Flow Diagram`**: Sơ đồ tổng thể 14 routes chia làm 3 vùng (`PublicLayout`: 2 routes, `LecturerLayout`: 6 routes, `StudentLayout`: 6 routes) và đường rẽ nhánh giữa 2 chế độ học (`BRANCHING_STUDY` vs `REVIEW_STUDY`).
-2. **`Frame 00.2 — Lecturer App Shell (`1440×900`) & Course Catalog (`/lecturer/courses`)`**:
+#### Danh sách Frames cần thiết kế trên Figma (Bao gồm đầy đủ Trang Giới thiệu, Đăng nhập, Đăng ký, Khung Điều hướng & Quản lý Học phần)
+1. **`Frame 00.1 — Application Sitemap & End-to-End User Flow Diagram`**:
+   - Sơ đồ tổng thể **15 routes** chia làm 3 vùng (`PublicLayout`: `/` Landing, `/login`, `/register`; `LecturerLayout`: 6 routes; `StudentLayout`: 6 routes) và đường rẽ nhánh giữa 2 chế độ học (`BRANCHING_STUDY` vs `REVIEW_STUDY`).
+2. **`Frame 00.2 — Product Landing & Academic Introduction Page (`/`, `1440×1800` Auto-Height)`**:
+   - **Top Public Header (`1440px × 64px`, nền `#FFFFFF`, viền dưới `1px #E5E7EB`)**: Trái là Logo `git-branch` (`28×28px #2563EB`) + `"EduBranch AI"` + tag `"University Edition"`; Giữa là menu neo (`Overview`, `Learning Modes`, `Academic Governance`, `How It Works`); Phải là nút Secondary `"Sign In"` (`/login`) và nút Primary `"Create Account"` (`/register`).
+   - **Hero Section (`max-w-6xl` canh giữa, bố cục 2 cột `55% / 45%`)**:
+     - Cột trái: Pill `"EXPERIENTIAL CASE-BASED LEARNING PLATFORM"` (`#EFF6FF / #1D4ED8`) + Tiêu đề lớn (`36px/44px SemiBold #111827`: *"Transform University Course Materials into Interactive Decision Scenarios"*) + Mô tả học thuật (`16px/26px #4B5563`) + 2 nút CTA (`"Sign In to Portal"` `#2563EB` & `"Register Account"`).
+     - Cột phải: Khung Preview phẳng học thuật (`#FFFFFF`, viền `1px #E5E7EB`, `radius 12px`, `padding 24px`) minh họa sơ đồ thu nhỏ của 1 Case `Published` với 2 nhánh lựa chọn và khối `Consequence` viền xanh cổ vịt `4px #0F766E`.
+   - **Section So sánh 2 Chế độ Học tập (`Dual Learning Modes — 2 Cards song song`)**:
+     - Card 1: `Branching Study` (Badge `#F0FDFA / #0F766E`, icon `git-fork`) giải thích luồng 3 giai đoạn (`Experience → REVIEW → Reflection & Retry`).
+     - Card 2: `Review Study` (Badge `#FDF2F8 / #BE185D`, icon `file-check-2`) giải thích luồng phân tích mở (`Context & Problem → Proposed Solution & Reasoning → Lecturer Feedback`).
+   - **Section Quy trình 4 Bước Quản trị Học thuật (`4-Step Academic Workflow`)**: `1. Upload Syllabus & Readings (PDF/DOCX)` → `2. RAG-Grounded AI Case Draft` → `3. Mandatory Lecturer Review & Publish Gate` → `4. Student Decision Journey & 2-Round Socratic Challenge`.
+   - **Academic Footer (`72px`, nền `#F9FAFB`, viền trên `1px #E5E7EB`)**: Thông tin nền tảng học thuật đại học, không dùng bảng giá thương mại hay hiệu ứng màu mè.
+3. **`Frame 00.3 & 00.4 — Public Authentication Screens (`/login` & `/register`, `1440×900`)`**:
+   - Nền trang `#F9FAFB`, có thanh điều hướng rút gọn góc trái quay về trang giới thiệu `/` (`"← Back to EduBranch AI Overview"`).
+   - **`/login` (`400px Card` canh giữa)**: Logo + Tiêu đề `"Sign in to EduBranch AI"` + Trường `University Email`, `Password` + Nút Primary `"Sign In"` rộng 100% + Link `"Don't have an account? Register"` + Biến thể trạng thái báo lỗi `"Invalid email or password"` (`#FEF2F2 / #DC2626`).
+   - **`/register` (`440px Card` canh giữa)**: Tiêu đề `"Create your academic account"` + Trường `Full Name`, `University Email`, `Password` + **Bộ chọn Vai trò (`Role Selector` — Segmented Radio 2 ô ngang rõ ràng)**: Ô 1 `Student` (icon `graduation-cap` / `user`) và Ô 2 `Lecturer` (icon `book-open`) + Nút Primary `"Create Account"`.
+4. **`Frame 00.5 — Lecturer App Shell (`1440×900`), Course Catalog (`/lecturer/courses`) & Create/Edit Course Modal`**:
    - **Left Sidebar (`240px × 900px`)**:
      - Header (`56px`): Logo `git-branch` (`28×28px #2563EB`) + chữ `EduBranch AI` + Role Pill `LECTURER` (`#F3F4F6` / `#4B5563`).
      - Menu chính (`padding: 16px 12px`, `gap: 4px`): Mục `Courses` (icon `book-open`, active state nền `#EFF6FF`, chữ `#2563EB`, thanh dọc trái `3px #2563EB`) và mục `Statistics` (icon `bar-chart-3`, chữ `#4B5563`).
      - Khu vực ngữ cảnh khóa học (`Course Context`): Tiêu đề nhỏ `SELECTED COURSE` (`11px Uppercase #9CA3AF`), bên dưới là 2 mục con: `Teaching Materials` (icon `file-text`) và `Case Studies` (icon `folder-git-2`).
      - Footer Sidebar (`border-top 1px #E5E7EB`, `padding: 16px`): Tên giảng viên, email đại học, nút icon `log-out`.
    - **Main Content Area (`1200px`)**: Breadcrumb + `PageHeader` (`"Courses"`, nút Primary `"New Course"` kèm icon `plus`) + Lưới 3 cột hiển thị `Course Card` (Mã học phần pill `#F3F4F6`, Tên học phần `20px SemiBold`, Mô tả 2 dòng, Footer gồm số lượng Materials/Cases và link `"Manage Materials"`, `"Manage Cases"`).
-3. **`Frame 00.3 — Student App Shell (`1440×900`)`**:
+   - **Kèm Frame phụ `Create / Edit Course Modal (`520px`)`**: Trường `Course Name *`, `Course Code (e.g., LAW301)`, `Course Description`, nút `"Cancel"` và `"Create Course"`.
+5. **`Frame 00.6 — Student App Shell (`1440×900`) & Direct Case Entry View`**:
    - **Compact Top Bar (`1440px × 56px`)**: Trái là Logo `EduBranch AI` + dấu gạch dọc + Tên học phần & Tên tình huống đang làm; Giữa là `LearningModeBadge` (`Branching Study` màu Teal hoặc `Review Study` màu Pink) + `Step Pill` (`Phase 1: Experience`); Phải là tên sinh viên + nút `Sign out`.
    - **Main Reading Container (`768px` canh giữa)**: Minh họa khung đọc không phân tâm (không có Sidebar trái).
-4. **`Frame 00.4 & 00.5 — Public Auth Screens (`/login` & `/register`, `1440×900`)`**:
-   - Card `400px` canh giữa màn hình nền `#F9FAFB`.
-   - `/login`: Email, Password, nút Primary `"Sign In"` rộng 100%, link chuyển sang `/register`. (Không có nút chọn Role lúc đăng nhập, không có nút demo màu tím).
-   - `/register`: Full Name, University Email, Password, bộ chọn Role 2 nút ngang (`Lecturer` / `Student` dạng Segmented Radio), nút Primary `"Create Account"`.
 
 #### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
 - [ ] **AC-1**: Tách rõ Lecturer Portal (`240px` Left Sidebar + `1200px` Workspace) và Student Portal (`56px` Compact Header + `768px` Reading Column).

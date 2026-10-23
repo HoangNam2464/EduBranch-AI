@@ -1,8 +1,40 @@
-# P0 — Global Foundation
+# P0 — Global Foundation (Figma Master Template Baseline)
 
 > **Priority**: NOW. Nothing else can be built consistently without this.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md` (all tokens/components referenced below live there).
-> **Covers**: App shell & role-aware navigation, `/login`, `/register`, case status/mode badges, core component library.
+> **Covers**: Landing / Introduction Page (`/`), App shell & role-aware navigation (`LecturerLayout`, `StudentLayout`, `PublicLayout`), `/login`, `/register`, 403/404 & session states, case status/mode badges, core component library.
+> **Important Note**: Because Sprint feature tasks focus on core academic workflows, `P0 — Global Foundation` in the Figma Master File serves as the **authoritative visual template** for all public, onboarding, navigation shell, and system state screens when rebuilding the Frontend UI.
+
+---
+
+## 0. Product Landing & Academic Introduction Page (`/`)
+
+### Purpose & Function
+Provides a clear, authoritative academic landing page for unauthenticated visitors, faculty, and students visiting the root URL (`/`). Explains what EduBranch-AI is without marketing fluff or "AI-hype" clichés, and directs users to `/login` or `/register`.
+
+### Layout (`1440px` Desktop Frame on `bg-canvas` `#F9FAFB`)
+1. **Top Public Navigation Bar (`height: 64px`, `bg-surface` `#FFFFFF`, `border-bottom: 1px solid #E5E7EB`)**:
+   - Left: Brand mark (`28×28px` `#2563EB` rounded-md square with white `GitBranch` vector icon) + `"EduBranch AI"` (`16px SemiBold #111827`) + subtle tag `"University Edition"` (`#F3F4F6 / #4B5563`).
+   - Center anchor links (`14px #4B5563`): `Overview` · `Learning Modes` · `Academic Governance` · `Workflow`.
+   - Right actions: Secondary button `"Sign In"` (`/login`) + Primary button `"Create Account"` (`/register`).
+2. **Hero Section (`max-w-6xl` centered, `py-20`, 2-column asymmetric split `55% / 45%`)**:
+   - Left column:
+     - Eyebrow pill (`#EFF6FF / #1D4ED8`): `"EXPERIENTIAL CASE-BASED LEARNING PLATFORM"`.
+     - Headline (`36px/44px SemiBold #111827`): `"Transform University Course Materials into Interactive Decision Scenarios."`
+     - Subtitle (`16px/26px #4B5563`): `"Ground case studies in your actual syllabi and readings. Guide students through realistic multi-branch dilemmas, retrospective consequence analysis, and Socratic reasoning challenges — with 100% faculty editorial control."`
+     - CTA Row: Primary button `"Sign In to Portal"` (`#2563EB`) + Secondary button `"Register Account"`.
+   - Right column:
+     - Clean architectural preview card (`#FFFFFF`, `border 1px #E5E7EB`, `radius 12px`, `padding 24px`) showing a miniature, non-interactive diagram of a `Published` Branching Case node branching into 2 options and a `Consequence` reveal block (`4px` teal border `#0F766E`).
+3. **Dual Learning Modes Section (`max-w-6xl`, 2 side-by-side cards `bg-surface #FFFFFF`, `border 1px #E5E7EB`, `radius 12px`, `p-8`)**:
+   - **Card 1 — `Branching Study` (`mode-branching` `#F0FDFA / #0F766E` badge + `GitFork` icon)**: Explains the 3-Phase Experience-First flow (`Phase 1: Uninterrupted Decision Navigation` → `Phase 2: Consequence Reveal & Retrospective Reasoning` → `Phase 3: Post-Case Reflection & Retry`).
+   - **Card 2 — `Review Study` (`mode-review` `#FDF2F8 / #BE185D` badge + `FileCheck2` icon)**: Explains open-ended case analysis (`Context & Data` → `Problem Statement` → `Proposed Solution & Reasoning` → `Lecturer Qualitative Feedback`).
+4. **4-Step Academic Governance Strip (`bg-surface #FFFFFF`, `border-y 1px #E5E7EB`, `py-16`)**:
+   - Horizontal 4-column step grid (`1. Ingest Course Materials (PDF/DOCX)` → `2. Generate Grounded Case Draft` → `3. Lecturer Review, Edit & Publish` → `4. Student Learning & 2-Round Socratic Challenge`).
+5. **Footer (`height: 72px`, `bg-canvas #F9FAFB`, `border-t 1px #E5E7EB`)**:
+   - Left: `"EduBranch AI — University Experiential Case-Based Learning Platform"`. Right: `"Light-First Academic Design System · Proposal V1.2"`.
+
+### Boundary
+Zero dark-mode hero sections, zero glowing purple/indigo gradients, zero 3D robot illustrations, zero fake customer testimonials or pricing tables (this is an academic university platform, not a commercial SaaS sales page).
 
 ---
 

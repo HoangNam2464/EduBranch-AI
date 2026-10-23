@@ -1,4 +1,4 @@
---
+---
 description: >-
   Authoritative UI/UX Design System, Color Tokens, Icon System, Layout
   Architecture, and Anti-AI-Clutter Rules for EduBranch-AI. Always loaded when
@@ -10,6 +10,9 @@ trigger: always_on
 
 > **Canonical Reference**: Synchronized 100% with [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](../../docs/design/GLOBAL-DESIGN-SYSTEM.md) and [`docs/05_FIGMA.md`](../../docs/05_FIGMA.md).
 > **Scope**: All Frontend (`frontend/src/`) components, layouts, pages, ReactFlow graphs, and Figma/Stitch design specifications (`DES-001` → `DES-015`, `FE-001` → `FE-022`).
+> **Figma-First Master Template Mandate (Khuôn mẫu chuẩn từ Link Figma)**:
+> - Các task trong Sprint Backlog (`01_MASTER-TASKS.md` / `02_SPRINT-TASKS.md`) chỉ tập trung đặc tả các **tính năng nghiệp vụ chính**, còn các trang nền tảng/bao quanh như **Trang Giới thiệu (`/` — Landing Page)**, **Đăng nhập (`/login`)**, **Đăng ký (`/register`)**, **Khung điều hướng (`LecturerLayout`, `StudentLayout`, `PublicLayout`)**, **Quản lý Học phần (`/lecturer/courses` & Modals)**, **Thống kê (`/lecturer/statistics`)** và **Trang lỗi (`403` / `404`)** không có mã task riêng lẻ.
+> - Do đó, **Link Figma chuẩn của dự án (đặc tả toàn diện tại `docs/05_FIGMA.md`) là khuôn mẫu gốc duy nhất (Single Source of Truth)** cho toàn bộ các trang này. Giao diện Frontend có sẵn hiện tại trong `frontend/src/` chỉ là khung tạm thời và sẽ được đập đi xây dựng lại 100% theo đúng bản thiết kế thống nhất trên Figma.
 
 ---
 
@@ -328,9 +331,10 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
 
 ## 8. Canonical Route Map & Pedagogical Flow Boundaries
 
-> Mirrors `frontend/src/app/router.tsx` and `docs/design/SITE-ARCHITECTURE.md`.
+> Mirrors `frontend/src/app/router.tsx`, `docs/design/SITE-ARCHITECTURE.md`, and the Figma Master Template (`docs/05_FIGMA.md`).
 
-### 8.1. Public Routes (`PublicLayout`)
+### 8.1. Public & Onboarding Routes (`PublicLayout`)
+- `/` — Product Landing & Academic Introduction Page (Hero, Dual Learning Modes `Branching Study` vs `Review Study`, 4-Step Faculty/Student Workflow, Entry CTAs).
 - `/login` — University email/password sign-in.
 - `/register` — Account registration with role selection (`STUDENT` | `LECTURER`).
 
