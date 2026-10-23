@@ -2,7 +2,7 @@
 
 > **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
 > **Nguồn quản trị gốc**: `docs/01_MASTER-TASKS.md` · `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
-> **Tài liệu tham chiếu thiết kế**: [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](design/GLOBAL-DESIGN-SYSTEM.md) · [`.agents/rules/01-01-ui-design-standards.md`](../.agents/rules/01-01-ui-design-standards.md) · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md)  
+> **Tài liệu tham chiếu thiết kế**: [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](design/GLOBAL-DESIGN-SYSTEM.md) · [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md)  
 > **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma)  
 > **Quy mô**: 15 Tasks | 50 Story Points (14.88% toàn dự án)  
 > **Quy chuẩn thiết kế**: Chuẩn mực học tập tình huống chuyên sâu & chuyên nghiệp (EduBranch-AI Design Standards).  
@@ -37,12 +37,12 @@
 | `border-strong` | `#D1D5DB` | Viền nhấn mạnh nhẹ (Input hover, Terminal node border) |
 | `border-focus` | `#2563EB` | Viền focus (`2px`) cho Input, Option đang chọn, Node đang sửa |
 | `action-primary` | `#2563EB` | Màu nhấn hành động chính duy nhất (Nút chính, tab active, link — Hover `#1D4ED8`) |
-| `status-draft` | `#F3F4F6` / `#374151` | Badge trạng thái `DRAFT` (Nền xám nhạt / Chữ xám đậm) |
-| `status-reviewed` | `#FEF3C7` / `#92400E` | Badge trạng thái `REVIEWED` (Nền vàng hổ phách nhạt / Chữ nâu hổ phách) |
-| `status-approved` | `#DBEAFE` / `#1E40AF` | Badge trạng thái `APPROVED` (Nền xanh lam nhạt / Chữ xanh lam đậm) |
-| `status-published` | `#DCFCE7` / `#166534` | Badge trạng thái `PUBLISHED` (Nền xanh lá nhạt / Chữ xanh lá đậm) |
-| `mode-branching` | `#CCFBF1` / `#0F766E` | Badge chế độ `BRANCHING_STUDY` & viền trái khối Consequence (`4px solid #0F766E`) |
-| `mode-review` | `#FCE7F3` / `#9D174D` | Badge chế độ `REVIEW_STUDY` |
+| `status-draft` | `#F3F4F6` / `#4B5563` | Badge trạng thái `DRAFT` (Nền xám nhạt / Chữ xám đậm / Dot `#9CA3AF`) |
+| `status-reviewed` | `#EFF6FF` / `#1D4ED8` | Badge trạng thái `REVIEWED` (Nền xanh lam nhạt / Chữ xanh lam đậm / Dot `#2563EB`) |
+| `status-approved` | `#FFFBEB` / `#92400E` | Badge trạng thái `APPROVED` (Nền vàng hổ phách nhạt / Chữ nâu hổ phách / Dot `#D97706`) |
+| `status-published` | `#F0FDF4` / `#166534` | Badge trạng thái `PUBLISHED` (Nền xanh lá nhạt / Chữ xanh lá đậm / Dot `#16A34A`) |
+| `mode-branching` | `#F0FDFA` / `#0F766E` | Badge chế độ `BRANCHING_STUDY` & viền trái khối Consequence (`4px solid #0F766E`) |
+| `mode-review` | `#FDF2F8` / `#BE185D` | Badge chế độ `REVIEW_STUDY` |
 | `ai-support` | `#F3F4F6` / `#4B5563` | Nhãn trung tính đánh dấu nội dung do AI khởi tạo (Bản nháp AI hoặc câu hỏi Socratic) |
 | `semantic-success` | `#16A34A` | Thông báo thành công, hoàn thành |
 | `semantic-warning` | `#D97706` | Cảnh báo nghiệp vụ, trạng thái đang xử lý |

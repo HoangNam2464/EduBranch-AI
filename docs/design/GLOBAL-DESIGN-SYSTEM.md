@@ -2,7 +2,7 @@
 
 > **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
 > **Target Platform**: Google Stitch UI Generation + React 19 / TailwindCSS v4 implementation.
-> **Companion Agent Rule**: [`.agents/rules/01-01-ui-design-standards.md`](../../.agents/rules/01-01-ui-design-standards.md)
+> **Companion Agent Rule**: [`.agents/rules/01-ui-design-standards.md`](../../.agents/rules/01-ui-design-standards.md)
 > **Scope**: All EduBranch-AI product screens (14 routes across P0–P4). Does NOT cover the internal "Start Design" tooling — see [`SITE-ARCHITECTURE.md §7`](SITE-ARCHITECTURE.md) for its classification.
 > **Source of truth**: Product Direction V2 (EduBranch-AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
 
@@ -124,7 +124,7 @@ semantic-error       → text-red-600 / bg-red-600 (#DC2626)
 semantic-success     → text-green-600 (#16A34A)
 semantic-warning     → text-amber-600 (#D97706)
 ```
-Do not introduce arbitrary hex values outside this table in Stitch prompts or component code — this matches [`.agents/rules/01-01-ui-design-standards.md §3`](../../.agents/rules/01-01-ui-design-standards.md).
+Do not introduce arbitrary hex values outside this table in Stitch prompts or component code — this matches [`.agents/rules/01-ui-design-standards.md §2`](../../.agents/rules/01-ui-design-standards.md).
 
 ---
 
