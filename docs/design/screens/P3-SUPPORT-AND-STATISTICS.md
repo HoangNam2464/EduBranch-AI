@@ -1,7 +1,10 @@
-# P3 — Support & Statistics (LATER)
+# P3 — Support & Statistics (Reference Archive — LATER Priority)
 
-> **Priority**: LATER — important, not blocking the Branching-Study-focused MVP classroom trial. Lighter-pass spec per Phase 2 plan; deepen when this priority tier is actually scheduled for build.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+> [!WARNING]
+> **READ-ONLY REFERENCE ARCHIVE** — Rules enforced by `.agents/rules/01-ui-design-standards.md` (master).
+
+> **Priority**: LATER — not blocking MVP.
+> **Visual system**: Governed by `.agents/rules/01-ui-design-standards.md`.
 > **Covers**: `/lecturer/statistics`, `/lecturer/cases/:caseId/feedback`.
 
 ---

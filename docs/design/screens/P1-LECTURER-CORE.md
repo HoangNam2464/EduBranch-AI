@@ -1,7 +1,10 @@
-# P1 — Core Lecturer Flow
+# P1 — Core Lecturer Flow (Reference Archive)
 
-> **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+> [!WARNING]
+> **READ-ONLY REFERENCE ARCHIVE** — Rules enforced by `.agents/rules/01-ui-design-standards.md` (master).
+
+> **Priority**: NOW.
+> **Visual system**: Governed by `.agents/rules/01-ui-design-standards.md`.
 > **Covers**: `/lecturer/courses`, `/lecturer/courses/:courseId/materials`, `/lecturer/courses/:courseId/cases`, `/lecturer/cases/:caseId/review`.
 
 ---

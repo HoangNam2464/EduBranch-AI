@@ -1,7 +1,10 @@
-# P2 — Core Student Flow
+# P2 — Core Student Flow (Reference Archive)
 
-> **Priority**: NOW. The other half of the MVP-critical loop.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+> [!WARNING]
+> **READ-ONLY REFERENCE ARCHIVE** — Rules enforced by `.agents/rules/01-ui-design-standards.md` (master).
+
+> **Priority**: NOW.
+> **Visual system**: Governed by `.agents/rules/01-ui-design-standards.md`.
 > **Covers**: `/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/reflect`, `/student/cases/:caseId/challenge/:sessionId`.
 
 ---

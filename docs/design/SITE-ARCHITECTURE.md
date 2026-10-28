@@ -1,8 +1,12 @@
- EduBranch-AI — Website & Application Architecture Reference
+# EduBranch-AI — Website & Application Architecture Reference (Reference Archive)
 
-> **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md` (formerly `docs/design/SITE-ARCHITECTURE.md`)  
-> **Companion Specs**: `.agents/rules/01-ui-design-standards.md` · `docs/design/GLOBAL-DESIGN-SYSTEM.md` · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`  
-> **Product Name**: EduBranch-AI  
+> [!WARNING]
+> **READ-ONLY REFERENCE ARCHIVE** — This file is informational context only.
+> The **Single Source of Truth** for all UI/UX rules is: **`.agents/rules/01-ui-design-standards.md`**
+
+> **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md`
+> **Companion Specs**: `.agents/rules/01-ui-design-standards.md` (master) · `docs/05_FIGMA.md`
+> **Product Name**: EduBranch-AI
 > **Full Title**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios
 
 ---
@@ -44,7 +48,7 @@ The system strictly serves two distinct academic user roles:
 - **Academic & Focused**: Engineered for critical thinking — zero Unicode emojis, zero ASCII symbol hacks, zero gamified badges, and zero purple/indigo "AI-slop" gradients.
 - **Efficient & Professional**: High-density management layouts for lecturers (`max-w-7xl`) paired with calm, distraction-free reading layouts for students (`max-w-3xl`).
 - **Predictable & Governed**: Transparent AI provenance showing which teaching materials informed each case dilemma.
-- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`#F8FAFC` canvas, `#FFFFFF` cards, `#E2E8F0` hairlines, `#2563EB` primary action) suitable for extended analytical reading and review sessions.
+- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`#F9FAFB` canvas, `#FFFFFF` cards, `#E5E7EB` hairlines, `#2563EB` primary action) suitable for extended analytical reading and review sessions.
 
 ---
 

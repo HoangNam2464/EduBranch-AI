@@ -1,10 +1,16 @@
- EduBranch-AI — Global Design System
+# EduBranch-AI — Global Design System (Reference Archive)
 
-> **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
+> [!WARNING]
+> **READ-ONLY REFERENCE ARCHIVE** — This file is informational context only.
+> The **Single Source of Truth** for all UI/UX rules, tokens, and workflow
+> protocol is: **`.agents/rules/01-ui-design-standards.md`**
+> When any conflict exists between this file and the master rulebook, the
+> master rulebook (`01-ui-design-standards.md`) always takes precedence.
+
+> **Original Status**: Extended prose rationale for color and component decisions.
 > **Target Platform**: Google Stitch UI Generation + React 19 / TailwindCSS v4 implementation.
 > **Companion Agent Rule**: [`.agents/rules/01-ui-design-standards.md`](../../.agents/rules/01-ui-design-standards.md)
-> **Scope**: All EduBranch-AI product screens (14 routes across P0–P4). Does NOT cover the internal "Start Design" tooling — see [`SITE-ARCHITECTURE.md §7`](SITE-ARCHITECTURE.md) for its classification.
-> **Source of truth**: Product Direction V2 (EduBranch-AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
+> **Scope**: All EduBranch-AI product screens (14 routes across P0–P4).
 
 ---
 
