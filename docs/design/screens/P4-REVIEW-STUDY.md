@@ -1,7 +1,10 @@
-# P4 — Secondary Review Study (LATER)
+# P4 — Secondary Review Study (Reference Archive — LATER Priority)
 
-> **Priority**: LATER — Proposal V1.2 explicitly calls Review Study "supported at a simple level in the MVP," lowest build priority. Lighter-pass spec per Phase 2 plan.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+> [!WARNING]
+> **READ-ONLY REFERENCE ARCHIVE** — Rules enforced by `.agents/rules/01-ui-design-standards.md` (master).
+
+> **Priority**: LATER — Review Study is "supported at a simple level in MVP" per Proposal V1.2.
+> **Visual system**: Governed by `.agents/rules/01-ui-design-standards.md`.
 > **Covers**: `/student/cases/:caseId/review-study`, `/student/cases/:caseId/review-study/:submissionId/feedback`.
 
 ---

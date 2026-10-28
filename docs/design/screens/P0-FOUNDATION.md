@@ -1,9 +1,11 @@
-# P0 — Global Foundation (Figma Master Template Baseline)
+# P0 — Global Foundation (Reference Archive)
+
+> [!WARNING]
+> **READ-ONLY REFERENCE ARCHIVE** — Rules enforced by `.agents/rules/01-ui-design-standards.md` (master).
 
 > **Priority**: NOW. Nothing else can be built consistently without this.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md` (all tokens/components referenced below live there).
-> **Covers**: Landing / Introduction Page (`/`), App shell & role-aware navigation (`LecturerLayout`, `StudentLayout`, `PublicLayout`), `/login`, `/register`, 403/404 & session states, case status/mode badges, core component library.
-> **Important Note**: Because Sprint feature tasks focus on core academic workflows, `P0 — Global Foundation` in the Figma Master File serves as the **authoritative visual template** for all public, onboarding, navigation shell, and system state screens when rebuilding the Frontend UI.
+> **Visual system**: Governed by `.agents/rules/01-ui-design-standards.md`.
+> **Covers**: Landing Page (`/`), App shells (`LecturerLayout`, `StudentLayout`, `PublicLayout`), `/login`, `/register`, 403/404 & session states, badge components.
 
 ---
 
