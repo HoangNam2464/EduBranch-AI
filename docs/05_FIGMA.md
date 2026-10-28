@@ -2,8 +2,9 @@
 
 > **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện bậc Đại học  
 > **Nguồn quản trị gốc**: [`docs/01_MASTER-TASKS.md`](01_MASTER-TASKS.md) · [`docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`](5.Sprint_Backlog/SPRINT-BACKLOG.md)  
-> **Tài liệu tham chiếu thiết kế**: [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](design/GLOBAL-DESIGN-SYSTEM.md) · [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md)  
-> **Đặc tả chi tiết từng cụm màn hình**: [`P0-FOUNDATION.md`](design/screens/P0-FOUNDATION.md) · [`P1-LECTURER-CORE.md`](design/screens/P1-LECTURER-CORE.md) · [`P2-STUDENT-CORE.md`](design/screens/P2-STUDENT-CORE.md) · [`P3-SUPPORT-AND-STATISTICS.md`](design/screens/P3-SUPPORT-AND-STATISTICS.md) · [`P4-REVIEW-STUDY.md`](design/screens/P4-REVIEW-STUDY.md)  
+> **Hiến pháp UI/UX tối cao (Single Source of Truth)**: [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (Chứa 100% tokens, 7 lệnh cấm, quy chuẩn Auto-Layout, Ma trận 7 trạng thái và Quy trình MCP Figma-First bắt buộc).
+> **Vai trò của tài liệu này (Bậc 2 — Execution Blueprint)**: Đặc tả chi tiết 15 tasks Figma (`DES-001` → `DES-015`) phục vụ chỉnh sửa trực tiếp trên file Figma qua MCP trước khi đụng vào mã nguồn Frontend (`frontend/src/`).
+> **Tài liệu tham chiếu mở rộng (Bậc 3 — Read-Only Archives)**: [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](design/GLOBAL-DESIGN-SYSTEM.md) · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md) · [`P0-FOUNDATION.md`](design/screens/P0-FOUNDATION.md)–[`P4-REVIEW-STUDY.md`](design/screens/P4-REVIEW-STUDY.md)  
 > **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma — Làm chuẩn gốc trước khi đập đi xây lại giao diện Frontend)  
 > **Quy mô**: 15 Tasks (`DES-001` → `DES-015`) | 50 Story Points (14.88% toàn dự án)
 
