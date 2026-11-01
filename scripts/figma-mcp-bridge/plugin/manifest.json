@@ -1,0 +1,15 @@
+{
+  "name": "EduBranch Live MCP Bridge",
+  "id": "edubranch-live-mcp-bridge",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "editorType": ["figma", "dev"],
+  "networkAccess": {
+    "allowedDomains": [
+      "http://localhost:28211",
+      "ws://localhost:28211"
+    ],
+    "reasoning": "Local WebSocket communication with EduBranch MCP Bridge for UI design sync"
+  }
+}

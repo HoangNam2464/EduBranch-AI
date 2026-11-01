@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      margin: 0;
+      padding: 12px;
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      font-size: 12px;
+      background: #f9fafb;
+      color: #111827;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .status-connected {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+    .status-disconnected {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+    .dot-green { background: #16a34a; }
+    .dot-red { background: #dc2626; }
+    .log {
+      font-family: monospace;
+      font-size: 11px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      padding: 6px;
+      max-height: 80px;
+      overflow-y: auto;
+      color: #4b5563;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span>⚡ EduBranch MCP Bridge</span>
+  </div>
+  <div id="status" class="status-badge status-disconnected">
+    <span class="dot dot-red" id="dot"></span>
+    <span id="status-text">Đang kết nối tới MCP Agent...</span>
+  </div>
+  <div class="log" id="log">Khởi tạo WebSocket...</div>
+
+  <script>
+    const statusEl = document.getElementById('status');
+    const dotEl = document.getElementById('dot');
+    const statusTextEl = document.getElementById('status-text');
+    const logEl = document.getElementById('log');
+
+    function log(msg) {
+      logEl.textContent = new Date().toLocaleTimeString() + ' ' + msg;
+    }
+
+    let ws = null;
+
+    function connect() {
+      try {
+        ws = new WebSocket('ws://localhost:28211');
+      } catch (e) {
+        log('Lỗi tạo kết nối: ' + e.message);
+        setTimeout(connect, 3000);
+        return;
+      }
+
+      ws.onopen = () => {
+        statusEl.className = 'status-badge status-connected';
+        dotEl.className = 'dot dot-green';
+        statusTextEl.textContent = 'Đã kết nối với MCP Agent (Sẵn sàng)';
+        log('MCP Server đã sẵn sàng nhận lệnh.');
+      };
+
+      ws.onclose = () => {
+        statusEl.className = 'status-badge status-disconnected';
+        dotEl.className = 'dot dot-red';
+        statusTextEl.textContent = 'Mất kết nối MCP Server. Đang thử lại...';
+        log('Mất kết nối. Thử lại sau 3s...');
+        setTimeout(connect, 3000);
+      };
+
+      ws.onerror = (err) => {
+        log('Lỗi WebSocket');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          log('Nhận lệnh từ MCP: ' + (data.action || 'execute'));
+          parent.postMessage({ pluginMessage: data }, '*');
+        } catch (err) {
+          log('Lỗi đọc dữ liệu lệnh: ' + err.message);
+        }
+      };
+    }
+
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (msg && ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(msg));
+        log('Đã gửi phản hồi về MCP: ' + (msg.success ? 'Thành công' : 'Lỗi'));
+      }
+    };
+
+    connect();
+  </script>
+</body>
+</html>
