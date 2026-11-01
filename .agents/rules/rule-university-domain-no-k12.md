@@ -13,10 +13,10 @@ Rather than passive theory reading or rigid curriculum memorization, the platfor
 ## 2. Pedagogical Terminology Standards
 | Non-Case / General Terms | Standardized EduBranch-AI Terms | Pedagogical Role |
 |---|---|---|
-| Generic Schooling / Grade Levels | `Experiential Learning`, `Higher & Advanced Learning` | Target environment focusing on case analysis |
-| Teacher / Assistant | `Lecturer` / `Instructor` (Giảng viên / Người hướng dẫn) | Facilitates and oversees the case learning lifecycle |
-| Pupil / Schoolchild | `Student` / `Learner` (Sinh viên / Người học) | Navigates decision points and articulates reasoning |
-| Lesson Plan / Weekly Schedule | `Case Study Authoring / Generation` | Creation of branching or review case scenarios |
+| Generic Schooling / Grade Levels | `Experiential Learning`, `Higher Education` | Target academic environment focusing on professional case analysis |
+| Teacher / Assistant | `Lecturer` / `Instructor` | Faculty member who facilitates, authors, and governs the case lifecycle |
+| Pupil / Schoolchild | `Student` / `Learner` | University learner navigating decision points and articulating reasoning |
+| Lesson Plan / Weekly Schedule | `Case Study Authoring / Generation` | Creation of branching or review case scenarios grounded in course materials |
 | Curriculum Blueprint | `Syllabus`, `Course Teaching Materials` | Ingested source documents providing authentic case context |
 | Homework / Quizzes | `Student Reasoning`, `Reflection`, `Review Submission` | Deep qualitative analysis of dilemmas and consequences |
 | Debate Platform / Adversarial Bot | `AI Reasoning / Challenge Support` | Socratic questioning (max 2 rounds) to stimulate critical thinking without grading |
