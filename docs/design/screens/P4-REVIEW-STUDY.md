@@ -3,6 +3,8 @@
 > **Priority**: LATER — Proposal V1.2 explicitly calls Review Study "supported at a simple level in the MVP," lowest build priority. Lighter-pass spec per Phase 2 plan.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
 > **Covers**: `/student/cases/:caseId/review-study`, `/student/cases/:caseId/review-study/:submissionId/feedback`.
+> **Status**: Unknown · **Role**: Normative · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — · **Version**: unversioned
+> **Authority scope**: per-screen layout and states · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](../GLOBAL-DESIGN-SYSTEM.md) · UI copy in this file is English placeholder; the displayed UI language is Vietnamese (PO-3).
 
 ---
 

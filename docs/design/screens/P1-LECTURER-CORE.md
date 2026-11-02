@@ -3,6 +3,8 @@
 > **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
 > **Covers**: `/lecturer/courses`, `/lecturer/courses/:courseId/materials`, `/lecturer/courses/:courseId/cases`, `/lecturer/cases/:caseId/review`.
+> **Status**: Unknown · **Role**: Normative · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — · **Version**: unversioned
+> **Authority scope**: per-screen layout and states · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](../GLOBAL-DESIGN-SYSTEM.md) · UI copy in this file is English placeholder; the displayed UI language is Vietnamese (PO-3).
 
 ---
 

@@ -7,6 +7,9 @@
 > **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma — Làm chuẩn gốc trước khi đập đi xây lại giao diện Frontend)  
 > **Quy mô**: 15 Tasks (`DES-001` → `DES-015`) | 50 Story Points (14.88% toàn dự án)
 
+> **Status**: Unknown · **Role**: Normative · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — · **Version**: unversioned  
+> **Authority scope**: backlog và tiêu chí nghiệm thu thiết kế · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](design/GLOBAL-DESIGN-SYSTEM.md) · Mã hex và kích thước trong file chỉ để tham chiếu, chưa phải giá trị đã duyệt.
+
 ---
 
 ## 1. HỆ THỐNG CÀI ĐẶT CHUẨN TRÊN FIGMA (FIGMA WORKSPACE & DESIGN SYSTEM SETUP)

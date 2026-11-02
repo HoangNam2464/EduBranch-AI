@@ -3,6 +3,8 @@
 > **Priority**: LATER — important, not blocking the Branching-Study-focused MVP classroom trial. Lighter-pass spec per Phase 2 plan; deepen when this priority tier is actually scheduled for build.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
 > **Covers**: `/lecturer/statistics`, `/lecturer/cases/:caseId/feedback`.
+> **Status**: Unknown · **Role**: Normative · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — · **Version**: unversioned
+> **Authority scope**: per-screen layout and states · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](../GLOBAL-DESIGN-SYSTEM.md) · UI copy in this file is English placeholder; the displayed UI language is Vietnamese (PO-3).
 
 ---
 

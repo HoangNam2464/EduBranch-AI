@@ -3,6 +3,8 @@
 > **Priority**: NOW. The other half of the MVP-critical loop.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
 > **Covers**: `/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/reflect`, `/student/cases/:caseId/challenge/:sessionId`.
+> **Status**: Unknown · **Role**: Normative · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — · **Version**: unversioned
+> **Authority scope**: per-screen layout and states · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](../GLOBAL-DESIGN-SYSTEM.md) · UI copy in this file is English placeholder; the displayed UI language is Vietnamese (PO-3).
 
 ---
 

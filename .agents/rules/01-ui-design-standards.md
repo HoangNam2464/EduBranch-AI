@@ -1,14 +1,14 @@
 ---
 description: >-
-  Authoritative UI/UX Design System, Color Tokens, Icon System, Layout
-  Architecture, and Anti-AI-Clutter Rules for EduBranch-AI. Always loaded when
-  designing or implementing frontend components and screens.
+  AI working rules for EduBranch-AI frontend and design tasks. Source
+  authority and value status: docs/design/GLOBAL-DESIGN-SYSTEM.md §0.
 trigger: always_on
 ---
 
 # EduBranch-AI — UI/UX Design Standards & Anti-Clutter Rulebook
 
-> **Canonical Reference**: Synchronized 100% with [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](../../docs/design/GLOBAL-DESIGN-SYSTEM.md) and [`docs/05_FIGMA.md`](../../docs/05_FIGMA.md).
+> **Status**: Unknown · **Role**: Normative (transitional) · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: —
+> **Source map**: [`docs/design/GLOBAL-DESIGN-SYSTEM.md` §0](../../docs/design/GLOBAL-DESIGN-SYSTEM.md) · Backlog: [`docs/05_FIGMA.md`](../../docs/05_FIGMA.md) · Stitch retired (PO-22). Text under a banner is not current guidance; UNRESOLVED = stop and ask the PO.
 > **Scope**: All Frontend (`frontend/src/`) components, layouts, pages, ReactFlow graphs, and Figma/Stitch design specifications (`DES-001` → `DES-015`, `FE-001` → `FE-022`).
 > **Figma-First Master Template Mandate (Khuôn mẫu chuẩn từ Link Figma)**:
 > - Các task trong Sprint Backlog (`01_MASTER-TASKS.md` / `02_SPRINT-TASKS.md`) chỉ tập trung đặc tả các **tính năng nghiệp vụ chính**, còn các trang nền tảng/bao quanh như **Trang Giới thiệu (`/` — Landing Page)**, **Đăng nhập (`/login`)**, **Đăng ký (`/register`)**, **Khung điều hướng (`LecturerLayout`, `StudentLayout`, `PublicLayout`)**, **Quản lý Học phần (`/lecturer/courses` & Modals)**, **Thống kê (`/lecturer/statistics`)** và **Trang lỗi (`403` / `404`)** không có mã task riêng lẻ.

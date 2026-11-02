@@ -1,8 +1,10 @@
  EduBranch AI — Stitch Generation Guidelines
 
-> **Status**: CANONICAL — supersedes the single-screen prompt conventions in the retired `.stitch/next-prompt.md`.
+> **Status**: Retired (PO-22) · **Role**: Reference · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Superseded by**: Figma as the design reference (PO-22) · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](GLOBAL-DESIGN-SYSTEM.md)
 > **Purpose**: Every Stitch prompt written for any EduBranch AI screen (P0–P4) must be assembled using the nine fields below, in order. This keeps generation grounded in approved product behavior instead of improvising UI or functionality.
 > **Source**: `UX-REDESIGN-DISCOVERY-AUDIT.md` §I, generalized from one screen to the full product.
+
+> **SUPERSEDED [ST-0]** — Stitch is retired (PO-22); Figma is the design reference. Do not write Stitch prompts from this file. The whole file, including the nine-field brief and the terminology table, is kept as reference only and is not current guidance.
 
 ---
 

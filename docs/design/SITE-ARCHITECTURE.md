@@ -1,6 +1,7 @@
  EduBranch-AI — Website & Application Architecture Reference
 
-> **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md` (formerly `docs/design/SITE-ARCHITECTURE.md`)  
+> **Status**: Unknown · **Role**: Informative · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — · **Version**: unversioned  
+> **Authority scope**: none (informative) · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](GLOBAL-DESIGN-SYSTEM.md)  
 > **Companion Specs**: `.agents/rules/01-ui-design-standards.md` · `docs/design/GLOBAL-DESIGN-SYSTEM.md` · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`  
 > **Product Name**: EduBranch-AI  
 > **Full Title**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios

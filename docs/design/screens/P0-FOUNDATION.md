@@ -3,7 +3,9 @@
 > **Priority**: NOW. Nothing else can be built consistently without this.
 > **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md` (all tokens/components referenced below live there).
 > **Covers**: Landing / Introduction Page (`/`), App shell & role-aware navigation (`LecturerLayout`, `StudentLayout`, `PublicLayout`), `/login`, `/register`, 403/404 & session states, case status/mode badges, core component library.
-> **Important Note**: Because Sprint feature tasks focus on core academic workflows, `P0 — Global Foundation` in the Figma Master File serves as the **authoritative visual template** for all public, onboarding, navigation shell, and system state screens when rebuilding the Frontend UI.
+> **Important Note**: Because Sprint feature tasks focus on core academic workflows, `P0 — Global Foundation` in the Figma Master File serves as the **visual template** for all public, onboarding, navigation shell, and system state screens when rebuilding the Frontend UI.
+> **Status**: Unknown · **Role**: Normative · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — · **Version**: unversioned
+> **Authority scope**: per-screen layout and states · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](../GLOBAL-DESIGN-SYSTEM.md) · UI copy in this file is English placeholder; the displayed UI language is Vietnamese (PO-3).
 
 ---
 
