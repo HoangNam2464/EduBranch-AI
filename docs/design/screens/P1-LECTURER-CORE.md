@@ -94,6 +94,9 @@ Generation is Lecturer-only (`FR-GEN-01`/§9 permissions) — never expose a "Ge
 Lets the Lecturer inspect, edit, approve, and publish an AI-generated (or lecturer-authored) case. For `BRANCHING_STUDY` cases: a ReactFlow tree canvas + node-edit side panel. For `REVIEW_STUDY` cases: a simpler form editor (context/problem text) — **no tree**, since Review Study cases have no `case_nodes` (`FEATURE-REVIEW-STUDY.md §4`: "No Decision Tree").
 
 ### Layout — Branching Study variant
+
+> **UNRESOLVED [P1-4-layout]** — the ~65% / ~35% split conflicts with F05 DES-007 (60/40). Not current guidance; stop and ask the PO.
+
 - Top: Publish/Review Status Stepper (`GLOBAL-DESIGN-SYSTEM.md §6.3`) showing `DRAFT → REVIEWED → APPROVED → PUBLISHED`, plus case title (editable inline) and learning-mode badge.
 - Main area: two-pane split — left/center is the ReactFlow canvas (ratio ~65%), right is the node-edit side panel (~35%), collapsible on narrower screens.
 - Canvas: Decision Node component per node (`GLOBAL-DESIGN-SYSTEM.md §6.4`); edges represent `CaseOption` → labeled with a short excerpt of the option text.
@@ -109,6 +112,9 @@ Lets the Lecturer inspect, edit, approve, and publish an AI-generated (or lectur
 Branching: `title`, `description`, `root_node_id`, per-node `situation`/`is_terminal`, per-option `text`/`consequence`/`next_node_id`. Review: `title`, `description`, `context_text`, `problem_text`.
 
 ### Actions
+
+> **UNRESOLVED [P1-4-actions]** — whether Approve is enabled from `DRAFT` is an open decision (D4-04′). Not current guidance; stop and ask the PO.
+
 - **Save Changes**: `PUT /api/v1/cases/{caseId}/nodes/{nodeId}` (Branching) or the case-level update endpoint (Review). Any edit to a `DRAFT` case transitions it to `REVIEWED` (`FR-REV-03`) — the stepper should visibly advance the moment a save succeeds, not require a separate explicit step.
 - **Approve Case**: enabled once in `REVIEWED` (or `DRAFT`) status; transitions to `APPROVED` (`FR-REV-04`).
 - **Publish Case**: enabled only once `APPROVED`; transitions to `PUBLISHED` (`FR-REV-05`) — **always behind a confirmation dialog** (§5.10), since this is the moment students gain access. Confirmation copy should state plainly that the case becomes visible to enrolled students.

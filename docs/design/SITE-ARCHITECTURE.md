@@ -42,6 +42,8 @@ The system strictly serves two distinct academic user roles:
 
 ## 4. Product Experience Attributes
 
+> **UNRESOLVED [SA-4]** — `max-w-7xl` and the slate palette conflict with R01 §5 and GDS §2. Not current guidance; stop and ask the PO.
+
 - **Academic & Focused**: Engineered for critical thinking — zero Unicode emojis, zero ASCII symbol hacks, zero gamified badges, and zero purple/indigo "AI-slop" gradients.
 - **Efficient & Professional**: High-density management layouts for lecturers (`max-w-7xl`) paired with calm, distraction-free reading layouts for students (`max-w-3xl`).
 - **Predictable & Governed**: Transparent AI provenance showing which teaching materials informed each case dilemma.
@@ -111,6 +113,8 @@ Student submits reasoning (in Branching Study REVIEW phase or Review Study) → 
 ---
 
 ## 8. Design Documentation Map
+
+> **UNRESOLVED [SA-8]** — the links below point to a local machine path and do not resolve; use the files in `docs/design/screens/`. Fix scheduled for step 4 (Q11).
 
 All screen-level specifications are maintained in `docs/design/screens/`:
 

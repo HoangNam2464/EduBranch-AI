@@ -14,10 +14,16 @@
 The Branching Study **Experience phase**: seamless, immersive decision-making journey. Student reads each situation, selects an option, and advances to the next situation with no blocking steps in between. The full consequence analysis and reasoning capture happen in the **REVIEW phase** (§1b below), not mid-flow.
 
 ### User & Context
+
+> **UNRESOLVED [P2-1-ctx]** — access "via a direct link provided by the Lecturer" is an open decision (OPD-001). Not current guidance; stop and ask the PO.
+
 Student only. Requires the case to be `PUBLISHED` (`INV-01`) — non-published cases must 404.
 Student accesses via a direct link provided by the Lecturer. There is no student browse page.
 
 ### Layout
+
+> **UNRESOLVED [P2-1-layout]** — advancing immediately on selection conflicts with F05 DES-010 ("Confirm & Continue") [CHƯA-QUYẾT — chưa có mã]. Stop and ask the PO.
+
 Full-width immersive reading layout (distraction-free decision interface). Top: case title + a subtle progress indicator (e.g. "Decision 2 of ?" — not a percentage bar, since branch length is variable and unknown). Center: current node's `situation` text in a readable, capped-width column (`GLOBAL-DESIGN-SYSTEM.md §3` line-length rule). Below: Option Selector (`§6.5`).
 
 **Important**: After selecting an option, the player advances immediately to the next situation. There is NO reasoning form, NO consequence card, NO delay between Decision Points during the Experience phase.
@@ -45,6 +51,10 @@ No reasoning form between Decision Points. No consequence card between Decision 
 Post-journey retrospective analysis. After completing the full journey (reaching a terminal node), the student enters the REVIEW phase to look back at every decision they made, understand how each choice shaped the outcome, and write reasoning retrospectively.
 
 ### Layout
+
+> **SUPERSEDED [P2-1b-layout]** — "Optional reasoning textarea … not required for every single node": reasoning is mandatory for pivotal decisions in Journey Review, after the journey ends; not on every decision (PO-26).  
+> **UNRESOLVED [P2-1b-layout]** — how pivotal decisions and "key moments" are identified is open (OPD-002, D-06). Stop and ask the PO.
+
 Full-page sequential timeline view. Each decision point in the journey is shown in order:
 - **Situation** text (the scenario they saw)
 - **Option chosen** (highlighted; alternatives shown muted)
@@ -56,6 +66,10 @@ Full-page sequential timeline view. Each decision point in the journey is shown 
 Full attempt journey: all `student_reasoning` records for the attempt (with `selected_option_id`), all `case_nodes` and `case_options` visited (including `consequence` texts now revealed), `outcome_node_id`.
 
 ### Flow
+
+> **SUPERSEDED [P2-1b-flow]** — step 2 "optional per node, encouraged for pivotal ones": reasoning is mandatory for pivotal decisions (PO-26).  
+> **UNRESOLVED [P2-1b-flow]** — pivotal definition, blocking and minimum length (OPD-002); Challenge Support entry from REVIEW in step 5 [CHƯA-QUYẾT — chưa có mã]. Stop and ask the PO.
+
 1. Student sees full journey replay, top to bottom.
 2. Student writes reasoning for key decision points (optional per node, encouraged for pivotal ones).
 3. Frontend sends `PATCH /api/v1/branching-attempts/{attemptId}/reasoning/{nodeId}` for each filled-in reasoning.
@@ -107,6 +121,9 @@ Challenge Support Panel (`GLOBAL-DESIGN-SYSTEM.md §6.11`): round indicator at t
 3. **Session complete**: after Round 2 (or if the student chooses not to respond and closes out Round 1), the composer is replaced with a "Session complete" state — no further open-ended input is possible (`FR-CS-06`/§6.11).
 
 ### States
+
+> **UNRESOLVED [P2-3-states]** — skipping Challenge Support "from the Branching Case Player" conflicts with §1b (entry from REVIEW) [CHƯA-QUYẾT — chưa có mã]. Stop and ask the PO.
+
 - **Loading**: while the AI generates a counter-question, show a lightweight loading state within the panel (not a full-page spinner) — this is a support panel embedded in the student's flow, not a page-level transition.
 - **Declined**: a student may skip Challenge Support entirely from the Branching Case Player without penalty — this is optional by design (`FEATURE-BRANCHING-STUDY.md §5` step 9 is marked "[Optional]").
 

@@ -41,6 +41,8 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 
 ### 1.3. Bảng Mã Màu Chuẩn (Figma Local Color Variables — Locked Hex)
 
+> **UNRESOLVED [F05-1.3]** — màu nhãn biểu mẫu (`text/secondary`) mâu thuẫn R01 §6.1; tên biến khác file Figma. Không phải chỉ dẫn hiện hành; dừng và hỏi PO.
+
 > **Quy tắc chống "AI-Slop" trên Figma**: Tuyệt đối **CẤM** dùng màu tím/indigo (`#6366F1`, `purple`, `violet`), cấm hiệu ứng phát sáng neon, cấm gradient lòe loẹt, cấm tô màu xanh/đỏ cho node ReactFlow theo kiểu đúng/sai.
 
 | Nhóm Variable | Tên Variable trên Figma | Mã Hex | Mục đích sử dụng trên Frame & Component |
@@ -70,6 +72,9 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 | | `semantic/error` | `#DC2626` | Trạng thái `Failed` (nền `#FEF2F2`, viền `#FECACA`), lỗi form, nút Xóa/Hủy |
 
 ### 1.4. Hệ thống Typography Styles, Spacing & Vector Icons trên Figma
+
+> **UNRESOLVED [F05-1.4]** — font, thang chữ, khoảng cách, bo góc, logo và độ đậm chữ badge mâu thuẫn R01 §3–§6.1 và P0 §1. Không phải chỉ dẫn hiện hành; dừng và hỏi PO.
+
 1. **Font chữ**: Sử dụng **`Inter`** trên Figma (tương đương System UI khi lên web).
    - `Display` (`28px / Line-height 36px / SemiBold 600 / Tracking -0.02em`): Tiêu đề trang lớn.
    - `H1` (`24px / 32px / SemiBold 600`): Tiêu đề khu vực.
@@ -172,6 +177,9 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 - **Tài liệu đối chiếu**: [`GLOBAL-DESIGN-SYSTEM.md §2–5`](design/GLOBAL-DESIGN-SYSTEM.md) · [`P0-FOUNDATION.md §4–5`](design/screens/P0-FOUNDATION.md)
 
 #### Danh sách Components & Frames cần thiết kế trên Figma
+
+> **UNRESOLVED [F05-DES002]** — bộ kích thước Button mâu thuẫn GDS §5.1 và R01 §6.1. Không phải chỉ dẫn hiện hành; dừng và hỏi PO.
+
 1. **`Component Set 01.1 — Core UI Primitives`**:
    - `Button`: Variants `Primary` (`#2563EB`), `Secondary` (`#FFFFFF`, viền `#E5E7EB`), `Danger` (`#DC2626`), `Ghost`; Sizes `sm (32px)`, `md (40px)`, `lg (48px)`; States `Default`, `Hover`, `Active`, `Focus-Visible (2px ring #2563EB)`, `Disabled`, `Loading (kèm Spinner 16px)`. Tất cả đều bo góc `8px` (`radius-md`).
    - `Input / Select / Textarea`: Cao `40px` (Input/Select) và `120px–160px` (Academic Textarea), States `Default`, `Focus`, `Error (viền #DC2626 + chữ lỗi 12px bên dưới)`, `Disabled (#F3F4F6)`.
@@ -314,6 +322,9 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 - **Tài liệu đối chiếu**: [`P1-LECTURER-CORE.md §4`](design/screens/P1-LECTURER-CORE.md) · [`GLOBAL-DESIGN-SYSTEM.md §6.4`](design/GLOBAL-DESIGN-SYSTEM.md) · [`FEATURE-DECISION-TREE.md`](features/FEATURE-DECISION-TREE.md)
 
 #### Danh sách Frames & Node Components cần thiết kế trên Figma
+
+> **UNRESOLVED [F05-DES007]** — tỉ lệ canvas 60% mâu thuẫn P1 §4 và R01 §5 (65/35). Không phải chỉ dẫn hiện hành; dừng và hỏi PO.
+
 1. **`Component Set 03.4 — ReactFlow Decision Node Variants (Rộng cố định `260px`)`**:
    - **Quy tắc màu sắc bắt buộc**: Mọi node đều có nền `#FFFFFF`, bo góc `8px` (`radius-md`). **Tuyệt đối không tô nền xanh lá cho Root hay đỏ hồng cho Terminal** (vì hệ thống không có nhánh "đúng/sai").
    - **Variant 1 — `Root Node (Start)`**: Viền `1px #E5E7EB`, Header gắn pill nhỏ `START` (`#EFF6FF / #1D4ED8`) + mã `Node 1`, thân node hiển thị 2 dòng văn bản `situation` (`13px #111827`), footer hiển thị pill `3 options` (`12px #4B5563`).
@@ -376,6 +387,9 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 - **Tài liệu đối chiếu**: [`P1-LECTURER-CORE.md §4`](design/screens/P1-LECTURER-CORE.md) · [`GLOBAL-DESIGN-SYSTEM.md §6.3`](design/GLOBAL-DESIGN-SYSTEM.md) · [`FEATURE-CASE-REVIEW-AND-PUBLISHING.md`](features/FEATURE-CASE-REVIEW-AND-PUBLISHING.md)
 
 #### Danh sách Components & Frames cần thiết kế trên Figma
+
+> **UNRESOLVED [F05-DES009]** — kiểu hiển thị bước của Stepper mâu thuẫn GDS §6.3. Không phải chỉ dẫn hiện hành; dừng và hỏi PO.
+
 1. **`Component Set 03.9 — Case Governance Top Action Bar & 4-Step Lifecycle Stepper (4 Variants theo trạng thái)`**:
    - Thanh công cụ gắn cố định phía trên màn hình Case Review (`cao 64px`, nền `#FFFFFF`, `border-bottom 1px #E5E7EB`, `padding: 0 24px`):
    - **Bên trái**: Nút quay lại `arrow-left` + Tên Case (cho phép sửa inline) + `LearningModeBadge` + `Version Pill` (`v1`).
@@ -412,6 +426,9 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 - **Tài liệu đối chiếu**: [`P2-STUDENT-CORE.md §1`](design/screens/P2-STUDENT-CORE.md) · [`GLOBAL-DESIGN-SYSTEM.md §6.5`](design/GLOBAL-DESIGN-SYSTEM.md) · [`FEATURE-BRANCHING-STUDY.md`](features/FEATURE-BRANCHING-STUDY.md)
 
 #### Danh sách Frames cần thiết kế trên Figma
+
+> **UNRESOLVED [F05-DES010]** — nút "Confirm & Continue" sau khi chọn phương án mâu thuẫn P2 §1 (chọn là chuyển bước ngay) [CHƯA-QUYẾT — chưa có mã]. Dừng và hỏi PO.
+
 1. **`Frame 04.1 — Branching Case Player: Active Decision Point (`/student/cases/:caseId/branching-play`, `1440×900`)`**:
    - Sử dụng `StudentLayout` (`56px` Top Header + Cột đọc đơn **`768px` (`max-w-3xl`)** canh giữa màn hình nền `#F9FAFB`). **Tuyệt đối không vẽ sơ đồ ReactFlow trên màn hình sinh viên.**
    - **Header phụ của Tình huống (nằm đầu cột `768px`)**:
@@ -448,6 +465,9 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 - **Tài liệu đối chiếu**: [`P2-STUDENT-CORE.md §1b`](design/screens/P2-STUDENT-CORE.md) · [`GLOBAL-DESIGN-SYSTEM.md §6.6–6.7`](design/GLOBAL-DESIGN-SYSTEM.md) · [`FEATURE-STUDENT-REASONING.md`](features/FEATURE-STUDENT-REASONING.md)
 
 #### Danh sách Frames cần thiết kế trên Figma
+
+> **UNRESOLVED [F05-DES011]** — hiển thị phương án không chọn [CHƯA-QUYẾT — chưa có mã]; ô lập luận 10–2000 ký tự ở mọi bước (OPD-002); điểm vào Challenge Support [CHƯA-QUYẾT — chưa có mã]. Dừng và hỏi PO.
+
 1. **`Frame 04.3 — Branching Study Phase 2: Journey Review & Consequence Reveal (`/student/cases/:caseId/attempt/:attemptId/review`, `1440×1320` Auto-Height)`**:
    - Sử dụng `StudentLayout` (`56px` Top Header hiển thị `Phase 2: Journey Review` + Cột chính **`768px`** canh giữa).
    - **Header Trang**: Tiêu đề `"Journey Review & Retrospective Analysis"` (`24px SemiBold #111827`) + phụ đề ngắn gọn `"Review the consequences of each decision along your path and articulate the reasoning behind your choices."`

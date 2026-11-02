@@ -14,6 +14,9 @@
 Context/Data → Problem/Question → Student Analysis → Proposed Solution → Student Reasoning, for cases with `learning_mode = REVIEW_STUDY` (`FEATURE-REVIEW-STUDY.md`). No decision tree — `context_text`/`problem_text` only.
 
 ### Layout
+
+> **UNRESOLVED [P4-1]** — whether `student_analysis` is an optional field is open (D4-13). Not current guidance; stop and ask the PO.
+
 Single-column reading + writing flow, same capped-width readable column as the Branching Case Player: `context_text` → `problem_text` → an optional `student_analysis` field → `proposed_solution` (required) → `reasoning_text` (required), using the Reasoning Input pattern (`GLOBAL-DESIGN-SYSTEM.md §6.6`) for the reasoning field specifically.
 
 ### Data

@@ -90,6 +90,8 @@ To eliminate the amateurish "AI-generated template" look, every screen and compo
 
 ### 2.5. Case Lifecycle Status Tokens (`DRAFT → REVIEWED → APPROVED → PUBLISHED`)
 
+> **UNRESOLVED [R01-2.5]** — "via direct link" access: not current guidance; stop and ask the PO.
+
 Status badges MUST always pair the background, text, and `6px` status dot hex below. Never use `purple` for `APPROVED` or `amber` for `DRAFT`.
 
 | Status | Token Prefix | Badge BG | Badge Text | Dot / Icon Hex | Meaning |
@@ -129,6 +131,8 @@ Used **only** as a compact neutral pill (`AiOriginTag`) on `DRAFT` cases before 
 ---
 
 ## 3. Icon System Standards (Mandatory Vector SVG Specification)
+
+> **UNRESOLVED [R01-3]** — sidebar icon size, brand wordmark: not current; stop and ask the PO.
 
 ### 3.1. Icon Format & Technical Rules
 - **Library Standard**: Clean monoline outline vector icons (**Lucide Icons** / `lucide-react` or matching inline SVG primitives).
@@ -181,6 +185,8 @@ Every feature must use these consistent vector icon metaphors (never emojis):
 
 ## 4. Typography, Spacing, Radius & Elevation
 
+> **UNRESOLVED [R01-4]** — type scale, font, spacing, radius: not current; stop and ask the PO.
+
 ### 4.1. Font Stack & Type Hierarchy
 Use the native system sans-serif stack for crisp, fast academic reading:
 ```css
@@ -224,6 +230,8 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
 
 ## 5. App Shell & Layout Architecture by User Role
 
+> **UNRESOLVED [R01-5]** — Case Review split, student direct-link access: not current; ask the PO.
+
 ### 5.1. Lecturer Portal Shell (`LecturerLayout.tsx`)
 - **Structure**: Persistent 2-column desktop layout (`min-h-screen bg-[#F9FAFB] flex`):
   - **Left Sidebar (`w-60` / `240px` fixed on desktop, `bg-white border-r border-gray-200 flex flex-col`)**:
@@ -257,6 +265,9 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
 ## 6. Standardized Component & Product-Specific Widget Rules
 
 ### 6.1. Core Shared Primitives (`src/components/ui/index.tsx`)
+
+> **UNRESOLVED [R01-6.1]** — button sizes, label/caption colour, badge weight: not current; ask the PO.
+
 1. **`Button`**:
    - Variants:
      - `primary`: `bg-[#2563EB] text-white hover:bg-[#1D4ED8] active:bg-[#1E40AF] disabled:bg-[#93C5FD]`
@@ -280,6 +291,10 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
    - `EmptyState` and `ErrorState` must use a `24px` outline SVG inside a `40px` `rounded-lg bg-gray-100` (or `bg-red-50` for error) container + concise title + 1-sentence description + optional action button.
 
 ### 6.2. Product-Specific Domain Widgets
+
+> **SUPERSEDED [R01-6.2]** — reasoning is mandatory for pivotal decisions in Journey Review (PO-26).  
+> **UNRESOLVED [R01-6.2]** — option hover, pivotal definition: not current; stop and ask the PO.
+
 1. **Publish / Review Status Stepper (`CaseReviewPage`)**:
    - Horizontal 4-step indicator (`1. Draft` → `2. Reviewed` → `3. Approved` → `4. Published`) in the Case Review top bar.
    - Shows current lifecycle stage and enables only valid state-machine transitions (`Save Edits`, `Mark as Reviewed`, `Approve Case`, `Publish Case` behind confirmation modal).
@@ -320,6 +335,8 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
 
 ## 7. Language & Microcopy Standards
 
+> **SUPERSEDED [R01-7]** — UI is Vietnamese (PO-3), not Academic English/Title Case. Tone rules stay.
+
 1. **Single-Language Consistency per Screen**:
    - Do not mix English UI chrome (`Create Course`, `Upload Material`, `Node Editor`) with Vietnamese labels on the same page.
    - Standardize UI labels to clean, concise **Academic English** across all product components and screens (matching the Backend DTOs, Figma tasks `DES-001`–`DES-015`, and `GLOBAL-DESIGN-SYSTEM.md`), while user-inputted content (course names, case text, student reasoning, lecturer feedback) naturally supports full Vietnamese UTF-8 text.
@@ -347,6 +364,9 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
 - `/lecturer/statistics` — Cohort completion rate, attempt count, and branch-selection distribution.
 
 ### 8.3. Student Routes (`StudentLayout`)
+
+> **UNRESOLVED [R01-8.3]** — optional `student_analysis`: not current; stop and ask the PO.
+
 - `/student/cases/:caseId/branching-play` — **Phase 1 (Experience)**: Distraction-free situation reading and immediate option selection (no mid-flow consequence card, no mid-flow reasoning form, no ReactFlow canvas).
 - `/student/cases/:caseId/attempt/:attemptId/review` — **Phase 2 (REVIEW)**: Full chronological path replay, revealed consequences (`consequence`), alternative options, and retrospective `reasoning_text` capture.
 - `/student/cases/:caseId/attempt/:attemptId/reflect` — **Phase 3 (Reflection & Retry)**: Post-journey metacognitive `reflection_text` submission and `Try Another Path` (creates `attempt_number + 1`).

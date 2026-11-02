@@ -15,6 +15,9 @@
 Provides a clear, authoritative academic landing page for unauthenticated visitors, faculty, and students visiting the root URL (`/`). Explains what EduBranch-AI is without marketing fluff or "AI-hype" clichés, and directs users to `/login` or `/register`.
 
 ### Layout (`1440px` Desktop Frame on `bg-canvas` `#F9FAFB`)
+
+> **UNRESOLVED [P0-0]** — the brand mark (square icon + wordmark) conflicts with §1 (text-only wordmark) and R01 §3. Not current guidance; stop and ask the PO.
+
 1. **Top Public Navigation Bar (`height: 64px`, `bg-surface` `#FFFFFF`, `border-bottom: 1px solid #E5E7EB`)**:
    - Left: Brand mark (`28×28px` `#2563EB` rounded-md square with white `GitBranch` vector icon) + `"EduBranch AI"` (`16px SemiBold #111827`) + subtle tag `"University Edition"` (`#F3F4F6 / #4B5563`).
    - Center anchor links (`14px #4B5563`): `Overview` · `Learning Modes` · `Academic Governance` · `Workflow`.
@@ -51,6 +54,9 @@ Provides the persistent frame (sidebar/nav + content area) that every authentica
 - **When used**: On every authenticated screen; this is the persistent frame, not a standalone route.
 
 ### Information Hierarchy & Layout
+
+> **UNRESOLVED [P0-1-layout]** — the text-only wordmark conflicts with §0 (brand mark) and F05 §1.4. Not current guidance; stop and ask the PO.
+
 - Sidebar (desktop, 240px fixed) or collapsible drawer (mobile): product wordmark (text only — "EduBranch AI", no logo mark specified), role indicator (small text badge under the wordmark: "Lecturer" / "Student"), primary nav items, user menu (name, sign-out) pinned to the bottom.
 - Header bar within content area: page title (`text-display`), optional breadcrumb trail for nested routes (Course → Materials, Course → Cases → Review).
 - Content area: `bg-canvas`, centered max-width container on wide screens (avoid full-bleed tables/cards stretching beyond a readable measure on ultra-wide monitors).
@@ -61,6 +67,9 @@ Provides the persistent frame (sidebar/nav + content area) that every authentica
 - Contextual, shown only once a course is selected: Materials, Cases (which itself leads to Review and Feedback per case).
 
 ### Student Nav Items
+
+> **UNRESOLVED [P0-1-student]** — how students reach a case (direct route) is an open decision (OPD-001). Not current guidance; stop and ask the PO.
+
 Students arrive at a specific case route directly (no course browsing screen in the sitemap). The student shell nav is minimal: current case title/breadcrumb + sign-out. No dashboard/list screen exists in the approved sitemap — do not invent one.
 
 ### Actions

@@ -152,6 +152,8 @@ All colors are final hex values, locked for Phase 2. Token names are the Tailwin
 
 ### 2.2. Text
 
+> **UNRESOLVED [GDS-2.2]** — using `text-muted` for helper captions conflicts with §3.3 and R01 §6.1 (2.54:1 on white). Not current guidance; stop and ask the PO.
+
 | Token | Hex | Usage |
 |---|---|---|
 | `text-primary` | `#111827` | Headings, primary body text, active input value |
@@ -161,6 +163,8 @@ All colors are final hex values, locked for Phase 2. Token names are the Tailwin
 | `text-link` | `#2563EB` | Inline links (same hue as `action-primary`), underline on hover |
 
 ### 2.3. Borders & Dividers
+
+> **UNRESOLVED [GDS-2.3]** — `border-strong` as the option-card hover conflicts with R01 §6.2. Not current guidance; stop and ask the PO.
 
 | Token | Hex | Usage |
 |---|---|---|
@@ -245,6 +249,8 @@ Do not introduce arbitrary hex values outside this table in Stitch prompts or co
 
 ### 3.1. Typography Scale
 
+> **UNRESOLVED [GDS-3.1]** — font family and type scale conflict with R01 §4.1. Not current guidance; stop and ask the PO.
+
 System font stack — no custom webfont load (keeps the academic tool feeling fast and utilitarian, not "designed"):
 
 ```
@@ -268,6 +274,8 @@ Rules:
 
 ### 3.2. Icon System (Vector SVG Standard — ZERO Emojis / ZERO ASCII Hacks)
 
+> **UNRESOLVED [GDS-3.2]** — 20px sidebar icons conflict with R01 §3 (16px). Not current guidance; stop and ask the PO.
+
 - **Library**: Use **`lucide-react`** (or a dedicated clean SVG icon wrapper in `frontend/src/components/ui/Icon.tsx`) with consistent outline geometry: `viewBox="0 0 24 24"`, `fill="none"`, `stroke="currentColor"`, `strokeWidth={1.75}`, `strokeLinecap="round"`, `strokeLinejoin="round"`.
 - **Sizes**:
   - `xs` (`14px` / `w-3.5 h-3.5`): Inside status/mode badges and compact metadata pills.
@@ -287,6 +295,8 @@ Rules:
 
 ### 3.3. Language & Microcopy Consistency
 
+> **UNRESOLVED [GDS-3.3]** — helper caption colour `text-gray-500` conflicts with §2.2 and R01 §6.1. Not current guidance; stop and ask the PO.
+
 - **Zero Language Mixing on the Same Screen**: Never mix English navigation/chrome with Vietnamese page content or vice versa on the same screen.
 - **No Preachy Instructional Callout Spam**: Do not place multi-sentence colored callout boxes explaining how the app works above every textarea or card. Use a single concise helper caption (`12px`, `text-gray-500`) if needed.
 
@@ -295,6 +305,9 @@ Rules:
 ## 4. Spacing, Radii, Elevation
 
 ### 4.1. Spacing Scale
+
+> **UNRESOLVED [GDS-4.1]** — spacing scale conflicts with R01 §4.2. Not current guidance; stop and ask the PO.
+
 Follows the existing `01-ui-design-standards.md` rule — the Tailwind default scale, no arbitrary values:
 `4px · 8px · 12px · 16px · 24px · 32px · 48px · 64px`
 
@@ -304,6 +317,8 @@ Follows the existing `01-ui-design-standards.md` rule — the Tailwind default s
 - Horizontal gap between inline badges/tags: `8px`.
 
 ### 4.2. Border Radius
+
+> **UNRESOLVED [GDS-4.2]** — radius values conflict with R01 §4.3. Not current guidance; stop and ask the PO.
 
 | Token | Value | Usage |
 |---|---|---|
@@ -328,6 +343,9 @@ Minimal, restrained shadows — never a glow/blur decorative effect.
 ## 5. Shared Component Rules
 
 ### 5.1. Button
+
+> **UNRESOLVED [GDS-5.1]** — button size set conflicts with F05 DES-002 and R01 §6.1. Not current guidance; stop and ask the PO.
+
 - **Primary**: `bg action-primary`, `text-inverse`, `radius-md`, height 40px, horizontal padding 16px. One primary button per screen/section — it marks the single main action (e.g. "Publish Case", "Submit Reasoning").
 - **Secondary**: `bg-white`, `border-default`, `text-primary`. Used for non-destructive secondary actions ("Cancel", "Save Draft").
 - **Destructive**: `bg semantic-error`, `text-inverse`. Reserved for irreversible actions (delete course, delete material) and always paired with a confirmation dialog (§5.10).
@@ -360,6 +378,9 @@ Minimal, restrained shadows — never a glow/blur decorative effect.
 - Underline style, not pill/segmented-control style. Active tab: `text-primary` + 2px `action-primary` underline. Inactive: `text-secondary`, no underline, hover `text-primary`.
 
 ### 5.7. Badge / Status Indicator
+
+> **UNRESOLVED [GDS-5.7]** — badge text weight (400) conflicts with R01 §6.1 and F05 §1.4 (500). Not current guidance; stop and ask the PO.
+
 - `radius-full`, `text-caption`, horizontal padding 8px, vertical padding 2px, always background+text pair from §2.5/§2.6 — never a bare colored dot without a label in a place where status is being communicated as information (a small dot-only variant is acceptable only in dense table cells where a legend is visible elsewhere on screen).
 
 ### 5.8. Modal
@@ -394,6 +415,9 @@ Used in `/lecturer/courses/:courseId/cases` list and course dashboards.
 Standalone version of the §2.6 badge, used in filters and page headers to indicate which mode a screen/list is scoped to.
 
 ### 6.3. Publish/Review Status Stepper
+
+> **UNRESOLVED [GDS-6.3]** — stepper step styling conflicts with F05 DES-009. Not current guidance; stop and ask the PO.
+
 Horizontal 4-step stepper reflecting `DRAFT → REVIEWED → APPROVED → PUBLISHED`. Completed steps: filled `action-primary` connector line + status color dot for that step's own token (§2.5). Current step: outlined, bold label. Future steps: `text-muted`, gray connector. Used at the top of `/lecturer/cases/:caseId/review`.
 
 ### 6.4. Decision Node (ReactFlow)
@@ -403,9 +427,16 @@ Rectangular card node, `radius-md`, `border-default`, `bg-surface`. Root node ge
 List of 2–4 option cards, each `bg-surface`, `border-default`, `radius-md`, full-width, showing the option text as the primary label. When a student selects an option: the selected option gets `border-focus` highlight, then the player advances **immediately and seamlessly** to the next situation. No reasoning form appears between decision points during the Experience phase. Unselected options are not shown after advancing — the player moves to the next situation node.
 
 ### 6.6. REVIEW Phase — Decision Reasoning Input
+
+> **SUPERSEDED [GDS-6.6]** — "an optional reasoning textarea": reasoning is mandatory for pivotal decisions in Journey Review, after the journey ends; not mid-flow and not on every decision (PO-26).  
+> **UNRESOLVED [GDS-6.6]** — how "pivotal" is defined, the blocking behaviour and the minimum length are open (OPD-002). Stop and ask the PO.
+
 Large textarea (§5.2 long-form variant) shown in the **REVIEW phase** (after the student has completed their full journey and reached the terminal node) — NOT mid-flow during the Experience phase. In the REVIEW interface, each decision point in the student's path shows: the situation, the option chosen, the alternatives available, and the consequence/outcome (revealed here for the first time). Adjacent to each decision point is an optional reasoning textarea: "Why did you choose this?" / "What would you change?". Label: "Your reasoning" (never "Your argument" — retired term). Helper caption: reflective, plain instruction; no rubric or grading language.
 
 ### 6.7. Consequence Display (REVIEW Phase Only)
+
+> **UNRESOLVED [GDS-6.7]** — the note on what the alternative(s) would have led to (consequences of unchosen options) is undecided [CHƯA-QUYẾT — chưa có mã]. Stop and ask the PO.
+
 Revealed in the **REVIEW phase** alongside the reasoning input (§6.6) — **never shown mid-flow during the Experience phase**. Each decision point in the REVIEW timeline shows the consequence of the option the student chose and a brief note on what the alternative(s) would have led to. `bg-surface-muted` panel, `radius-lg`, left border accent in `mode-branching` teal (ties it visually to the Branching Study mode without introducing a new color). Label: "Consequence" (never "Result" or "Outcome" — outcome is reserved for the terminal node's final state per the data model).
 
 ### 6.8. Reflection Input
@@ -426,6 +457,8 @@ Summary number cards (completion rate, attempt count) + a horizontal bar breakdo
 ---
 
 ## 7. Accessibility Baseline
+
+> **UNRESOLVED [GDS-7]** — the claim that all §2 pairs meet WCAG AA is not verified; Phase 6A measured 2.54:1 (`text-muted` on white) and 4.41:1 (error badge). Do not rely on it; ask the PO.
 
 - All text/background pairs in §2 meet WCAG AA contrast at their intended size (verify `text-muted` on `bg-surface` for caption-sized use only, not body text).
 - Every interactive element must have a visible `focus-visible` state (§5.4) — never `outline: none` without a replacement ring.
