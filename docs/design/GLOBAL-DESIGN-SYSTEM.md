@@ -1,10 +1,123 @@
  EduBranch-AI — Global Design System
 
-> **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
-> **Target Platform**: Google Stitch UI Generation + React 19 / TailwindCSS v4 implementation.
+> **Status**: Unknown (design content in §1–§8) · **Role**: Normative · **Version**: unversioned
+> **§0 Source Map**: Approved by the Product Owner as source governance only (step 1 implementation approval, 2026-11-02). Approving §0 does not approve any design value or rule in §1–§8.
+> **Authority scope**: token meaning, component and pattern rules (see §0.1) · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Approved**: — (§0 only, see above)
+> **Supersedes**: `.stitch/DESIGN.md` (retired/deleted) · **Superseded by**: — · **Implementation target**: React 19 / TailwindCSS v4 (Stitch retired, PO-22)
 > **Companion Agent Rule**: [`.agents/rules/01-ui-design-standards.md`](../../.agents/rules/01-ui-design-standards.md)
 > **Scope**: All EduBranch-AI product screens (14 routes across P0–P4). Does NOT cover the internal "Start Design" tooling — see [`SITE-ARCHITECTURE.md §7`](SITE-ARCHITECTURE.md) for its classification.
-> **Source of truth**: Product Direction V2 (EduBranch-AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
+> **Business source**: Proposal V1.2 (PO-10, PO-24) — see §0.1 Decision traceability.
+
+---
+
+## 0. Source Map & Document Governance
+
+> This section is the design-domain source map (PO decision Q4). It governs **which source decides what**; it does not decide any design value, rule or business behaviour.
+
+### 0.1. Authority by Information Type
+
+| Information type | Authoritative source | Approved source today |
+|---|---|---|
+| Business behaviour shown in the UI | Proposal V1.2 + PO decisions | Proposal V1.2 (PO-10) and PO decisions. Feature specs are not assumed approved. Design docs may cite business behaviour, never decide it. |
+| Design token values | `docs/design/tokens/tokens.json` (planned, step 2) | None — not created. Values in GDS, R01, F05, SA are provisional. |
+| Token meaning, component and pattern rules | This document, §1–§8 | None (Unknown) |
+| Per-screen layout and states | `docs/design/screens/P0`–`P4` | None (Unknown) |
+| Display labels and terminology | Glossary (planned, step 3) under PO-3 | PO-3 policy only. Copy in specs is English placeholder. |
+| Design backlog and acceptance criteria | `docs/05_FIGMA.md` | None (Unknown) |
+| Visual reference | Figma `6CtSgJPKo4jCIbB7WwCaWw` | Not an authority — a mirror and design evidence |
+| AI working rules | `.agents/rules/01-ui-design-standards.md` | None (Unknown). Points to sources; defines no values or business behaviour. |
+| Reference only | `SITE-ARCHITECTURE.md`, `STITCH-GENERATION-GUIDELINES.md` (Retired), `docs/architecture/audits/` | Not an authority |
+
+**Conflict rule**: a source governs only its own row, and only when its Status is Approved. If the governing source is not Approved, or two sources disagree, record the conflict and ask the PO — never pick a side.
+
+**Decision traceability**:
+1. PO decisions PO-1..PO-27 are **not stored in this repository**. The planned register is `docs/governance/PO_DECISIONS.md` (PO-18) — **not created yet**.
+2. The authoritative Proposal V1.2 is kept in a restricted shared Google Drive (PO-11). Local copies are not committed (`*.docx` is git-ignored) and never replace the Drive copy.
+3. IDs `CR-xx`, `D-xx`, `D4-xx` come from the PO's design audit register; `OPD-xxx` from `docs/OPEN_PRODUCT_DECISIONS.md` on branch `feature/design-system` (not on `develop`). None of these registers is on `develop`.
+4. **AI rule**: if the content of a PO-n, Proposal section or register ID is not in your context and you cannot open its source, do not infer it. Cite the ID and ask the PO. Each SUPERSEDED banner states the effect of its decision so it can be applied without the register.
+
+### 0.2. Status, Role and Provisional Use
+
+- **Status** (approval): `Draft` · `Proposed` · `Approved` · `Superseded` · `Retired` · `Unknown` (no evidence of approval).
+- **Role** (function): `Normative` (states requirements) · `Informative` (explains) · `Reference` (background only).
+- **Provisional use (PO decision Q9)** — content that is Unknown or Draft and carries no banner:
+  1. May guide draft design work as **provisional** direction.
+  2. Must be labelled provisional and kept distinct from Approved requirements.
+  3. Must never be turned into an official rule or business behaviour by assumption.
+  4. On a conflict between sources, an UNRESOLVED banner, or business behaviour the PO has not decided: stop and ask the PO.
+  5. No frame that depends on a provisional value or rule may be marked Ready for Dev.
+
+### 0.3. Banner Conventions
+
+- `SUPERSEDED [ID]` — replaced by an approved PO decision; the banner states the replacement. `UNRESOLVED [ID]` — sources conflict or the decision is open: **not current guidance; stop and ask the PO.**
+- One insertion point = one banner block = one §0.4 entry with the same ID. A mixed block has two lines: SUPERSEDED first, UNRESOLVED second.
+- Scope: the topics the banner names, from the banner to the next heading of the same or higher level; a banner naming no topic covers the whole section. Banners override the file header Status.
+- Content under a banner stays as history; it is not current guidance.
+
+### 0.4. Register of Inactive Statements
+
+S = SUPERSEDED · U = UNRESOLVED · S+U = mixed. "Open item n/3" = `[CHƯA-QUYẾT — chưa có mã]`: (1) showing consequences of unchosen options; (2) "Confirm & Continue" vs advancing immediately on selection; (3) entry point of Challenge Support.
+
+| ID | Section | Type | Inactive statement | Replaced by / pending |
+|---|---|---|---|---|
+| GDS-2.2 | GDS §2.2 | U | `text-muted` for helper captions | CR-05: conflicts with §3.3, R01 §6.1; 2.54:1 on white |
+| GDS-2.3 | GDS §2.3 | U | `border-strong` as option-card hover | CR-07: R01 §6.2 differs |
+| GDS-3.1 | GDS §3.1 | U | font family, type scale | CR-01, CR-02: R01 §4.1 differs |
+| GDS-3.2 | GDS §3.2 | U | 20px sidebar icons | CR-08: R01 §3 uses 16px |
+| GDS-3.3 | GDS §3.3 | U | helper caption `text-gray-500` | CR-05 |
+| GDS-4.1 | GDS §4.1 | U | spacing scale | CR-04: R01 §4.2 differs |
+| GDS-4.2 | GDS §4.2 | U | radius values | CR-03: R01 §4.3 differs |
+| GDS-5.1 | GDS §5.1 | U | button size set | CR-12: F05 DES-002, R01 §6.1 differ |
+| GDS-5.7 | GDS §5.7 | U | badge text weight 400 | CR-13: R01 §6.1, F05 §1.4 use 500 |
+| GDS-6.3 | GDS §6.3 | U | stepper step styling | CR-14: F05 DES-009 differs |
+| GDS-6.6 | GDS §6.6 | S+U | optional reasoning textarea / pivotal definition, blocking, minimum length | PO-26 / OPD-002 |
+| GDS-6.7 | GDS §6.7 | U | note on what alternatives would have led to | Open item 1/3 |
+| GDS-7 | GDS §7 | U | "all pairs meet WCAG AA" | CR-06: not verified; 2.54:1 and 4.41:1 measured |
+| R01-2.5 | R01 §2.5 | U | published cases reached "via direct link" | OPD-001 (PO-25) |
+| R01-3 | R01 §3 | U | 16px sidebar icons; brand wordmark | CR-08, CR-09 |
+| R01-4 | R01 §4 | U | type scale, font stack, spacing, radius | CR-01..CR-04: GDS §3–4, F05 §1.4 differ |
+| R01-5 | R01 §5 | U | Case Review 65/35 split; student direct-link access | CR-18: F05 DES-007 uses 60/40; OPD-001 |
+| R01-6.1 | R01 §6.1 | U | button sizes, label and caption colours, badge weight | CR-12, CR-15, CR-05, CR-13 |
+| R01-6.2 | R01 §6.2 | S+U | "Optional" reasoning label / option hover, pivotal definition | PO-26 / CR-07, OPD-002 |
+| R01-7 | R01 §7 | S | Academic English labels, Title Case | PO-3: UI language is Vietnamese; identifiers stay English. Tone and no-grading rules remain. |
+| R01-8.3 | R01 §8.3 | U | `student_analysis` (optional) | D4-13 |
+| F05-1.3 | F05 §1.3 | U | form label colour; variable names | CR-15: R01 §6.1 differs; CR-16: Figma names differ |
+| F05-1.4 | F05 §1.4 | U | font, type scale, spacing, radius, logo, badge weight | CR-01..CR-04, CR-09, CR-13 |
+| F05-DES002 | F05 DES-002 | U | button size set | CR-12 |
+| F05-DES007 | F05 DES-007 | U | 60% canvas split | CR-18: P1 §4, R01 §5 use 65/35 |
+| F05-DES009 | F05 DES-009 | U | stepper step styling | CR-14: GDS §6.3 differs |
+| F05-DES010 | F05 DES-010 | U | "Confirm & Continue" after selection | Open item 2/3: P2 §1 advances immediately |
+| F05-DES011 | F05 DES-011 | U | unchosen alternatives; 10–2000-character reasoning; Challenge entry | Open item 1/3; OPD-002; open item 3/3 |
+| SA-4 | SA §4 | U | `max-w-7xl`; slate palette | Conflicts with R01 §5, GDS §2 |
+| SA-8 | SA §8 | U | links to a local machine path (do not resolve) | Fix in step 4 (Q11) |
+| ST-0 | ST (whole file) | S | Stitch prompt generation | PO-22: Stitch retired; Figma is the design reference. Brief kept as reference. |
+| P0-0 | P0 §0 Layout | U | brand mark in a 28px square | CR-09: P0 §1 says text only |
+| P0-1-layout | P0 §1 Hierarchy & Layout | U | wordmark text only, no logo mark | CR-09 |
+| P0-1-student | P0 §1 Student Nav Items | U | students arrive at a case route directly | OPD-001 |
+| P1-4-layout | P1 §4 Layout (Branching) | U | ~65% / ~35% split | CR-18 |
+| P1-4-actions | P1 §4 Actions | U | Approve enabled from `DRAFT` | D4-04′ |
+| P2-1-ctx | P2 §1 User & Context | U | access via a direct link | OPD-001 |
+| P2-1-layout | P2 §1 Layout | U | selection advances immediately | Open item 2/3: F05 DES-010 differs |
+| P2-1b-layout | P2 §1b Layout | S+U | optional reasoning / "key moments" | PO-26 / OPD-002, D-06 |
+| P2-1b-flow | P2 §1b Flow | S+U | "optional per node" / pivotal definition; Challenge from REVIEW | PO-26 / OPD-002; open item 3/3 |
+| P2-3-states | P2 §3 States | U | Challenge skipped "from the Branching Case Player" | Open item 3/3 |
+| P4-1 | P4 §1 Layout | U | optional `student_analysis` | D4-13 |
+| FND-1.1 | FND §1.1 | S | "Product Direction V2" as a governance source | PO-24: no such document; the authority is Proposal V1.2 |
+
+PO-26 effect (used by S entries above): reasoning is **mandatory for pivotal decisions** in Journey Review, after the journey ends — not mid-flow and not on every decision.
+
+### 0.5. Document Inventory
+
+| Document | Status | Role | Authority scope |
+|---|---|---|---|
+| `GLOBAL-DESIGN-SYSTEM.md` | §0 Approved; §1–§8 Unknown | Normative | Source map; token meaning, components, patterns |
+| `.agents/rules/01-ui-design-standards.md` | Unknown | Normative (transitional) | AI working rules |
+| `docs/05_FIGMA.md` | Unknown | Normative | Design backlog and acceptance criteria |
+| `screens/P0`–`P4` | Unknown | Normative | Per-screen layout and states |
+| `SITE-ARCHITECTURE.md` | Unknown | Informative | — |
+| `STITCH-GENERATION-GUIDELINES.md` | Retired (PO-22) | Reference | — |
+
+All: Owner Design System Maintainer (not assigned) · Approver Product Owner.
 
 ---
 
