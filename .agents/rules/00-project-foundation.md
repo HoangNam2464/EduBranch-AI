@@ -26,6 +26,9 @@ trigger: always_on
   - **LLM Providers**: Google Gemini 2.0 Flash / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`)
 
 ### 1.1. Core Pedagogical Model
+
+> **SUPERSEDED [FND-1.1]** — item 2: "Product Direction V2" is not a source; Proposal V1.2 is (PO-24).
+
 1. **Experiential Case-Based Learning**: EduBranch-AI immerses university students into realistic multi-branch decision-making scenarios (`Branching Study`) and open analytical problems (`Review Study`) grounded in the lecturer's actual course materials (Business, Law, Medicine, Management, Engineering, etc.).
 2. **Independent Project Governance**: All requirements, sprint backlogs (4 Sprints / 84 Tasks / 336 SP), schemas, and features derive strictly from **`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`** (Proposal V1.2) and Product Direction V2. Never import K-12 concepts, lesson planners, quiz generators, or external reference business logic.
 
@@ -191,4 +194,4 @@ docs/<topic>             →  develop
 
 - **Backend Gateway (`backend/`)**: NestJS modular architecture (`auth/`, `user/`, `course/`, `material/`, `case/`, `branching-attempt/`, `reasoning/`, `challenge-support/`, `review-study/`, `lecturer-feedback/`, `statistics/`, `evaluation/`, `notification/`, `common/`). Mandatory `class-validator` DTOs; never return raw DB entities.
 - **AI Service (`ai-service/`)**: FastAPI domain packages (`core/`, `providers/`, `ingestion/`, `retrieval/`, `generation/`, `challenge_support/`, `evaluation/`). Always route LLM calls through `providers/factory.py`; strict Pydantic v2 schemas.
-- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI strictly governed by `.agents/rules/01-ui-design-standards.md` and `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI governed by the sources in `docs/design/GLOBAL-DESIGN-SYSTEM.md` §0 (AI rule: `.agents/rules/01-ui-design-standards.md`).
