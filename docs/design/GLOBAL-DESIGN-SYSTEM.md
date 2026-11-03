@@ -73,6 +73,7 @@ S = SUPERSEDED · U = UNRESOLVED · S+U = mixed. "Open item n/3" = `[CHƯA-QUY�
 | GDS-6.6 | GDS §6.6 | S+U | optional reasoning textarea / pivotal definition, blocking, minimum length | PO-26 / OPD-002 |
 | GDS-6.7 | GDS §6.7 | U | note on what alternatives would have led to | Open item 1/3 |
 | GDS-7 | GDS §7 | U | "all pairs meet WCAG AA" | CR-06: not verified; 2.54:1 and 4.41:1 measured |
+| R01-hdr | R01 header | U | Figma-First mandate: Figma link / F05 as "Single Source of Truth" | GDS §0.1: Figma is a visual reference, not an authority for product requirements or business behaviour. Record the conflict and ask the PO. Not closed. |
 | R01-2.5 | R01 §2.5 | U | published cases reached "via direct link" | OPD-001 (PO-25) |
 | R01-3 | R01 §3 | U | 16px sidebar icons; brand wordmark | CR-08, CR-09 |
 | R01-4 | R01 §4 | U | type scale, font stack, spacing, radius | CR-01..CR-04: GDS §3–4, F05 §1.4 differ |

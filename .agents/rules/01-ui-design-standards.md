@@ -14,6 +14,8 @@ trigger: always_on
 > - Các task trong Sprint Backlog (`01_MASTER-TASKS.md` / `02_SPRINT-TASKS.md`) chỉ tập trung đặc tả các **tính năng nghiệp vụ chính**, còn các trang nền tảng/bao quanh như **Trang Giới thiệu (`/` — Landing Page)**, **Đăng nhập (`/login`)**, **Đăng ký (`/register`)**, **Khung điều hướng (`LecturerLayout`, `StudentLayout`, `PublicLayout`)**, **Quản lý Học phần (`/lecturer/courses` & Modals)**, **Thống kê (`/lecturer/statistics`)** và **Trang lỗi (`403` / `404`)** không có mã task riêng lẻ.
 > - Do đó, **Link Figma chuẩn của dự án (đặc tả toàn diện tại `docs/05_FIGMA.md`) là khuôn mẫu gốc duy nhất (Single Source of Truth)** cho toàn bộ các trang này. Giao diện Frontend có sẵn hiện tại trong `frontend/src/` chỉ là khung tạm thời và sẽ được đập đi xây dựng lại 100% theo đúng bản thiết kế thống nhất trên Figma.
 
+> **UNRESOLVED [R01-hdr]** — mandate above calls Figma/F05 the Single Source of Truth; GDS §0.1: Figma is visual reference only, approving no business rule. On conflict, record it, ask the PO, pick no source.
+
 ---
 
 ## 1. Core Aesthetic Mandate & 7 Strict Anti-"AI-Slop" Rules
