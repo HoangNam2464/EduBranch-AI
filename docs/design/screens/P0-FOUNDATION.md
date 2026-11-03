@@ -49,6 +49,9 @@ Zero dark-mode hero sections, zero glowing purple/indigo gradients, zero 3D robo
 Provides the persistent frame (sidebar/nav + content area) that every authenticated screen renders inside. Two distinct shells exist — `LecturerLayout` and `StudentLayout` — plus a minimal `PublicLayout` for `/login` and `/register`.
 
 ### User & Context
+
+> **UNRESOLVED [P0-1-ctx]** — students "deep-link … from an external LMS" is open (OPD-001). Stop and ask the PO.
+
 - **Lecturer** sees `LecturerLayout`: full management nav (Courses, Statistics) plus contextual sub-nav once inside a course (Materials, Cases, Review, Feedback).
 - **Student** sees `StudentLayout`: a lighter nav, since students mostly deep-link into a specific case from an external LMS/course link rather than browsing a dashboard — case is a required route param on every student route (`SITE-ARCHITECTURE.md §5.3`).
 - **When used**: On every authenticated screen; this is the persistent frame, not a standalone route.

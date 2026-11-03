@@ -107,6 +107,9 @@ No AI grading or scoring of the reflection text (`FEATURE-REFLECTION.md §4` —
 ## 3. AI Reasoning / Challenge Support (`/student/cases/:caseId/challenge/:sessionId`)
 
 ### Purpose & Function
+
+> **UNRESOLVED [P2-3-purpose]** — entry "from the Branching Case Player" is undecided [CHƯA-QUYẾT — chưa có mã]. Stop and ask the PO.
+
 Optional, cross-mode Socratic challenge on a piece of submitted reasoning — probes assumptions/trade-offs via targeted counter-questions, capped at 2 rounds, never grades (`FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md`). In P2 this is entered from the Branching Case Player (§1); the same screen also serves Review Study (`FEATURE-REVIEW-STUDY.md`), but that entry path is documented in `P4-review-study.md`.
 
 ### Layout

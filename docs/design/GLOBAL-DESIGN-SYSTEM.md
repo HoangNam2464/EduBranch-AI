@@ -52,6 +52,7 @@
 - `SUPERSEDED [ID]` — replaced by an approved PO decision; the banner states the replacement. `UNRESOLVED [ID]` — sources conflict or the decision is open: **not current guidance; stop and ask the PO.**
 - One insertion point = one banner block = one §0.4 entry with the same ID. A mixed block has two lines: SUPERSEDED first, UNRESOLVED second.
 - Scope: the topics the banner names, from the banner to the next heading of the same or higher level; a banner naming no topic covers the whole section. Banners override the file header Status.
+- Placement: new banners go under the nearest heading above the statement they govern.
 - Content under a banner stays as history; it is not current guidance.
 
 ### 0.4. Register of Inactive Statements
@@ -60,6 +61,7 @@ S = SUPERSEDED · U = UNRESOLVED · S+U = mixed. "Open item n/3" = `[CHƯA-QUY�
 
 | ID | Section | Type | Inactive statement | Replaced by / pending |
 |---|---|---|---|---|
+| GDS-2 | GDS §2 | S | "final hex values, locked for Phase 2" | §0.1, §0.2: values provisional |
 | GDS-2.2 | GDS §2.2 | U | `text-muted` for helper captions | CR-05: conflicts with §3.3, R01 §6.1; 2.54:1 on white |
 | GDS-2.3 | GDS §2.3 | U | `border-strong` as option-card hover | CR-07: R01 §6.2 differs |
 | GDS-3.1 | GDS §3.1 | U | font family, type scale | CR-01, CR-02: R01 §4.1 differs |
@@ -92,7 +94,12 @@ S = SUPERSEDED · U = UNRESOLVED · S+U = mixed. "Open item n/3" = `[CHƯA-QUY�
 | SA-4 | SA §4 | U | `max-w-7xl`; slate palette | Conflicts with R01 §5, GDS §2 |
 | SA-8 | SA §8 | U | links to a local machine path (do not resolve) | Fix in step 4 (Q11) |
 | ST-0 | ST (whole file) | S | Stitch prompt generation | PO-22: Stitch retired; Figma is the design reference. Brief kept as reference. |
+| ST-1 | ST §1 | S | nine-field brief | PO-22 |
+| ST-2 | ST §2 | S | prompt template | PO-22 |
+| ST-3 | ST §3 | S | "mandatory" prompt terminology | PO-22 |
+| ST-4 | ST §4 | S | prompts per screen file | PO-22 |
 | P0-0 | P0 §0 Layout | U | brand mark in a 28px square | CR-09: P0 §1 says text only |
+| P0-1-ctx | P0 §1 User & Context | U | deep-link from an external LMS | OPD-001 |
 | P0-1-layout | P0 §1 Hierarchy & Layout | U | wordmark text only, no logo mark | CR-09 |
 | P0-1-student | P0 §1 Student Nav Items | U | students arrive at a case route directly | OPD-001 |
 | P1-4-layout | P1 §4 Layout (Branching) | U | ~65% / ~35% split | CR-18 |
@@ -101,6 +108,7 @@ S = SUPERSEDED · U = UNRESOLVED · S+U = mixed. "Open item n/3" = `[CHƯA-QUY�
 | P2-1-layout | P2 §1 Layout | U | selection advances immediately | Open item 2/3: F05 DES-010 differs |
 | P2-1b-layout | P2 §1b Layout | S+U | optional reasoning / "key moments" | PO-26 / OPD-002, D-06 |
 | P2-1b-flow | P2 §1b Flow | S+U | "optional per node" / pivotal definition; Challenge from REVIEW | PO-26 / OPD-002; open item 3/3 |
+| P2-3-purpose | P2 §3 Purpose | U | entry from the Branching Case Player | Open item 3/3 |
 | P2-3-states | P2 §3 States | U | Challenge skipped "from the Branching Case Player" | Open item 3/3 |
 | P4-1 | P4 §1 Layout | U | optional `student_analysis` | D4-13 |
 | FND-1.1 | FND §1.1 | S | "Product Direction V2" as a governance source | PO-24: no such document; the authority is Proposal V1.2 |
@@ -139,6 +147,8 @@ The retired `.stitch/DESIGN.md` specified a near-black theme (`#0d0d10`/`#16161a
 ---
 
 ## 2. Color System
+
+> **SUPERSEDED [GDS-2]** — "final hex values, locked for Phase 2" is void: values are provisional, not Ready for Dev (§0.1, §0.2).
 
 All colors are final hex values, locked for Phase 2. Token names are the Tailwind-style names to use in code (`bg-canvas`, `text-primary`, etc.) — see §2.8 for the Tailwind config mapping.
 

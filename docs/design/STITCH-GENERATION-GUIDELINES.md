@@ -1,14 +1,16 @@
  EduBranch AI — Stitch Generation Guidelines
 
+> **SUPERSEDED [ST-0]** — Stitch is retired (PO-22); Figma is the design reference. Do not write Stitch prompts from this file. The whole file, including the nine-field brief and the terminology table, is kept as reference only and is not current guidance.
+
 > **Status**: Retired (PO-22) · **Role**: Reference · **Owner**: Design System Maintainer (not assigned) · **Approver**: Product Owner · **Superseded by**: Figma as the design reference (PO-22) · **Source map**: [`GLOBAL-DESIGN-SYSTEM.md` §0](GLOBAL-DESIGN-SYSTEM.md)
 > **Purpose**: Every Stitch prompt written for any EduBranch AI screen (P0–P4) must be assembled using the nine fields below, in order. This keeps generation grounded in approved product behavior instead of improvising UI or functionality.
 > **Source**: `UX-REDESIGN-DISCOVERY-AUDIT.md` §I, generalized from one screen to the full product.
 
-> **SUPERSEDED [ST-0]** — Stitch is retired (PO-22); Figma is the design reference. Do not write Stitch prompts from this file. The whole file, including the nine-field brief and the terminology table, is kept as reference only and is not current guidance.
-
 ---
 
 ## 1. The Nine Fields
+
+> **SUPERSEDED [ST-1]** — retired (PO-22): not a template or instruction.
 
 Every prompt states all nine. If a field is genuinely not applicable to a given screen, write "N/A — [reason]" rather than omitting it silently, so the omission is traceable.
 
@@ -56,6 +58,8 @@ Explicit exclusions for this screen, drawn from the relevant feature doc's "Excl
 ---
 
 ## 2. Prompt Template
+
+> **SUPERSEDED [ST-2]** — retired (PO-22): not a template or instruction.
 
 ```
 # Stitch Prompt: <Screen Name> (<route>)
@@ -105,6 +109,8 @@ SOURCE / OBSERVATION / RECOMMENDATION — or omit this section entirely.
 
 ## 3. Current Terminology (mandatory — do not use retired terms in any prompt)
 
+> **SUPERSEDED [ST-3]** — retired (PO-22): not a template or instruction.
+
 | Use this | Never this |
 |---|---|
 | Student Reasoning / Reasoning | Argument, Student Argument |
@@ -122,6 +128,8 @@ The internal "Start Design" tooling screen ([`SITE-ARCHITECTURE.md §7`](SITE-AR
 ---
 
 ## 4. Screen Index
+
+> **SUPERSEDED [ST-4]** — retired (PO-22): not a template or instruction.
 
 Prompts should be written per the priority grouping already established in `docs/design/screens/`:
 - [`P0-FOUNDATION.md`](screens/P0-FOUNDATION.md) — app shell (`LecturerLayout` 240px sidebar, `StudentLayout` 56px top bar, `PublicLayout`), auth (`/login`, `/register`), core component library
