@@ -2,6 +2,7 @@ import {
   Injectable,
   UnauthorizedException,
   ConflictException,
+  NotFoundException,
   Logger,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -11,6 +12,7 @@ import { LoginDto } from "./dto/login.dto";
 import { JwtPayload, AuthResponse } from "./auth.types";
 import * as bcrypt from "bcrypt";
 import { randomUUID } from "crypto";
+import { devLoginEmailFor, isDevLoginEnabled } from "./dev-login";
 
 const BCRYPT_ROUNDS = 12;
 const JWT_EXPIRES_IN_SECONDS = 60 * 60 * 8; // 8 hours
@@ -69,6 +71,23 @@ export class AuthService {
 
     this.logger.log(`User logged in: ${user.email}`);
     return this._buildAuthResponse(user);
+  }
+
+  /** Local-development quick login; see dev-login.ts for every condition. */
+  async devLogin(role: unknown): Promise<AuthResponse> {
+    const email = isDevLoginEnabled() ? devLoginEmailFor(role) : null;
+    if (!email) {
+      throw new NotFoundException();
+    }
+    const result = await this.db.query(
+      "SELECT id, email, full_name, role FROM users WHERE email = $1 AND role = $2",
+      [email, role],
+    );
+    if (result.rows.length === 0) {
+      throw new NotFoundException();
+    }
+    this.logger.warn(`Dev quick login used for ${role} account`);
+    return this._buildAuthResponse(result.rows[0]);
   }
 
   async validateToken(payload: JwtPayload): Promise<{ id: string; email: string; fullName: string; role: string }> {

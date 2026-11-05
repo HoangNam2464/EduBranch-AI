@@ -47,6 +47,20 @@ export class AuthController {
     };
   }
 
+  /** Local development only (404 otherwise). See dev-login.ts. */
+  @Public()
+  @UseGuards(RateLimiterGuard)
+  @RateLimit()
+  @Post("dev-login")
+  @HttpCode(HttpStatus.OK)
+  async devLogin(@Body() body: { role?: string }) {
+    const result = await this.authService.devLogin(body?.role);
+    return {
+      status: "SUCCESS",
+      data: result,
+    };
+  }
+
   @Get("me")
   async getProfile(@CurrentUser() user: { id: string; email: string; role: string }) {
     const profile = await this.authService.validateToken({ sub: user.id } as any);
