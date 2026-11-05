@@ -3,6 +3,7 @@ import { ValidationPipe } from "@nestjs/common";
 import { AppModule } from "./app.module";
 import { JwtAuthGuard } from "./modules/auth/jwt-auth.guard";
 import { RolesGuard } from "./modules/auth/guards/roles.guard";
+import { PgErrorFilter } from "./common/database/pg-error.filter";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -22,6 +23,9 @@ async function bootstrap() {
   // Global guards — JWT authentication by default, followed by Role-based authorization
   const reflector = app.get(Reflector);
   app.useGlobalGuards(new JwtAuthGuard(reflector), new RolesGuard(reflector));
+
+  // Client-caused database errors (bad UUID, FK, unique) become 4xx instead of 500
+  app.useGlobalFilters(new PgErrorFilter());
 
   // Enable CORS
   const corsOrigins = process.env.CORS_ALLOWED_ORIGINS
