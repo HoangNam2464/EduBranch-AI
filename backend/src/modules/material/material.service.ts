@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  ForbiddenException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException, ConflictException } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
 import { MinioService } from "../../common/minio/minio.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
@@ -16,6 +10,13 @@ const ALLOWED_MIME_TYPES = new Set([
 ]);
 
 const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+
+/** Material row as sent to clients: the internal MinIO object key stays on the server (WP-8 F6). */
+function toClient<T extends Record<string, any>>(row: T): Omit<T, "stored_object_key"> {
+  if (!row) return row;
+  const { stored_object_key: _key, ...rest } = row;
+  return rest;
+}
 
 @Injectable()
 export class MaterialService {
@@ -112,7 +113,7 @@ export class MaterialService {
          RETURNING *`,
         [aiResult.chunk_count, materialId],
       );
-      return updateRes.rows[0];
+      return toClient(updateRes.rows[0]);
     } catch (err: any) {
       this.logger.error(`AI processing error for material ${materialId}:`, err);
       const updateRes = await this.db.query(
@@ -124,7 +125,7 @@ export class MaterialService {
          RETURNING *`,
         [err.message || "AI ingestion failed", materialId],
       );
-      return updateRes.rows[0];
+      return toClient(updateRes.rows[0]);
     }
   }
 
@@ -163,7 +164,7 @@ export class MaterialService {
   async getMaterialsByCourse(courseId: string, lecturerId: string) {
     await this.assertCourseOwner(courseId, lecturerId);
     const res = await this.db.query(
-      `SELECT id, original_filename, stored_object_key, mime_type, size_bytes,
+      `SELECT id, original_filename, mime_type, size_bytes,
               course_id, uploaded_by, processing_status, chunk_count, processing_error,
               uploaded_at, updated_at
        FROM teaching_materials
@@ -175,7 +176,7 @@ export class MaterialService {
   }
 
   async getMaterialById(materialId: string, lecturerId: string) {
-    return this.getOwnedMaterial(materialId, lecturerId);
+    return toClient(await this.getOwnedMaterial(materialId, lecturerId));
   }
 
   /**
@@ -201,13 +202,18 @@ export class MaterialService {
     if (material.processing_status === "COMPLETED") {
       throw new BadRequestException("Material is already processed");
     }
-    await this.db.query("DELETE FROM document_chunks WHERE material_id = $1", [materialId]);
-    await this.db.query(
+    // Claim the material atomically so two parallel calls cannot ingest it twice (WP-8 F5).
+    const claim = await this.db.query(
       `UPDATE teaching_materials
-       SET processing_status = 'PENDING', processing_error = NULL, chunk_count = 0, updated_at = NOW()
-       WHERE id = $1`,
+       SET processing_status = 'PROCESSING', processing_error = NULL, chunk_count = 0, updated_at = NOW()
+       WHERE id = $1 AND processing_status IN ('FAILED', 'PENDING')
+       RETURNING id`,
       [materialId],
     );
+    if (!claim.rows || claim.rows.length === 0) {
+      throw new ConflictException("Material is already being processed");
+    }
+    await this.db.query("DELETE FROM document_chunks WHERE material_id = $1", [materialId]);
     try {
       const aiResult = await this.aiClient.processMaterial({
         material_id: materialId,
@@ -221,7 +227,7 @@ export class MaterialService {
          WHERE id = $2 RETURNING *`,
         [aiResult.chunk_count, materialId],
       );
-      return res.rows[0];
+      return toClient(res.rows[0]);
     } catch (err: any) {
       this.logger.error(`AI reprocessing error for material ${materialId}:`, err);
       const res = await this.db.query(
@@ -230,7 +236,7 @@ export class MaterialService {
          WHERE id = $2 RETURNING *`,
         [err?.message || "AI ingestion failed", materialId],
       );
-      return res.rows[0];
+      return toClient(res.rows[0]);
     }
   }
 

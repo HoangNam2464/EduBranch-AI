@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 
 from app.core.config import settings
 from app.core.logging import configure_logging, logger
+from app.providers.factory import active_provider_name
 
 
 @asynccontextmanager
@@ -72,6 +73,7 @@ async def health():
         "service": settings.app_name,
         "version": settings.app_version,
         "provider": settings.ai_provider,
+        "active_provider": active_provider_name(),
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 

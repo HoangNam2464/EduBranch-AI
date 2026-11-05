@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     app_name: str = "EduBranch AI - FastAPI AI Service"
     app_version: str = "0.0.1"
     debug: bool = False
+    # development | test | production. In production the offline demo provider is never used as a
+    # silent fallback: a missing LLM key is an error (WP-8 finding F2).
+    app_env: Literal["development", "test", "production"] = "development"
 
     # =========================================================================
     # Security — Internal API Key

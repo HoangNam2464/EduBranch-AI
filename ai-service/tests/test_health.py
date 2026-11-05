@@ -19,3 +19,4 @@ async def test_health():
     assert data["status"] == "UP"
     assert "service" in data
     assert "version" in data
+    assert data["active_provider"] in ("local-demo", "unconfigured", "gemini", "openai")

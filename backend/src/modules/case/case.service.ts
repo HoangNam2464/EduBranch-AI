@@ -267,10 +267,10 @@ export class CaseService {
                 const optText = option.option_text || option.text;
                 // Ownership: the option must belong to a node of THIS case. Never trust node.id from the body alone.
                 await client.query(
-                  `UPDATE case_options o SET option_text = $1, consequence = $2
+                  `UPDATE case_options o SET option_text = COALESCE($1, o.option_text), consequence = COALESCE($2, o.consequence)
                    FROM case_nodes n
                    WHERE o.id = $3 AND o.node_id = $4 AND n.id = o.node_id AND n.case_id = $5`,
-                  [optText, option.consequence, option.id, node.id, caseId],
+                  [optText ?? null, option.consequence ?? null, option.id, node.id, caseId],
                 );
               }
             }

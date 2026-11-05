@@ -178,6 +178,7 @@ describe("MaterialController", () => {
       const res = await controller.getMaterialById("mat-1", owner);
       expect(res.data.id).toBe("mat-1");
       expect((res.data as any).lecturer_id).toBeUndefined();
+      expect((res.data as any).stored_object_key).toBeUndefined();
 
       mockDb.query.mockResolvedValueOnce({ rows: [row] });
       await expect(controller.getMaterialById("mat-1", other)).rejects.toThrow("own courses");
@@ -204,22 +205,30 @@ describe("MaterialController", () => {
       expect(mockDb.query).toHaveBeenCalledTimes(1);
     });
 
-    it("reprocessMaterial clears chunks and records COMPLETED on success", async () => {
+    it("reprocessMaterial claims the row, clears chunks and records COMPLETED on success", async () => {
       mockDb.query
         .mockResolvedValueOnce({ rows: [row] })
-        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: "mat-1" }] })
         .mockResolvedValueOnce({ rows: [] })
         .mockResolvedValueOnce({ rows: [{ ...row, processing_status: "COMPLETED", chunk_count: 3 }] });
       mockAiClient.processMaterial.mockResolvedValueOnce({ chunk_count: 3 });
       const res = await controller.reprocessMaterial("mat-1", owner);
-      expect(mockDb.query.mock.calls[1][0]).toContain("DELETE FROM document_chunks");
+      expect(mockDb.query.mock.calls[1][0]).toContain("processing_status IN ('FAILED', 'PENDING')");
+      expect(mockDb.query.mock.calls[2][0]).toContain("DELETE FROM document_chunks");
       expect(res.data.processing_status).toBe("COMPLETED");
+      expect((res.data as any).stored_object_key).toBeUndefined();
+    });
+
+    it("reprocessMaterial returns 409 when another call already claimed the material", async () => {
+      mockDb.query.mockResolvedValueOnce({ rows: [{ ...row, processing_status: "PROCESSING" }] }).mockResolvedValueOnce({ rows: [] });
+      await expect(controller.reprocessMaterial("mat-1", owner)).rejects.toThrow("already being processed");
+      expect(mockAiClient.processMaterial).not.toHaveBeenCalled();
     });
 
     it("reprocessMaterial records FAILED when ingestion fails again", async () => {
       mockDb.query
         .mockResolvedValueOnce({ rows: [row] })
-        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: "mat-1" }] })
         .mockResolvedValueOnce({ rows: [] })
         .mockResolvedValueOnce({ rows: [{ ...row, processing_status: "FAILED" }] });
       mockAiClient.processMaterial.mockRejectedValueOnce(new Error("AI down"));

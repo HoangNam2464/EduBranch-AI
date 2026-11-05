@@ -6,7 +6,7 @@ from typing import Any
 
 from app.core.config import settings
 from app.core.logging import logger
-from app.providers.factory import get_provider, has_real_provider_key
+from app.providers.factory import get_provider, local_demo_active
 from app.generation.demo_case import build_demo_case
 from app.retrieval.service import retrieve_chunks, build_rag_context
 from app.generation.schemas.requests import CaseGenerationRequest, CaseGenerationResponse
@@ -40,7 +40,7 @@ async def generate_case(request: CaseGenerationRequest) -> CaseGenerationRespons
     source_chunk_ids = [c.chunk_id for c in chunks]
 
     # 2. Real generation needs an API key; otherwise build an offline demo case from the context
-    has_api_key = has_real_provider_key()
+    has_api_key = not local_demo_active()  # get_provider() raises in production without a key
 
     prompt = f"""
 Topic Hint: {query}
