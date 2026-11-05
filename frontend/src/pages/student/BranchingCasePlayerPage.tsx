@@ -7,56 +7,61 @@
  * 3. NO consequence card mid-flow (consequences are revealed ONLY in REVIEW phase).
  * 4. No fixed decision count: case length is dynamic and determined by case content.
  * 5. Reaching a terminal node transitions automatically to the REVIEW phase.
+ *
+ * Data: backend branching-attempts API. The backend never sends next_node_id or
+ * consequences for the current node (P0-SEC-02).
  */
 
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCaseStudyStore, SAMPLE_BRANCHING_CASE } from "../../stores/caseStudyStore";
+import { branchingAttemptService, AttemptDetail, AttemptOption } from "../../services/branchingAttemptService";
+
+function errorMessage(err: any): string {
+  const status = err?.response?.status;
+  if (status === 403) return "Bạn không có quyền truy cập tình huống này, hoặc tình huống chưa được xuất bản.";
+  if (status === 404) return "Không tìm thấy tình huống.";
+  return "Không tải được tình huống. Vui lòng thử lại.";
+}
 
 export function BranchingCasePlayerPage() {
-  const { caseId = "case-business-crisis-1" } = useParams();
+  const { caseId = "" } = useParams();
   const navigate = useNavigate();
 
-  const {
-    currentAttempt,
-    currentNodeId,
-    initBranchingAttempt,
-    selectBranchingOption,
-  } = useCaseStudyStore();
+  const [attempt, setAttempt] = useState<AttemptDetail | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const load = useCallback(async () => {
+    setError(null);
+    try {
+      // Resume the latest unfinished attempt; otherwise start a new one.
+      const attempts = await branchingAttemptService.getAttemptsByCase(caseId);
+      const open = attempts.find((a) => !a.isCompleted);
+      const detail = open
+        ? await branchingAttemptService.getAttempt(open.id)
+        : await branchingAttemptService.startAttempt(caseId);
+      setAttempt(detail);
+    } catch (err) {
+      setError(errorMessage(err));
+    }
+  }, [caseId]);
 
   useEffect(() => {
-    initBranchingAttempt(caseId);
-  }, [caseId, initBranchingAttempt]);
+    load();
+  }, [load]);
 
-  const caseData = SAMPLE_BRANCHING_CASE;
-  const currentNode = caseData.nodes[currentNodeId as keyof typeof caseData.nodes] || caseData.nodes.N1;
-  const attempt = currentAttempt;
-
-  const handleSelectOption = (opt: {
-    id: string;
-    text: string;
-    consequence: string;
-    nextNodeId: string | null;
-  }) => {
-    const nextNode = opt.nextNodeId
-      ? caseData.nodes[opt.nextNodeId as keyof typeof caseData.nodes]
-      : null;
-
-    const otherOptions = currentNode.options
-      .filter((o) => o.id !== opt.id)
-      .map((o) => ({ id: o.id, text: o.text }));
-
-    selectBranchingOption(
-      currentNode.id,
-      currentNode.situation,
-      opt.id,
-      opt.text,
-      opt.consequence,
-      otherOptions,
-      opt.nextNodeId,
-      nextNode?.isTerminal ?? true,
-      nextNode?.outcomeText
-    );
+  const handleSelectOption = async (option: AttemptOption) => {
+    if (!attempt?.currentNode || submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const next = await branchingAttemptService.chooseOption(attempt.id, attempt.currentNode.id, option.id);
+      setAttempt(next);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleGoToReview = () => {
@@ -64,22 +69,31 @@ export function BranchingCasePlayerPage() {
     navigate(`/student/cases/${caseId}/attempt/${attempt.id}/review`);
   };
 
+  if (error && !attempt) {
+    return (
+      <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
+        <h3 className="text-base font-bold text-gray-800 mb-2">Không mở được tình huống</h3>
+        <p className="text-sm text-gray-600 mb-4">{error}</p>
+        <button onClick={load} className="btn-primary">Thử lại</button>
+      </div>
+    );
+  }
+
   if (!attempt) {
     return <div className="p-8 text-center text-gray-500">Đang chuẩn bị tình huống học tập...</div>;
   }
 
   // Terminal State (End of Journey)
-  if (currentNode.isTerminal || attempt.isCompleted) {
+  if (attempt.isCompleted || !attempt.currentNode) {
     return (
       <div className="space-y-6">
-        {/* Banner */}
         <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
             <div>
               <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded">
                 Chế độ A: Branching Study · Lần thử #{attempt.attemptNumber}
               </span>
-              <h2 className="text-xl font-bold text-gray-900 mt-2">{caseData.title}</h2>
+              <h2 className="text-xl font-bold text-gray-900 mt-2">{attempt.caseTitle}</h2>
             </div>
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
               Hoàn thành hành trình
@@ -91,7 +105,7 @@ export function BranchingCasePlayerPage() {
               🏁 Điểm kết thúc hành trình của bạn:
             </h3>
             <p className="text-base text-gray-900 leading-relaxed font-medium mb-3">
-              Bạn đã đi đến điểm kết thúc của hành trình này.
+              Bạn đã đi đến điểm kết thúc sau {attempt.steps.length} quyết định.
             </p>
             <p className="text-sm text-gray-700 bg-white p-4 rounded border border-gray-200 leading-relaxed">
               Kết quả chi tiết và hệ quả của các lựa chọn sẽ được mở trong giai đoạn REVIEW.
@@ -103,8 +117,8 @@ export function BranchingCasePlayerPage() {
               Giai đoạn tiếp theo: HỒI TƯỞNG & PHÂN TÍCH (REVIEW)
             </h4>
             <p className="text-xs text-blue-800 leading-relaxed">
-              Bạn vừa hoàn thành chuỗi quyết định thực tế. Bây giờ, hãy xem lại toàn bộ lộ trình bạn đã đi,
-              khám phá các hệ quả đằng sau từng lựa chọn và giải trình tư duy cho các quyết định trọng yếu.
+              Hãy xem lại toàn bộ lộ trình bạn đã đi, khám phá hệ quả đằng sau từng lựa chọn và giải trình tư duy
+              cho các quyết định trọng yếu.
             </p>
           </div>
 
@@ -122,12 +136,11 @@ export function BranchingCasePlayerPage() {
     );
   }
 
-  // Active Decision Point in Experience Phase
+  const currentNode = attempt.currentNode;
   const decisionCount = attempt.steps.length + 1;
 
   return (
     <div className="space-y-6">
-      {/* Top Header Card */}
       <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
           <div>
@@ -135,12 +148,10 @@ export function BranchingCasePlayerPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded">
                 Chế độ A: Branching Study (Trải nghiệm quyết định liên tục)
               </span>
-              <span className="text-xs font-medium text-gray-500">
-                Lần thử #{attempt.attemptNumber}
-              </span>
+              <span className="text-xs font-medium text-gray-500">Lần thử #{attempt.attemptNumber}</span>
             </div>
-            <h2 className="text-lg font-bold text-gray-900 mt-2">{caseData.title}</h2>
-            <p className="text-xs text-gray-500">{caseData.courseName}</p>
+            <h2 className="text-lg font-bold text-gray-900 mt-2">{attempt.caseTitle}</h2>
+            {attempt.caseDescription && <p className="text-xs text-gray-500">{attempt.caseDescription}</p>}
           </div>
           <div className="text-right">
             <span className="text-xs font-bold text-gray-500 block uppercase">Tiến trình</span>
@@ -150,27 +161,18 @@ export function BranchingCasePlayerPage() {
           </div>
         </div>
 
-        {/* Situation / Context Box */}
-        <div className="space-y-4">
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-5">
-            <div className="flex items-center space-x-2 mb-2">
-              <span className="w-2 h-2 rounded-full bg-blue-600"></span>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                Tình huống thực tế hiện tại
-              </h3>
-            </div>
-            <p className="text-base text-gray-900 leading-relaxed">{currentNode.situation}</p>
+        <div className="bg-slate-50 border border-slate-200 rounded-lg p-5">
+          <div className="flex items-center space-x-2 mb-2">
+            <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700">Tình huống thực tế hiện tại</h3>
           </div>
-
-          {currentNode.contextData && (
-            <div className="bg-amber-50/70 border border-amber-200/80 rounded-lg p-3 text-xs text-amber-900 flex items-start space-x-2">
-              <span className="font-bold">📊 Dữ liệu bối cảnh:</span>
-              <span>{currentNode.contextData}</span>
-            </div>
-          )}
+          <p className="text-base text-gray-900 leading-relaxed whitespace-pre-wrap">{currentNode.situation}</p>
         </div>
 
-        {/* Decision Options */}
+        {error && (
+          <div className="mt-4 p-3 rounded-lg border border-red-200 bg-red-50 text-xs text-red-800">{error}</div>
+        )}
+
         <div className="mt-8">
           <div className="mb-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-gray-700">
@@ -185,8 +187,9 @@ export function BranchingCasePlayerPage() {
             {currentNode.options.map((option, idx) => (
               <button
                 key={option.id}
+                disabled={submitting}
                 onClick={() => handleSelectOption(option)}
-                className="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50/30 transition-all flex items-start space-x-3 group cursor-pointer"
+                className="w-full text-left p-4 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50/30 transition-all flex items-start space-x-3 group cursor-pointer disabled:opacity-60 disabled:cursor-wait"
               >
                 <span className="w-6 h-6 rounded-full bg-gray-100 group-hover:bg-blue-600 group-hover:text-white text-gray-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 transition">
                   {idx + 1}
@@ -196,9 +199,7 @@ export function BranchingCasePlayerPage() {
                     {option.text}
                   </p>
                 </div>
-                <span className="text-gray-400 group-hover:text-blue-600 text-sm font-semibold shrink-0">
-                  Chọn →
-                </span>
+                <span className="text-gray-400 group-hover:text-blue-600 text-sm font-semibold shrink-0">Chọn →</span>
               </button>
             ))}
           </div>

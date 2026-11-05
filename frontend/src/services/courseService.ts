@@ -14,16 +14,9 @@ interface CreateCourseRequest {
 
 export const courseService = {
   async getMyCourses(): Promise<Course[]> {
-    try {
-      const res = await apiClient.get<{ status: string; data: Course[] }>("/courses/my-courses");
-      return res.data.data;
-    } catch (err: any) {
-      if (err?.response?.status === 404) {
-        const fallback = await apiClient.get<{ status: string; data: Course[] }>("/courses");
-        return fallback.data.data;
-      }
-      throw err;
-    }
+    // GET /courses returns the lecturer's own courses (backend CourseController.getMyCourses)
+    const res = await apiClient.get<{ status: string; data: Course[] }>("/courses");
+    return res.data.data;
   },
 
   async getCourseById(courseId: string): Promise<Course> {

@@ -7,46 +7,69 @@
  * 3. Consequences of choices are REVEALED HERE for the first time.
  * 4. Captures retrospective reasoning for pivotal/key decisions (not forced on every node).
  * 5. Provides link to Reflection and optional AI Challenge Support.
+ *
+ * Data: GET /branching-attempts/:id (consequences and alternatives are only returned once completed).
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCaseStudyStore, SAMPLE_BRANCHING_CASE } from "../../stores/caseStudyStore";
+import { useCaseStudyStore } from "../../stores/caseStudyStore";
+import { branchingAttemptService, AttemptDetail } from "../../services/branchingAttemptService";
+
+type SaveState = "idle" | "saving" | "saved" | "error";
 
 export function BranchingReviewPage() {
-  const { caseId = "case-business-crisis-1", attemptId } = useParams();
+  const { caseId = "", attemptId = "" } = useParams();
   const navigate = useNavigate();
+  const { initChallengeSession } = useCaseStudyStore();
 
-  const {
-    currentAttempt,
-    saveRetrospectiveReasoning,
-    initChallengeSession,
-  } = useCaseStudyStore();
+  const [attempt, setAttempt] = useState<AttemptDetail | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [reasonings, setReasonings] = useState<Record<string, string>>({});
+  const [saveState, setSaveState] = useState<Record<string, SaveState>>({});
 
-  const [reasonings, setReasonings] = useState<Record<string, string>>(() => {
-    const initial: Record<string, string> = {};
-    currentAttempt?.steps.forEach((step) => {
-      if (step.reasoningText) initial[step.nodeId] = step.reasoningText;
-    });
-    return initial;
-  });
+  useEffect(() => {
+    let active = true;
+    branchingAttemptService
+      .getAttempt(attemptId)
+      .then((a) => {
+        if (!active) return;
+        setAttempt(a);
+        const initial: Record<string, string> = {};
+        a.steps.forEach((s) => {
+          if (s.reasoningText) initial[s.nodeId] = s.reasoningText;
+        });
+        setReasonings(initial);
+      })
+      .catch(() => active && setLoadError("Không tải được hành trình. Vui lòng thử lại."));
+    return () => {
+      active = false;
+    };
+  }, [attemptId]);
 
-  const caseData = SAMPLE_BRANCHING_CASE;
-  const attempt = currentAttempt;
-  const isRequestedAttempt = !attemptId || attempt?.id === attemptId;
+  if (loadError) {
+    return (
+      <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
+        <h3 className="text-base font-bold text-gray-800 mb-2">Không mở được Review</h3>
+        <p className="text-sm text-gray-500 mb-4">{loadError}</p>
+        <button onClick={() => window.location.reload()} className="btn-primary">Tải lại</button>
+      </div>
+    );
+  }
 
-  if (!attempt || !isRequestedAttempt || !attempt.isCompleted || attempt.steps.length === 0) {
+  if (!attempt) {
+    return <div className="p-8 text-center text-gray-500">Đang tải hành trình...</div>;
+  }
+
+  if (!attempt.isCompleted || attempt.steps.length === 0) {
     return (
       <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
         <h3 className="text-base font-bold text-gray-800 mb-2">Chưa có dữ liệu hành trình</h3>
         <p className="text-sm text-gray-500 mb-4">
           Bạn cần trải nghiệm và đi hết lộ trình quyết định trước khi vào giai đoạn Review.
         </p>
-        <button
-          onClick={() => navigate(`/student/cases/${caseId}/branching-play`)}
-          className="btn-primary"
-        >
-          Bắt đầu hành trình Case →
+        <button onClick={() => navigate(`/student/cases/${caseId}/branching-play`)} className="btn-primary">
+          Tiếp tục hành trình Case →
         </button>
       </div>
     );
@@ -54,7 +77,36 @@ export function BranchingReviewPage() {
 
   const handleReasoningChange = (nodeId: string, val: string) => {
     setReasonings((prev) => ({ ...prev, [nodeId]: val }));
-    saveRetrospectiveReasoning(nodeId, val);
+    setSaveState((prev) => ({ ...prev, [nodeId]: "idle" }));
+  };
+
+  const handleReasoningBlur = async (nodeId: string) => {
+    const text = (reasonings[nodeId] || "").trim();
+    const original = attempt.steps.find((s) => s.nodeId === nodeId)?.reasoningText || "";
+    if (text === original.trim()) return;
+    setSaveState((prev) => ({ ...prev, [nodeId]: "saving" }));
+    try {
+      await branchingAttemptService.saveReasoning(attempt.id, nodeId, text);
+      setAttempt((prev) =>
+        prev && { ...prev, steps: prev.steps.map((s) => (s.nodeId === nodeId ? { ...s, reasoningText: text } : s)) },
+      );
+      setSaveState((prev) => ({ ...prev, [nodeId]: "saved" }));
+    } catch {
+      setSaveState((prev) => ({ ...prev, [nodeId]: "error" }));
+    }
+  };
+
+  const saveLabel = (nodeId: string) => {
+    switch (saveState[nodeId]) {
+      case "saving":
+        return "Đang lưu...";
+      case "saved":
+        return "✓ Đã lưu";
+      case "error":
+        return "Lưu thất bại, hãy thử lại";
+      default:
+        return "Tự động lưu khi rời ô nhập";
+    }
   };
 
   const handleInvokeChallenge = (nodeId: string, reasoning: string) => {
@@ -62,13 +114,16 @@ export function BranchingReviewPage() {
       alert("Vui lòng ghi ít nhất 10 ký tự giải trình trước khi kích hoạt AI Challenge Support.");
       return;
     }
+    void nodeId;
     const sessionId = initChallengeSession(caseId, "BRANCHING", reasoning);
     navigate(`/student/cases/${caseId}/challenge/${sessionId}`);
   };
 
   const handleGoToReflection = () => {
-    navigate(`/student/cases/${caseId}/attempt/${attempt.id || attemptId}/reflect`);
+    navigate(`/student/cases/${caseId}/attempt/${attempt.id}/reflect`);
   };
+
+  const outcomeText = attempt.outcomeNode?.situation;
 
   return (
     <div className="space-y-6">
@@ -79,7 +134,7 @@ export function BranchingReviewPage() {
             <span className="text-xs font-semibold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-1 rounded border border-purple-200">
               Giai đoạn 2: REVIEW (Hồi tưởng & Đánh giá Lộ trình)
             </span>
-            <h2 className="text-xl font-bold text-gray-900 mt-2">{caseData.title}</h2>
+            <h2 className="text-xl font-bold text-gray-900 mt-2">{attempt.caseTitle}</h2>
             <p className="text-xs text-gray-500 mt-1">
               Phân tích hồi cứu lần thử #{attempt.attemptNumber} · Tổng số điểm quyết định: {attempt.steps.length}
             </p>
@@ -115,7 +170,7 @@ export function BranchingReviewPage() {
               <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold">
                 Điểm quyết định #{idx + 1}
               </span>
-              <span className="text-xs text-gray-400 font-mono">Node ID: {step.nodeId}</span>
+              
             </div>
 
             {/* Situation */}
@@ -161,7 +216,7 @@ export function BranchingReviewPage() {
                   Hệ quả thực tế được tiết lộ (Chỉ giải mã ở bước REVIEW):
                 </h5>
               </div>
-              <p className="text-xs text-amber-950 leading-relaxed">{step.consequence}</p>
+              <p className="text-xs text-amber-950 leading-relaxed">{step.consequence || "—"}</p>
             </div>
 
             {/* Retrospective Reasoning Box */}
@@ -170,11 +225,12 @@ export function BranchingReviewPage() {
                 <label className="text-xs font-bold uppercase text-gray-700 tracking-wider">
                   ✍️ Giải trình hồi tưởng của bạn (Tùy chọn cho các quyết định trọng yếu):
                 </label>
-                <span className="text-xs text-gray-400">Tự động lưu vào hồ sơ lần thử</span>
+                <span className="text-xs text-gray-400">{saveLabel(step.nodeId)}</span>
               </div>
               <textarea
                 value={reasonings[step.nodeId] || ""}
                 onChange={(e) => handleReasoningChange(step.nodeId, e.target.value)}
+                onBlur={() => handleReasoningBlur(step.nodeId)}
                 placeholder="Tại sao bạn chọn phương án này? Những dữ liệu/giả định nào đã định hướng lựa chọn của bạn? Nếu làm lại, bạn có thay đổi không?..."
                 rows={3}
                 className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
@@ -198,12 +254,12 @@ export function BranchingReviewPage() {
         ))}
 
         {/* Outcome Milestone Card */}
-        {attempt.outcomeText && (
+        {outcomeText && (
           <div className="bg-slate-900 text-white rounded-xl p-6 shadow-md">
             <span className="text-xs uppercase tracking-wider text-blue-400 font-bold block mb-2">
               🏁 Kết cục chung cuộc của hành trình (Lần thử #{attempt.attemptNumber})
             </span>
-            <p className="text-sm leading-relaxed text-gray-200">{attempt.outcomeText}</p>
+            <p className="text-sm leading-relaxed text-gray-200">{outcomeText}</p>
           </div>
         )}
 

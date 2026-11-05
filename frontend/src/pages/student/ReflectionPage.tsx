@@ -1,62 +1,100 @@
 /**
- * EduBranch AI — Reflection Page (Mode A & Mode B)
+ * EduBranch AI — Reflection Page (Mode A)
  *
  * NON-NEGOTIABLE PRODUCT DIRECTION REQUIREMENTS:
  * 1. Post-journey metacognitive reflection on decision consequences and lessons learned.
  * 2. Absolute rule: AI does NOT grade or score reflection.
  * 3. Retry action creates a NEW ATTEMPT (preserves previous attempt history without mutating it).
+ *
+ * Data: GET /branching-attempts/:id, POST /branching-attempts/:id/reflection,
+ * GET /cases/:caseId/attempts (history), POST /cases/:caseId/branching-attempts (retry).
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useCaseStudyStore, SAMPLE_BRANCHING_CASE } from "../../stores/caseStudyStore";
+import { branchingAttemptService, AttemptDetail, AttemptSummary } from "../../services/branchingAttemptService";
 
 export function ReflectionPage() {
-  const { caseId = "case-business-crisis-1", attemptId } = useParams();
+  const { caseId = "", attemptId = "" } = useParams();
   const navigate = useNavigate();
 
-  const {
-    currentAttempt,
-    attemptHistory,
-    submitBranchingReflection,
-    retryBranchingAttempt,
-  } = useCaseStudyStore();
+  const [attempt, setAttempt] = useState<AttemptDetail | null>(null);
+  const [history, setHistory] = useState<AttemptSummary[]>([]);
+  const [reflectionText, setReflectionText] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  const [reflectionText, setReflectionText] = useState(
-    currentAttempt?.reflectionText || ""
-  );
-  const isSubmitted = currentAttempt?.reflectionStatus === "SUBMITTED";
+  useEffect(() => {
+    let active = true;
+    Promise.all([branchingAttemptService.getAttempt(attemptId), branchingAttemptService.getAttemptsByCase(caseId)])
+      .then(([a, all]) => {
+        if (!active) return;
+        setAttempt(a);
+        setReflectionText(a.reflectionText || "");
+        setHistory(all.filter((x) => x.id !== a.id));
+      })
+      .catch(() => active && setError("Không tải được dữ liệu lần thử. Vui lòng thử lại."));
+    return () => {
+      active = false;
+    };
+  }, [attemptId, caseId]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const isSubmitted = attempt?.reflectionStatus === "SUBMITTED";
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reflectionText.trim()) return;
-    submitBranchingReflection(reflectionText);
+    if (!attempt || !reflectionText.trim()) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await branchingAttemptService.submitReflection(attempt.id, reflectionText.trim());
+      setAttempt({ ...attempt, reflectionStatus: "SUBMITTED", reflectionText: reflectionText.trim() });
+    } catch {
+      setError("Nộp suy ngẫm thất bại. Vui lòng thử lại.");
+    } finally {
+      setBusy(false);
+    }
   };
 
-  const handleRetryNewAttempt = () => {
-    retryBranchingAttempt(caseId);
-    navigate(`/student/cases/${caseId}/branching-play`);
+  const handleRetryNewAttempt = async () => {
+    setBusy(true);
+    try {
+      await branchingAttemptService.startAttempt(caseId);
+      navigate(`/student/cases/${caseId}/branching-play`);
+    } catch {
+      setError("Không tạo được lần thử mới. Vui lòng thử lại.");
+      setBusy(false);
+    }
   };
 
-  const caseData = SAMPLE_BRANCHING_CASE;
-  const attempt = currentAttempt;
+  if (error && !attempt) {
+    return (
+      <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
+        <h3 className="text-base font-bold text-gray-800 mb-2">Không mở được phần suy ngẫm</h3>
+        <p className="text-sm text-gray-500 mb-4">{error}</p>
+      </div>
+    );
+  }
 
-  if (!attempt || (attemptId && attempt.id !== attemptId) || !attempt.isCompleted) {
+  if (!attempt) {
+    return <div className="p-8 text-center text-gray-500">Đang tải...</div>;
+  }
+
+  if (!attempt.isCompleted) {
     return (
       <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
         <h3 className="text-base font-bold text-gray-800 mb-2">Chưa thể mở phần suy ngẫm</h3>
         <p className="text-sm text-gray-500 mb-4">
           Bạn cần hoàn tất hành trình và REVIEW đúng lần thử trước khi viết reflection.
         </p>
-        <button
-          onClick={() => navigate(`/student/cases/${caseId}/branching-play`)}
-          className="btn-primary"
-        >
+        <button onClick={() => navigate(`/student/cases/${caseId}/branching-play`)} className="btn-primary">
           Quay lại hành trình →
         </button>
       </div>
     );
   }
+
+  const outcomeText = attempt.outcomeNode?.situation;
 
   return (
     <div className="space-y-6">
@@ -67,9 +105,9 @@ export function ReflectionPage() {
             <span className="text-xs font-semibold uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-1 rounded border border-teal-200">
               Giai đoạn 3: TỰ SUY NGẪM (Metacognitive Reflection)
             </span>
-            <h2 className="text-xl font-bold text-gray-900 mt-2">{caseData.title}</h2>
+            <h2 className="text-xl font-bold text-gray-900 mt-2">{attempt.caseTitle}</h2>
             <p className="text-xs text-gray-500 mt-1">
-              Đúc kết bài học quản trị từ Lần thử #{attempt?.attemptNumber || 1}
+              Đúc kết bài học quản trị từ Lần thử #{attempt.attemptNumber}
             </p>
           </div>
           {isSubmitted && (
@@ -80,12 +118,12 @@ export function ReflectionPage() {
         </div>
 
         {/* Compact Path Summary */}
-        {attempt?.outcomeText && (
+        {outcomeText && (
           <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 leading-relaxed">
             <span className="font-bold block mb-1 text-slate-900">
               🏁 Tóm tắt kết quả hành trình bạn vừa trải qua:
             </span>
-            {attempt.outcomeText}
+            {outcomeText}
           </div>
         )}
       </div>
@@ -108,7 +146,7 @@ export function ReflectionPage() {
                 Nội dung suy ngẫm đã ghi nhận:
               </span>
               <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
-                {currentAttempt?.reflectionText}
+                {attempt.reflectionText}
               </p>
             </div>
 
@@ -122,10 +160,11 @@ export function ReflectionPage() {
               <div>
                 <h4 className="text-sm font-bold text-gray-900">Muốn khám phá một lộ trình khác?</h4>
                 <p className="text-xs text-gray-500">
-                  Lần thử lại sẽ tạo một <strong>Attempt mới độc lập</strong> (#{attempt ? attempt.attemptNumber + 1 : 2}), giữ nguyên toàn bộ lịch sử lần thử này.
+                  Lần thử lại sẽ tạo một <strong>Attempt mới độc lập</strong> (#{attempt.attemptNumber + 1}), giữ nguyên toàn bộ lịch sử lần thử này.
                 </p>
               </div>
               <button
+                disabled={busy}
                 onClick={handleRetryNewAttempt}
                 className="py-2.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg transition shadow flex items-center space-x-1 cursor-pointer"
               >
@@ -136,6 +175,7 @@ export function ReflectionPage() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
+            {error && <div className="p-3 rounded-lg border border-red-200 bg-red-50 text-xs text-red-800">{error}</div>}
             <textarea
               value={reflectionText}
               onChange={(e) => setReflectionText(e.target.value)}
@@ -147,14 +187,14 @@ export function ReflectionPage() {
             <div className="flex justify-between items-center">
               <button
                 type="button"
-                onClick={() => navigate(`/student/cases/${caseId}/attempt/${attempt?.id || attemptId}/review`)}
+                onClick={() => navigate(`/student/cases/${caseId}/attempt/${attempt.id}/review`)}
                 className="btn-secondary text-xs"
               >
                 ← Quay lại Review Lộ trình
               </button>
               <button
                 type="submit"
-                disabled={!reflectionText.trim()}
+                disabled={!reflectionText.trim() || busy}
                 className="btn-primary text-xs py-2.5 px-6"
               >
                 Xác nhận nộp bài Suy ngẫm (Complete)
@@ -165,26 +205,26 @@ export function ReflectionPage() {
       </div>
 
       {/* History of Previous Attempts */}
-      {attemptHistory.length > 0 && (
+      {history.length > 0 && (
         <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
           <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-3">
-            📚 Lịch sử các lần thử trước đó ({attemptHistory.length} lần thử được lưu trữ độc lập):
+            📚 Lịch sử các lần thử trước đó ({history.length} lần thử được lưu trữ độc lập):
           </h4>
           <div className="space-y-2">
-            {attemptHistory.map((past) => (
+            {history.map((past) => (
               <div
                 key={past.id}
                 className="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200 text-xs"
               >
                 <div>
                   <span className="font-bold text-gray-800">Lần thử #{past.attemptNumber}</span>
-                  <span className="text-gray-500 ml-2">· {past.steps.length} quyết định</span>
+                  <span className="text-gray-500 ml-2">· {past.isCompleted ? "đã hoàn thành" : "đang làm"}</span>
                   <span className="text-gray-400 ml-2">
                     · {new Date(past.startedAt).toLocaleTimeString("vi-VN")}
                   </span>
                 </div>
                 <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-medium">
-                  {past.reflectionStatus === "SUBMITTED" ? "Đã suy ngẫm" : "Đã hoàn thành"}
+                  {past.reflectionStatus === "SUBMITTED" ? "Đã suy ngẫm" : past.isCompleted ? "Đã hoàn thành" : "Chưa xong"}
                 </span>
               </div>
             ))}
