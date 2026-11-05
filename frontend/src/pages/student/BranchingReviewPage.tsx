@@ -1,283 +1,202 @@
 /**
- * EduBranch AI — Branching Review Page (Mode A — REVIEW Phase)
+ * EduBranch AI — Journey Review (Mode A — REVIEW phase). Figma 05.4 (`135:4517`).
  *
- * CRITICAL PRODUCT DIRECTION REQUIREMENTS:
- * 1. REVIEW happens AFTER completing the journey (terminal node reached).
- * 2. Replays full journey: what was chosen, alternative paths not taken.
- * 3. Consequences of choices are REVEALED HERE for the first time.
- * 4. Captures retrospective reasoning for pivotal/key decisions (not forced on every node).
- * 5. Provides link to Reflection and optional AI Challenge Support.
- *
- * Data: GET /branching-attempts/:id (consequences and alternatives are only returned once completed).
+ * 1. Opens only after the journey is complete.
+ * 2. Replays the path: chosen option, alternatives not taken.
+ * 3. Reveals consequences here for the first time.
+ * 4. Retrospective reasoning is optional and saved per decision (not forced on every node).
+ * 5. Leads to Reflection.
+ * Not rendered: the AI Challenge Support entry of the frame (HOLD, OPD-005 — register `27:321`).
+ * Data: GET /branching-attempts/:id (consequences and alternatives only once completed).
  */
-
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useCaseStudyStore } from "../../stores/caseStudyStore";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { branchingAttemptService, AttemptDetail } from "../../services/branchingAttemptService";
+import { useStudentHeader } from "../../layouts/StudentLayout";
+import {
+  Alert,
+  Badge,
+  Breadcrumb,
+  Button,
+  Card,
+  ErrorState,
+  Skeleton,
+  Textarea,
+  IconCompass,
+  IconEye,
+  IconLock,
+  IconArrowRight,
+} from "../../components/ui";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
+
+const SAVE_LABEL: Record<SaveState, string> = {
+  idle: "Tự động lưu khi rời ô nhập",
+  saving: "Đang lưu…",
+  saved: "Đã lưu",
+  error: "Lưu thất bại, hãy thử lại",
+};
 
 export function BranchingReviewPage() {
   const { caseId = "", attemptId = "" } = useParams();
   const navigate = useNavigate();
-  const { initChallengeSession } = useCaseStudyStore();
+  const { setHeader } = useStudentHeader();
 
   const [attempt, setAttempt] = useState<AttemptDetail | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reasonings, setReasonings] = useState<Record<string, string>>({});
   const [saveState, setSaveState] = useState<Record<string, SaveState>>({});
 
-  useEffect(() => {
-    let active = true;
+  const load = useCallback(() => {
+    setLoadError(null);
     branchingAttemptService
       .getAttempt(attemptId)
       .then((a) => {
-        if (!active) return;
         setAttempt(a);
-        const initial: Record<string, string> = {};
-        a.steps.forEach((s) => {
-          if (s.reasoningText) initial[s.nodeId] = s.reasoningText;
-        });
-        setReasonings(initial);
+        setReasonings(Object.fromEntries(a.steps.filter((s) => s.reasoningText).map((s) => [s.nodeId, s.reasoningText as string])));
       })
-      .catch(() => active && setLoadError("Không tải được hành trình. Vui lòng thử lại."));
-    return () => {
-      active = false;
-    };
+      .catch(() => setLoadError("Không tải được hành trình. Vui lòng thử lại."));
   }, [attemptId]);
 
-  if (loadError) {
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  useEffect(() => {
+    if (attempt) setHeader({ caseTitle: attempt.caseTitle, phase: "Giai đoạn 2: Xem lại hành trình" });
+  }, [attempt, setHeader]);
+
+  if (loadError) return <Card padding={false}><ErrorState description={loadError} onRetry={load} /></Card>;
+  if (!attempt) {
     return (
-      <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
-        <h3 className="text-base font-bold text-gray-800 mb-2">Không mở được Review</h3>
-        <p className="text-sm text-gray-500 mb-4">{loadError}</p>
-        <button onClick={() => window.location.reload()} className="btn-primary">Tải lại</button>
+      <div aria-busy="true" className="space-y-4">
+        <Skeleton className="h-8 w-2/3" />
+        <Skeleton className="h-40 w-full" />
+        <Skeleton className="h-64 w-full" />
       </div>
     );
-  }
-
-  if (!attempt) {
-    return <div className="p-8 text-center text-gray-500">Đang tải hành trình...</div>;
   }
 
   if (!attempt.isCompleted || attempt.steps.length === 0) {
     return (
-      <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
-        <h3 className="text-base font-bold text-gray-800 mb-2">Chưa có dữ liệu hành trình</h3>
-        <p className="text-sm text-gray-500 mb-4">
-          Bạn cần trải nghiệm và đi hết lộ trình quyết định trước khi vào giai đoạn Review.
-        </p>
-        <button onClick={() => navigate(`/student/cases/${caseId}/branching-play`)} className="btn-primary">
-          Tiếp tục hành trình Case →
-        </button>
-      </div>
+      <Card className="text-center">
+        <h1 className="text-lg font-semibold text-gray-900">Chưa thể mở Journey Review</h1>
+        <p className="mt-2 text-sm text-gray-600">Bạn cần đi hết hành trình quyết định trước khi xem lại hệ quả.</p>
+        <Button className="mt-5" onClick={() => navigate(`/student/cases/${caseId}/branching-play`)}>Tiếp tục hành trình</Button>
+      </Card>
     );
   }
 
-  const handleReasoningChange = (nodeId: string, val: string) => {
-    setReasonings((prev) => ({ ...prev, [nodeId]: val }));
-    setSaveState((prev) => ({ ...prev, [nodeId]: "idle" }));
-  };
-
-  const handleReasoningBlur = async (nodeId: string) => {
+  const saveReasoning = async (nodeId: string) => {
     const text = (reasonings[nodeId] || "").trim();
-    const original = attempt.steps.find((s) => s.nodeId === nodeId)?.reasoningText || "";
-    if (text === original.trim()) return;
-    setSaveState((prev) => ({ ...prev, [nodeId]: "saving" }));
+    const original = (attempt.steps.find((s) => s.nodeId === nodeId)?.reasoningText || "").trim();
+    if (text === original) return;
+    setSaveState((p) => ({ ...p, [nodeId]: "saving" }));
     try {
       await branchingAttemptService.saveReasoning(attempt.id, nodeId, text);
-      setAttempt((prev) =>
-        prev && { ...prev, steps: prev.steps.map((s) => (s.nodeId === nodeId ? { ...s, reasoningText: text } : s)) },
-      );
-      setSaveState((prev) => ({ ...prev, [nodeId]: "saved" }));
+      setAttempt((prev) => prev && { ...prev, steps: prev.steps.map((s) => (s.nodeId === nodeId ? { ...s, reasoningText: text } : s)) });
+      setSaveState((p) => ({ ...p, [nodeId]: "saved" }));
     } catch {
-      setSaveState((prev) => ({ ...prev, [nodeId]: "error" }));
+      setSaveState((p) => ({ ...p, [nodeId]: "error" }));
     }
   };
 
-  const saveLabel = (nodeId: string) => {
-    switch (saveState[nodeId]) {
-      case "saving":
-        return "Đang lưu...";
-      case "saved":
-        return "✓ Đã lưu";
-      case "error":
-        return "Lưu thất bại, hãy thử lại";
-      default:
-        return "Tự động lưu khi rời ô nhập";
-    }
-  };
-
-  const handleInvokeChallenge = (nodeId: string, reasoning: string) => {
-    if (!reasoning || reasoning.trim().length < 10) {
-      alert("Vui lòng ghi ít nhất 10 ký tự giải trình trước khi kích hoạt AI Challenge Support.");
-      return;
-    }
-    void nodeId;
-    const sessionId = initChallengeSession(caseId, "BRANCHING", reasoning);
-    navigate(`/student/cases/${caseId}/challenge/${sessionId}`);
-  };
-
-  const handleGoToReflection = () => {
-    navigate(`/student/cases/${caseId}/attempt/${attempt.id}/reflect`);
-  };
-
-  const outcomeText = attempt.outcomeNode?.situation;
+  const outcome = attempt.outcomeNode?.situation;
+  const goReflect = () => navigate(`/student/cases/${caseId}/attempt/${attempt.id}/reflect`);
 
   return (
     <div className="space-y-6">
-      {/* Header Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-        <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-purple-700 bg-purple-50 px-2.5 py-1 rounded border border-purple-200">
-              Giai đoạn 2: REVIEW (Hồi tưởng & Đánh giá Lộ trình)
-            </span>
-            <h2 className="text-xl font-bold text-gray-900 mt-2">{attempt.caseTitle}</h2>
-            <p className="text-xs text-gray-500 mt-1">
-              Phân tích hồi cứu lần thử #{attempt.attemptNumber} · Tổng số điểm quyết định: {attempt.steps.length}
-            </p>
-          </div>
-          <button
-            onClick={handleGoToReflection}
-            className="py-2.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg transition shadow flex items-center space-x-1 cursor-pointer"
-          >
-            <span>Đến trang Reflection (Suy ngẫm)</span>
-            <span>→</span>
-          </button>
-        </div>
-
-        <div className="mt-4 p-3.5 bg-blue-50/60 rounded-lg border border-blue-100 text-xs text-blue-900 leading-relaxed">
-          💡 <strong>Mục tiêu của giai đoạn REVIEW:</strong> Xem lại toàn bộ cây quyết định bạn vừa trải qua.
-          Tại đây, các hệ quả thực tế đằng sau lựa chọn của bạn được giải mã. Hãy viết giải trình hồi tưởng
-          cho các quyết định quan trọng để chuẩn bị cho phần thảo luận trên lớp cùng Giảng viên.
-        </div>
+      <div>
+        <Breadcrumb items={[{ label: "Tình huống", onClick: () => navigate(`/student/cases/${caseId}/branching-play`) }, { label: "Journey Review" }]} />
+        <h1 className="text-2xl font-semibold text-gray-900">Journey Review – Xem lại toàn bộ hành trình quyết định</h1>
+        <p className="mt-1 text-sm text-gray-600">{attempt.caseTitle} • Lần làm #{attempt.attemptNumber}</p>
       </div>
 
-      {/* Sequential Journey Replay Timeline */}
-      <div className="space-y-6">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-700 flex items-center space-x-2">
-          <span>📍 Lộ trình quyết định chi tiết theo trình tự thời gian</span>
-        </h3>
+      <Card>
+        <h2 className="flex items-center gap-2 text-base font-semibold text-gray-900"><IconCompass size={18} className="text-blue-600" /> Sơ đồ hành trình quyết định</h2>
+        <p className="mt-1 text-xs text-gray-500">Tổng cộng: {attempt.steps.length} bước quyết định đã đi qua.</p>
+        <ol className="mt-4 grid gap-3 sm:grid-cols-3">
+          {attempt.steps.map((s, i) => (
+            <li key={s.nodeId} className="rounded-lg border border-blue-100 bg-blue-50 p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-700">Bước {i + 1}</p>
+              <p className="mt-1 line-clamp-2 text-sm font-medium text-gray-900">{s.situation}</p>
+              <p className="mt-1 line-clamp-2 text-xs text-gray-600">Đã chọn: {s.selectedOptionText}</p>
+            </li>
+          ))}
+          {outcome && (
+            <li className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-600">Kết cục</p>
+              <p className="mt-1 line-clamp-3 text-sm text-gray-800">{outcome}</p>
+            </li>
+          )}
+        </ol>
+      </Card>
 
-        {attempt.steps.map((step, idx) => (
-          <div
-            key={step.nodeId}
-            className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm relative overflow-hidden"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-xs font-bold">
-                Điểm quyết định #{idx + 1}
-              </span>
-              
-            </div>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-base font-semibold text-gray-900">Chi tiết các quyết định & hệ quả thực tế</h2>
+        <span className="flex items-center gap-1 text-xs text-green-800"><IconLock size={13} /> Đã mở khóa sau khi hoàn thành</span>
+      </div>
 
-            {/* Situation */}
-            <div className="mb-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1">
-                Tình huống bạn đã đối mặt:
-              </h4>
-              <p className="text-sm text-gray-900 bg-gray-50 p-3.5 rounded border border-gray-200 leading-relaxed font-medium">
-                {step.situation}
-              </p>
-            </div>
-
-            {/* Decision Made vs Alternative */}
-            <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="bg-emerald-50/70 border-2 border-emerald-300 rounded-lg p-3.5">
-                <span className="text-xs font-bold text-emerald-800 uppercase block mb-1">
-                  ✓ Quyết định bạn đã chọn:
-                </span>
-                <p className="text-xs font-medium text-emerald-950 leading-relaxed">
-                  {step.selectedOptionText}
-                </p>
-              </div>
-
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-3.5">
-                <span className="text-xs font-semibold text-gray-500 uppercase block mb-1">
-                  Khác biệt: Các lựa chọn bạn đã bỏ qua:
-                </span>
-                <div className="space-y-1.5">
-                  {step.otherOptions.map((alt) => (
-                    <p key={alt.id} className="text-xs text-gray-600 line-through opacity-80">
-                      • {alt.text}
-                    </p>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Consequence Reveal Card */}
-            <div className="mb-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg p-4">
-              <div className="flex items-center space-x-2 mb-1">
-                <span className="text-sm">⚡</span>
-                <h5 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
-                  Hệ quả thực tế được tiết lộ (Chỉ giải mã ở bước REVIEW):
-                </h5>
-              </div>
-              <p className="text-xs text-amber-950 leading-relaxed">{step.consequence || "—"}</p>
-            </div>
-
-            {/* Retrospective Reasoning Box */}
-            <div className="pt-4 border-t border-gray-100">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-xs font-bold uppercase text-gray-700 tracking-wider">
-                  ✍️ Giải trình hồi tưởng của bạn (Tùy chọn cho các quyết định trọng yếu):
-                </label>
-                <span className="text-xs text-gray-400">{saveLabel(step.nodeId)}</span>
-              </div>
-              <textarea
-                value={reasonings[step.nodeId] || ""}
-                onChange={(e) => handleReasoningChange(step.nodeId, e.target.value)}
-                onBlur={() => handleReasoningBlur(step.nodeId)}
-                placeholder="Tại sao bạn chọn phương án này? Những dữ liệu/giả định nào đã định hướng lựa chọn của bạn? Nếu làm lại, bạn có thay đổi không?..."
-                rows={3}
-                className="w-full text-xs p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
-              />
-
-              <div className="mt-2 flex items-center justify-between">
-                <p className="text-[11px] text-gray-500 italic">
-                  * Không bắt buộc giải trình mọi node. Hãy tập trung vào quyết định có tính bước ngoặt.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => handleInvokeChallenge(step.nodeId, reasonings[step.nodeId] || "")}
-                  className="text-xs font-medium text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded border border-purple-200 transition cursor-pointer flex items-center space-x-1"
-                >
-                  <span>🤖 Thử thách tư duy với AI Support</span>
-                  <span>→</span>
-                </button>
-              </div>
-            </div>
+      {attempt.steps.map((s, i) => (
+        <Card key={s.nodeId}>
+          <div className="mb-4 flex items-start gap-3">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-600 text-xs font-semibold text-white">{i + 1}</span>
+            <p className="whitespace-pre-wrap text-sm leading-6 text-gray-900">{s.situation}</p>
           </div>
-        ))}
-
-        {/* Outcome Milestone Card */}
-        {outcomeText && (
-          <div className="bg-slate-900 text-white rounded-xl p-6 shadow-md">
-            <span className="text-xs uppercase tracking-wider text-blue-400 font-bold block mb-2">
-              🏁 Kết cục chung cuộc của hành trình (Lần thử #{attempt.attemptNumber})
-            </span>
-            <p className="text-sm leading-relaxed text-gray-200">{outcomeText}</p>
+          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+            <p className="text-xs text-gray-600">Phương án bạn đã chọn:</p>
+            <p className="mt-1 text-sm font-medium text-gray-900">{s.selectedOptionText}</p>
           </div>
-        )}
-
-        {/* Action to Reflection */}
-        <div className="flex justify-between items-center bg-white p-5 rounded-xl border border-gray-200 shadow-sm">
-          <div>
-            <h4 className="text-sm font-bold text-gray-900">Hoàn tất rà soát hành trình?</h4>
-            <p className="text-xs text-gray-500">
-              Chuyển sang trang Tự suy ngẫm (Reflection) để đúc kết bài học quản trị trước khi thử lại hoặc nộp bài.
-            </p>
+          <div className="mt-3 rounded-lg border border-gray-200 border-l-4 border-l-teal-700 bg-gray-50 p-4">
+            <p className="flex items-center gap-1.5 text-xs font-semibold text-gray-900"><IconEye size={14} /> Hệ quả thực tế:</p>
+            <p className="mt-1 text-sm leading-6 text-gray-800">{s.consequence || "—"}</p>
           </div>
-          <button
-            onClick={handleGoToReflection}
-            className="py-3 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs rounded-lg transition shadow flex items-center space-x-2 cursor-pointer"
-          >
-            <span>Đến trang Reflection →</span>
-          </button>
-        </div>
+          {s.otherOptions.length > 0 && (
+            <div className="mt-3">
+              <p className="text-xs text-gray-600">Các phương án bạn chưa chọn:</p>
+              <ul className="mt-1 list-inside list-disc text-sm text-gray-700">
+                {s.otherOptions.map((o) => <li key={o.id}>{o.text}</li>)}
+              </ul>
+            </div>
+          )}
+          <div className="mt-5 border-t border-gray-200 pt-4">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label htmlFor={`reason-${s.nodeId}`} className="text-sm font-medium text-gray-900">Bản lập luận của bạn</label>
+              <span className="text-xs text-gray-600" aria-live="polite">{SAVE_LABEL[saveState[s.nodeId] ?? "idle"]}</span>
+            </div>
+            <p className="mb-2 text-xs text-gray-600">Không bắt buộc cho mọi bước. Hãy tập trung vào quyết định mang tính bước ngoặt.</p>
+            <Textarea
+              id={`reason-${s.nodeId}`}
+              rows={3}
+              value={reasonings[s.nodeId] || ""}
+              onChange={(e) => {
+                setReasonings((p) => ({ ...p, [s.nodeId]: e.target.value }));
+                setSaveState((p) => ({ ...p, [s.nodeId]: "idle" }));
+              }}
+              onBlur={() => saveReasoning(s.nodeId)}
+              placeholder="Vì sao bạn chọn phương án này? Dữ kiện hoặc giả định nào đã dẫn bạn tới lựa chọn đó?"
+            />
+          </div>
+        </Card>
+      ))}
+
+      {outcome && (
+        <Card>
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-semibold text-gray-900">Kết quả cuối cùng đạt được</p>
+            <Badge variant="neutral">Lần làm #{attempt.attemptNumber}</Badge>
+          </div>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-700">{outcome}</p>
+        </Card>
+      )}
+
+      {Object.values(saveState).includes("error") && (
+        <Alert variant="error">Có bản lập luận chưa lưu được. Hãy bấm vào ô đó rồi rời ra để thử lưu lại.</Alert>
+      )}
+      <div className="flex justify-end">
+        <Button size="lg" onClick={goReflect} id="btn-go-reflect">
+          Chuyển sang bước Suy ngẫm <IconArrowRight size={16} />
+        </Button>
       </div>
     </div>
   );

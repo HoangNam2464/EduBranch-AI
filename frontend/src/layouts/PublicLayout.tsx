@@ -1,13 +1,10 @@
 import { Outlet } from "react-router-dom";
 
+/** Public shell for login / register (Figma 00.3, 00.4). The pages render their own brand header. */
 export function PublicLayout() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-10">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">🌿 EduBranch AI</h1>
-          <p className="text-sm text-gray-500 mt-1">AI Platform for Experiential Case-Based Learning</p>
-        </div>
         <Outlet />
       </div>
     </div>

@@ -1,54 +1,101 @@
 /**
- * EduBranch AI — Reflection Page (Mode A)
+ * EduBranch AI — Reflection (Mode A). Figma 05.7 form (`135:4597`), 05.8 submitted (`135:4651`).
  *
- * NON-NEGOTIABLE PRODUCT DIRECTION REQUIREMENTS:
- * 1. Post-journey metacognitive reflection on decision consequences and lessons learned.
- * 2. Absolute rule: AI does NOT grade or score reflection.
- * 3. Retry action creates a NEW ATTEMPT (preserves previous attempt history without mutating it).
- *
+ * 1. Post-journey metacognitive reflection on consequences and lessons learned.
+ * 2. AI does NOT grade or score reflection.
+ * 3. "Làm lại" creates a NEW attempt; earlier attempts are kept unchanged.
  * Data: GET /branching-attempts/:id, POST /branching-attempts/:id/reflection,
- * GET /cases/:caseId/attempts (history), POST /cases/:caseId/branching-attempts (retry).
+ * GET /cases/:caseId/attempts, POST /cases/:caseId/branching-attempts.
  */
-
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { branchingAttemptService, AttemptDetail, AttemptSummary } from "../../services/branchingAttemptService";
+import { useStudentHeader } from "../../layouts/StudentLayout";
+import {
+  Alert,
+  Badge,
+  Breadcrumb,
+  Button,
+  Card,
+  ConfirmDialog,
+  ErrorState,
+  Skeleton,
+  Textarea,
+  formatDate,
+  IconArrowLeft,
+  IconCheck,
+  IconRetry,
+} from "../../components/ui";
+
+const PROMPTS = [
+  "Những thông tin cốt lõi nào bạn đã cân nhắc khi đưa ra các quyết định then chốt?",
+  "Hệ quả thực tế có nằm ngoài dự tính ban đầu của bạn không? Vì sao?",
+  "Nếu làm lại tình huống này, bạn sẽ thay đổi quyết định tại điểm nào?",
+];
 
 export function ReflectionPage() {
   const { caseId = "", attemptId = "" } = useParams();
   const navigate = useNavigate();
+  const { setHeader } = useStudentHeader();
 
   const [attempt, setAttempt] = useState<AttemptDetail | null>(null);
   const [history, setHistory] = useState<AttemptSummary[]>([]);
-  const [reflectionText, setReflectionText] = useState("");
+  const [text, setText] = useState("");
+  const [loadError, setLoadError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [confirmNew, setConfirmNew] = useState(false);
 
-  useEffect(() => {
-    let active = true;
+  const load = useCallback(() => {
+    setLoadError(null);
     Promise.all([branchingAttemptService.getAttempt(attemptId), branchingAttemptService.getAttemptsByCase(caseId)])
       .then(([a, all]) => {
-        if (!active) return;
         setAttempt(a);
-        setReflectionText(a.reflectionText || "");
-        setHistory(all.filter((x) => x.id !== a.id));
+        setText(a.reflectionText || "");
+        setHistory(all);
       })
-      .catch(() => active && setError("Không tải được dữ liệu lần thử. Vui lòng thử lại."));
-    return () => {
-      active = false;
-    };
+      .catch(() => setLoadError("Không tải được dữ liệu lần làm. Vui lòng thử lại."));
   }, [attemptId, caseId]);
 
-  const isSubmitted = attempt?.reflectionStatus === "SUBMITTED";
+  useEffect(() => {
+    load();
+  }, [load]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    if (attempt) setHeader({ caseTitle: attempt.caseTitle, phase: "Giai đoạn 3: Suy ngẫm" });
+  }, [attempt, setHeader]);
+
+  if (loadError) return <Card padding={false}><ErrorState description={loadError} onRetry={load} /></Card>;
+  if (!attempt) {
+    return (
+      <div aria-busy="true" className="space-y-4">
+        <Skeleton className="h-8 w-2/3" />
+        <Skeleton className="h-64 w-full" />
+      </div>
+    );
+  }
+
+  if (!attempt.isCompleted) {
+    return (
+      <Card className="text-center">
+        <h1 className="text-lg font-semibold text-gray-900">Chưa thể mở phần Suy ngẫm</h1>
+        <p className="mt-2 text-sm text-gray-600">Bạn cần hoàn tất hành trình và xem Journey Review trước khi viết suy ngẫm.</p>
+        <Button className="mt-5" onClick={() => navigate(`/student/cases/${caseId}/branching-play`)}>Quay lại hành trình</Button>
+      </Card>
+    );
+  }
+
+  const submitted = attempt.reflectionStatus === "SUBMITTED";
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!attempt || !reflectionText.trim()) return;
+    const value = text.trim();
+    if (!value || busy) return;
     setBusy(true);
     setError(null);
     try {
-      await branchingAttemptService.submitReflection(attempt.id, reflectionText.trim());
-      setAttempt({ ...attempt, reflectionStatus: "SUBMITTED", reflectionText: reflectionText.trim() });
+      await branchingAttemptService.submitReflection(attempt.id, value);
+      setAttempt({ ...attempt, reflectionStatus: "SUBMITTED", reflectionText: value });
     } catch {
       setError("Nộp suy ngẫm thất bại. Vui lòng thử lại.");
     } finally {
@@ -56,181 +103,129 @@ export function ReflectionPage() {
     }
   };
 
-  const handleRetryNewAttempt = async () => {
+  const startNew = async () => {
     setBusy(true);
+    setError(null);
     try {
       await branchingAttemptService.startAttempt(caseId);
       navigate(`/student/cases/${caseId}/branching-play`);
     } catch {
-      setError("Không tạo được lần thử mới. Vui lòng thử lại.");
+      setError("Không tạo được lượt làm mới. Vui lòng thử lại.");
       setBusy(false);
+      setConfirmNew(false);
     }
   };
 
-  if (error && !attempt) {
-    return (
-      <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
-        <h3 className="text-base font-bold text-gray-800 mb-2">Không mở được phần suy ngẫm</h3>
-        <p className="text-sm text-gray-500 mb-4">{error}</p>
-      </div>
-    );
-  }
-
-  if (!attempt) {
-    return <div className="p-8 text-center text-gray-500">Đang tải...</div>;
-  }
-
-  if (!attempt.isCompleted) {
-    return (
-      <div className="bg-white p-8 rounded-xl border border-gray-200 text-center">
-        <h3 className="text-base font-bold text-gray-800 mb-2">Chưa thể mở phần suy ngẫm</h3>
-        <p className="text-sm text-gray-500 mb-4">
-          Bạn cần hoàn tất hành trình và REVIEW đúng lần thử trước khi viết reflection.
-        </p>
-        <button onClick={() => navigate(`/student/cases/${caseId}/branching-play`)} className="btn-primary">
-          Quay lại hành trình →
-        </button>
-      </div>
-    );
-  }
-
-  const outcomeText = attempt.outcomeNode?.situation;
+  const others = history.filter((h) => h.id !== attempt.id).sort((a, b) => a.attemptNumber - b.attemptNumber);
+  const outcome = attempt.outcomeNode?.situation;
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-          <div>
-            <span className="text-xs font-semibold uppercase tracking-wider text-teal-700 bg-teal-50 px-2.5 py-1 rounded border border-teal-200">
-              Giai đoạn 3: TỰ SUY NGẪM (Metacognitive Reflection)
-            </span>
-            <h2 className="text-xl font-bold text-gray-900 mt-2">{attempt.caseTitle}</h2>
-            <p className="text-xs text-gray-500 mt-1">
-              Đúc kết bài học quản trị từ Lần thử #{attempt.attemptNumber}
-            </p>
-          </div>
-          {isSubmitted && (
-            <span className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">
-              ✓ Đã nộp suy ngẫm
-            </span>
-          )}
+      <div>
+        <Breadcrumb
+          items={[
+            { label: "Tình huống", onClick: () => navigate(`/student/cases/${caseId}/branching-play`) },
+            { label: "Journey Review", onClick: () => navigate(`/student/cases/${caseId}/attempt/${attempt.id}/review`) },
+            { label: "Suy ngẫm" },
+          ]}
+        />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-semibold text-gray-900">Suy ngẫm sau hành trình</h1>
+          {submitted ? <Badge variant="success" dot>Đã nộp suy ngẫm</Badge> : <Badge variant="neutral">Lần làm #{attempt.attemptNumber}</Badge>}
         </div>
-
-        {/* Compact Path Summary */}
-        {outcomeText && (
-          <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-800 leading-relaxed">
-            <span className="font-bold block mb-1 text-slate-900">
-              🏁 Tóm tắt kết quả hành trình bạn vừa trải qua:
-            </span>
-            {outcomeText}
-          </div>
-        )}
+        <p className="mt-1 text-sm text-gray-600">{attempt.caseTitle}</p>
       </div>
 
-      {/* Reflection Form or Read-only Display */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-gray-800 mb-2">
-          Câu hỏi định hướng suy ngẫm:
-        </h3>
-        <ul className="text-xs text-gray-600 list-disc list-inside space-y-1 mb-4 bg-blue-50/50 p-3.5 rounded-lg border border-blue-100">
-          <li>Những thông tin cốt lõi nào bạn đã cân nhắc khi đưa ra các quyết định then chốt?</li>
-          <li>Hệ quả thực tế nhận được có nằm ngoài dự tính ban đầu của bạn không? Vì sao?</li>
-          <li>Nếu được thực hiện lại tình huống này, bạn sẽ thay đổi quyết định tại điểm nào?</li>
+      {outcome && (
+        <Card>
+          <p className="text-xs font-semibold uppercase tracking-wide text-gray-600">Kết cục hành trình của bạn</p>
+          <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-800">{outcome}</p>
+        </Card>
+      )}
+
+      <Card>
+        <h2 className="text-base font-semibold text-gray-900">Câu hỏi định hướng</h2>
+        <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-gray-700">
+          {PROMPTS.map((p) => <li key={p}>{p}</li>)}
         </ul>
 
-        {isSubmitted ? (
-          <div className="space-y-4">
-            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-              <span className="text-xs font-bold text-gray-500 uppercase block mb-2">
-                Nội dung suy ngẫm đã ghi nhận:
-              </span>
-              <p className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
-                {attempt.reflectionText}
-              </p>
+        {submitted ? (
+          <div className="mt-5 space-y-4">
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
+              <p className="text-xs text-gray-600">Nội dung suy ngẫm đã ghi nhận</p>
+              <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-gray-900">{attempt.reflectionText}</p>
             </div>
-
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-900">
-              ✓ <strong>Đã lưu vào hồ sơ học tập.</strong> Giảng viên sẽ đọc phần suy ngẫm của bạn để chuẩn bị
-              nội dung thảo luận và phản hồi trên lớp. AI hoàn toàn không chấm điểm phần này.
-            </div>
-
-            {/* Action to Retry (New Attempt) */}
-            <div className="pt-4 border-t border-gray-200 flex items-center justify-between">
-              <div>
-                <h4 className="text-sm font-bold text-gray-900">Muốn khám phá một lộ trình khác?</h4>
-                <p className="text-xs text-gray-500">
-                  Lần thử lại sẽ tạo một <strong>Attempt mới độc lập</strong> (#{attempt.attemptNumber + 1}), giữ nguyên toàn bộ lịch sử lần thử này.
-                </p>
-              </div>
-              <button
-                disabled={busy}
-                onClick={handleRetryNewAttempt}
-                className="py-2.5 px-5 bg-blue-600 hover:bg-blue-700 text-white font-medium text-xs rounded-lg transition shadow flex items-center space-x-1 cursor-pointer"
-              >
-                <span>Thử nghiệm lộ trình mới (New Attempt)</span>
-                <span>→</span>
-              </button>
-            </div>
+            <Alert variant="success">
+              <strong className="font-semibold">Đã lưu vào hồ sơ học tập.</strong> Giảng viên dùng phần suy ngẫm để chuẩn bị thảo luận trên lớp. AI không chấm điểm phần này.
+            </Alert>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && <div className="p-3 rounded-lg border border-red-200 bg-red-50 text-xs text-red-800">{error}</div>}
-            <textarea
-              value={reflectionText}
-              onChange={(e) => setReflectionText(e.target.value)}
-              placeholder="Trình bày bài học đúc kết, góc nhìn phản tư và những điểm bạn sẽ thay đổi nếu đối mặt với khủng hoảng thực tế này..."
-              rows={6}
+          <form onSubmit={submit} className="mt-5 space-y-3">
+            <label htmlFor="reflection" className="text-sm font-medium text-gray-900">Bài suy ngẫm của bạn</label>
+            <Textarea
+              id="reflection"
+              rows={7}
               required
-              className="w-full text-sm p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 leading-relaxed"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Bài học bạn rút ra, điều bạn sẽ làm khác đi và lý do."
             />
-            <div className="flex justify-between items-center">
-              <button
-                type="button"
-                onClick={() => navigate(`/student/cases/${caseId}/attempt/${attempt.id}/review`)}
-                className="btn-secondary text-xs"
-              >
-                ← Quay lại Review Lộ trình
-              </button>
-              <button
-                type="submit"
-                disabled={!reflectionText.trim() || busy}
-                className="btn-primary text-xs py-2.5 px-6"
-              >
-                Xác nhận nộp bài Suy ngẫm (Complete)
-              </button>
+            <p className="text-xs text-gray-600">{text.trim().length} ký tự • AI không chấm điểm bài suy ngẫm.</p>
+            {error && <Alert variant="error">{error}</Alert>}
+            <div className="flex flex-wrap justify-between gap-3 pt-2">
+              <Button variant="secondary" leftIcon={<IconArrowLeft size={15} />} onClick={() => navigate(`/student/cases/${caseId}/attempt/${attempt.id}/review`)}>
+                Quay lại Journey Review
+              </Button>
+              <Button type="submit" disabled={!text.trim()} isLoading={busy} leftIcon={<IconCheck size={15} />} id="btn-submit-reflection">
+                Nộp bài suy ngẫm
+              </Button>
             </div>
           </form>
         )}
-      </div>
+      </Card>
 
-      {/* History of Previous Attempts */}
-      {history.length > 0 && (
-        <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-3">
-            📚 Lịch sử các lần thử trước đó ({history.length} lần thử được lưu trữ độc lập):
-          </h4>
-          <div className="space-y-2">
-            {history.map((past) => (
-              <div
-                key={past.id}
-                className="flex items-center justify-between p-3 bg-gray-50 rounded border border-gray-200 text-xs"
-              >
-                <div>
-                  <span className="font-bold text-gray-800">Lần thử #{past.attemptNumber}</span>
-                  <span className="text-gray-500 ml-2">· {past.isCompleted ? "đã hoàn thành" : "đang làm"}</span>
-                  <span className="text-gray-400 ml-2">
-                    · {new Date(past.startedAt).toLocaleTimeString("vi-VN")}
-                  </span>
-                </div>
-                <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-medium">
-                  {past.reflectionStatus === "SUBMITTED" ? "Đã suy ngẫm" : past.isCompleted ? "Đã hoàn thành" : "Chưa xong"}
-                </span>
-              </div>
-            ))}
+      {submitted && (
+        <Card>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-sm font-semibold text-gray-900">Muốn khám phá một hướng đi khác?</h2>
+              <p className="mt-1 text-xs text-gray-600">Lượt làm mới (#{history.length + 1}) là một hành trình độc lập; lượt này được giữ nguyên.</p>
+            </div>
+            <Button leftIcon={<IconRetry size={15} />} onClick={() => setConfirmNew(true)} id="btn-new-attempt">Làm lại</Button>
           </div>
-        </div>
+          {error && <Alert variant="error" className="mt-4">{error}</Alert>}
+        </Card>
       )}
+
+      {others.length > 0 && (
+        <Card padding={false}>
+          <h2 className="border-b border-gray-200 px-5 py-4 text-sm font-semibold text-gray-900">Các lần làm khác ({others.length})</h2>
+          <ul className="divide-y divide-gray-200">
+            {others.map((h) => (
+              <li key={h.id} className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
+                <div>
+                  <p className="text-sm text-gray-900">Lần làm #{h.attemptNumber}</p>
+                  <p className="text-xs text-gray-600">Bắt đầu: {formatDate(h.startedAt, true)}</p>
+                </div>
+                <Badge variant={h.isCompleted ? "neutral" : "warning"}>
+                  {h.reflectionStatus === "SUBMITTED" ? "Đã suy ngẫm" : h.isCompleted ? "Đã hoàn thành" : "Đang thực hiện"}
+                </Badge>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      <ConfirmDialog
+        isOpen={confirmNew}
+        tone="primary"
+        title="Bắt đầu lượt làm mới?"
+        description="Lượt mới là một hành trình độc lập. Toàn bộ lịch sử các lượt trước được giữ nguyên."
+        confirmLabel="Bắt đầu lượt mới"
+        isLoading={busy}
+        onConfirm={startNew}
+        onClose={() => setConfirmNew(false)}
+      />
     </div>
   );
 }

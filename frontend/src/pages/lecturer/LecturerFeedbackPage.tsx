@@ -1,31 +1,21 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { PageHeader, EmptyState, Button } from "../../components/ui";
+import { Card, EmptyState, PageHeader, IconMessage } from "../../components/ui";
 
 /**
- * LecturerFeedbackPage — Placeholder for Sprint 2+
- *
- * This page will list student attempts and Review Study submissions for
- * the lecturer to review and provide feedback.
- *
- * Route: /lecturer/cases/:caseId/feedback
+ * Phản hồi sinh viên (FE-019 / BE-026, Sprint 4) — outside the midterm review scope
+ * (PROJECT-EXECUTION-PLAN-v2 §2). The lecturer-feedback backend module has no routes yet.
+ * Figma 04.1/04.2 (`1:1852`, `1:1702`) stay on Page 1.
  */
 export function LecturerFeedbackPage() {
-  const navigate = useNavigate();
-
   return (
-    <div className="p-6">
-      <PageHeader
-        title="Student Submissions & Feedback"
-        description="Review student attempts and provide feedback on their reasoning."
-        actions={
-          <Button variant="secondary" onClick={() => navigate(-1)}>← Back</Button>
-        }
-      />
-      <EmptyState
-        title="Feedback feature coming in Sprint 2"
-        description="You will be able to review student Branching Study attempts and Review Study submissions here, and write structured feedback."
-      />
+    <div>
+      <PageHeader title="Phản hồi sinh viên" description="Xem lượt làm bài, lập luận và phản hồi cho sinh viên" />
+      <Card padding={false}>
+        <EmptyState
+          icon={<IconMessage size={22} />}
+          title="Chức năng đang được phát triển"
+          description="Hàng đợi phản hồi lập luận thuộc Sprint 4 và chưa có trong bản đánh giá giữa kỳ."
+        />
+      </Card>
     </div>
   );
 }

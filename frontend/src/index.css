@@ -1,8 +1,8 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 
 @layer base {
   body {
-    font-family: system-ui, sans-serif;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
     background-color: #f9fafb;
     color: #111827;
   }

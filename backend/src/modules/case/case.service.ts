@@ -194,14 +194,15 @@ export class CaseService {
         throw new ForbiddenException("You can only view cases in your own courses");
       }
     }
-    let query = "SELECT * FROM cases WHERE course_id = $1";
+    let query =
+      "SELECT c.*, (SELECT COUNT(*) FROM case_nodes n WHERE n.case_id = c.id)::int AS node_count FROM cases c WHERE c.course_id = $1";
     const params: any[] = [courseId];
 
     if (role === "STUDENT") {
-      query += " AND status = 'PUBLISHED'";
+      query += " AND c.status = 'PUBLISHED'";
     }
 
-    query += " ORDER BY updated_at DESC";
+    query += " ORDER BY c.updated_at DESC";
 
     const res = await this.db.query(query, params);
     return res.rows;

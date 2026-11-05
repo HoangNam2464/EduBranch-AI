@@ -1,214 +1,246 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { courseService } from "../../services/courseService";
-import { Course } from "../../types";
+import React, { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
-  PageHeader, Button, Card, EmptyState, Alert, Modal, Spinner
+  Button,
+  Badge,
+  Card,
+  ConfirmDialog,
+  EmptyState,
+  ErrorState,
+  Field,
+  Input,
+  Modal,
+  PageHeader,
+  Skeleton,
+  Textarea,
+  Alert,
+  IconPlus,
+  IconFile,
+  IconBranch,
+  IconArrowRight,
+  IconTrash,
+  IconBook,
 } from "../../components/ui";
+import { lecturerApi, apiErrorMessage, CourseRow } from "../../services/lecturerApi";
+
+/**
+ * Quản lý Khóa học — Figma 02.1 (`135:3360`), hộp thoại 02.2 (`135:3478`), xác nhận xóa 02.3 (`135:3504`).
+ * Counts come from the course's own material and case lists (owner-scoped endpoints).
+ */
+type CourseWithCounts = CourseRow & { materialCount?: number; caseCount?: number };
 
 export function CoursesPage() {
-  const navigate = useNavigate();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [courses, setCourses] = useState<CourseWithCounts[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [showCreate, setShowCreate] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [modalError, setModalError] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", description: "", courseCode: "" });
+  const [createOpen, setCreateOpen] = useState(false);
+  const [toDelete, setToDelete] = useState<CourseRow | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
-  useEffect(() => {
-    loadCourses();
+  const load = useCallback(async () => {
+    setError(null);
+    setCourses(null);
+    try {
+      const list = await lecturerApi.listCourses();
+      const withCounts = await Promise.all(
+        list.map(async (c) => {
+          const [m, k] = await Promise.allSettled([lecturerApi.listMaterials(c.id), lecturerApi.listCases(c.id)]);
+          return {
+            ...c,
+            materialCount: m.status === "fulfilled" ? m.value.length : undefined,
+            caseCount: k.status === "fulfilled" ? k.value.length : undefined,
+          };
+        }),
+      );
+      setCourses(withCounts);
+    } catch (err) {
+      setError(apiErrorMessage(err, "Không tải được danh sách khóa học."));
+    }
   }, []);
 
-  async function loadCourses() {
-    try {
-      setLoading(true);
-      setError(null);
-      const data = await courseService.getMyCourses();
-      setCourses(data);
-    } catch {
-      setError("Failed to load courses. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }
+  useEffect(() => {
+    load();
+  }, [load]);
 
-  async function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    if (!form.name.trim()) {
-      setModalError("Tên khóa học không được để trống.");
-      return;
-    }
+  const confirmDelete = async () => {
+    if (!toDelete) return;
+    setDeleting(true);
     try {
-      setCreating(true);
-      setModalError(null);
-      const newCourse = await courseService.createCourse({
-        name: form.name.trim(),
-        description: form.description?.trim() || undefined,
-        courseCode: form.courseCode?.trim() || undefined,
-      });
-      setCourses((prev) => [newCourse, ...prev]);
-      setShowCreate(false);
-      setForm({ name: "", description: "", courseCode: "" });
-    } catch (err: any) {
-      setModalError(err?.response?.data?.message || "Failed to create course.");
+      await lecturerApi.deleteCourse(toDelete.id);
+      setToDelete(null);
+      load();
+    } catch (err) {
+      setError(apiErrorMessage(err, "Không xóa được khóa học."));
+      setToDelete(null);
     } finally {
-      setCreating(false);
+      setDeleting(false);
     }
-  }
+  };
 
   return (
-    <div className="p-6">
+    <div>
       <PageHeader
-        title="My Courses"
-        description="Manage your university courses and teaching materials."
+        title="Quản lý Khóa học"
+        description="Danh sách các lớp học phần bạn phụ trách giảng dạy và tổ chức học tập tình huống"
         actions={
-          <Button
-            onClick={() => {
-              setModalError(null);
-              setShowCreate(true);
-            }}
-            id="btn-create-course"
-          >
-            + New Course
+          <Button leftIcon={<IconPlus size={16} />} onClick={() => setCreateOpen(true)} id="btn-create-course">
+            Tạo khóa học mới
           </Button>
         }
       />
 
-      {error && <Alert variant="error" className="mb-4">{error}</Alert>}
+      {error && courses !== null && <Alert variant="error" className="mb-4">{error}</Alert>}
 
-      {loading ? (
-        <div className="flex justify-center py-16"><Spinner size="lg" /></div>
-      ) : courses.length === 0 ? (
-        <EmptyState
-          title="No courses yet"
-          description="Create your first course to start uploading teaching materials and generating case studies."
-          action={
-            <Button
-              onClick={() => {
-                setModalError(null);
-                setShowCreate(true);
-              }}
-            >
-              Create First Course
-            </Button>
-          }
-        />
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {courses.map((course) => (
-            <Card key={course.id} className="hover:shadow-md transition-shadow cursor-pointer" padding>
-              <div
-                className="flex h-full flex-col"
-                onClick={() => navigate(`/lecturer/courses/${course.id}/materials`)}
-                id={`course-card-${course.id}`}
-              >
-                <div className="mb-2 flex items-start justify-between">
-                  <h3 className="font-semibold text-gray-900 line-clamp-2">{course.name}</h3>
-                  {course.courseCode && (
-                    <span className="ml-2 shrink-0 rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
-                      {course.courseCode}
-                    </span>
-                  )}
-                </div>
-                {course.description && (
-                  <p className="mt-1 text-sm text-gray-500 line-clamp-2">{course.description}</p>
-                )}
-                <div className="mt-auto pt-4 flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/lecturer/courses/${course.id}/materials`);
-                    }}
-                  >
-                    Materials
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/lecturer/courses/${course.id}/cases`);
-                    }}
-                  >
-                    Cases
-                  </Button>
-                </div>
+      {courses === null && !error && (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3" aria-busy="true">
+          {[0, 1, 2].map((i) => (
+            <Card key={i}>
+              <Skeleton className="mb-4 h-5 w-16" />
+              <Skeleton className="mb-3 h-6 w-3/4" />
+              <Skeleton className="mb-2 h-4 w-full" />
+              <Skeleton className="h-4 w-2/3" />
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {courses === null && error && (
+        <Card padding={false}>
+          <ErrorState description={error} onRetry={load} />
+        </Card>
+      )}
+
+      {courses && courses.length === 0 && (
+        <Card padding={false}>
+          <EmptyState
+            icon={<IconBook size={22} />}
+            title="Chưa có khóa học nào"
+            description="Tạo khóa học đầu tiên để tải tài liệu môn học và sinh Case Study cho sinh viên."
+            action={
+              <Button leftIcon={<IconPlus size={16} />} onClick={() => setCreateOpen(true)}>
+                Tạo khóa học mới
+              </Button>
+            }
+          />
+        </Card>
+      )}
+
+      {courses && courses.length > 0 && (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {courses.map((c) => (
+            <Card key={c.id} className="flex flex-col">
+              <div className="mb-4 flex items-start justify-between gap-2">
+                {c.course_code ? <Badge variant="info">{c.course_code}</Badge> : <span />}
+                <button
+                  type="button"
+                  onClick={() => setToDelete(c)}
+                  className="cursor-pointer rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-red-600"
+                  aria-label={`Xóa khóa học ${c.name}`}
+                >
+                  <IconTrash size={16} />
+                </button>
+              </div>
+              <h2 className="text-lg font-semibold leading-7 text-gray-900">{c.name}</h2>
+              <p className="mt-2 line-clamp-3 flex-1 text-sm text-gray-600">{c.description || "Chưa có mô tả."}</p>
+              <div className="mt-5 flex items-center justify-between border-t border-gray-200 pt-4 text-xs text-gray-600">
+                <span className="flex items-center gap-1.5">
+                  <IconFile size={14} /> {c.materialCount ?? "—"} tài liệu
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <IconBranch size={14} /> {c.caseCount ?? "—"} Case Study
+                </span>
+              </div>
+              <div className="mt-4 flex gap-5 text-sm font-medium">
+                <Link to={`/lecturer/courses/${c.id}`} className="flex items-center gap-1 text-blue-600 hover:text-blue-700">
+                  Tài liệu môn học <IconArrowRight size={14} />
+                </Link>
+                <Link to={`/lecturer/courses/${c.id}/cases`} className="flex items-center gap-1 text-blue-600 hover:text-blue-700">
+                  Case Study <IconArrowRight size={14} />
+                </Link>
               </div>
             </Card>
           ))}
         </div>
       )}
 
-      <Modal
-        isOpen={showCreate}
-        onClose={() => {
-          setShowCreate(false);
-          setModalError(null);
-        }}
-        title="Create New Course"
-        footer={
+      <CreateCourseDialog isOpen={createOpen} onClose={() => setCreateOpen(false)} onCreated={() => { setCreateOpen(false); load(); }} />
+
+      <ConfirmDialog
+        isOpen={!!toDelete}
+        title="Xóa khóa học?"
+        description={
           <>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                setShowCreate(false);
-                setModalError(null);
-              }}
-              disabled={creating}
-            >
-              Cancel
-            </Button>
-            <Button onClick={handleCreate} isLoading={creating} id="btn-submit-course">
-              Create
-            </Button>
+            Khóa học <strong className="text-gray-900">{toDelete?.name}</strong> cùng toàn bộ tài liệu và Case Study bên trong sẽ bị xóa vĩnh viễn. Thao tác này không thể hoàn tác.
           </>
         }
-      >
-        {modalError && <Alert variant="error" className="mb-4">{modalError}</Alert>}
-        <form onSubmit={handleCreate} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Course Name *</label>
-            <input
-              id="input-course-name"
-              disabled={creating}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              value={form.name}
-              onChange={(e) => {
-                setForm({ ...form, name: e.target.value });
-                if (modalError) setModalError(null);
-              }}
-              placeholder="e.g. Business Strategy Analysis"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Course Code</label>
-            <input
-              id="input-course-code"
-              disabled={creating}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              value={form.courseCode}
-              onChange={(e) => setForm({ ...form, courseCode: e.target.value })}
-              placeholder="e.g. BUS301"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Description</label>
-            <textarea
-              id="input-course-description"
-              disabled={creating}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={3}
-              placeholder="Optional course description"
-            />
-          </div>
-        </form>
-      </Modal>
+        confirmLabel="Xóa khóa học"
+        isLoading={deleting}
+        onConfirm={confirmDelete}
+        onClose={() => setToDelete(null)}
+      />
     </div>
+  );
+}
+
+function CreateCourseDialog({ isOpen, onClose, onCreated }: { isOpen: boolean; onClose: () => void; onCreated: () => void }) {
+  const [name, setName] = useState("");
+  const [code, setCode] = useState("");
+  const [description, setDescription] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      setName("");
+      setCode("");
+      setDescription("");
+      setError(null);
+    }
+  }, [isOpen]);
+
+  const submit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!name.trim()) return setError("Vui lòng nhập tên khóa học.");
+    setSaving(true);
+    setError(null);
+    try {
+      await lecturerApi.createCourse({ name: name.trim(), courseCode: code.trim() || undefined, description: description.trim() || undefined });
+      onCreated();
+    } catch (err) {
+      setError(apiErrorMessage(err, "Không tạo được khóa học."));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      title="Tạo khóa học mới"
+      description="Khóa học là nơi bạn tải tài liệu môn học và quản lý các Case Study."
+      footer={
+        <>
+          <Button variant="secondary" onClick={onClose} disabled={saving}>
+            Hủy
+          </Button>
+          <Button onClick={() => submit()} isLoading={saving} id="btn-submit-course">
+            Tạo khóa học
+          </Button>
+        </>
+      }
+    >
+      <form onSubmit={submit} className="space-y-4">
+        {error && <Alert variant="error">{error}</Alert>}
+        <Field label="Tên khóa học" htmlFor="course-name" required>
+          <Input id="course-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="VD: Quản lý dự án phần mềm" autoFocus />
+        </Field>
+        <Field label="Mã học phần" htmlFor="course-code" hint="Không bắt buộc. VD: CS402">
+          <Input id="course-code" value={code} onChange={(e) => setCode(e.target.value)} />
+        </Field>
+        <Field label="Mô tả" htmlFor="course-desc">
+          <Textarea id="course-desc" rows={3} value={description} onChange={(e) => setDescription(e.target.value)} />
+        </Field>
+      </form>
+    </Modal>
   );
 }

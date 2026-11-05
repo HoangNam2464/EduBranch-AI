@@ -3,14 +3,14 @@
  * Source of Truth: Proposal V1.2 & Final Migration Plan Rev 2
  */
 
-import { createBrowserRouter, useRouteError, isRouteErrorResponse, Link } from "react-router-dom";
+import { createBrowserRouter, useRouteError, isRouteErrorResponse, Link, Navigate } from "react-router-dom";
 import { PublicLayout } from "../layouts/PublicLayout";
 import { LecturerLayout } from "../layouts/LecturerLayout";
 import { StudentLayout } from "../layouts/StudentLayout";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { CoursesPage } from "../pages/lecturer/CoursesPage";
-import { MaterialsPage } from "../pages/lecturer/MaterialsPage";
+import { CourseDetailPage } from "../pages/lecturer/CourseDetailPage";
 import { CasesPage } from "../pages/lecturer/CasesPage";
 import { CaseReviewPage } from "../pages/lecturer/CaseReviewPage";
 import { StatisticsPage } from "../pages/lecturer/StatisticsPage";
@@ -22,7 +22,7 @@ import { ReflectionPage } from "../pages/student/ReflectionPage";
 import { ReviewStudyPage } from "../pages/student/ReviewStudyPage";
 import { ReviewFeedbackPage } from "../pages/student/ReviewFeedbackPage";
 import { PrivateRoute } from "../components/ui/PrivateRoute";
-import { Button } from "../components/ui";
+import { Button, IconAlert, IconFileSearch, IconLink } from "../components/ui";
 import { useAuthStore } from "../stores/authStore";
 
 /**
@@ -52,8 +52,8 @@ function RouteErrorBoundary() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-md text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-3xl text-red-600">
-          ⚠️
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-700">
+          <IconAlert size={22} />
         </div>
         <h1 className="mt-4 text-2xl font-bold text-gray-900">
           {errorStatus === 404 ? "Không tìm thấy nội dung" : "Đã xảy ra lỗi hệ thống"}
@@ -95,8 +95,8 @@ function NotFoundPage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
       <div className="w-full max-w-md text-center">
-        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-50 text-4xl">
-          🔍
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-gray-700">
+          <IconFileSearch size={22} />
         </div>
         <h1 className="mt-6 text-3xl font-extrabold text-gray-900 tracking-tight">404</h1>
         <h2 className="mt-2 text-lg font-semibold text-gray-800">
@@ -120,8 +120,8 @@ function NotFoundPage() {
 function StudentDirectLinkNotice() {
   return (
     <div className="mx-auto mt-12 max-w-lg rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
-      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-2xl">
-        🔗
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-gray-100 text-gray-700">
+        <IconLink size={22} />
       </div>
       <h2 className="mt-4 text-lg font-semibold text-gray-900">
         Yêu cầu liên kết trực tiếp từ Giảng viên
@@ -156,11 +156,15 @@ export const router = createBrowserRouter([
     ),
     errorElement: <RouteErrorBoundary />,
     children: [
+      { index: true, element: <Navigate to="courses" replace /> },
       { path: "courses", element: <CoursesPage /> },
-      { path: "courses/:courseId/materials", element: <MaterialsPage /> },
-      { path: "courses/:courseId/cases", element: <CasesPage /> },
+      { path: "courses/:courseId", element: <CourseDetailPage initialTab="materials" /> },
+      { path: "courses/:courseId/materials", element: <CourseDetailPage initialTab="materials" /> },
+      { path: "courses/:courseId/cases", element: <CourseDetailPage initialTab="cases" /> },
+      { path: "cases", element: <CasesPage /> },
       { path: "cases/:caseId/review", element: <CaseReviewPage /> },
       { path: "cases/:caseId/feedback", element: <LecturerFeedbackPage /> },
+      { path: "feedback", element: <LecturerFeedbackPage /> },
       { path: "statistics", element: <StatisticsPage /> },
     ],
   },

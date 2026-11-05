@@ -287,7 +287,7 @@ describe('CaseService', () => {
     it('returns only PUBLISHED cases to students without an ownership query', async () => {
       mockDbService.query.mockResolvedValueOnce({ rows: [] });
       await service.getCasesByCourse('course-1', 'STUDENT', 'student-1');
-      expect(mockDbService.query.mock.calls[0][0]).toContain("status = 'PUBLISHED'");
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
     });
   });
 });

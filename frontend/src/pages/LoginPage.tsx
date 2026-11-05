@@ -2,15 +2,26 @@ import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { authService } from "../services/authService";
-import { Button, Alert } from "../components/ui";
+import { Button, Alert, Input, BrandMark, IconMail, IconLock, IconArrowRight } from "../components/ui";
 import { resolveSafeReturnUrl } from "../utils/navigation";
 
 /**
- * EduBranch AI — Login Page
- *
+ * EduBranch AI — Login Page (Figma 00.3, MVP Review `135:2791`).
  * Real authentication via POST /api/v1/auth/login.
- * Dev quick-access shortcuts preserved for local testing.
+ * "Quên mật khẩu?" is Phase 2 (Figma section 08) and is not rendered.
+ * Dev quick login calls POST /auth/dev-login; shown only in `npm run dev` with VITE_ENABLE_DEV_LOGIN=true,
+ * and the backend refuses it unless NODE_ENV=development and ENABLE_DEV_LOGIN=true.
  */
+const DEV_LOGIN_VISIBLE = Boolean(import.meta.env?.DEV) && import.meta.env?.VITE_ENABLE_DEV_LOGIN === "true";
+
+function loginErrorMessage(err: any): string {
+  const status = err?.response?.status;
+  if (status === 401) return "Email hoặc mật khẩu không đúng.";
+  if (status === 429) return "Bạn đã thử đăng nhập quá nhiều lần. Vui lòng đợi một lát rồi thử lại.";
+  if (!err?.response) return "Không kết nối được máy chủ. Vui lòng kiểm tra mạng và thử lại.";
+  return "Đăng nhập không thành công. Vui lòng thử lại.";
+}
+
 export function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,151 +34,126 @@ export function LoginPage() {
 
   const stateFrom = (location.state as { from?: Location | string })?.from;
   const returnUrl = stateFrom
-    ? (typeof stateFrom === "string" ? stateFrom : `${stateFrom.pathname}${stateFrom.search || ""}${stateFrom.hash || ""}`)
+    ? typeof stateFrom === "string"
+      ? stateFrom
+      : `${stateFrom.pathname}${stateFrom.search || ""}${stateFrom.hash || ""}`
     : null;
+
+  const finish = (result: { user: any; accessToken: string }) => {
+    login(result.user, result.accessToken);
+    navigate(resolveSafeReturnUrl(returnUrl, result.user.role), { replace: true });
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      setError("Email đại học không được để trống.");
-      return;
-    }
-    if (!password) {
-      setError("Mật khẩu không được để trống.");
-      return;
-    }
-
+    if (!email.trim()) return setError("Vui lòng nhập địa chỉ email.");
+    if (!password) return setError("Vui lòng nhập mật khẩu.");
     setLoading(true);
     setError(null);
-
     try {
-      const result = await authService.login({ email: email.trim(), password });
-      login(result.user, result.accessToken);
-      const destination = resolveSafeReturnUrl(returnUrl, result.user.role);
-      navigate(destination, { replace: true });
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || "Invalid email or password.";
-      setError(msg);
+      finish(await authService.login({ email: email.trim(), password }));
+    } catch (err) {
+      setError(loginErrorMessage(err));
     } finally {
       setLoading(false);
     }
   };
 
-  // ─── Dev quick-access (bypasses real auth for local UI testing) ───────────
-  const quickAccess = (role: "LECTURER" | "STUDENT") => {
-    login(
-      {
-        id: `dev-${role.toLowerCase()}`,
-        email: `${role.toLowerCase()}@university.edu.vn`,
-        fullName: role === "LECTURER" ? "TS. Trần Giảng Viên" : "Nguyễn Văn Sinh Viên",
-        role,
-      },
-      "dev-bypass-token",
-    );
-    const destination = resolveSafeReturnUrl(returnUrl, role);
-    navigate(destination, { replace: true });
+  const quickLogin = async (role: "LECTURER" | "STUDENT") => {
+    setLoading(true);
+    setError(null);
+    try {
+      finish(await authService.devLogin(role));
+    } catch {
+      setError("Đăng nhập nhanh chưa được bật trên máy chủ, hoặc chưa chạy script seed dữ liệu demo.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">EduBranch AI</h1>
-          <p className="mt-2 text-sm text-gray-500">
-            Hệ thống học tập tình huống thực nghiệm bậc Đại học
-          </p>
+      <div className="w-full max-w-[400px]">
+        <div className="mb-6 flex flex-col items-center text-center">
+          <div className="mb-4 flex items-center gap-2.5">
+            <BrandMark size={36} />
+            <span className="text-lg font-semibold text-gray-900">EduBranch AI</span>
+          </div>
+          <h1 className="text-2xl font-semibold text-gray-900">Đăng nhập vào hệ thống</h1>
+          <p className="mt-1 text-sm text-gray-500">Dành cho Giảng viên và Sinh viên</p>
         </div>
 
-        {/* Card */}
-        <div className="rounded-xl border border-gray-200 bg-white p-8 shadow-sm">
-          {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-
+        <div className="rounded-xl border border-gray-200 bg-white p-6">
+          {error && (
+            <Alert variant="error" className="mb-4">
+              {error}
+            </Alert>
+          )}
           <form onSubmit={handleLogin} className="space-y-4" noValidate>
-            <div>
-              <label htmlFor="login-email" className="block text-sm font-medium text-gray-700">
-                Email đại học
+            <div className="space-y-1.5">
+              <label htmlFor="login-email" className="block text-sm font-medium text-gray-900">
+                Địa chỉ Email
               </label>
-              <input
-                id="login-email"
-                type="email"
-                autoComplete="email"
-                required
-                disabled={loading}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@university.edu.vn"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="login-password" className="block text-sm font-medium text-gray-700">
-                Mật khẩu
-              </label>
-              <input
-                id="login-password"
-                type="password"
-                autoComplete="current-password"
-                required
-                disabled={loading}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                           placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
-              />
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full"
-              isLoading={loading}
-              id="btn-login-submit"
-            >
-              Đăng nhập
-            </Button>
-          </form>
-
-          <p className="mt-4 text-center text-sm text-gray-500">
-            Chưa có tài khoản?{" "}
-            <Link to="/register" state={location.state} className="font-medium text-blue-600 hover:underline">
-              Đăng ký
-            </Link>
-          </p>
-
-          {/* Dev quick access (local dev only) */}
-          {import.meta.env.DEV && (
-            <div className="mt-6 border-t border-gray-200 pt-4">
-              <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
-                Truy cập nhanh (local dev only)
-              </p>
-              <div className="space-y-2">
-                <button
-                  type="button"
-                  id="btn-quick-branching"
-                  onClick={() => quickAccess("STUDENT")}
-                  className="w-full rounded border border-blue-200 bg-blue-50 px-3 py-2 text-left
-                             text-xs font-medium text-blue-800 hover:bg-blue-100 flex items-center justify-between"
-                >
-                  <span>👉 Sinh viên — <strong>Branching Study</strong></span>
-                  <span className="text-blue-600">Khám phá →</span>
-                </button>
-                <button
-                  type="button"
-                  id="btn-quick-lecturer"
-                  onClick={() => quickAccess("LECTURER")}
-                  className="w-full rounded border border-purple-200 bg-purple-50 px-3 py-2 text-left
-                             text-xs font-medium text-purple-800 hover:bg-purple-100 flex items-center justify-between"
-                >
-                  <span>👨‍🏫 Giảng viên — <strong>Quản lý học phần & Case</strong></span>
-                  <span className="text-purple-600">Quản trị →</span>
-                </button>
+              <div className="relative">
+                <IconMail size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Input
+                  id="login-email"
+                  type="email"
+                  autoComplete="email"
+                  disabled={loading}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="ten@truong.edu.vn"
+                  className="pl-9"
+                />
               </div>
             </div>
-          )}
+            <div className="space-y-1.5">
+              <label htmlFor="login-password" className="block text-sm font-medium text-gray-900">
+                Mật khẩu
+              </label>
+              <div className="relative">
+                <IconLock size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                <Input
+                  id="login-password"
+                  type="password"
+                  autoComplete="current-password"
+                  disabled={loading}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="pl-9"
+                />
+              </div>
+            </div>
+            <Button type="submit" className="w-full" size="lg" isLoading={loading} id="btn-login-submit">
+              Đăng nhập <IconArrowRight size={16} />
+            </Button>
+          </form>
         </div>
+
+        <p className="mt-5 text-center text-sm text-gray-600">
+          Chưa có tài khoản?{" "}
+          <Link to="/register" state={location.state} className="font-medium text-blue-600 hover:underline">
+            Đăng ký ngay
+          </Link>
+        </p>
+
+        {DEV_LOGIN_VISIBLE && (
+          <div className="mt-6 rounded-lg border border-dashed border-gray-300 p-4">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Đăng nhập nhanh · chỉ môi trường phát triển
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <Button variant="secondary" size="sm" id="btn-quick-lecturer" disabled={loading} onClick={() => quickLogin("LECTURER")}>
+                Giảng viên demo
+              </Button>
+              <Button variant="secondary" size="sm" id="btn-quick-branching" disabled={loading} onClick={() => quickLogin("STUDENT")}>
+                Sinh viên demo
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

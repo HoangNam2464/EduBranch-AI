@@ -17,6 +17,12 @@ export const authService = {
     return res.data.data;
   },
 
+  /** Local-development quick login (backend answers 404 unless explicitly enabled). */
+  async devLogin(role: "LECTURER" | "STUDENT"): Promise<AuthResponse> {
+    const res = await apiClient.post<{ status: string; data: AuthResponse }>("/auth/dev-login", { role });
+    return res.data.data;
+  },
+
   async getMe(): Promise<AuthResponse["user"]> {
     const res = await apiClient.get<{ status: string; data: AuthResponse["user"] }>("/users/me");
     return res.data.data;
