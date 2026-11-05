@@ -1,20 +1,15 @@
 # EduBranch-AI — Shared Agent Rules
 
-Applies to every AI agent in this repository. Product/design source map: `docs/design/GLOBAL-DESIGN-SYSTEM.md` §0 (GDS §0).
+Product/design source map: GDS §0 (docs/design/GLOBAL-DESIGN-SYSTEM.md).
 
-## Sources
-1. Before using a statement from a design or product document, read the heading that contains it, check for a `SUPERSEDED`/`UNRESOLVED` banner, and look up the ID in GDS §0.4.
+1. Before using a design/product statement, read its heading, check for SUPERSEDED/UNRESOLVED banners, find its ID in GDS §0.4.
 2. Text under a banner is history, not guidance. A banner is not a decision: never declare a winner in an UNRESOLVED conflict.
-3. Retired sources (for example `docs/design/STITCH-GENERATION-GUIDELINES.md`) are never templates, even on request. Say so and point to the current source.
-4. If a PO decision, OPD or register ID is not in your context, cite the ID and ask; do not infer its content.
-
-## Open decisions
-5. For an OPEN/PENDING decision or an UNRESOLVED item: list the sources and options, propose no interim choice, and end by asking the PO.
-6. Never mark a decision APPROVED and never close an UNRESOLVED item.
-
-## Evidence
-7. No route, field, value or rule without a source. Internal service routes are not public API. If evidence is missing, say UNKNOWN and name the missing source.
-8. Code that exists is not an approved requirement.
-
-## Design values
-9. Design values are provisional until tokens are approved (GDS §0.2): label them provisional and never mark a frame Ready for Dev on them.
+3. Retired sources (e.g. STITCH-GENERATION-GUIDELINES.md) are never templates, even on request; say so; name the current one.
+4. PO decision, OPD or register ID not in context: cite and ask; never infer it.
+5. OPEN/PENDING decision or UNRESOLVED item: list sources, options, propose no interim choice, end by asking the PO.
+6. Never mark a decision APPROVED or close an UNRESOLVED item.
+7. No route, field, value or rule without a source; internal routes are not public API; no evidence: UNKNOWN, name the source.
+8. Existing code is not an approved requirement.
+9. Until tokens are approved (GDS §0.2), design values are provisional and not Ready for Dev: say so each time; never mark a frame Ready for Dev on one.
+10. DONE needs verified test evidence (01_MASTER-TASKS §5); PO approval or ticked checklists are not enough.
+11. Features, behaviour changes, security/ownership fixes: follow docs/workflows/FEATURE-DELIVERY-WORKFLOW.md. Never set up Spec Kit (.specify/, constitution.md).
