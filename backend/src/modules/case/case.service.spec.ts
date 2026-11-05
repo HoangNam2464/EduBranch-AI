@@ -268,6 +268,31 @@ describe('CaseService', () => {
     });
   });
 
+  describe('updateCase option ownership (WP-8 verifier finding)', () => {
+    beforeEach(() => {
+      mockDbService.query.mockReset();
+      mockDbClient.query.mockReset();
+    });
+
+    it('scopes every option update to nodes of the case being edited', async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [{ status: 'DRAFT', lecturer_id: 'lecturer-1' }] });
+      mockDbClient.query.mockResolvedValue({ rows: [] });
+      jest.spyOn(service, 'getCaseById').mockResolvedValueOnce({ id: 'case-own' } as any);
+
+      await service.updateCase('case-own', 'lecturer-1', {
+        nodes: [{ id: 'node-of-other-case', situation: 'x', options: [{ id: 'opt-of-other-case', text: 'injected', consequence: 'injected' }] }],
+      });
+
+      const optionCall = mockDbClient.query.mock.calls.find((c) => String(c[0]).includes('UPDATE case_options'));
+      expect(optionCall).toBeDefined();
+      expect(optionCall![0]).toContain('n.case_id = $5');
+      expect(optionCall![1]).toEqual(['injected', 'injected', 'opt-of-other-case', 'node-of-other-case', 'case-own']);
+      const nodeCall = mockDbClient.query.mock.calls.find((c) => String(c[0]).includes('UPDATE case_nodes'));
+      expect(nodeCall![0]).toContain('case_id = $3');
+      expect(nodeCall![1][2]).toBe('case-own');
+    });
+  });
+
   describe('getCasesByCourse ownership', () => {
     beforeEach(() => mockDbService.query.mockReset());
 

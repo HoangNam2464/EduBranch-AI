@@ -268,4 +268,34 @@ describe("Midterm slice J1 + J2 (live stack)", () => {
     expect([403, 404]).toContain((await call("GET", `/cases/${caseId}`, student)).status);
     expect((await call("PATCH", `/cases/${caseId}/status`, lecturer, { status: "PUBLISHED" })).status).toBe(400);
   });
+
+  it("J1.6 another lecturer cannot overwrite this case's options through their own case (WP-8 finding)", async () => {
+    // The other lecturer builds a DRAFT case of their own.
+    const course = await call("POST", "/courses", otherLecturer, { name: `E2E other ${RUN}`, courseCode: `OTH${RUN}`.toUpperCase() });
+    expect(course.status).toBe(201);
+    const form = new FormData();
+    form.append("file", new Blob([new Uint8Array(makePdf(MATERIAL))], { type: "application/pdf" }), "other.pdf");
+    const mat = await call("POST", `/courses/${course.body.id}/materials`, otherLecturer, undefined, form);
+    expect(mat.status).toBe(201);
+    const gen = await call("POST", "/cases/generate", otherLecturer, { courseId: course.body.id, materialIds: [mat.body.id], numNodes: 5 });
+    expect([200, 201]).toContain(gen.status);
+    const ownCaseId = gen.body.id ?? gen.body.caseId;
+
+    // Target: a node and option of the victim's case.
+    const victim = await call("GET", `/cases/${caseId}`, lecturer);
+    const node = victim.body.nodes.find((n: any) => n.options.length > 0);
+    const option = node.options[0];
+
+    const attack = await call("PUT", `/cases/${ownCaseId}`, otherLecturer, {
+      nodes: [{ id: node.id, situation: "INJECTED", options: [{ id: option.id, text: "INJECTED", consequence: "INJECTED" }] }],
+    });
+    expect(attack.status).toBeLessThan(500);
+
+    const after = await call("GET", `/cases/${caseId}`, lecturer);
+    const n2 = after.body.nodes.find((n: any) => n.id === node.id);
+    const o2 = n2.options.find((o: any) => o.id === option.id);
+    expect(n2.situation).toBe(node.situation);
+    expect(o2.option_text).toBe(option.option_text);
+    expect(o2.consequence).toBe(option.consequence);
+  });
 });

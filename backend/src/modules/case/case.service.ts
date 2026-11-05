@@ -265,9 +265,12 @@ export class CaseService {
             for (const option of node.options) {
               if (option.id) {
                 const optText = option.option_text || option.text;
+                // Ownership: the option must belong to a node of THIS case. Never trust node.id from the body alone.
                 await client.query(
-                  "UPDATE case_options SET option_text = $1, consequence = $2 WHERE id = $3 AND node_id = $4",
-                  [optText, option.consequence, option.id, node.id],
+                  `UPDATE case_options o SET option_text = $1, consequence = $2
+                   FROM case_nodes n
+                   WHERE o.id = $3 AND o.node_id = $4 AND n.id = o.node_id AND n.case_id = $5`,
+                  [optText, option.consequence, option.id, node.id, caseId],
                 );
               }
             }
