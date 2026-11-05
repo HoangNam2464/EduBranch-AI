@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     # =========================================================================
     # LLM Provider
     # =========================================================================
-    ai_provider: Literal["openai", "gemini"] = "gemini"
+    ai_provider: Literal["openai", "gemini", "local"] = "gemini"
 
     # OpenAI
     openai_api_key: str = ""

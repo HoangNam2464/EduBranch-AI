@@ -6,7 +6,8 @@ from typing import Any
 
 from app.core.config import settings
 from app.core.logging import logger
-from app.providers.factory import get_provider
+from app.providers.factory import get_provider, has_real_provider_key
+from app.generation.demo_case import build_demo_case
 from app.retrieval.service import retrieve_chunks, build_rag_context
 from app.generation.schemas.requests import CaseGenerationRequest, CaseGenerationResponse
 from app.generation.schemas.decision_tree import CaseGenerationOutput, CASE_GENERATION_JSON_SCHEMA
@@ -38,13 +39,9 @@ async def generate_case(request: CaseGenerationRequest) -> CaseGenerationRespons
     rag_context = build_rag_context(chunks)
     source_chunk_ids = [c.chunk_id for c in chunks]
 
-    # 2. Check if we have an API key to do real generation, else mock
-    has_api_key = False
-    if settings.ai_provider == "openai" and settings.openai_api_key and not settings.openai_api_key.startswith("ci-"):
-        has_api_key = True
-    elif settings.ai_provider == "gemini" and settings.gemini_api_key and not settings.gemini_api_key.startswith("ci-"):
-        has_api_key = True
-        
+    # 2. Real generation needs an API key; otherwise build an offline demo case from the context
+    has_api_key = has_real_provider_key()
+
     prompt = f"""
 Topic Hint: {query}
 Approximate target nodes: {request.num_nodes}
@@ -70,35 +67,9 @@ The case must focus on experiential problem-solving, critical reasoning, and pra
         # Validate through Pydantic model
         case_output = CaseGenerationOutput(**raw_output)
     else:
-        # Mock / Test mode
-        logger.info("generate_case_mock_mode")
-        case_output = CaseGenerationOutput(
-            title="Mock University Case",
-            description="This is a mock generated case for testing.",
-            root_node_index=0,
-            nodes=[
-                {
-                    "situation": "This is the initial situation for the university case.",
-                    "options": [
-                        {
-                            "text": "Choose path A",
-                            "consequence": "Consequence for path A.",
-                            "next_node_index": 1
-                        },
-                        {
-                            "text": "Choose path B",
-                            "consequence": "Consequence for path B.",
-                            "next_node_index": None
-                        }
-                    ]
-                },
-                {
-                    "situation": "This is the second situation.",
-                    "options": []
-                }
-            ]
-        )
-        
+        logger.info("generate_case_local_demo_mode")
+        case_output = CaseGenerationOutput(**build_demo_case(query, [c.text for c in chunks]))
+
     # Serialize nodes
     serialized_nodes = [node.model_dump() for node in case_output.nodes]
     
