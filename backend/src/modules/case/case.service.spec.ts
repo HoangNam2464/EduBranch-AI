@@ -251,5 +251,43 @@ describe('CaseService', () => {
       expect(result.nodes).toBeDefined();
       expect(result.nodes[0].options[0].consequence).toBe('Severe stock drop');
     });
+
+    it('should forbid a lecturer from reading a case in another lecturer\'s course', async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-2' }],
+      });
+      await expect(service.getCaseById('case-1', 'LECTURER', 'lecturer-1')).rejects.toThrow(ForbiddenException);
+      expect(mockDbService.query).toHaveBeenCalledTimes(1); // tree never loaded
+    });
+
+    it('should forbid a lecturer read without an authenticated user id', async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }],
+      });
+      await expect(service.getCaseById('case-1', 'LECTURER')).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('getCasesByCourse ownership', () => {
+    beforeEach(() => mockDbService.query.mockReset());
+
+    it('lists cases for the owning lecturer', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ lecturer_id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1' }] });
+      const rows = await service.getCasesByCourse('course-1', 'LECTURER', 'lecturer-1');
+      expect(rows).toHaveLength(1);
+    });
+
+    it('forbids listing another lecturer\'s course', async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [{ lecturer_id: 'lecturer-2' }] });
+      await expect(service.getCasesByCourse('course-1', 'LECTURER', 'lecturer-1')).rejects.toThrow(ForbiddenException);
+    });
+
+    it('returns only PUBLISHED cases to students without an ownership query', async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [] });
+      await service.getCasesByCourse('course-1', 'STUDENT', 'student-1');
+      expect(mockDbService.query.mock.calls[0][0]).toContain("status = 'PUBLISHED'");
+    });
   });
 });

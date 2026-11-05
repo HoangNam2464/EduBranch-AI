@@ -63,7 +63,7 @@ describe('CaseController', () => {
       const result = await controller.getCasesByCourse('c1', { id: 'student-1', role: 'STUDENT' });
 
       expect(result).toEqual({ status: 'SUCCESS', data: [] });
-      expect(mockCaseService.getCasesByCourse).toHaveBeenCalledWith('c1', 'STUDENT');
+      expect(mockCaseService.getCasesByCourse).toHaveBeenCalledWith('c1', 'STUDENT', 'student-1');
     });
   });
 

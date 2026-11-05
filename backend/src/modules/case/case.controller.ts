@@ -56,7 +56,7 @@ export class CaseController {
     @Param("courseId") courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
-    const cases = await this.caseService.getCasesByCourse(courseId, user.role);
+    const cases = await this.caseService.getCasesByCourse(courseId, user.role, user.id);
     return {
       status: "SUCCESS",
       data: cases,

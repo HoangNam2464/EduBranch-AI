@@ -118,7 +118,7 @@ export class CaseService {
     }
   }
 
-  async getCaseById(caseId: string, role?: string, _userId?: string) {
+  async getCaseById(caseId: string, role?: string, userId?: string) {
     const caseRes = await this.db.query(
       `SELECT c.*, co.lecturer_id
        FROM cases c
@@ -148,6 +148,11 @@ export class CaseService {
         created_at: caseData.created_at,
         updated_at: caseData.updated_at,
       };
+    }
+
+    // BE-017 / BE-019: a lecturer may read the full tree only for cases in their own courses
+    if (!userId || caseData.lecturer_id !== userId) {
+      throw new ForbiddenException("You can only view cases in your own courses");
     }
 
     // For lecturers: retrieve full decision tree for ReactFlow review editor
@@ -180,7 +185,15 @@ export class CaseService {
     };
   }
 
-  async getCasesByCourse(courseId: string, role?: string) {
+  async getCasesByCourse(courseId: string, role?: string, userId?: string) {
+    if (role !== "STUDENT") {
+      // BE-017: lecturers list cases only in their own courses
+      const courseRes = await this.db.query("SELECT lecturer_id FROM courses WHERE id = $1", [courseId]);
+      if (courseRes.rows.length === 0) throw new NotFoundException(`Course ${courseId} not found`);
+      if (!userId || courseRes.rows[0].lecturer_id !== userId) {
+        throw new ForbiddenException("You can only view cases in your own courses");
+      }
+    }
     let query = "SELECT * FROM cases WHERE course_id = $1";
     const params: any[] = [courseId];
 
