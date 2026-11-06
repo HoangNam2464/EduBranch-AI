@@ -51,6 +51,11 @@ export class MinioService implements OnModuleInit {
     this.logger.log(`Uploaded object to MinIO: ${this.bucket}/${objectKey} (${size} bytes)`);
   }
 
+  async removeObject(objectKey: string): Promise<void> {
+    await this.client.removeObject(this.bucket, objectKey);
+    this.logger.log(`Removed object from MinIO: ${this.bucket}/${objectKey}`);
+  }
+
   getBucketName(): string {
     return this.bucket;
   }
