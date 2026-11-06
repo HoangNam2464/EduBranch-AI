@@ -5,6 +5,44 @@
 
 ---
 
+## 🚀 Quick Start: Cài đặt Môi trường Phát triển (Dành cho thành viên)
+
+### 1. Kích hoạt Git Hooks bảo vệ mã nguồn (Bắt buộc chạy 1 lần)
+Để tự động ngăn chặn commit file nhạy cảm (`.env`), kiểm tra đúng chuẩn commit message và chặn đặt sai tên nhánh:
+- **Trên Windows (PowerShell)**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\scripts\setup-git.ps1
+  ```
+- **Trên macOS / Linux / Git Bash**:
+  ```bash
+  chmod +x scripts/setup-git.sh
+  ./scripts/setup-git.sh
+  ```
+*(Lệnh trên sẽ thiết lập `git config core.hooksPath .githooks`, kích hoạt `pre-commit`, `commit-msg` và `pre-push` hooks).*
+
+### 2. Khởi chạy toàn bộ hệ thống bằng Docker Compose
+Dự án đã tích hợp đầy đủ cả hạ tầng dữ liệu và ứng dụng (Postgres, Redis, MinIO, Backend Gateway, Frontend Web App):
+```bash
+# Khởi động toàn bộ dịch vụ và build mới nhất
+docker compose up --build -d
+
+# Xem log các dịch vụ
+docker compose logs -f
+
+# Dừng hệ thống
+docker compose down
+```
+
+| Dịch vụ | URL / Port | Tài khoản mặc định |
+| :--- | :--- | :--- |
+| **Frontend Web App** | `http://localhost:5173` | — |
+| **Backend Gateway API** | `http://localhost:8080/api/v1` | — |
+| **MinIO Console** | `http://localhost:9001` | `minioadmin` / `changeme_minio_password` |
+| **PostgreSQL 16 + pgvector** | `localhost:5432` | `edubranch` / `changeme_db_password` / DB: `edubranch_ai` |
+| **Redis 7** | `localhost:6379` | pass: `changeme_redis_password` |
+
+---
+
 ## 🌿 1. Git Branching Strategy
 
 EduBranch-AI uses **Git Feature Branch Workflow**. **Never** push code directly to `main` or `develop`.
