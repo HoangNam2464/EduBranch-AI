@@ -173,7 +173,11 @@ docs/<topic>             →  develop
 ### 7.2. Strict Branch Naming Rules (MANDATORY)
 1. **TUYỆT ĐỐI KHÔNG dùng mã task** (như `TASK-123`, `BE-001`, `FE-010`, `DES-001`, `EBA-105`) để đặt tên nhánh Git.
 2. **Tên nhánh BẮT BUỘC theo domain/feature chung**: format `feature/<feature-name>` (ví dụ: `feature/auth`, `feature/branching-attempt`, `feature/course`, `feature/material`, `feature/case-review`, `docs/ui-standards`).
-3. **Tính bền vững của nhánh**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task đơn lẻ.
+3. **Quy ước phân tách Backend & Frontend**:
+   - **Frontend (hoặc tính năng chung)**: Dùng format chuẩn `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`).
+   - **Backend khi phát triển riêng biệt**: Bắt buộc thêm hậu tố `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
+   - **Quy trình chuẩn**: Cả hai nhánh đều phân nhánh từ `develop` mới nhất (`git checkout develop && git pull`), kiểm thử độc lập qua Docker (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
+4. **Tính bền vững của nhánh**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task đơn lẻ.
 
 ### 7.3. Commit Convention & Task ID Rules (MANDATORY)
 - **Format chuẩn**: `<type>(<scope>): <short description> [<TASK-ID>]` (hoặc `<type>(<scope>): <short description>` đối với commit tài liệu/hạ tầng chung không gắn mã task riêng lẻ).

@@ -47,9 +47,9 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
     echo "   Ten nhanh BAT BUOC theo domain/feature chung: format 'feature/<feature-name>'"
     echo ""
     echo "   Chuan dung:"
-    echo "     - feature/material (thay vi feature/FE-003)"
-    echo "     - feature/course   (thay vi feature/BE-003)"
-    echo "     - feature/auth     (thay vi feature/BE-001)"
+    echo "     - Frontend / Chung: feature/material (thay vi feature/FE-003)"
+    echo "     - Backend rieng:    feature/material-backend (thay vi BE-material-... hoac feature/BE-004)"
+    echo "     - Fix bug:          fix/material-upload"
     echo ""
     exit 1
   fi
