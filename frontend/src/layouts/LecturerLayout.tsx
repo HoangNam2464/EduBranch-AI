@@ -2,107 +2,112 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../stores/authStore";
 import { EduBranchLogo } from "../components/ui";
 
-// ── Nav items for Lecturer ───────────────────────────────────────────────────
+// ── Nav items for Lecturer matching Figma Frame [309:798] ─────────────────────
 const NAV_ITEMS = [
   {
-    label: "Tổng quan",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect width="7" height="7" x="3" y="3" rx="1" />
-        <rect width="7" height="7" x="14" y="3" rx="1" />
-        <rect width="7" height="7" x="14" y="14" rx="1" />
-        <rect width="7" height="7" x="3" y="14" rx="1" />
-      </svg>
-    ),
-    to: "/lecturer/dashboard",
-    match: (p: string) => p.includes("/lecturer/dashboard") || p === "/lecturer",
-  },
-  {
     label: "Khóa học",
+    to: "/lecturer/courses",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
       </svg>
     ),
-    to: "/lecturer/courses",
     match: (p: string) => p.includes("/lecturer/courses"),
   },
   {
     label: "Case Study",
+    to: "/lecturer/cases",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
         <line x1="6" y1="3" x2="6" y2="15" />
         <circle cx="18" cy="6" r="3" />
         <circle cx="6" cy="18" r="3" />
         <path d="M18 9a9 9 0 0 1-9 9" />
       </svg>
     ),
-    to: "/lecturer/cases",
     match: (p: string) => p.includes("/cases"),
   },
   {
     label: "Phản hồi sinh viên",
+    to: "/lecturer/feedback",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
       </svg>
     ),
-    to: "/lecturer/feedback",
     match: (p: string) => p.includes("/feedback"),
   },
   {
     label: "Thống kê học tập",
+    to: "/lecturer/statistics",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
         <line x1="18" y1="20" x2="18" y2="10" />
         <line x1="12" y1="20" x2="12" y2="4" />
         <line x1="6" y1="20" x2="6" y2="14" />
       </svg>
     ),
-    to: "/lecturer/statistics",
     match: (p: string) => p.includes("/statistics"),
   },
 ];
-
-
 
 export function LecturerLayout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuthStore();
 
-  const displayName = user?.fullName ?? "TS. Nguyễn Văn An";
+  const displayName = user?.fullName || "TS. Nguyễn Văn An";
+  const userInitials = displayName
+    .split(" ")
+    .filter(Boolean)
+    .slice(-2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase() || "NA";
 
   function handleLogout() {
     logout();
     navigate("/login");
   }
 
+  // Derive dynamic page title for top bar
+  const pageTitle = location.pathname.includes("/rag")
+    ? "RAG Source Inspector"
+    : location.pathname.includes("/materials")
+    ? "Tài liệu học phần"
+    : location.pathname.includes("/cases/review") || location.pathname.includes("/case-review")
+    ? "Biên tập kịch bản tình huống"
+    : location.pathname.includes("/cases")
+    ? "Quản lý Case Study"
+    : location.pathname.includes("/feedback")
+    ? "Phản hồi học tập sinh viên"
+    : location.pathname.includes("/statistics")
+    ? "Thống kê phổ quyết định & phân tích học phần"
+    : "Quản lý khóa học";
+
   return (
-    <div className="min-h-screen flex bg-[#EEF2F6] text-slate-800 antialiased">
-      {/* ── Left Sidebar (Figma: soft grey background matching canvas) ── */}
-      <aside
-        className="fixed inset-y-0 left-0 flex flex-col bg-[#EEF2F6] z-20 px-4 py-5 select-none"
-        style={{ width: 230 }}
-      >
-        {/* Brand */}
-        <div className="px-2 pb-5">
+    <div className="min-h-screen flex bg-[#F9FAFB] text-gray-900 font-sans antialiased">
+      {/* ─────────────────────────────────────────────────────────────
+          1. LEFT SIDEBAR (Figma: 240px, bg-white, border-r border-gray-200)
+      ───────────────────────────────────────────────────────────── */}
+      <aside className="fixed inset-y-0 left-0 w-60 bg-white border-r border-gray-200 flex flex-col z-30 select-none">
+        {/* Brand Area */}
+        <div className="h-16 px-5 border-b border-gray-200 flex items-center justify-between">
           <Link to="/lecturer/courses" className="flex items-center gap-2.5">
-            <EduBranchLogo size={32} />
-            <div>
-              <span className="text-[15px] font-bold text-slate-900 tracking-tight leading-none block">
+            <EduBranchLogo size={28} />
+            <div className="flex flex-col">
+              <span className="text-base font-semibold text-gray-900 tracking-tight leading-none">
                 EduBranch AI
               </span>
-              <span className="text-[9px] font-semibold text-slate-400 uppercase tracking-widest mt-1 block">
-                KHÔNG GIAN GIẢNG VIÊN
+              <span className="text-[11px] font-medium text-gray-500 mt-1 uppercase tracking-wider">
+                Giảng viên
               </span>
             </div>
           </Link>
         </div>
 
-        {/* Navigation items (Figma: Active is solid navy blue #1E3A8A with white text) */}
-        <nav className="flex-1 space-y-1.5 pt-2">
+        {/* Primary Navigation */}
+        <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
           {NAV_ITEMS.map((item) => {
             const active = item.match(location.pathname);
             return (
@@ -110,15 +115,16 @@ export function LecturerLayout() {
                 key={item.label}
                 to={item.to}
                 className={`
-                  flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all
+                  flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium transition-colors
                   ${
                     active
-                      ? "bg-[#1E3A8A] text-white shadow-xs"
-                      : "text-slate-600 hover:bg-slate-200/60 hover:text-slate-900"
+                      ? "bg-blue-50 text-blue-600 font-semibold"
+                      : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
                   }
                 `}
+                aria-current={active ? "page" : undefined}
               >
-                <span className={active ? "text-white" : "text-slate-400"}>
+                <span className={active ? "text-blue-600" : "text-gray-400"}>
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
@@ -128,146 +134,93 @@ export function LecturerLayout() {
         </nav>
 
         {/* Bottom User Area */}
-        <div className="pt-4 border-t border-slate-200/80 px-2 space-y-3">
-          <div className="flex items-center gap-2.5">
-            <Link
-              to="/lecturer/profile"
-              className="flex h-9 w-9 items-center justify-center rounded-xl overflow-hidden bg-blue-100 text-xs font-bold text-[#1E3A8A] shrink-0 border border-slate-200/60 hover:opacity-85 transition"
-              title="Chỉnh sửa Hồ sơ"
-            >
-              {user?.avatarUrl ? (
-                <img src={user.avatarUrl} alt={displayName} className="w-full h-full object-cover" />
-              ) : (
-                (displayName.charAt(0) || "N").toUpperCase()
-              )}
-            </Link>
+        <div className="p-4 border-t border-gray-200 space-y-3 bg-white">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-md bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-xs shrink-0">
+              {userInitials}
+            </div>
             <div className="min-w-0 flex-1">
-              <Link to="/lecturer/profile" className="hover:underline">
-                <p className="text-xs font-bold text-slate-900 truncate leading-tight">
-                  {displayName}
-                </p>
-              </Link>
-              <p className="text-[10px] text-slate-400 truncate mt-0.5">
-                {user?.email ?? "an.nguyen@duytan.edu.vn"}
+              <p className="text-sm font-medium text-gray-900 truncate leading-tight">
+                {displayName}
+              </p>
+              <p className="text-xs text-gray-500 truncate mt-0.5">
+                {user?.email || "an.nguyen@duytan.edu.vn"}
               </p>
             </div>
           </div>
 
           <button
+            type="button"
             onClick={handleLogout}
-            className="flex items-center gap-2 text-xs font-medium text-slate-500 hover:text-red-600 transition cursor-pointer pt-1"
+            className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-xs font-medium text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
           >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
             <span>Đăng xuất</span>
           </button>
         </div>
       </aside>
 
-      {/* ── Main Workspace Area ── */}
-      <div className="flex-1 flex flex-col min-h-screen pl-[230px] pr-4 py-4">
-        {/* White Rounded Container Card (Figma: all content sits inside this large white card) */}
-        <div className="flex-1 flex flex-col rounded-2xl bg-white border border-slate-200/80 shadow-xs p-6">
-          {/* Header Bar inside white card */}
-          <header className="flex items-center justify-between pb-6 mb-6 border-b border-slate-100">
-            {/* Page title context */}
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg font-bold text-slate-900 tracking-tight">
-                {location.pathname.includes("/rag")
-                  ? "RAG Source Inspector"
-                  : location.pathname.includes("/materials")
-                  ? "Quản lý tài liệu môn học"
-                  : location.pathname.includes("/cases")
-                  ? "Quản lý Case Study"
-                  : "Quản lý khóa học"}
-              </h1>
-            </div>
-
-            {/* Right Tools & User Info */}
-            <div className="flex items-center gap-3">
-              {/* Search Box */}
-              <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 w-52 shadow-2xs">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm..."
-                  className="w-full bg-transparent outline-none placeholder-slate-400 text-xs"
-                />
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
-                  <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                </svg>
-              </div>
-
-              {/* Notification Bell Button */}
-              <button
-                className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#EEF2F6] text-slate-600 hover:bg-slate-200/70 transition cursor-pointer"
-                title="Thông báo"
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
-                </svg>
-              </button>
-
-              {/* Settings Gear Button */}
-              <Link
-                to="/lecturer/profile"
-                className={`flex h-8 w-8 items-center justify-center rounded-xl transition cursor-pointer ${
-                  location.pathname === "/lecturer/profile"
-                    ? "bg-[#1E3A8A] text-white"
-                    : "bg-[#EEF2F6] text-slate-600 hover:bg-slate-200/70"
-                }`}
-                title="Cài đặt & Chỉnh sửa Hồ sơ"
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="3" />
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                </svg>
-              </Link>
-
-              {/* User Avatar Chip */}
-              <Link
-                to="/lecturer/profile"
-                className="flex items-center gap-2.5 pl-3 border-l border-slate-200 hover:opacity-85 transition cursor-pointer"
-                title="Xem & Chỉnh sửa Hồ sơ"
-              >
-                <div className="flex h-8 w-8 items-center justify-center rounded-xl overflow-hidden bg-purple-100 text-xs font-bold text-purple-700 shrink-0 border border-slate-200/60">
-                  {user?.avatarUrl ? (
-                    <img src={user.avatarUrl} alt={displayName} className="w-full h-full object-cover" />
-                  ) : (
-                    (displayName.charAt(0) || "N").toUpperCase()
-                  )}
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-900 leading-tight">
-                    {displayName}
-                  </p>
-                  <p className="text-[10px] text-slate-400 leading-tight">
-                    Giảng viên
-                  </p>
-                </div>
-              </Link>
-            </div>
-          </header>
-
-          {/* Child Page Content */}
-          <main className="flex-1">
-            <Outlet />
-          </main>
-        </div>
-
-        {/* Footer outside/below the card (Figma footer spec) */}
-        <footer className="pt-3 pb-1 px-3 flex items-center justify-between text-[11px] text-slate-400">
-          <span>© 2026 EduBranch AI</span>
-          <div className="flex items-center gap-4">
-            <a href="#" className="hover:text-slate-600 transition">Chính sách bảo mật</a>
-            <a href="#" className="hover:text-slate-600 transition">Điều khoản sử dụng</a>
-            <a href="mailto:support@edubranch.ai" className="hover:text-slate-600 transition">support@edubranch.ai</a>
-            <span>Đồ án C1SE.65 · Trường Đại học Duy Tân</span>
+      {/* ─────────────────────────────────────────────────────────────
+          2. MAIN WORKSPACE AREA (Offset by 240px)
+      ───────────────────────────────────────────────────────────── */}
+      <div className="flex-1 min-w-0 pl-60 flex flex-col min-h-screen">
+        {/* Top Header Bar */}
+        <header className="h-16 bg-white border-b border-gray-200 px-8 flex items-center justify-between sticky top-0 z-20">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-gray-900 tracking-tight">
+              {pageTitle}
+            </h1>
           </div>
-        </footer>
+
+          {/* Right Header Actions */}
+          <div className="flex items-center gap-4">
+            {/* Global Search Bar */}
+            <div className="relative w-64">
+              <input
+                type="text"
+                placeholder="Tìm kiếm học phần, case..."
+                className="w-full h-9 pl-9 pr-3 text-xs bg-gray-50 border border-gray-200 rounded-md placeholder-gray-400 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-colors"
+              />
+              <svg className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </div>
+
+            {/* Notification Bell */}
+            <button
+              type="button"
+              aria-label="Thông báo hệ thống"
+              className="w-9 h-9 rounded-md border border-gray-200 hover:bg-gray-100 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+            </button>
+
+            {/* User Chip */}
+            <div className="flex items-center gap-2 pl-2 border-l border-gray-200">
+              <div className="w-8 h-8 rounded-md bg-blue-100 text-blue-700 flex items-center justify-center font-semibold text-xs">
+                {userInitials}
+              </div>
+              <div className="hidden sm:block text-left">
+                <span className="block text-xs font-semibold text-gray-900 leading-tight">
+                  {displayName}
+                </span>
+                <span className="block text-[11px] text-gray-500">
+                  Giảng viên
+                </span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Page Content Container */}
+        <main className="flex-1 p-8">
+          <Outlet />
+        </main>
       </div>
     </div>
   );
