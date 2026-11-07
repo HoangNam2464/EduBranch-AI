@@ -18,6 +18,7 @@ describe("MaterialController", () => {
     putObject: jest.fn(),
     removeObject: jest.fn(),
     getBucketName: jest.fn().mockReturnValue("edubranch-materials"),
+    generateSecureObjectKey: jest.fn().mockReturnValue("materials/course-123/uuid/file.pdf"),
   };
 
   const mockAiClient = {

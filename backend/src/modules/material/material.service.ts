@@ -62,10 +62,12 @@ export class MaterialService {
     }
 
     const materialId = randomUUID();
-    const safeFilename = file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const objectKey = `materials/${courseId}/${materialId}/${safeFilename}`;
+    const objectKey =
+      typeof this.minio.generateSecureObjectKey === "function"
+        ? this.minio.generateSecureObjectKey(courseId, file.originalname)
+        : `materials/${courseId}/${randomUUID()}/${file.originalname}`;
 
-    // 1. Upload to MinIO
+    // 1. Upload to MinIO (AC-1, AC-2, AC-3)
     await this.minio.putObject(
       objectKey,
       file.buffer,
