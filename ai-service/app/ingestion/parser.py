@@ -10,6 +10,7 @@ Flow 1 implementation: Material Ingestion & RAG.
 import io
 import re
 import unicodedata
+import zipfile
 from pathlib import Path
 
 from app.core.exceptions import DocumentParsingException
@@ -155,23 +156,81 @@ class DocumentParser:
             raise DocumentParsingException(f"DOCX parsing failed: {e}") from e
 
     def _parse_docx_bytes(self, content: bytes) -> str:
+        """
+        Parse DOCX bytes into plain text, preserving paragraph structure, headings, and tables.
+
+        Raises:
+            DocumentParsingException: if file is empty, corrupted, invalid DOCX/ZIP format,
+                                      or has no extractable text.
+        """
         try:
             from docx import Document
+            from docx.opc.exceptions import PackageNotFoundError, OpcError
+            from docx.text.paragraph import Paragraph
+            from docx.table import Table
         except ImportError as e:
             raise DocumentParsingException("python-docx is not installed") from e
 
+        # AC-3: Check for empty bytes
+        if not content or len(content.strip()) == 0:
+            raise DocumentParsingException("DOCX file is empty")
+
         try:
             doc = Document(io.BytesIO(content))
-            paragraphs = [para.text for para in doc.paragraphs if para.text.strip()]
-            full_text = "\n".join(paragraphs)
-            cleaned = self._clean_text(full_text)
+            sections: list[str] = []
+
+            # AC-2: Iterate over document body to preserve exact sequential flow of headings, paragraphs, and tables
+            if hasattr(doc, "element") and hasattr(doc.element, "body") and doc.element.body is not None:
+                for child in doc.element.body:
+                    if child.tag.endswith("p"):
+                        p = Paragraph(child, doc)
+                        text = p.text.strip()
+                        if text:
+                            # Preserve heading structure if styled as heading or title
+                            style_name = getattr(p.style, "name", "") or ""
+                            if style_name.startswith("Heading 1") or style_name.lower() == "title":
+                                sections.append(f"# {text}")
+                            elif style_name.startswith("Heading 2"):
+                                sections.append(f"## {text}")
+                            elif style_name.startswith("Heading 3"):
+                                sections.append(f"### {text}")
+                            elif style_name.startswith("Heading"):
+                                sections.append(f"#### {text}")
+                            else:
+                                sections.append(text)
+                    elif child.tag.endswith("tbl"):
+                        t = Table(child, doc)
+                        table_lines: list[str] = []
+                        for row in t.rows:
+                            row_cells = [cell.text.strip() for cell in row.cells]
+                            if any(row_cells):
+                                table_lines.append(" | ".join(row_cells))
+                        if table_lines:
+                            sections.append("\n".join(table_lines))
+            else:
+                for para in doc.paragraphs:
+                    text = para.text.strip()
+                    if text:
+                        sections.append(text)
+
+            combined_text = "\n\n".join(sections)
+            cleaned = self._clean_text(combined_text)
+
+            # AC-3: Reject documents with no extractable text
             if not cleaned.strip():
                 raise DocumentParsingException("No extractable text found in DOCX")
 
-            logger.info("docx_parsed", paragraph_count=len(paragraphs), char_count=len(cleaned))
+            logger.info("docx_parsed", section_count=len(sections), char_count=len(cleaned))
             return cleaned
+
         except DocumentParsingException:
             raise
+        except (PackageNotFoundError, OpcError) as e:
+            raise DocumentParsingException(f"Corrupted or invalid DOCX file: {e}") from e
+        except zipfile.BadZipFile as e:
+            raise DocumentParsingException(f"Corrupted or invalid DOCX file (not a valid zip package): {e}") from e
+        except KeyError as e:
+            raise DocumentParsingException(f"Invalid DOCX structure (missing required document components): {e}") from e
         except Exception as e:
             raise DocumentParsingException(f"DOCX parsing failed: {e}") from e
 

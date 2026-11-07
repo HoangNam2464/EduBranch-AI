@@ -3,13 +3,14 @@ EduBranch AI — Unit Tests for Document Parser.
 
 Tests PDF and DOCX parsing without requiring real external files (uses synthetic in-memory data).
 Covers:
-- Multi-page PDF text extraction (AC-1)
-- Whitespace cleanup, control character removal, and UTF-8 NFC normalization (AC-2)
-- Detection of corrupted, encrypted, empty, or unparseable PDFs with exceptions (AC-3)
+- PDF text extraction, whitespace cleanup, control character removal, UTF-8 NFC normalization (BE-007)
+- DOCX text extraction, preserving paragraph structure, headings, and tables (BE-008)
+- Error handling for corrupted, empty, non-standard, or unparseable files (AC-3)
 """
 
 import io
 import unicodedata
+import zipfile
 import pytest
 from pypdf import PdfReader, PdfWriter
 
@@ -83,6 +84,14 @@ def make_docx_bytes(text: str) -> bytes:
     return buf.getvalue()
 
 
+def make_non_docx_zip_bytes() -> bytes:
+    """Create a valid zip file that is missing docx XML components."""
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("notes.txt", "Some random text file in a zip archive")
+    return buf.getvalue()
+
+
 # ---------------------------------------------------------------------------
 # Parser tests
 # ---------------------------------------------------------------------------
@@ -106,7 +115,6 @@ class TestDocumentParser:
 
         for page in pages:
             assert page in result
-        # Check that pages are separated by double newline
         assert "Chapter 1: Strategic Management Foundations\n\nChapter 2:" in result
 
     def test_pdf_parse_single_page(self):
@@ -171,17 +179,13 @@ class TestDocumentParser:
         raw_text = "Title   Section   1\n\n\n\n\nParagraph text here.    \t   More text.\r\nNext line."
         cleaned = parser._clean_text(raw_text)
 
-        # Tabs and multiple spaces collapsed to single space
         assert "Title Section 1" in cleaned
         assert "Paragraph text here. More text." in cleaned
-        # \r\n converted to \n
         assert "\r" not in cleaned
-        # More than 2 consecutive newlines collapsed to 2
         assert "\n\n\n" not in cleaned
 
     def test_text_cleaning_vietnamese_utf8_normalization(self):
         """AC-2: Parser must normalize decomposed (NFD) Vietnamese characters into canonical NFC format."""
-        # Decomposed NFD Vietnamese string: "Trường Đại học Kinh tế & Luật"
         decomposed_text = unicodedata.normalize("NFD", "Trường Đại học Kinh tế & Luật")
         assert not unicodedata.is_normalized("NFC", decomposed_text)
 
@@ -191,17 +195,17 @@ class TestDocumentParser:
         assert cleaned == "Trường Đại học Kinh tế & Luật"
 
     # -----------------------------------------------------------------------
-    # DOCX parsing tests
+    # DOCX parsing tests (BE-008)
     # -----------------------------------------------------------------------
     def test_docx_parse_simple_text(self):
-        """DOCX with a single paragraph should return that text."""
+        """AC-1: DOCX with a single paragraph should return that text."""
         content = make_docx_bytes("Hello, university students!")
         parser = DocumentParser()
         result = parser.parse_bytes(content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
         assert "Hello, university students!" in result
 
     def test_docx_parse_multiple_paragraphs(self):
-        """DOCX with multiple paragraphs should return all text."""
+        """AC-1: DOCX with multiple paragraphs should return all text."""
         from docx import Document
         doc = Document()
         doc.add_paragraph("First paragraph about business ethics.")
@@ -212,17 +216,90 @@ class TestDocumentParser:
 
         parser = DocumentParser()
         result = parser.parse_bytes(content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
-        assert "First paragraph" in result
-        assert "Second paragraph" in result
+        assert "First paragraph about business ethics." in result
+        assert "Second paragraph about decision making." in result
 
-    def test_unsupported_mime_type_raises(self):
-        """Unsupported MIME type should raise DocumentParsingException."""
+    def test_docx_parse_preserves_headings_and_structure(self):
+        """AC-2: DOCX parser must preserve heading markers and paragraph structure in order."""
+        from docx import Document
+        doc = Document()
+        doc.add_heading("Case Study: Silicon Valley Bank Crisis", level=1)
+        doc.add_paragraph("In March 2023, SVB experienced a rapid bank run.")
+        doc.add_heading("Liquidity and Asset Risk Factors", level=2)
+        doc.add_paragraph("Depositors withdrew over $42 billion in a single 24-hour cycle.")
+        buf = io.BytesIO()
+        doc.save(buf)
+
         parser = DocumentParser()
-        with pytest.raises(DocumentParsingException, match="Unsupported MIME type"):
-            parser.parse_bytes(b"some data", "text/plain")
+        result = parser.parse_bytes(buf.getvalue(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+        assert "# Case Study: Silicon Valley Bank Crisis" in result
+        assert "## Liquidity and Asset Risk Factors" in result
+        assert "In March 2023, SVB experienced a rapid bank run." in result
+        assert "Depositors withdrew over $42 billion in a single 24-hour cycle." in result
+        assert "\n\n" in result
+
+    def test_docx_parse_preserves_tables(self):
+        """AC-2: DOCX parser must extract table rows and cells in sequential order."""
+        from docx import Document
+        doc = Document()
+        doc.add_paragraph("Pre-table analysis context.")
+        table = doc.add_table(rows=2, cols=2)
+        table.rows[0].cells[0].text = "Option"
+        table.rows[0].cells[1].text = "Projected Impact"
+        table.rows[1].cells[0].text = "Branch A"
+        table.rows[1].cells[1].text = "Positive Margin Growth"
+        doc.add_paragraph("Post-table conclusion.")
+        buf = io.BytesIO()
+        doc.save(buf)
+
+        parser = DocumentParser()
+        result = parser.parse_bytes(buf.getvalue(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+        assert "Pre-table analysis context." in result
+        assert "Option | Projected Impact" in result
+        assert "Branch A | Positive Margin Growth" in result
+        assert "Post-table conclusion." in result
+
+    def test_docx_parse_vietnamese_utf8(self):
+        """AC-2: DOCX parser must normalize Vietnamese characters in UTF-8 NFC."""
+        from docx import Document
+        doc = Document()
+        decomposed = unicodedata.normalize("NFD", "Học phần Quản trị Khủng hoảng & Ra quyết định")
+        doc.add_paragraph(decomposed)
+        buf = io.BytesIO()
+        doc.save(buf)
+
+        parser = DocumentParser()
+        result = parser.parse_bytes(buf.getvalue(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+        assert unicodedata.is_normalized("NFC", result)
+        assert "Học phần Quản trị Khủng hoảng & Ra quyết định" in result
+
+    def test_docx_empty_bytes_raises(self):
+        """AC-3: Empty bytes must raise DocumentParsingException."""
+        parser = DocumentParser()
+        with pytest.raises(DocumentParsingException, match="DOCX file is empty"):
+            parser.parse_bytes(b"", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+        with pytest.raises(DocumentParsingException, match="DOCX file is empty"):
+            parser.parse_bytes(b"   ", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+    def test_docx_corrupted_bytes_raises(self):
+        """AC-3: Corrupted bytes must raise DocumentParsingException."""
+        parser = DocumentParser()
+        with pytest.raises(DocumentParsingException, match="Corrupted or invalid DOCX file"):
+            parser.parse_bytes(b"PK\x03\x04corrupted-docx-content", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+    def test_docx_non_docx_zip_raises(self):
+        """AC-3: Valid zip file missing docx components must raise DocumentParsingException."""
+        content = make_non_docx_zip_bytes()
+        parser = DocumentParser()
+        with pytest.raises(DocumentParsingException, match="Invalid DOCX structure"):
+            parser.parse_bytes(content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
 
     def test_empty_docx_raises(self):
-        """DOCX with no text content should raise DocumentParsingException."""
+        """AC-3: DOCX with no text content should raise DocumentParsingException."""
         from docx import Document
         doc = Document()
         doc.add_paragraph("")
@@ -232,3 +309,9 @@ class TestDocumentParser:
         parser = DocumentParser()
         with pytest.raises(DocumentParsingException, match="No extractable text"):
             parser.parse_bytes(buf.getvalue(), "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+
+    def test_unsupported_mime_type_raises(self):
+        """Unsupported MIME type should raise DocumentParsingException."""
+        parser = DocumentParser()
+        with pytest.raises(DocumentParsingException, match="Unsupported MIME type"):
+            parser.parse_bytes(b"some data", "text/plain")
