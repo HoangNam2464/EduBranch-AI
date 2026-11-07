@@ -9,6 +9,8 @@ Flow 1 implementation: Material Ingestion & RAG.
 
 import io
 import re
+import unicodedata
+import zipfile
 from pathlib import Path
 
 from app.core.exceptions import DocumentParsingException
@@ -76,30 +78,68 @@ class DocumentParser:
             raise DocumentParsingException(f"PDF parsing failed: {e}") from e
 
     def _parse_pdf_bytes(self, content: bytes) -> str:
+        """
+        Parse multi-page PDF bytes into plain text with whitespace and UTF-8 normalization.
+
+        Raises:
+            DocumentParsingException: if file is empty, corrupted, password-protected/encrypted,
+                                      or has no extractable text.
+        """
         try:
             from pypdf import PdfReader
+            from pypdf.errors import EmptyFileError, FileNotDecryptedError, PdfReadError, PyPdfError
         except ImportError as e:
             raise DocumentParsingException("pypdf is not installed") from e
 
+        if not content or len(content.strip()) == 0:
+            raise DocumentParsingException("PDF file is empty")
+
         try:
             reader = PdfReader(io.BytesIO(content))
+
+            # AC-3: Detect password-protected or encrypted PDF
             if reader.is_encrypted:
-                raise DocumentParsingException("Encrypted PDF not supported")
+                raise DocumentParsingException("Password-protected or encrypted PDF is not supported")
 
-            pages = []
-            for page in reader.pages:
-                text = page.extract_text() or ""
-                pages.append(text)
+            # AC-1: Extract text from multi-page PDF
+            page_texts: list[str] = []
+            total_pages = len(reader.pages)
+            if total_pages == 0:
+                raise DocumentParsingException("PDF file contains zero pages")
 
-            full_text = "\n".join(pages)
-            cleaned = self._clean_text(full_text)
+            for page_idx, page in enumerate(reader.pages):
+                try:
+                    page_text = page.extract_text() or ""
+                    page_texts.append(page_text)
+                except FileNotDecryptedError:
+                    raise DocumentParsingException("Password-protected or encrypted PDF is not supported")
+                except Exception as extract_err:
+                    logger.warning(
+                        "pdf_page_extraction_warning",
+                        page_index=page_idx,
+                        total_pages=total_pages,
+                        error=str(extract_err),
+                    )
+                    page_texts.append("")
+
+            combined_text = "\n\n".join(page_texts)
+
+            # AC-2: Clean whitespace, control characters, and normalize UTF-8
+            cleaned = self._clean_text(combined_text)
             if not cleaned.strip():
-                raise DocumentParsingException("No extractable text found in PDF")
+                raise DocumentParsingException("No extractable text found in PDF (scanned or image-only PDFs require OCR)")
 
-            logger.info("pdf_parsed", page_count=len(reader.pages), char_count=len(cleaned))
+            logger.info("pdf_parsed", page_count=total_pages, char_count=len(cleaned))
             return cleaned
+
         except DocumentParsingException:
             raise
+        except FileNotDecryptedError as e:
+            raise DocumentParsingException(f"Password-protected or encrypted PDF is not supported: {e}") from e
+        except EmptyFileError as e:
+            raise DocumentParsingException(f"PDF file is empty or corrupted: {e}") from e
+        except (PdfReadError, PyPdfError) as e:
+            raise DocumentParsingException(f"Corrupted or invalid PDF file: {e}") from e
         except Exception as e:
             raise DocumentParsingException(f"PDF parsing failed: {e}") from e
 
@@ -116,36 +156,115 @@ class DocumentParser:
             raise DocumentParsingException(f"DOCX parsing failed: {e}") from e
 
     def _parse_docx_bytes(self, content: bytes) -> str:
+        """
+        Parse DOCX bytes into plain text, preserving paragraph structure, headings, and tables.
+
+        Raises:
+            DocumentParsingException: if file is empty, corrupted, invalid DOCX/ZIP format,
+                                      or has no extractable text.
+        """
         try:
             from docx import Document
+            from docx.opc.exceptions import PackageNotFoundError, OpcError
+            from docx.text.paragraph import Paragraph
+            from docx.table import Table
         except ImportError as e:
             raise DocumentParsingException("python-docx is not installed") from e
 
+        # AC-3: Check for empty bytes
+        if not content or len(content.strip()) == 0:
+            raise DocumentParsingException("DOCX file is empty")
+
         try:
             doc = Document(io.BytesIO(content))
-            paragraphs = [para.text for para in doc.paragraphs if para.text.strip()]
-            full_text = "\n".join(paragraphs)
-            cleaned = self._clean_text(full_text)
+            sections: list[str] = []
+
+            # AC-2: Iterate over document body to preserve exact sequential flow of headings, paragraphs, and tables
+            if hasattr(doc, "element") and hasattr(doc.element, "body") and doc.element.body is not None:
+                for child in doc.element.body:
+                    if child.tag.endswith("p"):
+                        p = Paragraph(child, doc)
+                        text = p.text.strip()
+                        if text:
+                            # Preserve heading structure if styled as heading or title
+                            style_name = getattr(p.style, "name", "") or ""
+                            if style_name.startswith("Heading 1") or style_name.lower() == "title":
+                                sections.append(f"# {text}")
+                            elif style_name.startswith("Heading 2"):
+                                sections.append(f"## {text}")
+                            elif style_name.startswith("Heading 3"):
+                                sections.append(f"### {text}")
+                            elif style_name.startswith("Heading"):
+                                sections.append(f"#### {text}")
+                            else:
+                                sections.append(text)
+                    elif child.tag.endswith("tbl"):
+                        t = Table(child, doc)
+                        table_lines: list[str] = []
+                        for row in t.rows:
+                            row_cells = [cell.text.strip() for cell in row.cells]
+                            if any(row_cells):
+                                table_lines.append(" | ".join(row_cells))
+                        if table_lines:
+                            sections.append("\n".join(table_lines))
+            else:
+                for para in doc.paragraphs:
+                    text = para.text.strip()
+                    if text:
+                        sections.append(text)
+
+            combined_text = "\n\n".join(sections)
+            cleaned = self._clean_text(combined_text)
+
+            # AC-3: Reject documents with no extractable text
             if not cleaned.strip():
                 raise DocumentParsingException("No extractable text found in DOCX")
 
-            logger.info("docx_parsed", paragraph_count=len(paragraphs), char_count=len(cleaned))
+            logger.info("docx_parsed", section_count=len(sections), char_count=len(cleaned))
             return cleaned
+
         except DocumentParsingException:
             raise
+        except (PackageNotFoundError, OpcError) as e:
+            raise DocumentParsingException(f"Corrupted or invalid DOCX file: {e}") from e
+        except zipfile.BadZipFile as e:
+            raise DocumentParsingException(f"Corrupted or invalid DOCX file (not a valid zip package): {e}") from e
+        except KeyError as e:
+            raise DocumentParsingException(f"Invalid DOCX structure (missing required document components): {e}") from e
         except Exception as e:
             raise DocumentParsingException(f"DOCX parsing failed: {e}") from e
 
     # =========================================================================
-    # Text cleaning
+    # Text cleaning & UTF-8 normalization (AC-2)
     # =========================================================================
     @staticmethod
     def _clean_text(text: str) -> str:
-        """Remove control characters and normalize whitespace."""
-        # Remove null bytes and other control chars (except newlines and tabs)
+        """
+        Normalize text:
+        - Normalize unicode to canonical NFC format (handling Vietnamese diacritics / tones)
+        - Remove null bytes, non-printable control chars, zero-width spaces, BOM
+        - Normalize line breaks (CRLF/CR -> LF)
+        - Collapse consecutive spaces and blank lines
+        - Strip leading and trailing whitespace
+        """
+        if not text:
+            return ""
+
+        # 1. Unicode NFC normalization (standardize composite/decomposed accents in Vietnamese)
+        text = unicodedata.normalize("NFC", text)
+
+        # 2. Remove null bytes, BOM, zero-width chars, and non-printable control characters
+        # Preserve \n (0x0A), \r (0x0D), \t (0x09)
+        text = text.replace("\ufeff", "").replace("\ufffe", "").replace("\u200b", "")
         text = re.sub(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]", "", text)
-        # Collapse multiple blank lines
-        text = re.sub(r"\n{3,}", "\n\n", text)
-        # Collapse multiple spaces (but not newlines)
+
+        # 3. Normalize line breaks to standard \n
+        text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+        # 4. Collapse multiple horizontal spaces and tabs into a single space
         text = re.sub(r"[ \t]{2,}", " ", text)
+
+        # 5. Collapse excessive blank lines (more than 2 consecutive newlines to 2)
+        text = re.sub(r"\n{3,}", "\n\n", text)
+
         return text.strip()

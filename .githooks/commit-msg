@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# EduBranch-AI — Commit Message Linter Hook
+# Enforces Conventional Commits: <type>(<scope>): <short description> [<TASK-ID>]
+# Rule Reference: Rule 00 (§7.3) & CONTRIBUTING.md
+# ==============================================================================
+
+set -e
+
+COMMIT_MSG_FILE="$1"
+COMMIT_MSG=$(head -n 1 "$COMMIT_MSG_FILE" | tr -d '\r')
+
+# Allow merge commits, revert commits, and initial commits
+if [[ "$COMMIT_MSG" =~ ^Merge ]] || [[ "$COMMIT_MSG" =~ ^Revert ]] || [[ "$COMMIT_MSG" =~ ^v[0-9] ]]; then
+  exit 0
+fi
+
+# Regex for Conventional Commits
+# Types: feat|fix|docs|style|refactor|test|chore|ci
+# Optional Scope in parentheses: (backend|frontend|ai-service|infra|docs|design|qa|auth|course|case|material|...)
+# Colon and space, followed by description and optional [TASK-ID]
+PATTERN='^(feat|fix|docs|style|refactor|test|chore|ci)(\([a-zA-Z0-9_\.-]+\))?: .{4,}'
+
+if ! echo "$COMMIT_MSG" | grep -Eq "$PATTERN"; then
+  echo ""
+  echo "❌ [GIT HOOK ERROR] Commit message does not follow Conventional Commits standard!"
+  echo ""
+  echo "   Current message: \"$COMMIT_MSG\""
+  echo ""
+  echo "   Required format: <type>(<scope>): <short description> [<TASK-ID>]"
+  echo ""
+  echo "   Valid types:     feat | fix | docs | style | refactor | test | chore | ci"
+  echo "   Valid scopes:    backend | frontend | ai-service | infra | docs | design | qa"
+  echo "                    or domain name (auth, course, case, material, ...)"
+  echo ""
+  echo "   Examples:"
+  echo "     feat(material): implement upload modal with client validation [FE-003]"
+  echo "     fix(case): insert nodes before options to avoid foreign key error [BE-016]"
+  echo "     docs(git): update branch naming rules and contributing guide"
+  echo ""
+  exit 1
+fi
+
+exit 0
+

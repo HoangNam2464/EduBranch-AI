@@ -130,6 +130,11 @@ Student submits overall Reflection
 | | [Decision Tree Model](architecture/DECISION-TREE-MODEL.md) | Invariants & JSON schema for branching cases |
 | | [Architecture Audits & Reports](architecture/audits/README.md) | Historical audits, baseline validations & migration reports |
 | **Features** | [Feature Specifications](features/) | Comprehensive per-feature specifications |
+| **UI / UX Design System** | [Global Design System](design/GLOBAL-DESIGN-SYSTEM.md) | Canonical light-first color tokens, vector SVG icons, typography & components |
+| | [Site Architecture](design/SITE-ARCHITECTURE.md) | 14-route sitemap, role boundaries & 6 product workflows |
+| | [Screen Specifications (P0–P4)](design/screens/) | Detailed per-screen layout, state & component specs |
+| | [Stitch Generation Guidelines](design/STITCH-GENERATION-GUIDELINES.md) | 9-field prompt specification for UI generation |
+| **Task Catalogs** | [Master Task Backlog](01_MASTER-TASKS.md) | Master 100-task backlog (`01_MASTER-TASKS.md`–`06_QA.md`) |
 | **Data & AI** | [Data Model](database/DATA-MODEL.md) | PostgreSQL schema & SQL migration guide |
 | | [RAG Pipeline](ai/RAG-PIPELINE.md) | Document parsing, chunking, retrieval & sources |
 | | [Reasoning & Challenge Support](ai/REASONING-CHALLENGE-SUPPORT.md) | Counter-question rules, 2-round cap, non-grading mandate |

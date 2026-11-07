@@ -69,9 +69,9 @@ Enforces the mandatory **Human-in-the-Loop** governance gate in EduBranch AI. En
 
 ## 8. Business Rules
 - **BR-REV-01**: **Mandatory Human Gate**: AI-generated cases are ALWAYS born in `DRAFT` status and can NEVER bypass human review.
-- **BR-REV-02**: **Strict Publication Access**: Under no circumstances may a student account view, query, or simulate a case in `DRAFT`, `REVIEWED`, or `APPROVED` status.
+- **BR-REV-02**: **Strict Publication Access**: Under no circumstances may a student account view, query, or play a case in `DRAFT`, `REVIEWED`, or `APPROVED` status.
 - **BR-REV-03**: **Integrity Preserving Edits**: Edits made by the lecturer must satisfy the same DAG constraints (no cycles, reachability from root) as AI generation.
-- **BR-REV-04**: **Immutable Once Active**: Once a student has begun an active simulation session on a `PUBLISHED` case, editing structural nodes should be restricted or trigger a new version (`version = version + 1`) to preserve student argument integrity.
+- **BR-REV-04**: **Immutable Once Active**: Once a student has begun an active branching attempt or review study submission on a `PUBLISHED` case, editing structural nodes should be restricted or trigger a new version (`version = version + 1`) to preserve student reasoning integrity.
 
 ---
 

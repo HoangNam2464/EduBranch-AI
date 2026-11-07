@@ -20,7 +20,7 @@ export class CourseService {
     const result = await this.db.query(
       `INSERT INTO courses (id, name, description, course_code, lecturer_id)
        VALUES ($1, $2, $3, $4, $5)
-       RETURNING id, name, description, course_code, lecturer_id, active, created_at, updated_at`,
+       RETURNING id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at`,
       [courseId, dto.name, dto.description ?? null, dto.courseCode ?? null, lecturerId],
     );
     this.logger.log(`Course created: ${courseId} by lecturer ${lecturerId}`);
@@ -29,7 +29,7 @@ export class CourseService {
 
   async getCoursesByLecturer(lecturerId: string) {
     const result = await this.db.query(
-      `SELECT id, name, description, course_code, lecturer_id, active, created_at, updated_at
+      `SELECT id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at
        FROM courses
        WHERE lecturer_id = $1
        ORDER BY created_at DESC`,
@@ -40,7 +40,7 @@ export class CourseService {
 
   async getCourseById(courseId: string, requesterId?: string) {
     const result = await this.db.query(
-      `SELECT id, name, description, course_code, lecturer_id, active, created_at, updated_at
+      `SELECT id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at
        FROM courses
        WHERE id = $1`,
       [courseId],
@@ -73,7 +73,7 @@ export class CourseService {
 
     const result = await this.db.query(
       `UPDATE courses SET ${updates.join(", ")} WHERE id = $${i}
-       RETURNING id, name, description, course_code, lecturer_id, active, created_at, updated_at`,
+       RETURNING id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at`,
       params,
     );
     return result.rows[0];

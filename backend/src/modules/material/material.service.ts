@@ -9,6 +9,7 @@ import { DatabaseService } from "../../common/database/database.service";
 import { MinioService } from "../../common/minio/minio.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
 import { randomUUID } from "crypto";
+import { UpdateMaterialDto } from "./dto/update-material.dto";
 
 const ALLOWED_MIME_TYPES = new Set([
   "application/pdf",
@@ -61,10 +62,12 @@ export class MaterialService {
     }
 
     const materialId = randomUUID();
-    const safeFilename = file.originalname.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const objectKey = `materials/${courseId}/${materialId}/${safeFilename}`;
+    const objectKey =
+      typeof this.minio.generateSecureObjectKey === "function"
+        ? this.minio.generateSecureObjectKey(courseId, file.originalname)
+        : `materials/${courseId}/${randomUUID()}/${file.originalname}`;
 
-    // 1. Upload to MinIO
+    // 1. Upload to MinIO (AC-1, AC-2, AC-3)
     await this.minio.putObject(
       objectKey,
       file.buffer,
@@ -128,7 +131,17 @@ export class MaterialService {
     }
   }
 
-  async getMaterialsByCourse(courseId: string) {
+  async getMaterialsByCourse(courseId: string, requesterId: string) {
+    const courseRes = await this.db.query(
+      "SELECT id, lecturer_id FROM courses WHERE id = $1",
+      [courseId],
+    );
+    if (courseRes.rows.length === 0) {
+      throw new NotFoundException(`Course ${courseId} not found`);
+    }
+    if (courseRes.rows[0].lecturer_id !== requesterId) {
+      throw new ForbiddenException("You can only view materials in your own courses");
+    }
     const res = await this.db.query(
       `SELECT id, original_filename, stored_object_key, mime_type, size_bytes,
               course_id, uploaded_by, processing_status, chunk_count, processing_error,
@@ -141,18 +154,43 @@ export class MaterialService {
     return res.rows;
   }
 
-  async getMaterialById(materialId: string) {
+  async getMaterialById(materialId: string, requesterId: string) {
     const res = await this.db.query(
-      `SELECT id, original_filename, stored_object_key, mime_type, size_bytes,
-              course_id, uploaded_by, processing_status, chunk_count, processing_error,
-              uploaded_at, updated_at
-       FROM teaching_materials
-       WHERE id = $1`,
+      `SELECT tm.id, tm.original_filename, tm.stored_object_key, tm.mime_type, tm.size_bytes,
+              tm.course_id, tm.uploaded_by, tm.processing_status, tm.chunk_count, tm.processing_error,
+              tm.uploaded_at, tm.updated_at, c.lecturer_id
+       FROM teaching_materials tm
+       JOIN courses c ON c.id = tm.course_id
+       WHERE tm.id = $1`,
       [materialId],
     );
     if (res.rows.length === 0) {
       throw new NotFoundException(`Teaching material ${materialId} not found`);
     }
-    return res.rows[0];
+    if (res.rows[0].lecturer_id !== requesterId) {
+      throw new ForbiddenException("You can only view materials in your own courses");
+    }
+    const { lecturer_id, ...material } = res.rows[0];
+    return material;
+  }
+
+  async deleteMaterial(materialId: string, lecturerId: string) {
+    const material = await this.getMaterialById(materialId, lecturerId);
+    await this.minio.removeObject(material.stored_object_key);
+    await this.db.query("DELETE FROM teaching_materials WHERE id = $1", [materialId]);
+    return { message: "Teaching material deleted successfully" };
+  }
+
+  async updateMaterial(materialId: string, lecturerId: string, dto: UpdateMaterialDto) {
+    await this.getMaterialById(materialId, lecturerId);
+    const result = await this.db.query(
+      `UPDATE teaching_materials
+       SET original_filename = $1, updated_at = NOW()
+       WHERE id = $2
+       RETURNING id, original_filename, mime_type, size_bytes, course_id, uploaded_by,
+                 processing_status, chunk_count, processing_error, uploaded_at, updated_at`,
+      [dto.originalFilename.trim(), materialId],
+    );
+    return result.rows[0];
   }
 }
