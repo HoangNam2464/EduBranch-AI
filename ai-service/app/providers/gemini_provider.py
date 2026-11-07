@@ -25,6 +25,11 @@ class GeminiProvider(BaseLLMProvider):
         self._model_name = settings.gemini_model
         self._embedding_model = settings.gemini_embedding_model
 
+    @property
+    def embedding_dimension(self) -> int:
+        """Google Gemini text-embedding-004 produces 768-dimensional embeddings."""
+        return 768
+
     async def generate_text(self, prompt: str, system_prompt: str | None = None, **kwargs) -> str:
         try:
             model = genai.GenerativeModel(
@@ -63,15 +68,35 @@ class GeminiProvider(BaseLLMProvider):
             raise ProviderException(f"Gemini embedding failed: {e}") from e
 
     async def generate_embeddings_batch(self, texts: list[str]) -> list[list[float]]:
+        if not texts:
+            return []
         try:
-            results = []
-            for text in texts:
-                result = await genai.embed_content_async(
-                    model=self._embedding_model,
-                    content=text,
-                    task_type="retrieval_document",
-                )
-                results.append(result["embedding"])
+            results: list[list[float]] = []
+            batch_size = 50
+            for i in range(0, len(texts), batch_size):
+                batch = texts[i : i + batch_size]
+                try:
+                    res = await genai.embed_content_async(
+                        model=self._embedding_model,
+                        content=batch,
+                        task_type="retrieval_document",
+                    )
+                    embs = res.get("embedding", [])
+                    if isinstance(embs, list) and len(embs) > 0 and isinstance(embs[0], list):
+                        results.extend(embs)
+                    elif isinstance(embs, list) and len(batch) == 1 and isinstance(embs[0], (int, float)):
+                        results.append(embs)
+                    else:
+                        raise ValueError("Unexpected embedding response structure from Gemini API")
+                except Exception:
+                    # Fallback to single-item generation if batch payload format fails
+                    for text in batch:
+                        single_res = await genai.embed_content_async(
+                            model=self._embedding_model,
+                            content=text,
+                            task_type="retrieval_document",
+                        )
+                        results.append(single_res["embedding"])
             return results
         except Exception as e:
             raise ProviderException(f"Gemini batch embedding failed: {e}") from e
