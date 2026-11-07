@@ -83,4 +83,43 @@ export class AiClientService {
 
     return response.json();
   }
+
+  async queryRetrieval(payload: {
+    query: string;
+    course_id: string;
+    material_ids?: string[];
+    top_k?: number;
+    include_rag_context?: boolean;
+  }): Promise<{
+    chunks: Array<{
+      chunk_id: string;
+      text: string;
+      similarity: number;
+      material_id: string;
+      chunk_index: number;
+      page_number?: number;
+    }>;
+    rag_context: string | null;
+    total_chunks: number;
+  }> {
+    const url = `${this.baseUrl}/internal/v1/retrieval/query`;
+    this.logger.log(`Invoking AI Service retrieval: ${url} for course ${payload.course_id}`);
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Internal-API-Key": this.apiKey,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      this.logger.error(`AI Service retrieval failed (${response.status}): ${errText}`);
+      throw new Error(`AI Service retrieval error (${response.status}): ${errText}`);
+    }
+
+    return response.json();
+  }
 }

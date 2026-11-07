@@ -47,7 +47,8 @@ class DocumentEmbedder:
         """
         self.provider = provider or get_provider()
         self.batch_size = max(1, batch_size)
-        self._expected_dim = expected_dim or getattr(self.provider, "embedding_dimension", 768)
+        dim = expected_dim or getattr(self.provider, "embedding_dimension", 768)
+        self._expected_dim = dim if isinstance(dim, int) else 768
 
     @property
     def embedding_dimension(self) -> int:
