@@ -1,7 +1,6 @@
-﻿---
+--
 description: Rules for teaching material upload and management in EduBranch-AI.
-trigger: keyword
-keywords: [material, upload, document, pdf, docx, teaching material, minio]
+trigger: model_decision
 ---
 
 # Feature Rules: Teaching Material

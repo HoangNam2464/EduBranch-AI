@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# EduBranch-AI — Pre-Push Git Hook
+# Enforces Branch Naming Standards & Protects Protected Branches
+# Rule Reference: Rule 00 (§7.1, §7.2) & CONTRIBUTING.md
+# ==============================================================================
+
+set -e
+
+REMOTE="$1"
+URL="$2"
+
+# Read standard input from git push: <local ref> <local sha1> <remote ref> <remote sha1>
+while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
+  # Skip branch deletion (local ref is empty or sha is 0000000...)
+  if [[ "$LOCAL_SHA" == "0000000000000000000000000000000000000000" ]] || [[ "$LOCAL_REF" == "" ]]; then
+    continue
+  fi
+
+  BRANCH_NAME=$(basename "$REMOTE_REF")
+  # If remote ref contains full path e.g. refs/heads/feature/material
+  if [[ "$REMOTE_REF" =~ refs/heads/(.+) ]]; then
+    BRANCH_NAME="${BASH_REMATCH[1]}"
+  fi
+
+  # 1. Protect 'main' from direct push
+  if [[ "$BRANCH_NAME" == "main" ]]; then
+    echo ""
+    echo "❌ [GIT HOOK ERROR] Direct push to 'main' is strictly forbidden!"
+    echo "   All changes must go through 'feature/*' -> 'develop' -> Pull Request to 'main'."
+    echo ""
+    exit 1
+  fi
+
+  # Allow pushing to develop
+  if [[ "$BRANCH_NAME" == "develop" ]]; then
+    continue
+  fi
+
+  # 2. Check for forbidden task IDs in branch name (Rule 00 §7.2)
+  # Examples of forbidden names: feature/FE-003, fix/BE-001, TASK-123, EBA-105
+  if echo "$BRANCH_NAME" | grep -iE "(task-[0-9]+|eba-[0-9]+|fe-[0-9]+|be-[0-9]+|des-[0-9]+|qa-[0-9]+|ops-[0-9]+)" > /dev/null; then
+    echo ""
+    echo "❌ [GIT HOOK ERROR] Forbidden task code detected in branch name: '$BRANCH_NAME'"
+    echo ""
+    echo "   Rule 00 (§7.2): TUYET DOI KHONG dung ma task (nhu TASK-123, BE-001, FE-003, EBA-105) de dat ten nhanh!"
+    echo "   Ten nhanh BAT BUOC theo domain/feature chung: format 'feature/<feature-name>'"
+    echo ""
+    echo "   Chuan dung:"
+    echo "     - Frontend / Chung: feature/material (thay vi feature/FE-003)"
+    echo "     - Backend rieng:    feature/material-backend (thay vi BE-material-... hoac feature/BE-004)"
+    echo "     - Fix bug:          fix/material-upload"
+    echo ""
+    exit 1
+  fi
+
+  # 3. Check for valid branch prefix
+  VALID_PREFIXES='^(feature|fix|hotfix|refactor|docs|test|chore|ci)/[a-zA-Z0-9_\.-]+$'
+  if ! echo "$BRANCH_NAME" | grep -Eq "$VALID_PREFIXES"; then
+    echo ""
+    echo "⚠️ [GIT HOOK WARNING] Branch name '$BRANCH_NAME' does not match standard convention."
+    echo "   Recommended format: feature/<feature-name>, fix/<description>, docs/<topic>"
+    echo ""
+  fi
+done
+
+exit 0
+

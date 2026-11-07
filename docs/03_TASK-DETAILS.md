@@ -240,9 +240,9 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 `backend/test/auth-matrix.spec.ts` (Auth, Course & Permissions test matrix).
 
 ### Acceptance Criteria
-- [ ] **AC-1**: Ma trận kiểm thử bao phủ toàn bộ Auth, Role RBAC và Course Ownership.
-- [ ] **AC-2**: Có case positive và negative cho cả hai role LECTURER và STUDENT.
-- [ ] **AC-3**: Bổ sung bộ kiểm thử dự phòng điều hướng cho FE-002: xác nhận URL không khớp (path: "*") điều hướng hiển thị NotFoundPage và cho phép quay về portal phù hợp; xác nhận lỗi route/render được xử lý bởi errorElement, hiển thị fallback UI an toàn thay vì màn hình trắng (blank screen).
+- [x] **AC-1**: Ma trận kiểm thử bao phủ toàn bộ Auth, Role RBAC và Course Ownership.
+- [x] **AC-2**: Có case positive và negative cho cả hai role LECTURER và STUDENT.
+- [x] **AC-3**: Bổ sung bộ kiểm thử dự phòng điều hướng cho FE-002: xác nhận URL không khớp (path: "*") điều hướng hiển thị NotFoundPage và cho phép quay về portal phù hợp; xác nhận lỗi route/render được xử lý bởi errorElement, hiển thị fallback UI an toàn thay vì màn hình trắng (blank screen).
 
 ---
 
@@ -256,7 +256,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - **Priority**: `Highest`
 - **Story Points**: `5`
 - **Flow / Milestone**: `Foundation`
-- **Trạng thái nguồn**: `TO DO`
+- **Trạng thái nguồn**: `DONE`
 - **Dependencies**: is blocked by Master Task EBA-103, EBA-106, EBA-107 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
@@ -266,9 +266,9 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 `backend/test/security-regression.spec.ts` (Token expiry, role denial & ownership leak HTTP test suite).
 
 ### Acceptance Criteria
-- [ ] **AC-1**: Token hết hạn hoặc sai chữ ký bị chặn lập tức với HTTP 401.
-- [ ] **AC-2**: Truy cập tài nguyên của user khác bị từ chối với HTTP 403.
-- [ ] **AC-3**: Có test evidence và log kiểm thử tự động.
+- [x] **AC-1**: Token hết hạn hoặc sai chữ ký bị chặn lập tức với HTTP 401.
+- [x] **AC-2**: Truy cập tài nguyên của user khác bị từ chối với HTTP 403.
+- [x] **AC-3**: Có test evidence và log kiểm thử tự động.
 
 ---
 

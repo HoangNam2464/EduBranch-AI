@@ -59,8 +59,8 @@
 | **EBA-106** | `BE-002` | `[BE-002] Implement Global JwtAuthGuard, Public Route Decorator & Role Enforcement Guard` | Foundation | Task | Highest | 5 | is blocked by Master Task EBA-105 | IN PROGRESS |
 | **EBA-107** | `BE-003` | `[BE-003] User Profile & Course Management Foundation with Lecturer Ownership Gates` | Foundation | Task | Highest | 5 | is blocked by Master Task EBA-105, EBA-106 | DONE |
 | **EBA-108** | `OPS-001` | `[OPS-001] PostgreSQL Migration Runner, Environment Validation & Health Checks` | Foundation | Task | High | 3 | *None* | DONE |
-| **EBA-109** | `QA-001` | `[QA-001] Test Matrix for Auth, Course & Permissions` | Foundation | Task | High | 3 | is blocked by Master Task EBA-105, EBA-107 | IN PROGRESS |
-| **EBA-110** | `QA-002` | `[QA-002] Token Expiry, Role Denial & Ownership Leak Regression Suite` | Foundation | Task | Highest | 5 | is blocked by Master Task EBA-103, EBA-106, EBA-107 | TO DO |
+| **EBA-109** | `QA-001` | `[QA-001] Test Matrix for Auth, Course & Permissions` | Foundation | Task | High | 3 | is blocked by Master Task EBA-105, EBA-107 | DONE |
+| **EBA-110** | `QA-002` | `[QA-002] Token Expiry, Role Denial & Ownership Leak Regression Suite` | Foundation | Task | Highest | 5 | is blocked by Master Task EBA-103, EBA-106, EBA-107 | DONE |
 
 *Tổng kết Sprint 1: 10 tasks | 42 Story Points*
 

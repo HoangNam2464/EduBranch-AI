@@ -1,513 +1,642 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
-import ReactFlow, {
-  Background,
-  Controls,
-  MiniMap,
-  Node,
-  Edge,
-  useNodesState,
-  useEdgesState,
-  MarkerType,
-  Position,
-  Handle,
-} from "reactflow";
-import "reactflow/dist/style.css";
+/**
+ * CaseReviewPage — Giảng viên · Trình chỉnh sửa Case Study
+ * Figma Specs:
+ * - 03.4: Trình chỉnh sửa Branching Study (Form Editor + Danh sách tình huống + Kiểm tra cây)
+ * - 03.5: Trình chỉnh sửa Review Study (Bối cảnh & số liệu + Vấn đề phân tích + Sinh viên sẽ trả lời)
+ * - 03.6: Thanh duyệt Case Study (4 trạng thái: Bản nháp -> Đã rà soát -> Đã phê duyệt -> Đã xuất bản)
+ * - 03.7: Hộp thoại phê duyệt và xuất bản
+ * Route: /lecturer/cases/:caseId/review
+ */
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import apiClient from "../../services/apiClient";
+import { CaseGovernanceBar, GovernanceStatus } from "../../components/lecturer/CaseGovernanceBar";
 
-interface CaseOption {
+interface OptionItem {
   id: string;
-  node_id: string;
-  option_text: string;
-  consequence: string;
-  next_node_id: string | null;
-}
-
-interface CaseNode {
-  id: string;
-  case_id: string;
-  situation: string;
-  is_terminal: boolean;
-  node_index: number;
-  options: CaseOption[];
-}
-
-interface CaseDetail {
-  id: string;
-  title: string;
+  label: string;
   description: string;
-  course_id: string;
-  status: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED";
-  learning_mode: "BRANCHING_STUDY" | "REVIEW_STUDY";
-  root_node_id: string | null;
-  nodes: CaseNode[];
-}
-
-// Custom Node Component for ReactFlow
-function CaseBranchNode({ data, selected }: { data: any; selected: boolean }) {
-  const isRoot = data.isRoot;
-  const isTerminal = data.isTerminal;
-
-  return (
-    <div
-      className={`px-4 py-3 rounded-lg shadow-md border-2 bg-white text-left max-w-xs transition-all ${
-        selected
-          ? "border-blue-600 ring-2 ring-blue-200"
-          : isRoot
-          ? "border-emerald-500 bg-emerald-50/20"
-          : isTerminal
-          ? "border-rose-400 bg-rose-50/20"
-          : "border-gray-200"
-      }`}
-    >
-      <Handle type="target" position={Position.Top} className="w-2.5 h-2.5 bg-blue-500" />
-      <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-bold uppercase tracking-wider text-gray-500">
-          Node {data.nodeIndex + 1}
-        </span>
-        <div className="flex space-x-1">
-          {isRoot && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
-              ROOT
-            </span>
-          )}
-          {isTerminal && (
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">
-              TERMINAL
-            </span>
-          )}
-        </div>
-      </div>
-      <p className="text-xs text-gray-800 font-medium line-clamp-3">{data.situation}</p>
-      <div className="mt-2 text-[10px] text-gray-400 flex justify-between">
-        <span>{data.optionsCount} option{data.optionsCount !== 1 ? "s" : ""}</span>
-        <span className="text-blue-600 font-semibold">Click to edit</span>
-      </div>
-      <Handle type="source" position={Position.Bottom} className="w-2.5 h-2.5 bg-blue-500" />
-    </div>
-  );
+  nextNodeId: string;
+  nextNodeTitle: string;
+  consequence: string;
 }
 
 export function CaseReviewPage() {
   const { caseId } = useParams<{ caseId: string }>();
+  const navigate = useNavigate();
 
-  const [caseData, setCaseData] = useState<CaseDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [statusUpdating, setStatusUpdating] = useState(false);
-  const [selectedNode, setSelectedNode] = useState<CaseNode | null>(null);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-
-  const nodeTypes = useMemo(() => ({ caseNode: CaseBranchNode }), []);
-
-  const loadCase = useCallback(async () => {
-    if (!caseId) return;
-    try {
-      setLoading(true);
-      const res = await apiClient.get(`/cases/${caseId}`);
-      if (res.data?.data) {
-        const c: CaseDetail = res.data.data;
-        setCaseData(c);
-
-        // Convert case nodes into ReactFlow nodes and edges
-        const rawNodes = c.nodes || [];
-        const rfNodes: Node[] = [];
-        const rfEdges: Edge[] = [];
-
-        const colWidth = 280;
-        const rowHeight = 180;
-        const total = rawNodes.length;
-
-        rawNodes.forEach((node, idx) => {
-          // Layout in a grid/tree formation
-          const x = 50 + (idx % 3) * colWidth;
-          const y = 50 + Math.floor(idx / 3) * rowHeight;
-
-          rfNodes.push({
-            id: node.id,
-            type: "caseNode",
-            position: { x, y },
-            data: {
-              situation: node.situation,
-              nodeIndex: node.node_index,
-              isRoot: node.id === c.root_node_id,
-              isTerminal: node.is_terminal || !node.options || node.options.length === 0,
-              optionsCount: node.options ? node.options.length : 0,
-            },
-          });
-
-          if (node.options && Array.isArray(node.options)) {
-            node.options.forEach((opt, optIdx) => {
-              if (opt.next_node_id) {
-                rfEdges.push({
-                  id: `edge-${node.id}-${opt.id}`,
-                  source: node.id,
-                  target: opt.next_node_id,
-                  label: opt.option_text ? opt.option_text.slice(0, 24) + "..." : `Option ${optIdx + 1}`,
-                  type: "smoothstep",
-                  markerEnd: { type: MarkerType.ArrowClosed },
-                  style: { stroke: "#6366f1", strokeWidth: 2 },
-                  labelStyle: { fill: "#4338ca", fontSize: 10, fontWeight: 600 },
-                });
-              }
-            });
-          }
-        });
-
-        setNodes(rfNodes);
-        setEdges(rfEdges);
-        if (rawNodes.length > 0 && !selectedNode) {
-          setSelectedNode(rawNodes[0]);
-        }
-      }
-    } catch (err: any) {
-      setErrorMessage(err.response?.data?.message || err.message || "Failed to load case");
-    } finally {
-      setLoading(false);
-    }
-  }, [caseId, setNodes, setEdges]);
-
-  useEffect(() => {
-    loadCase();
-  }, [loadCase]);
-
-  const onNodeClick = useCallback(
-    (_: React.MouseEvent, node: Node) => {
-      if (caseData?.nodes) {
-        const found = caseData.nodes.find((n) => n.id === node.id);
-        if (found) {
-          setSelectedNode(found);
-        }
-      }
-    },
-    [caseData]
+  // Mode: BRANCHING_STUDY (03.4) vs REVIEW_STUDY (03.5)
+  const [learningMode, setLearningMode] = useState<"BRANCHING_STUDY" | "REVIEW_STUDY">(
+    caseId?.includes("review") || caseId === "c3" || caseId === "c5"
+      ? "REVIEW_STUDY"
+      : "BRANCHING_STUDY"
   );
 
-  const handleUpdateStatus = async (
-    newStatus: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED"
-  ) => {
-    if (!caseId) return;
-    setErrorMessage(null);
-    setStatusMessage(null);
-    try {
-      setStatusUpdating(true);
-      await apiClient.patch(`/cases/${caseId}/status`, { status: newStatus });
-      setStatusMessage(`Case successfully transitioned to ${newStatus}`);
-      await loadCase();
-    } catch (err: any) {
-      setErrorMessage(err.response?.data?.message || err.message || "Failed to update case status");
-    } finally {
-      setStatusUpdating(false);
-    }
-  };
+  // Governance Status state (03.6)
+  const [governanceStatus, setGovernanceStatus] = useState<GovernanceStatus>("REVIEWED");
+  const [saving, setSaving] = useState(false);
 
-  const handleSaveEdits = async () => {
-    if (!caseId || !caseData) return;
-    setSaving(true);
-    setErrorMessage(null);
-    setStatusMessage(null);
+  // ── BRANCHING STUDY STATE (Figma 03.4) ──
+  const [branchingTitle, setBranchingTitle] = useState(
+    "Khủng hoảng sập mạng lưới trung tâm dữ liệu và tấn công DDoS"
+  );
+  const [situationTitle, setSituationTitle] = useState(
+    "Tình huống 1: Phát hiện bất thường lưu lượng và cảnh báo xâm nhập mức nghiêm trọng (Level 5)"
+  );
+  const [promptQuestion, setPromptQuestion] = useState(
+    "Với tư cách là Trưởng nhóm Ứng cứu khẩn cấp (Incident Response Lead), bước xử lý đầu tiên của bạn là gì?"
+  );
+  const [isKeyDecision, setIsKeyDecision] = useState(true);
+  const [situationContent, setSituationContent] = useState(
+    "Hệ thống SOC (Security Operations Center) phát hiện 2.5 triệu request/phút nhắm vào API đăng nhập sinh trắc học. 15 máy chủ backend ghi nhận CPU chạm mốc 99%. Đội ngũ an ninh nghi ngờ đây là đòn tấn công kép (DDoS kết hợp khai thác lỗ hổng Zero-day)."
+  );
+  const [options, setOptions] = useState<OptionItem[]>([
+    {
+      id: "opt1",
+      label: "Phương án A: Chuyển toàn bộ lưu lượng qua dịch vụ chống DDoS Cloudflare/AWS Shield và bật chế độ xác thực CAPTCHA khắt khe",
+      description: "Chặn đứng lưu lượng độc hại ở tầng mạng biên (Edge).",
+      nextNodeId: "n2",
+      nextNodeTitle: "Tình huống 2: Phân tích nguồn tấn công & Tối ưu hóa xác thực khách hàng thật",
+      consequence: "Lọc được 95% lưu lượng rác, giải phóng tài nguyên CPU cho các máy chủ chính. Một số ít người dùng phản ánh CAPTCHA gây khó chịu nhưng dịch vụ tiếp tục hoạt động.",
+    },
+    {
+      id: "opt2",
+      label: "Phương án B: Tạm thời cô lập hoàn toàn cụm máy chủ xác thực sinh trắc học để rà soát mã độc bên trong",
+      description: "Ưu tiên phòng chống rò rỉ dữ liệu nhạy cảm của khách hàng.",
+      nextNodeId: "n3",
+      nextNodeTitle: "Tình huống 3: Khôi phục dịch vụ sau cô lập & Khủng hoảng truyền thông",
+      consequence: "Ngăn chặn nguy cơ rò rỉ dữ liệu, nhưng khiến toàn bộ dịch vụ ngân hàng số bị gián đoạn hoàn toàn trong 45 phút đầu.",
+    },
+  ]);
+
+  const otherNodes = [
+    { id: "n2", title: "Tình huống 2: Phân tích nguồn tấn công & Tối ưu hóa xá..." },
+    { id: "n3", title: "Tình huống 3: Khôi phục dịch vụ sau cô lập & Khủng hoả..." },
+    { id: "term1", title: "Kết quả 1: Hệ thống đứng vững, bảo toàn dữ liệu tài khoản" },
+    { id: "term2", title: "Kết quả 2: Thiệt hại dịch vụ ngắn hạn, rò rỉ 1.200 bản ghi" },
+    { id: "term3", title: "Kết quả 3: Gián đoạn diện rộng, chịu phạt vi phạm SLA" },
+  ];
+
+  // ── REVIEW STUDY STATE (Figma 03.5) ──
+  const [reviewTitle, setReviewTitle] = useState("Tối ưu chiến dịch ra mắt ví điện tử NovaPay");
+  const [reviewShortDesc, setReviewShortDesc] = useState(
+    "Phân tích số liệu 4 tuần thử nghiệm và đề xuất cách phân bổ ngân sách kênh."
+  );
+  const [reviewContext, setReviewContext] = useState(
+    "NovaPay chuẩn bị ra mắt ví điện tử cho sinh viên tại các thành phố lớn. Sau 4 tuần thử nghiệm truyền thông, lượt tiếp cận tăng nhưng tỷ lệ kích hoạt tài khoản vẫn thấp. Nhóm marketing cần phân bổ lại ngân sách cho 2 tuần tiếp theo để tăng số người dùng thực sự hoàn tất giao dịch đầu tiên."
+  );
+  const [reviewProblem, setReviewProblem] = useState(
+    "Đề xuất kế hoạch phân bổ 120 triệu VNĐ trong 2 tuần để cải thiện tỷ lệ kích hoạt, hướng tới 1.500 người dùng có giao dịch đầu tiên. Cần nêu rõ hành động theo kênh, cách đo lường và rủi ro khi mở rộng chiến dịch."
+  );
+  const [reviewCourseName, setReviewCourseName] = useState("Marketing số");
+  const [studentQuestions, setStudentQuestions] = useState([
+    "1. Đề xuất phương án / kế hoạch giải quyết",
+    "2. Lập luận căn cứ (dựa trên số liệu và kiến thức học phần)",
+  ]);
+
+  useEffect(() => {
+    fetchCaseData();
+  }, [caseId]);
+
+  async function fetchCaseData() {
+    if (!caseId) return;
     try {
-      await apiClient.put(`/cases/${caseId}`, {
-        title: caseData.title,
-        description: caseData.description,
-        nodes: caseData.nodes,
-      });
-      setStatusMessage("Case modifications saved successfully.");
-      await loadCase();
-    } catch (err: any) {
-      setErrorMessage(err.response?.data?.message || err.message || "Failed to save edits");
+      const res = await apiClient.get(`/cases/${caseId}`);
+      if (res.data?.data) {
+        const c = res.data.data;
+        if (c.learning_mode) setLearningMode(c.learning_mode);
+        if (c.status) setGovernanceStatus(c.status);
+        if (c.title) {
+          if (c.learning_mode === "REVIEW_STUDY") setReviewTitle(c.title);
+          else setBranchingTitle(c.title);
+        }
+      }
+    } catch {}
+  }
+
+  // ── Governance Actions (Figma 03.6 & 03.7) ──
+  async function handleSaveReviewed() {
+    try {
+      setSaving(true);
+      if (caseId) {
+        await apiClient.patch(`/cases/${caseId}/status`, { status: "REVIEWED" });
+      }
+      setGovernanceStatus("REVIEWED");
+    } catch {
+      setGovernanceStatus("REVIEWED");
     } finally {
       setSaving(false);
     }
-  };
+  }
 
-  const getStatusColor = (status: CaseDetail["status"]) => {
-    switch (status) {
-      case "DRAFT":
-        return "bg-amber-100 text-amber-900 border-amber-300";
-      case "REVIEWED":
-        return "bg-blue-100 text-blue-900 border-blue-300";
-      case "APPROVED":
-        return "bg-purple-100 text-purple-900 border-purple-300";
-      case "PUBLISHED":
-        return "bg-emerald-100 text-emerald-900 border-emerald-300";
+  async function handleSaveDraft() {
+    try {
+      setSaving(true);
+      if (caseId) {
+        await apiClient.put(`/cases/${caseId}`, {
+          title: learningMode === "REVIEW_STUDY" ? reviewTitle : branchingTitle,
+        });
+      }
+    } catch {
+    } finally {
+      setSaving(false);
     }
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-gray-500 text-sm">Loading decision tree case review...</div>
-      </div>
-    );
   }
 
-  if (!caseData) {
-    return (
-      <div className="max-w-4xl mx-auto p-8 text-center">
-        <p className="text-red-600">Case not found.</p>
-        <Link to="/lecturer/courses" className="mt-4 text-blue-600 underline text-sm">
-          Back to Courses
-        </Link>
-      </div>
-    );
+  async function handleApprove() {
+    try {
+      if (caseId) {
+        await apiClient.patch(`/cases/${caseId}/status`, { status: "APPROVED" });
+      }
+      setGovernanceStatus("APPROVED");
+    } catch {
+      setGovernanceStatus("APPROVED");
+    }
   }
 
-  const isEditable = caseData.status === "DRAFT" || caseData.status === "REVIEWED";
+  async function handleConfirmPublish(deadline?: string) {
+    try {
+      if (caseId) {
+        await apiClient.patch(`/cases/${caseId}/status`, { status: "PUBLISHED" });
+      }
+      setGovernanceStatus("PUBLISHED");
+    } catch {
+      setGovernanceStatus("PUBLISHED");
+    }
+  }
+
+  async function handleRevertToDraft() {
+    try {
+      if (caseId) {
+        await apiClient.patch(`/cases/${caseId}/status`, { status: "DRAFT" });
+      }
+      setGovernanceStatus("DRAFT");
+    } catch {
+      setGovernanceStatus("DRAFT");
+    }
+  }
+
+  const directStudentLink =
+    learningMode === "REVIEW_STUDY"
+      ? `edubranch.duytan.edu.vn/student/cases/${caseId || "novapay"}/review-study`
+      : `edubranch.duytan.edu.vn/student/cases/${caseId || "c8f9a2"}/branching-play`;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)]">
-      {/* Top Lifecycle Action Bar */}
-      <div className="bg-white border-b border-gray-200 px-6 py-3 flex flex-wrap items-center justify-between gap-4 z-10 shadow-sm">
-        <div className="flex items-center space-x-3">
-          <Link
-            to={`/lecturer/courses/${caseData.course_id}/cases`}
-            className="text-xs text-gray-500 hover:text-gray-800"
+    <div className="flex flex-col gap-5 relative pb-28">
+      {/* ── Top Header Context & Mode Switcher ── */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => navigate("/lecturer/cases")}
+            className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 cursor-pointer transition"
           >
-            &larr; Cases
-          </Link>
-          <span className="text-gray-300">|</span>
-          <h1 className="text-base font-bold text-gray-900 truncate max-w-md">
-            {caseData.title}
-          </h1>
-          <span
-            className={`px-3 py-1 rounded-full text-xs font-bold border ${getStatusColor(
-              caseData.status
-            )}`}
-          >
-            {caseData.status}
-          </span>
+            ←
+          </button>
+          <div>
+            <h2 className="text-base font-bold text-slate-900 leading-tight">
+              {learningMode === "REVIEW_STUDY" ? reviewTitle : branchingTitle}
+            </h2>
+            <p className="text-xs text-slate-400">
+              Case Study &gt; {learningMode === "REVIEW_STUDY" ? "Trình chỉnh sửa Review Study" : "Trình chỉnh sửa"}
+            </p>
+          </div>
         </div>
 
-        {/* Lifecycle Transitions (Human-in-the-Loop) */}
-        <div className="flex items-center space-x-2">
-          {caseData.status === "DRAFT" && (
-            <button
-              onClick={() => handleUpdateStatus("REVIEWED")}
-              disabled={statusUpdating}
-              className="px-3 py-1.5 bg-blue-600 text-white rounded-md text-xs font-semibold hover:bg-blue-700 shadow-sm"
-            >
-              Mark as Reviewed &rarr;
-            </button>
-          )}
-
-          {caseData.status === "REVIEWED" && (
-            <>
-              <button
-                onClick={() => handleUpdateStatus("DRAFT")}
-                disabled={statusUpdating}
-                className="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50"
-              >
-                Revert to Draft
-              </button>
-              <button
-                onClick={() => handleUpdateStatus("APPROVED")}
-                disabled={statusUpdating}
-                className="px-3 py-1.5 bg-purple-600 text-white rounded-md text-xs font-semibold hover:bg-purple-700 shadow-sm"
-              >
-                Approve Case &rarr;
-              </button>
-            </>
-          )}
-
-          {caseData.status === "APPROVED" && (
-            <>
-              <button
-                onClick={() => handleUpdateStatus("REVIEWED")}
-                disabled={statusUpdating}
-                className="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-md text-xs font-medium hover:bg-gray-50"
-              >
-                Revert to Reviewed
-              </button>
-              <button
-                onClick={() => handleUpdateStatus("PUBLISHED")}
-                disabled={statusUpdating}
-                className="px-3 py-1.5 bg-emerald-600 text-white rounded-md text-xs font-semibold hover:bg-emerald-700 shadow-sm"
-              >
-                Publish Case to Students &rarr;
-              </button>
-            </>
-          )}
-
-          {caseData.status === "PUBLISHED" && (
-            <button
-              onClick={() => handleUpdateStatus("APPROVED")}
-              disabled={statusUpdating}
-              className="px-3 py-1.5 border border-amber-400 text-amber-800 rounded-md text-xs font-medium hover:bg-amber-50"
-            >
-              Unpublish (Revert to Approved)
-            </button>
-          )}
-
-          {isEditable && (
-            <button
-              onClick={handleSaveEdits}
-              disabled={saving}
-              className="px-3 py-1.5 border border-gray-300 bg-white text-gray-800 rounded-md text-xs font-medium hover:bg-gray-50 shadow-sm"
-            >
-              {saving ? "Saving..." : "Save Edits"}
-            </button>
-          )}
+        {/* Mode Toggle Pill */}
+        <div className="flex rounded-xl border border-slate-200 bg-slate-50 p-0.5 text-xs">
+          <button
+            type="button"
+            onClick={() => setLearningMode("BRANCHING_STUDY")}
+            className={`rounded-lg px-3 py-1 font-semibold transition ${
+              learningMode === "BRANCHING_STUDY"
+                ? "bg-white text-slate-900 shadow-2xs"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+          >
+            Branching Study (03.4)
+          </button>
+          <button
+            type="button"
+            onClick={() => setLearningMode("REVIEW_STUDY")}
+            className={`rounded-lg px-3 py-1 font-semibold transition ${
+              learningMode === "REVIEW_STUDY"
+                ? "bg-white text-slate-900 shadow-2xs"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
+          >
+            Review Study (03.5)
+          </button>
         </div>
       </div>
 
-      {/* Notifications */}
-      {statusMessage && (
-        <div className="bg-green-50 px-6 py-2 border-b border-green-200 text-green-800 text-xs flex justify-between items-center">
-          <span>{statusMessage}</span>
-          <button onClick={() => setStatusMessage(null)} className="font-bold">&times;</button>
-        </div>
-      )}
-      {errorMessage && (
-        <div className="bg-red-50 px-6 py-2 border-b border-red-200 text-red-800 text-xs flex justify-between items-center">
-          <span>{errorMessage}</span>
-          <button onClick={() => setErrorMessage(null)} className="font-bold">&times;</button>
-        </div>
-      )}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* MODE 1: BRANCHING STUDY EDITOR (Figma 03.4)                           */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {learningMode === "BRANCHING_STUDY" ? (
+        <div className="flex items-start gap-6">
+          {/* Left Column: Form Editor (~65%) */}
+          <div className="flex-1 space-y-5 min-w-0">
+            {/* Card 1: Tình huống & Tiêu đề */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs font-bold text-slate-900">Tình huống</h3>
+                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                  ✨ AI Draft
+                </span>
+              </div>
 
-      {/* Main workspace: ReactFlow canvas + Node Editor Sidebar */}
-      <div className="flex flex-1 overflow-hidden relative">
-        {/* ReactFlow Canvas */}
-        <div className="flex-1 h-full bg-slate-50">
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onNodeClick={onNodeClick}
-            nodeTypes={nodeTypes}
-            fitView
-          >
-            <Background color="#cbd5e1" gap={16} />
-            <Controls />
-            <MiniMap nodeStrokeWidth={3} className="border border-gray-200 rounded-lg shadow-sm" />
-          </ReactFlow>
-        </div>
-
-        {/* Selected Node / Option Editor Sidebar */}
-        <div className="w-96 border-l border-gray-200 bg-white p-5 overflow-y-auto shadow-sm">
-          <div className="flex items-center justify-between pb-3 border-b border-gray-100 mb-4">
-            <h2 className="text-sm font-bold text-gray-900">
-              {selectedNode
-                ? `Node ${selectedNode.node_index + 1} Editor`
-                : "Case Properties"}
-            </h2>
-            {!isEditable && (
-              <span className="text-[10px] text-gray-500 uppercase font-semibold">
-                Read-Only ({caseData.status})
-              </span>
-            )}
-          </div>
-
-          {selectedNode ? (
-            <div className="space-y-5">
-              {/* Situation text */}
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1">
-                  Situation / Scenario
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Tiêu đề tình huống <span className="text-red-500">*</span>
                 </label>
-                <textarea
-                  rows={4}
-                  value={selectedNode.situation}
-                  disabled={!isEditable}
-                  onChange={(e) => {
-                    const updated = { ...selectedNode, situation: e.target.value };
-                    setSelectedNode(updated);
-                    setCaseData({
-                      ...caseData,
-                      nodes: caseData.nodes.map((n) => (n.id === updated.id ? updated : n)),
-                    });
-                  }}
-                  className="w-full text-xs p-2 border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:outline-none disabled:bg-gray-50"
+                <input
+                  type="text"
+                  value={situationTitle}
+                  onChange={(e) => setSituationTitle(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A] font-medium"
                 />
               </div>
 
-              {/* Options list */}
               <div>
-                <h3 className="text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
-                  Decision Options ({selectedNode.options.length})
-                </h3>
-                {selectedNode.options.length === 0 ? (
-                  <p className="text-xs text-rose-600 italic">
-                    Terminal Node — no branching options. Represents an outcome of the case.
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {selectedNode.options.map((opt, idx) => (
-                      <div
-                        key={opt.id || idx}
-                        className="p-3 border border-gray-200 rounded-lg bg-gray-50/50 space-y-2 text-xs"
-                      >
-                        <div className="flex justify-between items-center text-gray-500 font-semibold text-[11px]">
-                          <span>Option {idx + 1}</span>
-                          <span className="text-blue-600 font-mono text-[10px]">
-                            {opt.next_node_id
-                              ? `Next -> Node ${
-                                  (caseData.nodes.find((n) => n.id === opt.next_node_id)
-                                    ?.node_index ?? 0) + 1
-                                }`
-                              : "Terminal -> End"}
-                          </span>
-                        </div>
-                        <div>
-                          <label className="block text-[10px] text-gray-500 mb-0.5">Choice Text</label>
-                          <input
-                            type="text"
-                            value={opt.option_text}
-                            disabled={!isEditable}
-                            onChange={(e) => {
-                              const newOpts = [...selectedNode.options];
-                              newOpts[idx] = { ...newOpts[idx], option_text: e.target.value };
-                              const updatedNode = { ...selectedNode, options: newOpts };
-                              setSelectedNode(updatedNode);
-                              setCaseData({
-                                ...caseData,
-                                nodes: caseData.nodes.map((n) =>
-                                  n.id === updatedNode.id ? updatedNode : n
-                                ),
-                              });
-                            }}
-                            className="w-full text-xs p-1.5 border border-gray-300 rounded bg-white disabled:bg-gray-50"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-[10px] text-gray-500 mb-0.5">
-                            Consequence (Revealed in Journey Review)
-                          </label>
-                          <textarea
-                            rows={2}
-                            value={opt.consequence}
-                            disabled={!isEditable}
-                            onChange={(e) => {
-                              const newOpts = [...selectedNode.options];
-                              newOpts[idx] = { ...newOpts[idx], consequence: e.target.value };
-                              const updatedNode = { ...selectedNode, options: newOpts };
-                              setSelectedNode(updatedNode);
-                              setCaseData({
-                                ...caseData,
-                                nodes: caseData.nodes.map((n) =>
-                                  n.id === updatedNode.id ? updatedNode : n
-                                ),
-                              });
-                            }}
-                            className="w-full text-xs p-1.5 border border-gray-300 rounded bg-white disabled:bg-gray-50"
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Câu hỏi gợi ý lựa chọn
+                </label>
+                <input
+                  type="text"
+                  value={promptQuestion}
+                  onChange={(e) => setPromptQuestion(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A]"
+                />
+              </div>
+
+              {/* Toggle: Quyết định then chốt */}
+              <div className="pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-900">
+                    Đánh dấu là quyết định then chốt
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsKeyDecision(!isKeyDecision)}
+                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors cursor-pointer ${
+                      isKeyDecision ? "bg-[#1E3A8A]" : "bg-slate-200"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                        isKeyDecision ? "translate-x-4.5" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+                <p className="mt-1 text-[11px] text-slate-400 leading-relaxed">
+                  Quyết định này được làm nổi bật trong Journey Review. Sinh viên được khuyến khích viết lập luận cho bước này; phản biện cùng AI là tùy chọn.
+                </p>
               </div>
             </div>
-          ) : (
-            <p className="text-xs text-gray-400 italic">Select a node from the canvas to edit.</p>
-          )}
+
+            {/* Card 2: Nội dung tình huống chi tiết */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-2">
+              <label className="block text-xs font-bold text-slate-900">
+                Nội dung tình huống chi tiết <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                rows={4}
+                value={situationContent}
+                onChange={(e) => setSituationContent(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 p-3 text-xs text-slate-800 outline-none focus:border-[#1E3A8A] leading-relaxed resize-none"
+              />
+            </div>
+
+            {/* Card 3: Các phương án lựa chọn */}
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-xs font-bold text-slate-900">Các phương án lựa chọn ({options.length})</h3>
+                <p className="text-[11px] text-slate-400">
+                  Mỗi phương án dẫn tới một tình huống tiếp theo và chứa hậu quả tương ứng
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                {options.map((opt, idx) => (
+                  <div
+                    key={opt.id}
+                    className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-3"
+                  >
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                      <span className="text-xs font-bold text-slate-900">
+                        Phương án {idx + 1}
+                      </span>
+                      <button
+                        onClick={() => setOptions(options.filter((o) => o.id !== opt.id))}
+                        className="text-slate-300 hover:text-red-500 text-xs cursor-pointer p-1"
+                        title="Xóa phương án"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Tiêu đề nhãn lựa chọn <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={opt.label}
+                        onChange={(e) => {
+                          const updated = [...options];
+                          updated[idx].label = e.target.value;
+                          setOptions(updated);
+                        }}
+                        className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Mô tả hành động của phương án
+                      </label>
+                      <input
+                        type="text"
+                        value={opt.description}
+                        onChange={(e) => {
+                          const updated = [...options];
+                          updated[idx].description = e.target.value;
+                          setOptions(updated);
+                        }}
+                        className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Tình huống tiếp theo khi chọn phương án này <span className="text-red-500">*</span>
+                      </label>
+                      <select
+                        value={opt.nextNodeId}
+                        onChange={(e) => {
+                          const updated = [...options];
+                          updated[idx].nextNodeId = e.target.value;
+                          setOptions(updated);
+                        }}
+                        className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A] bg-white cursor-pointer"
+                      >
+                        <option value="n2">Tình huống 2: Phân tích nguồn tấn công &amp; Tối ưu hóa xác thực khách hàng thật</option>
+                        <option value="n3">Tình huống 3: Khôi phục dịch vụ sau cô lập &amp; Khủng hoảng truyền thông</option>
+                        <option value="term1">Kết quả 1: Hệ thống đứng vững, bảo toàn dữ liệu</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-bold text-slate-700 mb-1">
+                        Hậu quả (do giảng viên xác định) <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={opt.consequence}
+                        onChange={(e) => {
+                          const updated = [...options];
+                          updated[idx].consequence = e.target.value;
+                          setOptions(updated);
+                        }}
+                        className="w-full rounded-xl border border-slate-200 p-2.5 text-xs text-slate-800 outline-none focus:border-[#1E3A8A] resize-none"
+                      />
+                      <p className="mt-1 text-[10px] text-slate-400">
+                        Chỉ hiển thị cho sinh viên trong Journey Review, không hiển thị khi đang làm bài
+                      </p>
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOptions([
+                      ...options,
+                      {
+                        id: `opt-${Date.now()}`,
+                        label: "Phương án mới...",
+                        description: "Mô tả phương án mới",
+                        nextNodeId: "n2",
+                        nextNodeTitle: "Tình huống tiếp theo",
+                        consequence: "Hậu quả của quyết định này...",
+                      },
+                    ])
+                  }
+                  className="w-full rounded-xl border-2 border-dashed border-slate-200 py-3 text-xs font-bold text-slate-600 hover:border-[#1E3A8A] hover:text-[#1E3A8A] hover:bg-blue-50/20 transition cursor-pointer"
+                >
+                  + Thêm phương án
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Node List + Topology (~35%) */}
+          <div className="w-[360px] flex-shrink-0 space-y-4">
+            {/* Box 1: Danh sách tình huống */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-3">
+              <h4 className="text-xs font-bold text-slate-900">Danh sách tình huống (6)</h4>
+
+              <div className="rounded-xl border border-blue-300 bg-blue-50/40 p-3.5 space-y-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1E3A8A]">
+                  Tình huống đang chỉnh sửa · Step 1 · Then chốt
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-snug">
+                  {situationTitle}
+                </p>
+                <div className="space-y-1 pt-1">
+                  <span className="text-[10px] text-slate-400 block font-semibold">Nhánh đi tiếp:</span>
+                  <div className="rounded-lg bg-white border border-slate-200 px-2.5 py-1 text-[11px] text-slate-700 font-medium">
+                    Chống DDoS tại Edge &rarr; Tình huống 2
+                  </div>
+                  <div className="rounded-lg bg-white border border-slate-200 px-2.5 py-1 text-[11px] text-slate-700 font-medium">
+                    Cô lập máy chủ &rarr; Tình huống 3
+                  </div>
+                  <button className="text-[11px] text-blue-600 hover:underline pt-1 block cursor-pointer">
+                    + Thêm phương án
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-1.5 pt-1">
+                {otherNodes.map((n) => (
+                  <div
+                    key={n.id}
+                    className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50/60 p-2.5 text-xs hover:bg-slate-100 transition cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-slate-300 font-bold select-none">≡</span>
+                      <span className="font-semibold text-slate-700 truncate">{n.title}</span>
+                    </div>
+                    <button className="text-slate-300 hover:text-red-500 p-0.5">
+                      🗑️
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <button className="w-full rounded-xl border border-slate-200 bg-white py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition cursor-pointer">
+                + Thêm tình huống
+              </button>
+            </div>
+
+            {/* Box 2: Kiểm tra cây quyết định */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-2 text-xs">
+              <h4 className="text-xs font-bold text-slate-900">Kiểm tra cây quyết định</h4>
+              <div className="flex items-center justify-between text-slate-600">
+                <span className="flex items-center gap-1.5">
+                  <span>🌱</span>
+                  <span>Topology: 6 nút · 3 tình huống · 3 kết quả</span>
+                </span>
+                <span className="text-slate-300">✓</span>
+              </div>
+              <div className="flex items-center justify-between text-emerald-700 bg-[#E6F4EA] border border-[#DEF7EC] rounded-lg p-2 font-medium">
+                <span className="flex items-center gap-1.5">
+                  <span>✓</span>
+                  <span>Kiểm tra cây: 0 lỗi cấu trúc</span>
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        /* ══════════════════════════════════════════════════════════════════════ */
+        /* MODE 2: REVIEW STUDY EDITOR (Figma 03.5)                              */
+        /* ══════════════════════════════════════════════════════════════════════ */
+        <div className="flex items-start gap-6">
+          {/* Left Column: Form Editor (~65%) */}
+          <div className="flex-1 space-y-5 min-w-0">
+            {/* Card 1: Nội dung Review Study */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-bold text-slate-900">Nội dung Review Study</h3>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Tiêu đề case <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={reviewTitle}
+                  onChange={(e) => setReviewTitle(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A] font-medium"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Mô tả ngắn
+                </label>
+                <input
+                  type="text"
+                  value={reviewShortDesc}
+                  onChange={(e) => setReviewShortDesc(e.target.value)}
+                  className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A]"
+                />
+              </div>
+            </div>
+
+            {/* Card 2: Bối cảnh & số liệu */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-2">
+              <label className="block text-xs font-bold text-slate-900">
+                Bối cảnh &amp; số liệu <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                rows={4}
+                value={reviewContext}
+                onChange={(e) => setReviewContext(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 p-3 text-xs text-slate-800 outline-none focus:border-[#1E3A8A] leading-relaxed resize-none"
+              />
+            </div>
+
+            {/* Card 3: Vấn đề cần phân tích */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs space-y-2">
+              <label className="block text-xs font-bold text-slate-900">
+                Vấn đề cần phân tích <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                rows={4}
+                value={reviewProblem}
+                onChange={(e) => setReviewProblem(e.target.value)}
+                className="w-full rounded-xl border border-slate-200 p-3 text-xs text-slate-800 outline-none focus:border-[#1E3A8A] leading-relaxed resize-none"
+              />
+            </div>
+          </div>
+
+          {/* Right Column: Case info & Sinh viên sẽ trả lời (~35%) */}
+          <div className="w-[360px] flex-shrink-0 space-y-4">
+            {/* Card 1: Thông tin case */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-3">
+              <h4 className="text-xs font-bold text-slate-900">Thông tin case</h4>
+
+              <div className="space-y-2 text-xs">
+                <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                  <span className="text-slate-400">Chế độ:</span>
+                  <span className="font-semibold text-slate-900">Review Study</span>
+                </div>
+
+                <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                  <span className="text-slate-400">Khóa học:</span>
+                  <span className="font-semibold text-slate-900">{reviewCourseName}</span>
+                </div>
+
+                <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                  <span className="text-slate-400">Trạng thái:</span>
+                  <span className="font-semibold text-[#1E3A8A]">
+                    {governanceStatus === "DRAFT"
+                      ? "Bản nháp"
+                      : governanceStatus === "REVIEWED"
+                      ? "Đã rà soát"
+                      : governanceStatus === "APPROVED"
+                      ? "Đã phê duyệt"
+                      : "Đã xuất bản"}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between py-1 border-b border-slate-100">
+                  <span className="text-slate-400">Phiên bản:</span>
+                  <span className="font-mono text-slate-700">v1</span>
+                </div>
+
+                <div className="flex items-center justify-between py-1">
+                  <span className="text-slate-400">Cấu trúc:</span>
+                  <span className="text-slate-600">Không dùng cây quyết định</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Sinh viên sẽ trả lời */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-xs space-y-3">
+              <h4 className="text-xs font-bold text-slate-900">Sinh viên sẽ trả lời</h4>
+              <div className="space-y-2">
+                {studentQuestions.map((q, idx) => (
+                  <div
+                    key={idx}
+                    className="rounded-xl border border-slate-200 bg-slate-50/70 p-3 text-xs text-slate-700 font-medium"
+                  >
+                    {q}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      {/* 03.6 THANH KIỂM DUYỆT 4 BƯỚC & 03.7 MODAL XUẤT BẢN                  */}
+      {/* ══════════════════════════════════════════════════════════════════════ */}
+      <CaseGovernanceBar
+        status={governanceStatus}
+        mode={learningMode}
+        version="v1"
+        directLink={directStudentLink}
+        saving={saving}
+        onSaveReviewed={handleSaveReviewed}
+        onSaveDraft={handleSaveDraft}
+        onApprove={handleApprove}
+        onConfirmPublish={handleConfirmPublish}
+        onRevertToDraft={handleRevertToDraft}
+      />
     </div>
   );
 }

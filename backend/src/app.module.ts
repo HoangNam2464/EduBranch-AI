@@ -18,11 +18,14 @@ import { StatisticsModule } from "./modules/statistics/statistics.module";
 import { NotificationModule } from "./modules/notification/notification.module";
 import { EvaluationModule } from "./modules/evaluation/evaluation.module";
 
+import { validateEnvironment } from "./common/config/env.validation";
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [".env.local", ".env"],
+      validate: validateEnvironment,
     }),
     DatabaseModule,
     MinioModule,

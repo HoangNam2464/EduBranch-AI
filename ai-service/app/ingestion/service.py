@@ -21,8 +21,12 @@ from app.core.config import settings
 from app.core.exceptions import DocumentParsingException, EmbeddingException
 from app.core.logging import logger
 from app.ingestion.chunker import DocumentChunker
+from app.ingestion.embedder import DocumentEmbedder
 from app.ingestion.parser import DocumentParser
+from app.ingestion.vector_store import VectorStore
 from app.providers.factory import get_provider
+
+_vector_store = VectorStore()
 
 
 # ---------------------------------------------------------------------------
@@ -78,12 +82,7 @@ async def _get_db_connection() -> asyncpg.Connection:
 
 async def _delete_existing_chunks(conn: asyncpg.Connection, material_id: str) -> None:
     """Remove any previously-ingested chunks for this material (idempotent re-ingestion)."""
-    deleted = await conn.execute(
-        "DELETE FROM document_chunks WHERE material_id = $1",
-        uuid.UUID(material_id),
-    )
-    if deleted != "DELETE 0":
-        logger.info("existing_chunks_deleted", material_id=material_id)
+    await _vector_store.delete_chunks_by_material(conn, material_id)
 
 
 async def _insert_chunks(
@@ -95,36 +94,15 @@ async def _insert_chunks(
 ) -> int:
     """
     Batch-insert chunk records with embeddings into document_chunks table.
-
-    Returns number of rows inserted.
+    Delegates to VectorStore per OPS-003.
     """
-    from pgvector.asyncpg import register_vector
-
-    await register_vector(conn)
-
-    import numpy as np
-
-    rows = []
-    for idx, (text, embedding) in enumerate(zip(chunk_texts, embeddings)):
-        rows.append((
-            uuid.uuid4(),
-            uuid.UUID(material_id),
-            uuid.UUID(course_id),
-            idx,
-            text,
-            np.array(embedding, dtype=np.float32),
-            datetime.now(timezone.utc),
-        ))
-
-    await conn.executemany(
-        """
-        INSERT INTO document_chunks
-            (id, material_id, course_id, chunk_index, chunk_text, embedding, created_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7)
-        """,
-        rows,
+    return await _vector_store.insert_chunks(
+        conn=conn,
+        material_id=material_id,
+        course_id=course_id,
+        chunk_texts=chunk_texts,
+        embeddings=embeddings,
     )
-    return len(rows)
 
 
 async def _update_material_status(
@@ -222,14 +200,9 @@ async def ingest_document(
 
         chunk_texts = [c.text for c in chunks]
 
-        # Step 4: Generate embeddings (batch)
-        provider = get_provider()
-        embeddings = await provider.generate_embeddings_batch(chunk_texts)
-
-        if len(embeddings) != len(chunk_texts):
-            raise EmbeddingException(
-                f"Embedding count mismatch: expected {len(chunk_texts)}, got {len(embeddings)}"
-            )
+        # Step 4: Generate embeddings via DocumentEmbedder [BE-010]
+        embedder = DocumentEmbedder(provider=get_provider())
+        embeddings = await embedder.embed_chunks(chunk_texts)
 
         # Step 5: Delete old chunks (idempotent), then insert new ones
         await _delete_existing_chunks(conn, material_id)
