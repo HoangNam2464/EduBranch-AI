@@ -113,4 +113,6 @@ data/
 .claude/
 scripts/*.py
 scripts/figma-mcp-bridge/
+*.zip
+*.tar.gz
 

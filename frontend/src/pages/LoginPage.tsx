@@ -6,12 +6,12 @@ import { Button, Alert, EduBranchLogo } from "../components/ui";
 import { resolveSafeReturnUrl } from "../utils/navigation";
 
 /**
- * EduBranch AI — Login Page (00.3 · Đăng nhập · Mặc định)
+ * EduBranch AI — Login Page
+ * Canonical Figma Reference: Frame [343:4040] (00.3 · Đăng nhập · Mặc định)
  *
- * Implemented strictly according to Figma blueprint:
- * - Left banner: Deep blue gradient, pedagogical value proposition, illustrated laptop device mockup
- * - Right panel: System login form, remember me, forgot password, Google SSO, dev quick-access
- * - Stack: React 19 + TypeScript + TailwindCSS v4
+ * Implements:
+ * - Left Panel (Product Showcase): Deep navy background (#0B1528), mission statement, desktop preview mockup
+ * - Right Panel (Sign In Form): Clean academic card, standard inputs, session options, Google SSO, dev quick-access
  */
 export function LoginPage() {
   const navigate = useNavigate();
@@ -28,13 +28,15 @@ export function LoginPage() {
 
   const stateFrom = (location.state as { from?: Location | string })?.from;
   const returnUrl = stateFrom
-    ? (typeof stateFrom === "string" ? stateFrom : `${stateFrom.pathname}${stateFrom.search || ""}${stateFrom.hash || ""}`)
+    ? typeof stateFrom === "string"
+      ? stateFrom
+      : `${stateFrom.pathname}${stateFrom.search || ""}${stateFrom.hash || ""}`
     : null;
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) {
-      setError("Email đại học không được để trống.");
+      setError("Địa chỉ email không được để trống.");
       return;
     }
     if (!password) {
@@ -52,7 +54,7 @@ export function LoginPage() {
       const destination = resolveSafeReturnUrl(returnUrl, result.user.role);
       navigate(destination, { replace: true });
     } catch {
-      // Offline Demo Fallback: seamless experience when BE is not running
+      // Offline fallback for smooth demo testing
       const isLecturer =
         email.includes("gv") ||
         email.includes("lecturer") ||
@@ -73,7 +75,7 @@ export function LoginPage() {
           ? "/admin/dashboard"
           : isLecturer
           ? "/lecturer/courses"
-          : "/student";
+          : "/student/desk";
       navigate(destination, { replace: true });
     } finally {
       setLoading(false);
@@ -84,12 +86,7 @@ export function LoginPage() {
     setInfoMsg("Cổng xác thực Google Workspace Đại học Duy Tân (SSO) đang được đồng bộ cho kỳ học mới.");
   };
 
-  const handleForgotPassword = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setInfoMsg("Vui lòng liên hệ Quản trị viên Học phần hoặc Phòng Đào tạo để được cấp lại mật khẩu.");
-  };
-
-  // ─── Dev quick-access (bypasses real auth for local UI testing) ───────────
+  // Dev quick-access for immediate local testing
   const quickAccess = (role: "LECTURER" | "STUDENT" | "ADMIN") => {
     login(
       {
@@ -113,143 +110,113 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-100/80 p-4 sm:p-6 lg:p-8">
-      
-      {/* ─────────────────────────────────────────────────────────────
-          MAIN AUTH CARD (2-COLUMN SPLIT CONTAINER)
-      ───────────────────────────────────────────────────────────── */}
-      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+    <div className="min-h-screen w-full flex bg-[#F9FAFB] p-4 lg:p-6 items-center justify-center">
+      {/* 2-Column Split Container matching Figma Frame [343:4040] */}
+      <div className="w-full max-w-7xl min-h-[720px] bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12">
         
-        {/* ───────────────────────────────────────────────────────────
-            LEFT COLUMN: BRANDING & LAPTOP PREVIEW BANNER
-        ─────────────────────────────────────────────────────────── */}
-        <div className="lg:col-span-6 bg-gradient-to-br from-[#1E40AF] via-[#1E3A8A] to-[#0F172A] p-8 sm:p-12 flex flex-col justify-between text-white relative overflow-hidden">
-          
-          {/* Subtle background glow effect */}
-          <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-blue-400/15 blur-3xl pointer-events-none" />
+        {/* LEFT COLUMN: Product Showcase (Figma: width 690px, height 984px) */}
+        <div className="lg:col-span-6 bg-[#0B1528] p-8 lg:p-12 flex flex-col justify-between text-white relative overflow-hidden">
+          {/* Subtle Ambient Radial Glow */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Top: Logo */}
-          <div className="relative z-10 flex items-center gap-2.5">
+          {/* Top Brand Wordmark */}
+          <div className="relative z-10 flex items-center gap-3">
             <EduBranchLogo size={32} />
-            <span className="text-base font-bold text-white tracking-tight">
+            <span className="text-lg font-semibold text-white tracking-tight">
               EduBranch AI
             </span>
           </div>
 
-          {/* Center: Mission statement */}
-          <div className="relative z-10 my-8 space-y-3">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug">
-              Nền tảng học tập tình huống thực nghiệm
+          {/* Mission Copy */}
+          <div className="relative z-10 my-8 space-y-3 max-w-lg">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-900/50 border border-blue-700/40 text-blue-200 text-xs font-medium">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />
+              Nền tảng học tập tình huống Đại học
+            </div>
+            <h2 className="text-2xl lg:text-3xl font-semibold text-white tracking-tight leading-snug">
+              Chuyển hóa tài liệu học phần thành kịch bản ra quyết định
             </h2>
-            <p className="text-blue-100/90 text-xs sm:text-sm leading-relaxed">
-              Giảng viên xây dựng Case Study từ tài liệu môn học, sinh viên ra quyết định, lập luận và suy ngẫm trên từng nhánh tình huống.
+            <p className="text-slate-300 text-sm leading-relaxed">
+              Giảng viên kiểm soát chặt chẽ nội dung case; sinh viên liên tục rẽ nhánh, đối mặt hậu quả chân thực và rèn luyện tư duy phản biện.
             </p>
           </div>
 
-          {/* Bottom: High-Fidelity Illustrated Laptop Mockup */}
-          <div className="relative z-10 mt-2">
-            <div className="relative mx-auto w-full max-w-sm sm:max-w-md">
-              
-              {/* Laptop Screen Bezel */}
-              <div className="rounded-t-xl bg-gray-900 border-2 border-gray-700 p-2 shadow-2xl">
-                {/* Camera dot */}
-                <div className="flex justify-center mb-1.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-gray-600" />
+          {/* Product Preview Mockup Window */}
+          <div className="relative z-10 mt-auto pt-4">
+            <div className="bg-[#111C35] border border-slate-700/60 rounded-xl overflow-hidden shadow-xl">
+              {/* Mockup Window Bar */}
+              <div className="bg-[#182544] px-4 py-2.5 border-b border-slate-700/60 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-amber-500/80" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
+                  <span className="text-xs text-slate-400 font-mono ml-2">EduBranch AI · Điểm quyết định</span>
                 </div>
-                
-                {/* Inside Screen Content */}
-                <div className="bg-slate-50 rounded-lg p-2.5 border border-gray-200 text-gray-800 space-y-2 select-none overflow-hidden text-[10px]">
-                  
-                  {/* Mockup Screen Navbar */}
-                  <div className="flex items-center justify-between border-b border-gray-200 pb-1.5">
-                    <span className="font-bold text-blue-900 flex items-center gap-1">
-                      <span className="h-2 w-2 rounded-full bg-blue-600 inline-block" />
-                      EduBranch AI
-                    </span>
-                    <span className="text-[9px] text-gray-500 font-medium">Bảng điều khiển học phần</span>
-                  </div>
-
-                  {/* Mockup Stats Row */}
-                  <div className="grid grid-cols-3 gap-1.5 text-center">
-                    <div className="bg-white p-1.5 rounded border border-gray-200/80 shadow-2xs">
-                      <span className="text-[8px] text-gray-400 block">TỔNG CASE</span>
-                      <span className="font-bold text-gray-900 text-[11px]">12</span>
-                    </div>
-                    <div className="bg-white p-1.5 rounded border border-gray-200/80 shadow-2xs">
-                      <span className="text-[8px] text-gray-400 block">SINH VIÊN</span>
-                      <span className="font-bold text-blue-600 text-[11px]">84</span>
-                    </div>
-                    <div className="bg-white p-1.5 rounded border border-gray-200/80 shadow-2xs">
-                      <span className="text-[8px] text-gray-400 block">HOÀN THÀNH</span>
-                      <span className="font-bold text-emerald-600 text-[11px]">92%</span>
-                    </div>
-                  </div>
-
-                  {/* Mockup Mini Chart & Case Row */}
-                  <div className="bg-white p-2 rounded border border-gray-200/80 shadow-2xs space-y-1.5">
-                    <div className="flex items-center justify-between text-[9px] font-semibold text-gray-700">
-                      <span>Tiến độ thực hành theo tuần</span>
-                      <span className="text-blue-600 font-bold">Tuần 4</span>
-                    </div>
-                    
-                    {/* Visual Bar chart mock */}
-                    <div className="flex items-end gap-1 h-8 pt-1">
-                      <div className="w-1/6 bg-blue-100 rounded-t h-3" />
-                      <div className="w-1/6 bg-blue-200 rounded-t h-5" />
-                      <div className="w-1/6 bg-blue-300 rounded-t h-4" />
-                      <div className="w-1/6 bg-blue-400 rounded-t h-6" />
-                      <div className="w-1/6 bg-blue-600 rounded-t h-8" />
-                      <div className="w-1/6 bg-blue-200 rounded-t h-5" />
-                    </div>
-                  </div>
-
-                </div>
+                <span className="text-[11px] text-blue-300 bg-blue-950/80 px-2 py-0.5 rounded border border-blue-800/60">
+                  Branching Study
+                </span>
               </div>
 
-              {/* Laptop Keyboard Base & Hinge */}
-              <div className="h-2.5 bg-gradient-to-b from-gray-300 to-gray-400 rounded-b-lg border-t border-gray-500 shadow-md relative">
-                {/* Touchpad notch */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-12 h-1 bg-gray-500 rounded-b" />
+              {/* Mockup Inside Content */}
+              <div className="p-4 space-y-3 bg-[#0E172C] text-slate-200 text-xs select-none">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                  <span className="font-medium text-slate-300">Tình huống: Quản trị chuỗi cung ứng khi gián đoạn</span>
+                  <span className="text-[11px] text-emerald-400 font-mono">Node 2/5</span>
+                </div>
+                <p className="text-slate-400 leading-relaxed text-xs">
+                  Cảng trung chuyển chính bị phong tỏa do bão. Bạn là Giám đốc Vận hành, hãy chọn phương án phân bổ lô hàng khẩn cấp:
+                </p>
+                <div className="space-y-1.5 pt-1">
+                  <div className="p-2.5 rounded-lg bg-blue-950/60 border border-blue-800/80 flex items-center justify-between text-blue-200">
+                    <span>Phương án A: Chuyển toàn bộ bằng đường hàng không</span>
+                    <span className="text-[11px] font-medium text-blue-400">Đã chọn →</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-slate-900/60 border border-slate-800 text-slate-400">
+                    <span>Phương án B: Đàm phán lưu kho tại cảng phụ cận</span>
+                  </div>
+                </div>
               </div>
-
             </div>
           </div>
-
         </div>
 
-        {/* ───────────────────────────────────────────────────────────
-            RIGHT COLUMN: LOGIN FORM
-        ─────────────────────────────────────────────────────────── */}
-        <div className="lg:col-span-6 p-8 sm:p-12 flex flex-col justify-center bg-white">
-          
+        {/* RIGHT COLUMN: Sign In Form (Figma: width 562px, height 984px) */}
+        <div className="lg:col-span-6 p-8 sm:p-12 lg:p-16 flex flex-col justify-center bg-white">
           <div className="w-full max-w-md mx-auto">
-            
-            {/* Header / Brand */}
-            <div className="flex items-center gap-2 mb-3">
-              <EduBranchLogo size={28} />
-              <span className="text-sm font-bold text-gray-900 tracking-tight">
-                EduBranch AI
-              </span>
+            {/* Form Heading */}
+            <div className="mb-8">
+              <div className="flex items-center gap-2 mb-3">
+                <EduBranchLogo size={28} />
+                <span className="text-sm font-semibold text-gray-900 tracking-tight">
+                  EduBranch AI
+                </span>
+              </div>
+              <h1 className="text-2xl lg:text-3xl font-semibold text-gray-900 tracking-tight">
+                Đăng nhập vào hệ thống
+              </h1>
+              <p className="mt-1.5 text-sm text-gray-500">
+                Truy cập cổng học tập và giảng dạy tình huống EduBranch AI
+              </p>
             </div>
 
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-              Đăng nhập vào hệ thống
-            </h1>
-            <p className="mt-1 text-sm text-gray-500 mb-6">
-              Dành cho Giảng viên và Sinh viên
-            </p>
+            {/* Error or Info Alerts */}
+            {error && (
+              <Alert variant="error" className="mb-5">
+                {error}
+              </Alert>
+            )}
+            {infoMsg && (
+              <Alert variant="info" className="mb-5">
+                {infoMsg}
+              </Alert>
+            )}
 
-            {/* Notifications */}
-            {error && <Alert variant="error" className="mb-4">{error}</Alert>}
-            {infoMsg && <Alert variant="info" className="mb-4">{infoMsg}</Alert>}
-
-            {/* Login Form */}
+            {/* Form */}
             <form onSubmit={handleLogin} className="space-y-4" noValidate>
-              
-              {/* Email Address */}
+              {/* Email Field */}
               <div>
-                <label htmlFor="login-email" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+                <label htmlFor="login-email" className="block text-sm font-medium text-gray-700 mb-1.5">
                   Địa chỉ email
                 </label>
                 <input
@@ -259,15 +226,14 @@ export function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="an.nguyen@dtuytan.edu.vn"
-                  className="block w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-sm text-gray-900
-                             placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                  placeholder="an.nguyen@duytan.edu.vn"
+                  className="block w-full h-11 px-3.5 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 focus:outline-none transition-all"
                 />
               </div>
 
-              {/* Password */}
+              {/* Password Field */}
               <div>
-                <label htmlFor="login-password" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
+                <label htmlFor="login-password" className="block text-sm font-medium text-gray-700 mb-1.5">
                   Mật khẩu
                 </label>
                 <div className="relative">
@@ -279,52 +245,52 @@ export function LoginPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Nhập mật khẩu..."
-                    className="block w-full rounded-xl border border-gray-200 px-3.5 py-2.5 text-sm text-gray-900
-                               placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all pr-10"
+                    className="block w-full h-11 px-3.5 pr-10 bg-white border border-gray-200 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 focus:outline-none transition-all"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 focus:outline-none cursor-pointer"
                     aria-label={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                   >
                     {showPassword ? (
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
                       </svg>
                     ) : (
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     )}
                   </button>
                 </div>
               </div>
 
-              {/* Remember me & Forgot password */}
-              <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 text-gray-600 cursor-pointer select-none">
+              {/* Session Options (Remember me & Forgot Password) */}
+              <div className="flex items-center justify-between pt-1">
+                <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
                   />
                   <span>Ghi nhớ đăng nhập</span>
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                  className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
                 >
                   Quên mật khẩu?
                 </Link>
               </div>
 
-              {/* Submit Button */}
+              {/* Submit CTA Button */}
               <Button
                 type="submit"
-                className="w-full bg-[#1E3A8A] hover:bg-blue-800 text-white font-medium py-3 rounded-xl transition-all shadow-sm hover:shadow text-sm"
+                variant="primary"
+                className="w-full h-11 text-base font-medium mt-2"
                 isLoading={loading}
                 id="btn-login-submit"
               >
@@ -332,10 +298,14 @@ export function LoginPage() {
               </Button>
             </form>
 
-            {/* Registration link */}
-            <p className="mt-5 text-center text-xs text-gray-500">
+            {/* Registration Switch */}
+            <p className="mt-5 text-center text-sm text-gray-600">
               Chưa có tài khoản?{" "}
-              <Link to="/register" state={location.state} className="font-semibold text-blue-600 hover:text-blue-800 hover:underline">
+              <Link
+                to="/register"
+                state={location.state}
+                className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
+              >
                 Đăng ký ngay
               </Link>
             </p>
@@ -346,7 +316,7 @@ export function LoginPage() {
                 <div className="w-full border-t border-gray-200" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-white px-3 font-semibold text-gray-400 uppercase tracking-wider">
+                <span className="bg-white px-3 font-medium text-gray-400 uppercase tracking-wider">
                   HOẶC
                 </span>
               </div>
@@ -356,7 +326,7 @@ export function LoginPage() {
             <button
               type="button"
               onClick={handleGoogleLogin}
-              className="w-full rounded-xl border border-gray-200 bg-white hover:bg-gray-50 py-2.5 px-4 text-xs font-semibold text-gray-700 inline-flex items-center justify-center gap-2.5 transition-colors shadow-2xs cursor-pointer"
+              className="w-full h-11 border border-gray-200 bg-white hover:bg-gray-50 rounded-lg text-sm font-medium text-gray-700 inline-flex items-center justify-center gap-2.5 transition-colors cursor-pointer shadow-2xs"
             >
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -367,24 +337,10 @@ export function LoginPage() {
               <span>Đăng nhập với Google</span>
             </button>
 
-            {/* Admin Portal Gateway Link */}
-            <div className="mt-4 p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2 text-slate-600">
-                <span className="text-sm">🛡️</span>
-                <span>Quản trị viên hệ thống?</span>
-              </div>
-              <Link
-                to="/admin/login"
-                className="font-bold text-[#1E3A8A] hover:underline inline-flex items-center gap-1"
-              >
-                Cổng Quản trị viên →
-              </Link>
-            </div>
-
-            {/* Dev Quick-Access Shortcuts (Only in Development Mode) */}
+            {/* Dev Quick-Access Toolbar (Neutral academic look, no emojis) */}
             {import.meta.env.DEV && (
-              <div className="mt-6 border-t border-gray-100 pt-4">
-                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-wider text-gray-400 text-center">
+              <div className="mt-8 pt-5 border-t border-gray-100">
+                <p className="text-xs font-medium text-gray-400 text-center uppercase tracking-wider mb-2.5">
                   Truy cập nhanh (Local Dev)
                 </p>
                 <div className="grid grid-cols-3 gap-2">
@@ -392,39 +348,36 @@ export function LoginPage() {
                     type="button"
                     id="btn-quick-lecturer"
                     onClick={() => quickAccess("LECTURER")}
-                    className="rounded-lg border border-blue-200 bg-blue-50/70 p-2 text-left hover:bg-blue-100 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-left transition-colors cursor-pointer"
                   >
-                    <span className="block text-[11px] font-bold text-blue-900">👨‍🏫 Giảng viên</span>
-                    <span className="block text-[10px] text-blue-600 truncate">Khóa học & Case →</span>
+                    <span className="block text-xs font-semibold text-gray-900">Giảng viên</span>
+                    <span className="block text-[11px] text-gray-500 truncate">Khóa học & Case →</span>
                   </button>
                   <button
                     type="button"
-                    id="btn-quick-branching"
+                    id="btn-quick-student"
                     onClick={() => quickAccess("STUDENT")}
-                    className="rounded-lg border border-teal-200 bg-teal-50/70 p-2 text-left hover:bg-teal-100 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-left transition-colors cursor-pointer"
                   >
-                    <span className="block text-[11px] font-bold text-teal-900">🎓 Sinh viên</span>
-                    <span className="block text-[10px] text-teal-700 truncate">Vào bàn học →</span>
+                    <span className="block text-xs font-semibold text-gray-900">Sinh viên</span>
+                    <span className="block text-[11px] text-gray-500 truncate">Bàn học & Case →</span>
                   </button>
                   <button
                     type="button"
                     id="btn-quick-admin"
                     onClick={() => quickAccess("ADMIN")}
-                    className="rounded-lg border border-slate-300 bg-slate-100/80 p-2 text-left hover:bg-slate-200 transition-colors cursor-pointer"
+                    className="p-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-left transition-colors cursor-pointer"
                   >
-                    <span className="block text-[11px] font-bold text-slate-900">🛡️ Quản trị</span>
-                    <span className="block text-[10px] text-slate-600 truncate">Dashboard →</span>
+                    <span className="block text-xs font-semibold text-gray-900">Quản trị viên</span>
+                    <span className="block text-[11px] text-gray-500 truncate">Hệ thống →</span>
                   </button>
                 </div>
               </div>
             )}
-
           </div>
-
         </div>
 
       </div>
-
     </div>
   );
 }
