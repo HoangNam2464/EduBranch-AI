@@ -19,6 +19,10 @@ class RetrievalException(Exception):
     """Raised when vector retrieval fails."""
 
 
+class DatabaseException(Exception):
+    """Raised when a database query or persistence operation fails."""
+
+
 class CaseGenerationException(Exception):
     """Raised when case generation fails or produces invalid output."""
 
