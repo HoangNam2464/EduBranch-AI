@@ -1,11 +1,11 @@
-# EduBranch AI — UI/UX Redesign: Phase 1 Discovery + Plan
+ EduBranch AI — UI/UX Redesign: Phase 1 Discovery + Plan
 
 > **Status**: PLAN ONLY — no project files modified. **Revised** with confirmed decisions below (Section P closed out).
 > **Sources used (priority order, as instructed)**:
 > 1. `C1SE_65-EduBranch-AI-Proposal_V1.2.docx` (Proposal V1.2) — business/product truth
 > 2. `REQUIREMENT-TRACEABILITY.md` + `docs/features/*.md` + `V2__new_flow_schema.sql` — proxy for "Migration Plan Rev 2" (no such file exists standalone; user-confirmed proxy)
 > 3. Repository source (`EduBranch-AI`, verified identical to GitHub `main` as of this audit)
-> 4. `DESIGN.md`, `SITE.md`, `next-prompt.md` (`.stitch/`) — legacy/current UI references, **audited, not authoritative**
+> 4. `DESIGN.md`, `SITE-ARCHITECTURE.md`, `next-prompt.md` (`.stitch/`) — legacy/current UI references, **audited, not authoritative**
 
 ---
 
@@ -22,9 +22,9 @@
 | # | Conflict | Evidence | Recommendation |
 |---|---|---|---|
 | 1 | **Legacy rule files describe a forbidden "AI Debate Assistant / Devil's Advocate"** | Legacy `.agents/rules/feature-debate-assistant.md` (keywords include "devil advocate"), `.agents/rules/feature-argument.md`, `.agents/rules/feature-simulator.md` — all referenced `debate/`, `argument/`, `simulation/` backend modules that **no longer exist** in the repo (replaced by `challenge-support/`, `reasoning/`, `branching-attempt/`). Proposal V1.2 explicitly states: AI Reasoning/Challenge Support "does not grade, score or decide academic right or wrong, and **it is not a debate platform**." | **DELETE** `feature-debate-assistant.md`. **REPLACE** with a new rule file describing `challenge-support/` (2-round Socratic counter-questions, no grading) sourced from `docs/features/FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md`. **UPDATE** `feature-argument.md` → rename concept to "reasoning" (`reasoning/` module), matching `docs/features/FEATURE-BRANCHING-STUDY.md`. **UPDATE** `feature-simulator.md` → rename to `branching-attempt/` terminology, matching `docs/features/FEATURE-BRANCHING-ATTEMPT.md`. |
-| 2 | **`.agents/rules/ui-design-standards.md` §5 previously listed stale, incomplete routes** | Listed `/student/cases/:caseId/simulate` and `/student/cases/:caseId/debate/:sessionId` — neither exists in `router.tsx`. Missing entirely: `review-study`, `review-study/:submissionId/feedback`, `cases/:caseId/feedback` (lecturer feedback), `attempt/:attemptId/reflect`. | **UPDATE** §5 to mirror the live `router.tsx` route list (given in Section C below). |
-| 3 | **`SITE.md` previously described a "Debate Assistant" acting as a "Socratic Devil's Advocate"** | Section 1 of legacy `SITE.md` directly contradicted Proposal V1.2's explicit "not a debate platform" statement. | Resolved: `SITE.md` updated to AI Reasoning / Challenge Support terminology and light-first academic system. |
-| 4 | **The "Start Design" modal (`DESIGN.md`/`next-prompt.md`/`SITE.md §7`) does not correspond to any screen in Proposal V1.2, `REQUIREMENT-TRACEABILITY.md`, or the live `router.tsx`.** | `SITE.md` claimed a public route `/start-design` (or `/design`); no such route exists in `frontend/src/app/router.tsx` (verified against live GitHub `main`). Proposal V1.2 never describes lecturers/students supplying their own `DESIGN.md`, Figma files, or brand assets. | Resolved: This modal is an **internal meta-tool for generating EduBranch AI's own UI via Stitch** (tooling for development, not a product feature). Categorized strictly as internal design tooling (`SITE.md §7`). |
+| 2 | **`.agents/rules/01-ui-design-standards.md` §5 previously listed stale, incomplete routes** | Listed `/student/cases/:caseId/simulate` and `/student/cases/:caseId/debate/:sessionId` — neither exists in `router.tsx`. Missing entirely: `review-study`, `review-study/:submissionId/feedback`, `cases/:caseId/feedback` (lecturer feedback), `attempt/:attemptId/reflect`. | **UPDATE** §5 to mirror the live `router.tsx` route list (given in Section C below). |
+| 3 | **`SITE-ARCHITECTURE.md` previously described a "Debate Assistant" acting as a "Socratic Devil's Advocate"** | Section 1 of legacy `SITE-ARCHITECTURE.md` directly contradicted Proposal V1.2's explicit "not a debate platform" statement. | Resolved: `SITE-ARCHITECTURE.md` updated to AI Reasoning / Challenge Support terminology and light-first academic system. |
+| 4 | **The "Start Design" modal (`DESIGN.md`/`next-prompt.md`/`SITE-ARCHITECTURE.md §7`) does not correspond to any screen in Proposal V1.2, `REQUIREMENT-TRACEABILITY.md`, or the live `router.tsx`.** | `SITE-ARCHITECTURE.md` claimed a public route `/start-design` (or `/design`); no such route exists in `frontend/src/app/router.tsx` (verified against live GitHub `main`). Proposal V1.2 never describes lecturers/students supplying their own `DESIGN.md`, Figma files, or brand assets. | Resolved: This modal is an **internal meta-tool for generating EduBranch AI's own UI via Stitch** (tooling for development, not a product feature). Categorized strictly as internal design tooling (`SITE-ARCHITECTURE.md §7`). |
 | 5 | **Router comment claims a "Final Migration Plan Rev 2" as source of truth** | `frontend/src/app/router.tsx` line 3. | Resolved: `REQUIREMENT-TRACEABILITY.md` + `docs/features/*.md` + `V2__new_flow_schema.sql` serve as the proxy. |
 
 ## C. Product Screen Inventory
@@ -118,23 +118,23 @@ Every future Stitch prompt for any EduBranch AI screen must state: **WHAT** scre
 | `GLOBAL-DESIGN-SYSTEM.md` | Colors, type, spacing, component rules | `DESIGN.md` |
 | `SCREEN-SPECIFICATIONS.md` (`docs/design/screens/*.md`) | Per-screen spec for P0–P4 | *(new)* |
 | `STITCH-GENERATION-GUIDELINES.md` | The WHAT/WHO/WHY/... rules generalized (Section I above) | Supersedes retired Stitch prompt references |
-| `SITE.md` | Sitemap & workflow architecture reference for EduBranch AI | — |
+| `SITE-ARCHITECTURE.md` | Sitemap & workflow architecture reference for EduBranch AI | — |
 
 ## K. Migration Strategy from Legacy Design Docs
 
 1. Do not carry forward any hex value, spacing value, or component spec from legacy `DESIGN.md`/`next-prompt.md` as-is — they were built for one modal under an aesthetic direction now rejected.
 2. Extract only the *structurally reusable* patterns worth keeping conceptually (e.g., modal max-width discipline, disabled/active button state logic, drag-and-drop card pattern) and re-skin them under the light/neutral system.
-3. Treat `SITE.md` Sections 2–6 (roles, goals, sitemap, workflows) as accurate architecture reference for EduBranch AI.
+3. Treat `SITE-ARCHITECTURE.md` Sections 2–6 (roles, goals, sitemap, workflows) as accurate architecture reference for EduBranch AI.
 
 ## L. Design Specification Files
 
 - `docs/design/GLOBAL-DESIGN-SYSTEM.md`
 - `docs/design/STITCH-GENERATION-GUIDELINES.md`
-- `docs/design/screens/P0-foundation.md`, `P1-lecturer-core.md`, `P2-student-core.md`, `P3-support.md`, `P4-review-study.md`
+- `docs/design/screens/P0-FOUNDATION.md`, `P1-LECTURER-CORE.md`, `P2-STUDENT-CORE.md`, `P3-SUPPORT-AND-STATISTICS.md`, `P4-REVIEW-STUDY.md`
 
 ## M. Status of Legacy Docs
 
-- `.agents/rules/ui-design-standards.md` §5 (route list synchronized with `router.tsx`)
+- `.agents/rules/01-ui-design-standards.md` §5 (route list synchronized with `router.tsx`)
 - Retired Stitch docs: `.stitch/DESIGN.md` and `.stitch/next-prompt.md` are permanently retired and deleted; canonical design specs reside in `docs/design/`.
 
 ## N. Files Replaced / Cleaned Up
@@ -147,7 +147,7 @@ Every future Stitch prompt for any EduBranch AI screen must state: **WHAT** scre
 - `docs/requirements/REQUIREMENT-TRACEABILITY.md`
 - `docs/features/*.md` (all current, matching live modules)
 - `infrastructure/postgres/migrations/V2__new_flow_schema.sql`
-- `SITE.md` Sections 2–7 (sitemap/roles/workflows), as architecture reference
+- `SITE-ARCHITECTURE.md` Sections 2–7 (sitemap/roles/workflows), as architecture reference
 
 ## P. Clarifications — RESOLVED
 
@@ -155,7 +155,7 @@ Every future Stitch prompt for any EduBranch AI screen must state: **WHAT** scre
    Confirmed: `DESIGN.md` / `next-prompt.md` (`.stitch/`) were internal Stitch/UI-authoring references, not an EduBranch AI product feature, and have been retired/deleted.
    - Removed from the product screen inventory.
    - It will **not** be designed as a lecturer/student screen in this system.
-   - `SITE.md §7` is strictly classified as **INTERNAL DESIGN TOOLING ONLY**, not product scope.
+   - `SITE-ARCHITECTURE.md §7` is strictly classified as **INTERNAL DESIGN TOOLING ONLY**, not product scope.
 
 2. **Theme → LIGHT, confirmed as default. No dark mode this phase.**
    Section E/F direction is locked: light-first, neutral, academic, professional. The dark/indigo palette from legacy docs is fully retired, not preserved as an alternate mode.
@@ -173,4 +173,4 @@ Every future Stitch prompt for any EduBranch AI screen must state: **WHAT** scre
    - Lecturer Feedback
 
 5. **Canonical alignment complete:**
-   `SITE.md` and design specifications in `docs/design/` are 100% synchronized with EduBranch AI Proposal V1.2.
+   `SITE-ARCHITECTURE.md` and design specifications in `docs/design/` are 100% synchronized with EduBranch AI Proposal V1.2.

@@ -7,6 +7,10 @@ import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./jwt.strategy";
 import { DatabaseModule } from "../../common/database/database.module";
 
+import { RolesGuard } from "./guards/roles.guard";
+import { RateLimiterGuard } from "./guards/rate-limiter.guard";
+import { RateLimiterService } from "./rate-limiter/rate-limiter.service";
+
 @Module({
   imports: [
     DatabaseModule,
@@ -23,7 +27,19 @@ import { DatabaseModule } from "../../common/database/database.module";
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
-  exports: [AuthService, JwtModule],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    RolesGuard,
+    RateLimiterService,
+    RateLimiterGuard,
+  ],
+  exports: [
+    AuthService,
+    JwtModule,
+    RolesGuard,
+    RateLimiterService,
+    RateLimiterGuard,
+  ],
 })
 export class AuthModule {}

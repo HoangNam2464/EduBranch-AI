@@ -61,9 +61,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       }
     } catch (error) {
       this.logger.error("Failed to connect or migrate PostgreSQL:", error);
-      if (this.configService.get<string>("NODE_ENV") === "production") {
-        throw error;
-      }
+      throw error;
     }
   }
 

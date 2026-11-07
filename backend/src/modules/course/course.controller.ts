@@ -13,6 +13,7 @@ import { CourseService } from "./course.service";
 import { CreateCourseDto } from "./dto/create-course.dto";
 import { UpdateCourseDto } from "./dto/update-course.dto";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
+import { Roles } from "../auth/decorators/roles.decorator";
 
 /**
  * CourseController — Lecturer Course Management.
@@ -29,6 +30,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
+  @Roles("LECTURER")
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createCourse(
@@ -39,6 +41,7 @@ export class CourseController {
     return { status: "SUCCESS", data: course };
   }
 
+  @Roles("LECTURER")
   @Get()
   async getMyCourses(@CurrentUser() user: { id: string; role: string }) {
     const courses = await this.courseService.getCoursesByLecturer(user.id);
@@ -54,6 +57,7 @@ export class CourseController {
     return { status: "SUCCESS", data: course };
   }
 
+  @Roles("LECTURER")
   @Put(":courseId")
   async updateCourse(
     @Param("courseId") courseId: string,
@@ -64,6 +68,7 @@ export class CourseController {
     return { status: "SUCCESS", data: course };
   }
 
+  @Roles("LECTURER")
   @Delete(":courseId")
   @HttpCode(HttpStatus.OK)
   async deleteCourse(

@@ -124,4 +124,4 @@ No collaborative multi-lecturer real-time editing (no presence cursors, no locki
 ---
 
 ## Statistics & Feedback Note
-`/lecturer/statistics` and `/lecturer/cases/:caseId/feedback` are P3 (LATER) per the confirmed sequencing — see `docs/design/screens/P3-support.md`. Do not build them as part of the P1 pass.
+`/lecturer/statistics` and `/lecturer/cases/:caseId/feedback` are P3 (LATER) per the confirmed sequencing — see `docs/design/screens/P3-SUPPORT-AND-STATISTICS.md`. Do not build them as part of the P1 pass.

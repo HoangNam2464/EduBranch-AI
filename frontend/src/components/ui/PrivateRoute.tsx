@@ -17,7 +17,12 @@ export function PrivateRoute({ children, role }: PrivateRouteProps) {
   }
 
   if (role && user?.role !== role) {
-    const home = user?.role === "LECTURER" ? "/lecturer/courses" : "/student";
+    const home =
+      user?.role === "LECTURER"
+        ? "/lecturer/courses"
+        : user?.role === "ADMIN"
+        ? "/admin/dashboard"
+        : "/student";
     return <Navigate to={home} replace />;
   }
 

@@ -1,7 +1,46 @@
-﻿# Contributing to EduBranch-AI
+# Contributing to EduBranch-AI
 
 > Applies to all development on **EduBranch-AI — AI Platform for Experiential Case-Based Learning in University Teaching**.
 > All code changes must comply with these standards before being integrated into `develop` or `main`.
+
+---
+
+## 🚀 Quick Start: Cài đặt Môi trường Phát triển (Dành cho thành viên)
+
+### 1. Kích hoạt Git Hooks bảo vệ mã nguồn (Bắt buộc chạy 1 lần)
+Để tự động ngăn chặn commit file nhạy cảm (`.env`), kiểm tra đúng chuẩn commit message và chặn đặt sai tên nhánh:
+- **Trên Windows (PowerShell)**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\scripts\setup-git.ps1
+  ```
+- **Trên macOS / Linux / Git Bash**:
+  ```bash
+  chmod +x scripts/setup-git.sh
+  ./scripts/setup-git.sh
+  ```
+*(Lệnh trên sẽ thiết lập `git config core.hooksPath .githooks`, kích hoạt `pre-commit`, `commit-msg` và `pre-push` hooks).*
+
+### 2. Khởi chạy toàn bộ hệ thống bằng Docker Compose
+Dự án đã tích hợp đầy đủ cả hạ tầng dữ liệu và ứng dụng (Postgres, Redis, MinIO, Backend Gateway, Frontend Web App):
+```bash
+# Khởi động toàn bộ dịch vụ và build mới nhất
+docker compose up --build -d
+
+# Xem log các dịch vụ
+docker compose logs -f
+
+# Dừng hệ thống
+docker compose down
+```
+
+| Dịch vụ | URL / Port | Tài khoản mặc định |
+| :--- | :--- | :--- |
+| **Frontend Web App** | `http://localhost:5173` | — |
+| **Backend Gateway API** | `http://localhost:8080/api/v1` | — |
+| **AI Service (FastAPI)** | `http://localhost:8000/health` | — |
+| **MinIO Console** | `http://localhost:9001` | `minioadmin` / `changeme_minio_password` |
+| **PostgreSQL 16 + pgvector** | `localhost:5432` | `edubranch` / `changeme_db_password` / DB: `edubranch_ai` |
+| **Redis 7** | `localhost:6379` | pass: `changeme_redis_password` |
 
 ---
 
@@ -23,27 +62,37 @@ feature/<name>  →  develop  →  main
 | `refactor/*` | Code restructuring without adding features. |
 | `docs/*` | Documentation updates. |
 
-### Branch Naming
+### Branch Naming (Strict Rules)
+
+> [!IMPORTANT]
+> **Quy tắc đặt tên nhánh nghiêm ngặt:**
+> - **TUYỆT ĐỐI KHÔNG dùng mã task** (như `TASK-123`, `BE-001`, `FE-010`, `EBA-105`) để đặt tên nhánh Git.
+> - **Tên nhánh Frontend (hoặc chung)**: Đặt theo domain feature chung: format `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`, `feature/auth`).
+> - **Tên nhánh Backend (khi phát triển độc lập)**: Bắt buộc thêm đuôi `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
+> - **Quy trình chuẩn**: Luôn tách nhánh từ `develop` mới nhất (`git checkout develop && git pull`), bật Docker test độc lập (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
 
 | Type | Pattern | Example |
 | :--- | :--- | :--- |
-| Feature | `feature/<module>-<short-name>` | `feature/rag-case-generator` |
-| Bug fix | `fix/<module>-<description>` | `fix/branching-node-traversal` |
+| Feature (Frontend / Chung) | `feature/<feature-name>` | `feature/material`, `feature/course`, `feature/auth` |
+| Feature (Backend riêng) | `feature/<feature-name>-backend` | `feature/material-backend`, `feature/course-backend` |
+| Bug fix | `fix/<feature-name>-<description>` | `fix/auth-token-refresh` |
 | Hotfix | `hotfix/<description>` | `hotfix/jwt-expiry` |
-| Refactor | `refactor/<module>` | `refactor/challenge-support-api` |
+| Refactor | `refactor/<feature-name>` | `refactor/challenge-support` |
 | Docs | `docs/<topic>` | `docs/branching-study-review-phase` |
 
 ---
 
 ## 📝 2. Commit Convention (Conventional Commits)
 
-Every commit message must follow:
+Mã task **CHỈ ĐƯỢC XUẤT HIỆN trong Commit Message**, format:
 
 ```
-<type>(<scope>): <short description>
+<type>(<scope>): <short description> [<TASK-ID>]
 ```
 
-**Scopes:** `backend` · `ai-service` · `frontend` · `infra` · `docs`
+*Ví dụ:* `feat(auth): implement rate limiter guard [BE-012]` hoặc `feat(course): implement course management [BE-003]`
+
+**Scopes:** `backend` · `ai-service` · `frontend` · `infra` · `docs` hoặc tên feature domain (`auth`, `course`, `material`, `case`)
 
 | Type | Purpose | Example |
 | :--- | :--- | :--- |

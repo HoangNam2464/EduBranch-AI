@@ -1,8 +1,8 @@
-# EduBranch AI — Stitch Generation Guidelines
+ EduBranch AI — Stitch Generation Guidelines
 
 > **Status**: CANONICAL — supersedes the single-screen prompt conventions in the retired `.stitch/next-prompt.md`.
 > **Purpose**: Every Stitch prompt written for any EduBranch AI screen (P0–P4) must be assembled using the nine fields below, in order. This keeps generation grounded in approved product behavior instead of improvising UI or functionality.
-> **Source**: `EduBranch-AI_UX-Redesign_Discovery-Plan.md` §I, generalized from one screen to the full product.
+> **Source**: `UX-REDESIGN-DISCOVERY-AUDIT.md` §I, generalized from one screen to the full product.
 
 ---
 
@@ -11,16 +11,16 @@
 Every prompt states all nine. If a field is genuinely not applicable to a given screen, write "N/A — [reason]" rather than omitting it silently, so the omission is traceable.
 
 ### WHAT
-The exact screen or component being generated, named using **current terminology only** (see §3). State the route it corresponds to (from `SITE.md §5`) if it's a full screen, or the parent screen it belongs to if it's a sub-component.
+The exact screen or component being generated, named using **current terminology only** (see §3). State the route it corresponds to (from `SITE-ARCHITECTURE.md §5`) if it's a full screen, or the parent screen it belongs to if it's a sub-component.
 
 ### WHO
-Which role uses it: **Lecturer** or **Student** (never both with identical content — even shared concepts like Challenge Support render differently per role's data). Reference the role table in `SITE.md §2`.
+Which role uses it: **Lecturer** or **Student** (never both with identical content — even shared concepts like Challenge Support render differently per role's data). Reference the role table in `SITE-ARCHITECTURE.md §2`.
 
 ### WHY
-Which product objective it serves, traced to Proposal V1.2's stated goals (active decision-making, human-in-the-loop AI governance, Socratic reasoning challenge without grading, pedagogical insight — `SITE.md §3`). A screen with no traceable objective should not be generated.
+Which product objective it serves, traced to Proposal V1.2's stated goals (active decision-making, human-in-the-loop AI governance, Socratic reasoning challenge without grading, pedagogical insight — `SITE-ARCHITECTURE.md §3`). A screen with no traceable objective should not be generated.
 
 ### WHEN
-Its position in the workflow — reference the relevant workflow diagram in `SITE.md §6` (Material Ingestion / Case Generation / Human-in-the-Loop Review / Branching Study / Review Study / Challenge Support). State what precedes and what follows this screen.
+Its position in the workflow — reference the relevant workflow diagram in `SITE-ARCHITECTURE.md §6` (Material Ingestion / Case Generation / Human-in-the-Loop Review / Branching Study / Review Study / Challenge Support). State what precedes and what follows this screen.
 
 ### DATA
 The exact fields that must appear, sourced from the corresponding `docs/features/FEATURE-*.md` file's "Data Involved" section — never invented. List field names as they exist in the data model (e.g. `reasoning_text`, not "the student's answer").
@@ -111,21 +111,21 @@ SOURCE / OBSERVATION / RECOMMENDATION — or omit this section entirely.
 | Branching Case Player / Branching Attempt | Simulator, Simulation |
 | Review Study | — (product name, unchanged) |
 | Lecturer Feedback | — (product name, unchanged) |
-| Consequence (revealed after reasoning) | Result |
+| Consequence (revealed in REVIEW phase after reaching terminal node) | Result |
 | Outcome (terminal node's final state) | Ending, Result |
 | Counter-question / Challenge question | Debate question |
 
-The internal "Start Design" tooling screen (`SITE.md §7`) is never a subject of a product-screen Stitch prompt — it is developer tooling, out of the product screen inventory entirely.
+The internal "Start Design" tooling screen ([`SITE-ARCHITECTURE.md §7`](SITE-ARCHITECTURE.md)) is never a subject of a product-screen Stitch prompt — it is developer tooling, out of the product screen inventory entirely.
 
 ---
 
 ## 4. Screen Index
 
 Prompts should be written per the priority grouping already established in `docs/design/screens/`:
-- `P0-foundation.md` — app shell, nav, auth, core component library
-- `P1-lecturer-core.md` — courses, materials, cases list, Case Review
-- `P2-student-core.md` — Branching Case Player, Reflection, Challenge Support
-- `P3-support.md` — Statistics, Lecturer Feedback
-- `P4-review-study.md` — Review Study, Review Feedback
+- [`P0-FOUNDATION.md`](screens/P0-FOUNDATION.md) — app shell (`LecturerLayout` 240px sidebar, `StudentLayout` 56px top bar, `PublicLayout`), auth (`/login`, `/register`), core component library
+- [`P1-LECTURER-CORE.md`](screens/P1-LECTURER-CORE.md) — courses, materials, cases list, Case Review (`60/40` ReactFlow split-screen / Review Study form editor)
+- [`P2-STUDENT-CORE.md`](screens/P2-STUDENT-CORE.md) — Branching Case Player (Phase 1: Experience), Branching Review & Analysis (Phase 2: REVIEW), Reflection (Phase 3), Challenge Support
+- [`P3-SUPPORT-AND-STATISTICS.md`](screens/P3-SUPPORT-AND-STATISTICS.md) — Statistics, Lecturer Feedback
+- [`P4-REVIEW-STUDY.md`](screens/P4-REVIEW-STUDY.md) — Review Study, Review Feedback
 
 Each screen file provides the WHAT/WHO/WHY/WHEN/DATA/ACTION/STATE content pre-filled from its feature doc; a Stitch operator fills in VISUAL/REFERENCE/BOUNDARY per this guide when actually generating.

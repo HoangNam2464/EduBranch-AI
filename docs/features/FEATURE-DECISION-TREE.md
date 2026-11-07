@@ -51,14 +51,14 @@ Defines the mathematical and relational domain structure of the **Branching Deci
 
 ## 5. Main Flow
 1. **Creation**: The AI Service or Lecturer defines nodes and options with relative indexing.
-2. **Validation**: Graph integrity validation runs (BFS cycle detection & reachability check).
+2. **Validation**: Graph integrity validation runs (DFS 3-color cycle detection & BFS reachability check).
 3. **Persistence**:
    - Save `Case` record.
    - Batch-save `CaseNode` records.
    - Batch-save `CaseOption` records with foreign keys pointing to `CaseNode.id`.
    - Update `Case.root_node_id` to point to the designated initial node.
-4. **Rendering**: Frontend transforms the relational structure into ReactFlow `nodes` and `edges` for visualization.
-5. **Traversal**: In simulation, student choices advance the session pointer (`current_node_id = option.next_node_id`).
+4. **Rendering**: Frontend transforms the relational structure into ReactFlow `nodes` and `edges` for visualization in the Lecturer Case Review editor (`/lecturer/cases/:caseId/review`).
+5. **Traversal**: In a Branching Study attempt, student choices advance the attempt pointer (`current_node_id = option.next_node_id`).
 
 ---
 
@@ -107,13 +107,13 @@ Case (1) ────< CaseNode (N)
 
 ## 12. Error / Edge Cases
 - Invalid `next_node_id`: If an option references a non-existent node or a node belonging to a different case, throw `ValidationException`.
-- Circular dependency: BFS traversal detects visited nodes in active branch; throws `CycleDetectedException`.
+- Circular dependency: DFS 3-color traversal detects visited nodes in active branch; throws `CycleDetectedException`.
 - Missing terminal node: If all branches loop or have invalid pointers, validation fails with "No valid terminal outcome found".
 
 ---
 
 ## 13. Out of Scope
-- Dynamic runtime tree generation during a student's active simulation (tree must be static and pre-approved).
+- Dynamic runtime tree generation during a student's active branching attempt (tree must be static and pre-approved).
 - Multi-user real-time branching (where student A's decision alters student B's scenario).
 
 ---

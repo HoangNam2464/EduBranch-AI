@@ -71,15 +71,21 @@ export class AuthService {
     return this._buildAuthResponse(user);
   }
 
-  async validateToken(payload: JwtPayload): Promise<{ id: string; email: string; role: string }> {
+  async validateToken(payload: JwtPayload): Promise<{ id: string; email: string; fullName: string; role: string }> {
     const result = await this.db.query(
-      "SELECT id, email, role FROM users WHERE id = $1",
+      "SELECT id, email, full_name, role FROM users WHERE id = $1",
       [payload.sub],
     );
     if (result.rows.length === 0) {
       throw new UnauthorizedException("User not found");
     }
-    return result.rows[0];
+    const user = result.rows[0];
+    return {
+      id: user.id,
+      email: user.email,
+      fullName: user.full_name,
+      role: user.role,
+    };
   }
 
   private _buildAuthResponse(user: {

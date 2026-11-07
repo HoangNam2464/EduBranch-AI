@@ -14,6 +14,7 @@ export interface User {
   email: string;
   fullName: string;
   role: Role;
+  avatarUrl?: string;
 }
 
 export interface AuthTokens {

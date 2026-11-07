@@ -14,10 +14,10 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 
 from app.main import app
+from app.core.config import settings
 
 
-INTERNAL_API_KEY = "changeme_internal_ai_service_api_key"
-HEADERS = {"X-Internal-API-Key": INTERNAL_API_KEY}
+HEADERS = {"X-Internal-API-Key": settings.ai_service_api_key}
 
 FAKE_COURSE_ID = str(uuid.uuid4())
 FAKE_MATERIAL_ID = str(uuid.uuid4())

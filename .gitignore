@@ -105,3 +105,14 @@ scratch_*
 docker-compose.override.yml
 .data/
 data/
+
+# ------------------------------------------------------------------------------
+# 8. Local AI Agent Skills & Assistant Tooling
+# ------------------------------------------------------------------------------
+.agents/skills/
+.claude/
+scripts/*.py
+scripts/figma-mcp-bridge/
+*.zip
+*.tar.gz
+

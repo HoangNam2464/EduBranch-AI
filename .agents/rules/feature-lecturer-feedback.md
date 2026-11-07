@@ -1,7 +1,6 @@
-﻿---
+--
 description: Rules for Lecturer Feedback / Open Review in EduBranch-AI.
-trigger: keyword
-keywords: [lecturer feedback, open review, lecturer review, feedback, commentary]
+trigger: model_decision
 ---
 
 # Feature Rules: Lecturer Feedback & Review

@@ -40,9 +40,9 @@ async def generate_case(request: CaseGenerationRequest) -> CaseGenerationRespons
 
     # 2. Check if we have an API key to do real generation, else mock
     has_api_key = False
-    if settings.ai_provider == "openai" and settings.openai_api_key:
+    if settings.ai_provider == "openai" and settings.openai_api_key and not settings.openai_api_key.startswith("ci-"):
         has_api_key = True
-    elif settings.ai_provider == "gemini" and settings.gemini_api_key:
+    elif settings.ai_provider == "gemini" and settings.gemini_api_key and not settings.gemini_api_key.startswith("ci-"):
         has_api_key = True
         
     prompt = f"""
