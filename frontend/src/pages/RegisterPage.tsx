@@ -9,11 +9,10 @@ import { resolveSafeReturnUrl } from "../utils/navigation";
 /**
  * EduBranch AI — Register Page (00.4 · Đăng ký · Sinh viên & 00.5 · Đăng ký · Giảng viên)
  *
- * Implements both Figma designs in a unified, reactive interface:
- * - 00.4: Student registration with Student ID, case player preview mockup
- * - 00.5: Lecturer registration with Department/Faculty, academic verification notice, case authoring mockup
- * - Dynamic role switcher matching Figma tabs (Card S vs Card G)
- * - Stack: React 19 + TypeScript + TailwindCSS v4
+ * Implements Figma master template:
+ * - Left column: Deep navy (#0B1528) showcase panel with role-adaptive academic preview
+ * - Right column: Clean academic registration form with interactive Role Selector tabs
+ * - Strict adherence to 7 Anti-AI-Slop rules (zero emojis, zero raw ASCII symbols, accessible typography)
  */
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -21,7 +20,7 @@ export function RegisterPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const login = useAuthStore((s) => s.login);
 
-  // Initialize role from URL query param if present (e.g., ?role=lecturer or ?role=student)
+  // Initialize role from URL query param if present (?role=lecturer or ?role=student)
   const initialRoleParam = searchParams.get("role")?.toUpperCase();
   const [role, setRole] = useState<"STUDENT" | "LECTURER">(
     initialRoleParam === "LECTURER" ? "LECTURER" : "STUDENT"
@@ -103,7 +102,6 @@ export function RegisterPage() {
     setInfoMsg(null);
 
     try {
-      // Backend validates standard RegisterDto: { email, password, fullName, role }
       const result = await authService.register({
         email: form.email,
         password: form.password,
@@ -126,183 +124,159 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-slate-100/80 p-4 sm:p-6 lg:p-8">
-      
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50 p-4 sm:p-6 lg:p-8">
       {/* ─────────────────────────────────────────────────────────────
-          MAIN REGISTRATION SPLIT CARD
+          MAIN REGISTRATION CONTAINER (2 COLUMNS)
       ───────────────────────────────────────────────────────────── */}
-      <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[660px]">
-        
+      <div className="w-full max-w-5xl bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[660px]">
         {/* ───────────────────────────────────────────────────────────
-            LEFT COLUMN: BRANDING & DESKTOP MONITOR ILLUSTRATION
+            LEFT COLUMN: BRAND SHOWCASE (Navy #0B1528)
         ─────────────────────────────────────────────────────────── */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-[#1E40AF] via-[#1E3A8A] to-[#0F172A] p-8 sm:p-10 flex flex-col justify-between text-white relative overflow-hidden">
-          
-          {/* Background Ambient Glow */}
-          <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-blue-500/20 blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full bg-blue-400/15 blur-3xl pointer-events-none" />
+        <div className="lg:col-span-5 bg-[#0B1528] p-8 sm:p-10 flex flex-col justify-between text-white relative">
+          {/* Top: Logo & Platform Identity */}
+          <div>
+            <div className="flex items-center gap-3">
+              <EduBranchLogo size={28} />
+              <span className="text-base font-semibold text-white tracking-tight">
+                EduBranch AI
+              </span>
+            </div>
 
-          {/* Top: Logo */}
-          <div className="relative z-10 flex items-center gap-2.5">
-            <EduBranchLogo size={32} />
-            <span className="text-base font-bold text-white tracking-tight">
-              EduBranch AI
-            </span>
-          </div>
-
-          {/* Center: Mission statement */}
-          <div className="relative z-10 my-6 space-y-3">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-snug">
-              Nền tảng học tập tình huống thực nghiệm
-            </h2>
-            <p className="text-blue-100/90 text-xs sm:text-sm leading-relaxed">
-              Giảng viên xây dựng Case Study từ tài liệu môn học, sinh viên ra quyết định, lập luận và suy ngẫm trên từng nhánh tình huống.
-            </p>
-          </div>
-
-          {/* Bottom: Desktop Monitor Mockup on Stand (Changes dynamically per role) */}
-          <div className="relative z-10 mt-2">
-            <div className="relative mx-auto w-full max-w-xs sm:max-w-sm">
-              
-              {/* Monitor Screen Frame */}
-              <div className="rounded-xl bg-gray-900 border-2 border-gray-700 p-2 shadow-2xl">
-                
-                {/* Inside Screen Preview */}
-                <div className="bg-slate-50 rounded-lg p-2.5 border border-gray-200 text-gray-800 space-y-2 select-none overflow-hidden text-[10px]">
-                  
-                  {role === "STUDENT" ? (
-                    // ── Student Screen: Branching Case Player & Decisions ──
-                    <>
-                      <div className="flex items-center justify-between border-b border-gray-200 pb-1">
-                        <span className="font-bold text-blue-900 flex items-center gap-1">
-                          <span className="h-2 w-2 rounded-full bg-blue-600 inline-block" />
-                          Điểm quyết định 01
-                        </span>
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-100 text-blue-800 font-semibold">
-                          Khủng hoảng bảo mật
-                        </span>
-                      </div>
-
-                      <div className="bg-white p-2 rounded border border-gray-200/80 shadow-2xs space-y-1.5">
-                        <p className="text-[9px] text-gray-700 leading-snug">
-                          Hệ thống ngân hàng bị tấn công DDoS. Bạn phải ra quyết định cô lập cổng giao dịch hay duy trì kết nối?
-                        </p>
-                        <div className="space-y-1">
-                          <div className="p-1 rounded bg-blue-50 border border-blue-200 text-[8.5px] text-blue-900 font-medium flex items-center justify-between">
-                            <span>A. Ngắt kết nối cụm phụ</span>
-                            <span className="text-blue-600 font-bold">Lựa chọn ✓</span>
-                          </div>
-                          <div className="p-1 rounded bg-gray-50 border border-gray-200 text-[8.5px] text-gray-600">
-                            B. Chuyển hướng lưu lượng
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    // ── Lecturer Screen: Case Review & Tree Topology ──
-                    <>
-                      <div className="flex items-center justify-between border-b border-gray-200 pb-1">
-                        <span className="font-bold text-blue-900 flex items-center gap-1">
-                          <span className="h-2 w-2 rounded-full bg-blue-600 inline-block" />
-                          Biên tập Case Study
-                        </span>
-                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 font-semibold">
-                          Bản nháp (DRAFT)
-                        </span>
-                      </div>
-
-                      <div className="bg-white p-2 rounded border border-gray-200/80 shadow-2xs space-y-1.5">
-                        <div className="flex items-center justify-between text-[9px]">
-                          <span className="font-bold text-gray-800">Cây quyết định: 4 nút, 6 phương án</span>
-                          <span className="text-emerald-600 font-semibold">DFS Hợp lệ ✓</span>
-                        </div>
-                        <div className="p-1.5 rounded bg-gray-50 border border-gray-200 text-[8.5px] text-gray-600">
-                          Tài liệu nguồn: <strong>GiaoTrinh_AnNinhMang.pdf</strong> (trang 114)
-                        </div>
-                        <div className="flex items-center gap-1 text-[8px] text-blue-700 font-semibold">
-                          <span>Duyệt 4 bước: DRAFT → REVIEWED → APPROVED → PUBLISHED</span>
-                        </div>
-                      </div>
-                    </>
-                  )}
-
-                </div>
-              </div>
-
-              {/* Monitor Stand (Neck + Base Plate) */}
-              <div className="flex flex-col items-center">
-                <div className="w-5 h-3 bg-gradient-to-b from-gray-400 to-gray-500 shadow-sm" />
-                <div className="w-20 h-1.5 bg-gray-400 rounded-full shadow-md" />
-              </div>
-
+            <div className="mt-8 space-y-3">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-900/60 text-blue-200 border border-blue-700/50">
+                <svg className="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                Giáo dục Đại học Thực nghiệm
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug">
+                Nền tảng học tập tình huống & ra quyết định
+              </h2>
+              <p className="text-sm text-gray-300 leading-relaxed">
+                Biến học liệu giáo trình thành các kịch bản phân nhánh thực tế. Sinh viên trực tiếp đưa ra quyết định, đối mặt hệ quả và tự đánh giá hành trình.
+              </p>
             </div>
           </div>
 
+          {/* Center: Dynamic Role-Specific Preview Card */}
+          <div className="my-6">
+            <div className="bg-[#111C33] border border-blue-900/40 rounded-lg p-4 space-y-3">
+              <div className="flex items-center justify-between pb-2 border-b border-gray-800 text-xs text-gray-400">
+                <span className="font-medium text-gray-200 flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-blue-500" />
+                  {role === "STUDENT" ? "Điểm quyết định · Kịch bản số 01" : "Biên tập Cây quyết định · DAG"}
+                </span>
+                <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                  role === "STUDENT" ? "bg-teal-900/50 text-teal-300 border border-teal-700/50" : "bg-amber-900/50 text-amber-300 border border-amber-700/50"
+                }`}>
+                  {role === "STUDENT" ? "Branching Study" : "Bản nháp (DRAFT)"}
+                </span>
+              </div>
+
+              {role === "STUDENT" ? (
+                <div className="space-y-2.5 text-xs">
+                  <p className="text-gray-300 leading-relaxed">
+                    Khủng hoảng dòng tiền quý 3: Doanh nghiệp đối mặt nguy cơ mất thanh khoản 30 ngày tới. Bạn lựa chọn giải pháp nào?
+                  </p>
+                  <div className="space-y-1.5">
+                    <div className="p-2.5 rounded bg-blue-950/60 border border-blue-600/40 text-blue-200 flex items-center justify-between">
+                      <span>A. Cơ cấu lại nợ ngắn hạn & cắt giảm chi phí vận hành</span>
+                      <span className="text-blue-400 font-semibold">Đã chọn</span>
+                    </div>
+                    <div className="p-2.5 rounded bg-gray-900/40 border border-gray-800 text-gray-400">
+                      B. Phát hành cổ phiếu ưu đãi khẩn cấp
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2.5 text-xs">
+                  <div className="flex items-center justify-between text-gray-300">
+                    <span>Cấu trúc cây: 5 nút, 8 phương án</span>
+                    <span className="text-emerald-400 font-medium">DFS Hợp lệ</span>
+                  </div>
+                  <div className="p-2 rounded bg-gray-900/60 border border-gray-800 text-gray-400">
+                    Học liệu trích xuất: <strong className="text-gray-200">GiaoTrinh_QuanTriChienLuoc.pdf</strong> (Chương 4)
+                  </div>
+                  <p className="text-gray-400 text-xs">
+                    Quy trình duyệt 4 bước: DRAFT → REVIEWED → APPROVED → PUBLISHED
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom: Trust & Academic Principles */}
+          <div className="border-t border-gray-800/80 pt-4 space-y-2 text-xs text-gray-400">
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>100% Giảng viên trực tiếp phê duyệt và công bố kịch bản</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Zero AI Grading — Tôn trọng tư duy phản biện độc lập</span>
+            </div>
+          </div>
         </div>
 
         {/* ───────────────────────────────────────────────────────────
             RIGHT COLUMN: REGISTRATION FORM
         ─────────────────────────────────────────────────────────── */}
         <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-white">
-          
           <div className="w-full max-w-md mx-auto">
-            
-            {/* Brand Logo Header */}
-            <div className="flex items-center gap-2 mb-2">
-              <EduBranchLogo size={28} />
-              <span className="text-sm font-bold text-gray-900 tracking-tight">
-                EduBranch AI
-              </span>
+            {/* Header */}
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+                Đăng ký tài khoản
+              </h1>
+              <p className="mt-1 text-sm text-gray-600">
+                {role === "STUDENT"
+                  ? "Cổng đăng ký dành cho Sinh viên tham gia giải quyết tình huống"
+                  : "Cổng đăng ký dành cho Giảng viên thiết kế và quản trị tình huống"}
+              </p>
             </div>
-
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
-              Đăng ký tài khoản mới
-            </h1>
-
-            {/* Role-specific subtitle matching Figma */}
-            <p className="mt-1 text-xs sm:text-sm text-gray-500 mb-5">
-              {role === "STUDENT"
-                ? "Cổng đăng ký dành cho Sinh viên tham gia học tập Case Study"
-                : "Cổng đăng ký dành cho Giảng viên & Cán bộ tham gia biên soạn Case Study"}
-            </p>
 
             {/* Error & Info Alerts */}
             {error && <Alert variant="error" className="mb-4">{error}</Alert>}
             {infoMsg && <Alert variant="info" className="mb-4">{infoMsg}</Alert>}
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-3.5" noValidate>
-              
-              {/* ─── ROLE SELECTOR TABS (Figma Card S vs Card G) ─── */}
+            {/* Registration Form */}
+            <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+              {/* ─── ROLE SELECTOR TABS (Sinh viên vs Giảng viên) ─── */}
               <div>
-                <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">
-                  Tôi là
+                <label className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-2">
+                  Vai trò trên hệ thống
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  
                   {/* Card S: Sinh viên */}
                   <button
                     type="button"
                     onClick={() => handleRoleChange("STUDENT")}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                    className={`p-3 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-3 ${
                       role === "STUDENT"
-                        ? "bg-blue-50/70 border-2 border-blue-500 shadow-xs"
-                        : "bg-white border-gray-200/90 hover:border-gray-300"
+                        ? "bg-blue-50/60 border-blue-600 ring-1 ring-blue-600/30"
+                        : "bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                     }`}
                   >
-                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                      role === "STUDENT" ? "bg-[#1E3A8A] text-white" : "bg-gray-100 text-gray-600"
+                    <div className={`h-9 w-9 rounded-md flex items-center justify-center shrink-0 ${
+                      role === "STUDENT" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
                     }`}>
-                      S
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l9-5-9-5-9 5 9 5z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                      </svg>
                     </div>
                     <div>
-                      <span className={`block text-xs font-bold leading-tight ${
-                        role === "STUDENT" ? "text-blue-950" : "text-gray-900"
+                      <span className={`block text-sm font-semibold ${
+                        role === "STUDENT" ? "text-blue-900" : "text-gray-900"
                       }`}>
                         Sinh viên
                       </span>
-                      <span className="block text-[10px] text-gray-500 leading-tight">
-                        Học & phản biện tình huống
+                      <span className="block text-xs text-gray-500">
+                        Ra quyết định & phản biện
                       </span>
                     </div>
                   </button>
@@ -311,37 +285,37 @@ export function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => handleRoleChange("LECTURER")}
-                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-center gap-2.5 ${
+                    className={`p-3 rounded-lg border text-left transition-all cursor-pointer flex items-center gap-3 ${
                       role === "LECTURER"
-                        ? "bg-blue-50/70 border-2 border-blue-500 shadow-xs"
-                        : "bg-white border-gray-200/90 hover:border-gray-300"
+                        ? "bg-blue-50/60 border-blue-600 ring-1 ring-blue-600/30"
+                        : "bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50"
                     }`}
                   >
-                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 ${
-                      role === "LECTURER" ? "bg-[#1E3A8A] text-white" : "bg-gray-100 text-gray-600"
+                    <div className={`h-9 w-9 rounded-md flex items-center justify-center shrink-0 ${
+                      role === "LECTURER" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-600"
                     }`}>
-                      G
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                      </svg>
                     </div>
                     <div>
-                      <span className={`block text-xs font-bold leading-tight ${
-                        role === "LECTURER" ? "text-blue-950" : "text-gray-900"
+                      <span className={`block text-sm font-semibold ${
+                        role === "LECTURER" ? "text-blue-900" : "text-gray-900"
                       }`}>
                         Giảng viên
                       </span>
-                      <span className="block text-[10px] text-gray-500 leading-tight">
-                        Tạo case & duyệt học thuật
+                      <span className="block text-xs text-gray-500">
+                        Biên soạn & duyệt kịch bản
                       </span>
                     </div>
                   </button>
-
                 </div>
               </div>
 
               {/* ─── ROW 1: Họ và tên & Địa chỉ email (2 Columns) ─── */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Full Name */}
                 <div>
-                  <label htmlFor="reg-fullname" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
+                  <label htmlFor="reg-fullname" className="block text-sm font-medium text-gray-700 mb-1.5">
                     Họ và tên
                   </label>
                   <input
@@ -352,15 +326,13 @@ export function RegisterPage() {
                     placeholder="Nguyễn Văn A"
                     value={form.fullName}
                     onChange={(e) => setForm({ ...form, fullName: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-200 px-3.5 py-2 text-sm text-gray-900
-                               placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                    className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
                   />
                 </div>
 
-                {/* Email Address */}
                 <div>
-                  <label htmlFor="reg-email" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                    Địa chỉ email
+                  <label htmlFor="reg-email" className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Email đại học
                   </label>
                   <input
                     id="reg-email"
@@ -370,18 +342,16 @@ export function RegisterPage() {
                     placeholder="name@duytan.edu.vn"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="block w-full rounded-xl border border-gray-200 px-3.5 py-2 text-sm text-gray-900
-                               placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                    className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
                   />
                 </div>
               </div>
 
               {/* ─── ROW 2: Role-Specific Single Column Field ─── */}
               {role === "STUDENT" ? (
-                // Student ID (00.4)
                 <div>
-                  <label htmlFor="reg-student-id" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
-                    Mã số sinh viên
+                  <label htmlFor="reg-student-id" className="block text-sm font-medium text-gray-700 mb-1.5">
+                    Mã số sinh viên (MSSV)
                   </label>
                   <input
                     id="reg-student-id"
@@ -390,14 +360,12 @@ export function RegisterPage() {
                     placeholder="Ví dụ: 272030491"
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-200 px-3.5 py-2 text-sm text-gray-900
-                               placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                    className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
                   />
                 </div>
               ) : (
-                // Faculty / Department (00.5)
                 <div>
-                  <label htmlFor="reg-department" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
+                  <label htmlFor="reg-department" className="block text-sm font-medium text-gray-700 mb-1.5">
                     Khoa / Đơn vị công tác
                   </label>
                   <input
@@ -407,17 +375,15 @@ export function RegisterPage() {
                     placeholder="Ví dụ: Khoa Công nghệ Thông tin"
                     value={department}
                     onChange={(e) => setDepartment(e.target.value)}
-                    className="block w-full rounded-xl border border-gray-200 px-3.5 py-2 text-sm text-gray-900
-                               placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                    className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
                   />
                 </div>
               )}
 
               {/* ─── ROW 3: Mật khẩu & Xác nhận mật khẩu (2 Columns) ─── */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Password */}
                 <div>
-                  <label htmlFor="reg-password" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
+                  <label htmlFor="reg-password" className="block text-sm font-medium text-gray-700 mb-1.5">
                     Mật khẩu
                   </label>
                   <div className="relative">
@@ -429,31 +395,30 @@ export function RegisterPage() {
                       placeholder="Tối thiểu 8 ký tự"
                       value={form.password}
                       onChange={(e) => setForm({ ...form, password: e.target.value })}
-                      className="block w-full rounded-xl border border-gray-200 px-3.5 py-2 text-sm text-gray-900
-                                 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all pr-8"
+                      className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 pr-9"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label="Hiện hoặc ẩn mật khẩu"
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
                     >
-                      {showPassword ? (
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                        </svg>
-                      ) : (
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      )}
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                        {showPassword ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                        ) : (
+                          <>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </>
+                        )}
+                      </svg>
                     </button>
                   </div>
                 </div>
 
-                {/* Confirm Password */}
                 <div>
-                  <label htmlFor="reg-confirm-password" className="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1">
+                  <label htmlFor="reg-confirm-password" className="block text-sm font-medium text-gray-700 mb-1.5">
                     Xác nhận mật khẩu
                   </label>
                   <div className="relative">
@@ -465,33 +430,35 @@ export function RegisterPage() {
                       placeholder="Nhập lại mật khẩu"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="block w-full rounded-xl border border-gray-200 px-3.5 py-2 text-sm text-gray-900
-                                 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all pr-8"
+                      className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 pr-9"
                     />
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      aria-label="Hiện hoặc ẩn mật khẩu xác nhận"
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
                     >
-                      {showConfirmPassword ? (
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                        </svg>
-                      ) : (
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      )}
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                        {showConfirmPassword ? (
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                        ) : (
+                          <>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </>
+                        )}
+                      </svg>
                     </button>
                   </div>
                 </div>
               </div>
 
-              {/* ─── LECTURER VERIFICATION NOTICE (00.5 only) ─── */}
+              {/* ─── LECTURER VERIFICATION NOTICE ─── */}
               {role === "LECTURER" && (
-                <div className="rounded-xl border border-amber-200/90 bg-amber-50/70 p-3 flex items-start gap-2.5 text-xs text-amber-900 leading-snug">
-                  <span className="text-amber-600 text-sm shrink-0 mt-0.5">ℹ️</span>
+                <div className="rounded-md border border-amber-200 bg-amber-50 p-3 flex items-start gap-2.5 text-xs text-amber-900 leading-relaxed">
+                  <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
                   <span>
                     Nhằm tuân thủ tính chuẩn mực học thuật và bản quyền học liệu, tài khoản Giảng viên sẽ được kích hoạt toàn quyền tác giả sau khi Khoa/Bộ môn xác nhận thông tin công tác.
                   </span>
@@ -501,18 +468,19 @@ export function RegisterPage() {
               {/* Submit Button */}
               <Button
                 type="submit"
-                className="w-full bg-[#1E3A8A] hover:bg-blue-800 text-white font-medium py-2.5 rounded-xl transition-all shadow-sm hover:shadow text-sm cursor-pointer mt-2"
+                variant="primary"
+                className="w-full h-10 mt-2"
                 isLoading={loading}
                 id="btn-register-submit"
               >
-                Hoàn tất đăng ký
+                {role === "STUDENT" ? "Đăng ký tài khoản Sinh viên" : "Đăng ký tài khoản Giảng viên"}
               </Button>
             </form>
 
             {/* Link to Login */}
-            <p className="mt-4 text-center text-xs text-gray-500">
+            <p className="mt-4 text-center text-xs text-gray-600">
               Đã có tài khoản?{" "}
-              <Link to="/login" state={location.state} className="font-semibold text-blue-600 hover:text-blue-800 hover:underline">
+              <Link to="/login" state={location.state} className="font-medium text-blue-600 hover:text-blue-700 hover:underline">
                 Đăng nhập ngay
               </Link>
             </p>
@@ -523,8 +491,8 @@ export function RegisterPage() {
                 <div className="w-full border-t border-gray-200" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="bg-white px-3 font-semibold text-gray-400 uppercase tracking-wider">
-                  HOẶC
+                <span className="bg-white px-3 text-gray-500 uppercase tracking-wider">
+                  Hoặc
                 </span>
               </div>
             </div>
@@ -533,7 +501,7 @@ export function RegisterPage() {
             <button
               type="button"
               onClick={handleGoogleRegister}
-              className="w-full rounded-xl border border-gray-200 bg-white hover:bg-gray-50 py-2 px-4 text-xs font-semibold text-gray-700 inline-flex items-center justify-center gap-2.5 transition-colors shadow-2xs cursor-pointer"
+              className="w-full h-10 rounded-md border border-gray-200 bg-white hover:bg-gray-50 px-4 text-xs font-medium text-gray-700 inline-flex items-center justify-center gap-2.5 transition-colors cursor-pointer"
             >
               <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -541,15 +509,11 @@ export function RegisterPage() {
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
               </svg>
-              <span>Đăng ký với Google</span>
+              <span>Đăng ký với Google Workspace</span>
             </button>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

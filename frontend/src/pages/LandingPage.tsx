@@ -1,129 +1,175 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { EduBranchLogo } from "../components/ui";
+import { EduBranchLogo, Button } from "../components/ui";
 
+/**
+ * EduBranch AI — Landing Page (00.2 · Chung · Trang giới thiệu)
+ *
+ * Implements Figma master template:
+ * - Academic university-level focus (Business, Law, Medicine, CS, Finance)
+ * - Zero K-12 elements, zero emojis, zero raw ASCII symbols
+ * - 4-Pillar Pedagogical Architecture: RAG Grounding, Branching DAG, Journey Review, Socratic AI
+ * - Dual Learning Modes: Branching Study (Teal) vs Review Study (Pink)
+ */
 export function LandingPage() {
-  // Interactive core feature tabs
-  const [activeFeatureTab, setActiveFeatureTab] = useState<number>(1);
-
-  // FAQ Accordion State
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0);
 
-  // Newsletter email state
-  const [newsletterEmail, setNewsletterEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  // Quick CTA email state
-  const [ctaEmail, setCtaEmail] = useState("");
-
-  const subjectListRow1 = [
-    { name: "Vật Lý", icon: "⚛️", color: "bg-blue-50 text-blue-700 border-blue-200" },
-    { name: "Hóa Học", icon: "🧪", color: "bg-teal-50 text-teal-700 border-teal-200" },
-    { name: "Sinh Học", icon: "🌿", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
-    { name: "Lịch Sử", icon: "📜", color: "bg-amber-50 text-amber-700 border-amber-200" },
-    { name: "Địa Lý", icon: "🌍", color: "bg-sky-50 text-sky-700 border-sky-200" },
-    { name: "Toán", icon: "📐", color: "bg-indigo-50 text-indigo-700 border-indigo-200" },
-    { name: "Ngữ Văn", icon: "📖", color: "bg-rose-50 text-rose-700 border-rose-200" },
-    { name: "Vật Lý", icon: "⚛️", color: "bg-blue-50 text-blue-700 border-blue-200" },
-    { name: "Hóa Học", icon: "🧪", color: "bg-teal-50 text-teal-700 border-teal-200" },
-    { name: "Sinh Học", icon: "🌿", color: "bg-emerald-50 text-emerald-700 border-emerald-200" },
+  const universityDisciplines = [
+    {
+      code: "BUS",
+      name: "Quản trị kinh doanh & Chiến lược",
+      desc: "Xử lý khủng hoảng truyền thông, mua bán sáp nhập và tái cấu trúc nguồn vốn.",
+    },
+    {
+      code: "FIN",
+      name: "Tài chính - Ngân hàng",
+      desc: "Quản trị rủi ro thanh khoản, thẩm định tín dụng doanh nghiệp và danh mục đầu tư.",
+    },
+    {
+      code: "CS",
+      name: "Khoa học máy tính & An toàn thông tin",
+      desc: "Phản ứng sự cố mã hóa tống tiền (Ransomware), điều tra dấu vết và khôi phục hệ thống.",
+    },
+    {
+      code: "MED",
+      name: "Y khoa & Điều dưỡng lâm sàng",
+      desc: "Chẩn đoán phân biệt ca cấp cứu phức tạp và hội chẩn đa chuyên khoa theo phác đồ.",
+    },
+    {
+      code: "LAW",
+      name: "Luật học & Pháp lý doanh nghiệp",
+      desc: "Tranh tụng sở hữu trí tuệ, đàm phán hợp đồng thương mại quốc tế và tuân thủ lao động.",
+    },
+    {
+      code: "HOS",
+      name: "Quản trị Du lịch & Khách sạn",
+      desc: "Ứng phó sự cố an toàn dịch vụ, quản trị trải nghiệm khách hàng cao cấp và điều hành mùa cao điểm.",
+    },
   ];
 
-  const subjectListRow2 = [
-    { name: "Âm Nhạc", icon: "🎵", color: "bg-cyan-50 text-cyan-700 border-cyan-200" },
-    { name: "Thể Dục", icon: "🏃", color: "bg-red-50 text-red-700 border-red-200" },
-    { name: "Tiếng Anh", icon: "🌐", color: "bg-blue-50 text-blue-700 border-blue-200" },
-    { name: "Tin Học", icon: "💻", color: "bg-orange-50 text-orange-700 border-orange-200" },
-    { name: "Công Nghệ", icon: "⚙️", color: "bg-slate-50 text-slate-700 border-slate-200" },
-    { name: "GDCD", icon: "⚖️", color: "bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200" },
-    { name: "Mỹ Thuật", icon: "🎨", color: "bg-purple-50 text-purple-700 border-purple-200" },
-    { name: "Âm Nhạc", icon: "🎵", color: "bg-cyan-50 text-cyan-700 border-cyan-200" },
-    { name: "Thể Dục", icon: "🏃", color: "bg-red-50 text-red-700 border-red-200" },
+  const coreFeatures = [
+    {
+      id: "01",
+      title: "RAG Grounding từ học liệu chính thống",
+      desc: "Hệ thống trích xuất nội dung từ giáo trình, bài giảng và tài liệu case study (PDF/DOCX) của giảng viên. Mỗi kịch bản đều gắn liền với căn cứ học thuật cụ thể.",
+      tag: "Bản quyền & Chuẩn mực",
+    },
+    {
+      id: "02",
+      title: "Cây quyết định phân nhánh (DAG)",
+      desc: "Kịch bản được cấu trúc dạng đồ thị có hướng không chu trình. Mỗi lựa chọn dẫn dắt sinh viên tới các tình thế và hệ quả độc lập, phản ánh tính bất định thực tế.",
+      tag: "Tư duy hệ thống",
+    },
+    {
+      id: "03",
+      title: "Hành trình hồi cứu & Lập luận sâu",
+      desc: "Trong pha trải nghiệm, sinh viên đi thẳng qua các điểm quyết định. Hệ quả và phương án đối ứng chỉ bộc lộ ở pha Review để sinh viên suy ngẫm và tự lập luận.",
+      tag: "Trải nghiệm 3 pha",
+    },
+    {
+      id: "04",
+      title: "Socratic AI Challenge Support",
+      desc: "Trợ lý AI đặt câu hỏi phản biện gợi mở (tối đa 2 vòng) nhằm rèn luyện lập luận đa chiều. Tuyệt đối không chấm điểm hay thay thế đánh giá của giảng viên.",
+      tag: "Zero AI Grading",
+    },
+  ];
+
+  const workflowSteps = [
+    {
+      step: "01",
+      role: "Giảng viên",
+      title: "Tải học liệu môn học",
+      desc: "Tải lên giáo trình, tài liệu chuyên khảo hoặc tình huống nghiệp vụ thực tế dưới dạng PDF hoặc Word.",
+    },
+    {
+      step: "02",
+      role: "Giảng viên & AI",
+      title: "Biên tập & Phê duyệt kịch bản",
+      desc: "AI tạo bản nháp cây quyết định; giảng viên trực tiếp chỉnh sửa và duyệt qua 4 bước: DRAFT → REVIEWED → APPROVED → PUBLISHED.",
+    },
+    {
+      step: "03",
+      role: "Sinh viên",
+      title: "Ra quyết định & Phản biện",
+      desc: "Sinh viên tiếp cận case qua liên kết học phần, điều hướng qua các nút quyết định, xem lại hành trình và bảo vệ lập luận của mình.",
+    },
+    {
+      step: "04",
+      role: "Giảng viên",
+      title: "Đánh giá & Quan sát phổ nhánh",
+      desc: "Giảng viên đưa ra nhận xét định tính học thuật và theo dõi tỷ lệ phân bố lựa chọn của lớp qua biểu đồ thống kê trực quan.",
+    },
   ];
 
   const faqList = [
     {
-      q: "EduBranch AI hoạt động như thế nào?",
-      a: "Hệ thống sử dụng kỹ thuật RAG (Retrieval-Augmented Generation) kết hợp với các mô hình ngôn ngữ lớn tiên tiến (Gemini 1.5/2.0). Khi bạn tải lên giáo trình hoặc tài liệu môn học (PDF/DOCX), hệ thống sẽ phân tích, lập chỉ mục và trích xuất đúng ngữ cảnh để soạn giáo án, đề thi và câu hỏi bám sát chuẩn kiến thức.",
+      q: "EduBranch AI khác gì so với các hệ thống trắc nghiệm hoặc chatbot thông thường?",
+      a: "EduBranch AI không tạo câu hỏi trắc nghiệm đơn lẻ hay cho phép hội thoại tự do. Hệ thống xây dựng các kịch bản phân nhánh (Branching Scenarios) mô phỏng tình huống ra quyết định phức tạp trong môi trường chuyên nghiệp, kết hợp cơ chế hồi cứu hành trình và câu hỏi gợi mở Socratic không chấm điểm.",
     },
     {
-      q: "Tài liệu tải lên có được bảo mật không?",
-      a: "Tuyệt đối bảo mật. Mỗi người dùng được cấp một Workspace độc lập và mã hóa. Dữ liệu tài liệu giảng dạy của bạn không bao giờ được chia sẻ với bên thứ ba hoặc dùng để huấn luyện mô hình công cộng.",
+      q: "Nguyên tắc 'Zero AI Grading' (AI không chấm điểm) hoạt động như thế nào?",
+      a: "Theo chuẩn mực sư phạm bậc đại học, AI chỉ đóng vai trò người gợi mở tư duy thông qua tối đa 2 vòng câu hỏi phản biện. Toàn bộ điểm số, nhận xét học thuật và đánh giá năng lực tư duy phản biện thuộc thẩm quyền 100% của giảng viên phụ trách môn học.",
     },
     {
-      q: "Hệ thống hỗ trợ những định dạng tài liệu nào?",
-      a: "EduBranch AI hỗ trợ toàn diện các định dạng tài liệu phổ biến trong giáo dục bao gồm: PDF, DOCX (Word), TXT với dung lượng tối đa lên đến 25MB cho mỗi tệp.",
+      q: "Hệ thống hỗ trợ những định dạng tài liệu học phần nào?",
+      a: "Hệ thống hỗ trợ tài liệu học tập chuẩn học thuật định dạng PDF và DOCX (Word), bao gồm giáo trình, tài liệu bài giảng, nghị định pháp lý, hồ sơ bệnh án mẫu hoặc báo cáo tài chính doanh nghiệp.",
     },
     {
-      q: "AI có thể tạo ra những loại nội dung giảng dạy nào?",
-      a: "Hệ thống hỗ trợ: Giáo án cấu trúc chuẩn theo quy định, ngân hàng câu hỏi trắc nghiệm phân bổ theo 6 cấp độ Bloom Taxonomy, bài tập tự luận có đáp án và rubric biểu điểm đánh giá chi tiết.",
+      q: "Tại sao sinh viên không thấy ngay kết quả sau mỗi lần chọn phương án?",
+      a: "EduBranch AI áp dụng quy trình 3 pha sư phạm: (1) Trải nghiệm thực tế không bị ngắt quãng, (2) Hồi cứu toàn bộ hành trình và đối chiếu phương án thay thế, (3) Tự suy ngẫm và nhận xét từ giảng viên. Việc giấu kết quả tức thời giúp người học không bị tâm lý đối phó đáp án đúng/sai.",
     },
     {
-      q: "Đề thi và giáo án xuất ra có chỉnh sửa được không?",
-      a: "Có. Bạn có thể xem trước, chỉnh sửa trực tiếp trên giao diện web hoặc xuất ra tệp Word (.docx) và PDF với đầy đủ định dạng chuẩn sẵn sàng in ấn hoặc nộp cho tổ chuyên môn.",
-    },
-    {
-      q: "Tôi có thể dùng thử miễn phí không?",
-      a: "Có! Bạn có thể bắt đầu sử dụng miễn phí ngay lập tức với đầy đủ tính năng cốt lõi mà không cần nhập thẻ tín dụng.",
+      q: "Giảng viên có toàn quyền kiểm soát nội dung kịch bản không?",
+      a: "Tuyệt đối có. Bất kỳ kịch bản nào do AI đề xuất đều bắt đầu ở trạng thái DRAFT. Chỉ khi giảng viên duyệt qua đầy đủ quy trình kiểm duyệt (DRAFT → REVIEWED → APPROVED → PUBLISHED) thì sinh viên mới có thể truy cập qua liên kết môn học.",
     },
   ];
 
-  const toggleFaq = (idx: number) => {
-    setExpandedFaq(expandedFaq === idx ? null : idx);
-  };
-
   return (
-    <div className="min-h-screen bg-white text-slate-800 font-sans antialiased selection:bg-emerald-100 selection:text-emerald-900">
+    <div className="min-h-screen bg-[#F9FAFB] text-gray-900 font-sans antialiased">
       {/* ─────────────────────────────────────────────────────────────
           1. HEADER / NAVIGATION BAR
       ───────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-xs border-b border-gray-200">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Brand Logo */}
           <Link to="/" className="flex items-center gap-2.5">
-            <EduBranchLogo size={36} />
-            <span className="text-base font-bold text-slate-900 tracking-tight">
+            <EduBranchLogo size={28} />
+            <span className="text-base font-semibold text-gray-900 tracking-tight">
               EduBranch AI
             </span>
           </Link>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600">
-            <div className="relative group cursor-pointer flex items-center gap-1 hover:text-[#059669] transition">
-              <span>Tính năng</span>
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </div>
-            <a href="#how-it-works" className="hover:text-[#059669] transition">
-              Hướng dẫn
+          <nav className="hidden md:flex items-center gap-7 text-sm text-gray-600">
+            <a href="#features" className="hover:text-blue-600 transition-colors">
+              Tính năng cốt lõi
             </a>
-            <a href="#faq" className="hover:text-[#059669] transition">
-              FAQ
+            <a href="#workflow" className="hover:text-blue-600 transition-colors">
+              Quy trình sư phạm
+            </a>
+            <a href="#learning-modes" className="hover:text-blue-600 transition-colors">
+              Chế độ học tập
+            </a>
+            <a href="#disciplines" className="hover:text-blue-600 transition-colors">
+              Ngành đào tạo
+            </a>
+            <a href="#faq" className="hover:text-blue-600 transition-colors">
+              Hỏi đáp
             </a>
           </nav>
 
-          {/* Action Buttons */}
+          {/* Auth Actions */}
           <div className="flex items-center gap-3">
             <Link
               to="/login"
-              className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-[#059669] px-3 py-2 rounded-xl hover:bg-slate-50 transition"
+              className="text-sm font-medium text-gray-700 hover:text-gray-900 px-3 py-1.5 transition-colors"
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="12" cy="7" r="4" />
-                <path d="M6 21v-2a6 6 0 0 1 12 0v2" />
-              </svg>
-              <span>Đăng nhập</span>
+              Đăng nhập
             </Link>
-
-            <Link
-              to="/register"
-              className="flex items-center gap-1.5 bg-[#059669] hover:bg-[#047857] text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow-xs shadow-emerald-600/20"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-              <span>Bắt đầu miễn phí</span>
+            <Link to="/register">
+              <Button variant="primary" size="sm">
+                Bắt đầu ngay
+              </Button>
             </Link>
           </div>
         </div>
@@ -132,803 +178,357 @@ export function LandingPage() {
       {/* ─────────────────────────────────────────────────────────────
           2. HERO SECTION
       ───────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden pt-12 pb-16 lg:pt-16 lg:pb-20 bg-gradient-to-b from-emerald-50/40 via-white to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            {/* Left Column: Headlines & CTA */}
-            <div className="lg:col-span-6 space-y-6">
-              {/* Green Pill Badge */}
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-[#059669] border border-emerald-200">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#059669] animate-pulse"></span>
-                <span>Trợ lý AI dành riêng cho Giáo Viên K-12</span>
-              </div>
+      <section className="pt-16 pb-20 px-6 border-b border-gray-200 bg-white">
+        <div className="max-w-4xl mx-auto text-center space-y-6">
+          {/* Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+            </svg>
+            Học tập tình huống thực nghiệm bậc Đại học
+          </div>
 
-              {/* Main Headline */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.2]">
-                Soạn Giáo Án &{" "}
-                <span className="text-[#059669]">Tạo Đề</span>
-                <br />
-                <span className="text-[#059669]">Thi với AI</span>
-              </h1>
+          {/* Headline */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-tight">
+            Biến tài liệu môn học thành{" "}
+            <span className="text-blue-600">tình huống ra quyết định</span>
+          </h1>
 
-              {/* Subheadline */}
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-xl">
-                Tải lên tài liệu giảng dạy, AI sẽ phân tích và tự động tạo ra giáo án cấu trúc chuẩn, đề trắc nghiệm theo Bloom Taxonomy, câu hỏi tự luận — tất cả đều có trích dẫn nguồn rõ ràng. Giải phóng 80% thời gian soạn bài.
-              </p>
+          {/* Subtitle */}
+          <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Giảng viên xây dựng kịch bản phân nhánh từ học liệu chính thống; sinh viên trực tiếp đối mặt tình thế nan giải, ra quyết định và tự đánh giá hành trình lập luận.
+          </p>
 
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-1">
-                <Link
-                  to="/register"
-                  className="bg-[#059669] hover:bg-[#047857] text-white font-semibold px-5 py-2.5 rounded-xl text-xs inline-flex items-center gap-2 shadow-xs transition"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                  </svg>
-                  <span>Bắt đầu miễn phí</span>
-                </Link>
+          {/* Action CTAs */}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <Link to="/register">
+              <Button variant="primary" size="lg">
+                Tạo tài khoản học tập
+              </Button>
+            </Link>
+            <a href="#workflow">
+              <Button variant="secondary" size="lg">
+                Xem quy trình sư phạm
+              </Button>
+            </a>
+          </div>
 
-                <Link
-                  to="/login"
-                  className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold px-4 py-2.5 rounded-xl text-xs inline-flex items-center gap-1.5 transition"
-                >
-                  <span>Đăng nhập</span>
-                  <span>→</span>
-                </Link>
-              </div>
-
-              {/* 3 Stats Row */}
-              <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-100">
-                <div>
-                  <p className="text-xl sm:text-2xl font-extrabold text-[#059669]">80%</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5">Tiết kiệm thời gian soạn bài</p>
-                </div>
-                <div>
-                  <p className="text-xl sm:text-2xl font-extrabold text-[#059669]">6 cấp độ</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5">Bloom Taxonomy được tích hợp</p>
-                </div>
-                <div>
-                  <p className="text-xl sm:text-2xl font-extrabold text-[#059669]">100%</p>
-                  <p className="text-[11px] text-slate-500 mt-0.5">Trích dẫn nguồn chính xác</p>
-                </div>
-              </div>
+          {/* Trust Indicators */}
+          <div className="pt-6 border-t border-gray-100 flex flex-wrap items-center justify-center gap-6 text-xs text-gray-600 font-medium">
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>100% Giảng viên duyệt kịch bản</span>
             </div>
-
-            {/* Right Column: Hero Interactive Preview Card */}
-            <div className="lg:col-span-6">
-              <div className="rounded-2xl border border-slate-200/90 bg-white shadow-xl shadow-slate-200/50 overflow-hidden">
-                {/* Window header */}
-                <div className="flex items-center justify-between px-4 py-3 bg-slate-50/80 border-b border-slate-100">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                    <span className="text-[11px] font-semibold text-slate-600 ml-2">EduBranch AI</span>
-                  </div>
-                  <button className="text-[10px] font-bold text-[#059669] bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                    + UPLOAD
-                  </button>
-                </div>
-
-                {/* Window Body */}
-                <div className="p-6 space-y-6 text-center">
-                  {/* Step progress bar */}
-                  <div className="flex items-center justify-between max-w-xs mx-auto text-xs font-bold text-slate-400 relative">
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-600 text-white text-[10px]">1</div>
-                    <div className="h-0.5 flex-1 bg-blue-600"></div>
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white text-[10px]">2</div>
-                    <div className="h-0.5 flex-1 bg-emerald-500"></div>
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#059669] text-white text-[10px]">3</div>
-                    <div className="h-0.5 flex-1 bg-slate-200"></div>
-                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-200 text-slate-600 text-[10px]">4</div>
-                  </div>
-
-                  {/* Big Green Success Checkmark */}
-                  <div className="py-4 space-y-3">
-                    <div className="w-14 h-14 mx-auto rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/30">
-                      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    </div>
-
-                    <div>
-                      <h3 className="text-base font-bold text-slate-900">
-                        Nội dung giảng dạy đã sẵn sàng!
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-1">
-                        Tất cả nội dung được trích dẫn nguồn từ tài liệu của bạn
-                      </p>
-                    </div>
-
-                    {/* 4 Quick Pills */}
-                    <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
-                      <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        Giáo Án Cấu Trúc
-                      </span>
-                      <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200">
-                        Đề Trắc Nghiệm
-                      </span>
-                      <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-purple-50 text-purple-800 border border-purple-200">
-                        Câu Hỏi Tự Luận
-                      </span>
-                      <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                        Rubric Chấm Điểm
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Zero AI Grading — Tôn trọng tư duy độc lập</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <svg className="w-4 h-4 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Tối đa 2 vòng phản biện Socratic</span>
             </div>
           </div>
         </div>
-      </section>
 
-      {/* ─────────────────────────────────────────────────────────────
-          3. SUBJECTS BADGE TICKER BAR
-      ───────────────────────────────────────────────────────────── */}
-      <section className="py-12 border-y border-slate-100 bg-slate-50/50 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 text-center space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-[#059669] border border-emerald-200">
-            <span>✨ PHÙ HỢP MỌI MÔN HỌC</span>
-          </div>
-
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-            Dành cho giáo viên <span className="text-[#059669]">mọi bộ môn K-12</span>
-          </h2>
-
-          {/* Row 1 of badges */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-3">
-            {subjectListRow1.map((s, idx) => (
-              <span
-                key={idx}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold shadow-2xs ${s.color}`}
-              >
-                <span>{s.icon}</span>
-                <span>{s.name}</span>
-              </span>
-            ))}
-          </div>
-
-          {/* Row 2 of badges */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5 pt-1">
-            {subjectListRow2.map((s, idx) => (
-              <span
-                key={idx}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-semibold shadow-2xs ${s.color}`}
-              >
-                <span>{s.icon}</span>
-                <span>{s.name}</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          4. CORE FEATURES SECTION (TÍNH NĂNG CỐT LÕI)
-      ───────────────────────────────────────────────────────────── */}
-      <section id="features" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Section Header */}
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-[#059669] border border-emerald-200">
-              ✨ Tính Năng Cốt Lõi
+        {/* ─── PRODUCT INTERFACE PREVIEW MOCKUP ─── */}
+        <div className="max-w-4xl mx-auto mt-12 bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+          {/* Mockup Window Bar */}
+          <div className="h-10 bg-gray-50 border-b border-gray-200 px-4 flex items-center justify-between text-xs text-gray-500">
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-gray-300 inline-block" />
+              <span className="h-2.5 w-2.5 rounded-full bg-gray-300 inline-block" />
+              <span className="h-2.5 w-2.5 rounded-full bg-gray-300 inline-block" />
+              <span className="font-mono text-gray-700 ml-2">EduBranch AI · Branching Study Player</span>
+            </div>
+            <span className="px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 text-xs font-medium border border-teal-200">
+              Điểm quyết định 01 / 03
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Mọi công cụ giáo viên cần để <span className="text-[#059669]">giảng dạy hiệu quả</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Kết hợp sức mạnh của RAG (Retrieval-Augmented Generation) và mô hình Gemini AI, giúp bạn tạo ra tài liệu giảng dạy chuẩn xác nhất.
-            </p>
           </div>
 
-          {/* Interactive Feature Demo Box */}
-          <div className="rounded-2xl border border-slate-200/90 bg-slate-50/50 p-6 sm:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-            {/* Left Tabs */}
-            <div className="lg:col-span-4 space-y-3">
-              <button
-                type="button"
-                onClick={() => setActiveFeatureTab(0)}
-                className={`w-full text-left p-4 rounded-xl border transition cursor-pointer ${
-                  activeFeatureTab === 0
-                    ? "bg-white border-[#059669] shadow-xs"
-                    : "bg-white/60 border-slate-200 hover:bg-white"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${activeFeatureTab === 0 ? "bg-emerald-50 text-[#059669]" : "bg-slate-100 text-slate-500"}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900">Upload & Xây dựng Kiến thức</h4>
-                    <p className="text-[11px] text-slate-500 mt-0.5">Tải tệp PDF/DOCX tạo kho tài liệu</p>
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveFeatureTab(1)}
-                className={`w-full text-left p-4 rounded-xl border transition cursor-pointer ${
-                  activeFeatureTab === 1
-                    ? "bg-white border-[#059669] shadow-xs"
-                    : "bg-white/60 border-slate-200 hover:bg-white"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${activeFeatureTab === 1 ? "bg-emerald-50 text-[#059669]" : "bg-slate-100 text-slate-500"}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M12 20h9" />
-                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900">Soạn Giáo Án AI</h4>
-                    <p className="text-[11px] text-slate-500 mt-0.5">AI truy xuất kiến thức và tạo giáo án cấu trúc chuẩn</p>
-                  </div>
-                </div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveFeatureTab(2)}
-                className={`w-full text-left p-4 rounded-xl border transition cursor-pointer ${
-                  activeFeatureTab === 2
-                    ? "bg-white border-[#059669] shadow-xs"
-                    : "bg-white/60 border-slate-200 hover:bg-white"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${activeFeatureTab === 2 ? "bg-emerald-50 text-[#059669]" : "bg-slate-100 text-slate-500"}`}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="m9 12 2 2 4-4" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900">Tạo Đề Trắc Nghiệm</h4>
-                    <p className="text-[11px] text-slate-500 mt-0.5">Sinh câu hỏi theo 6 cấp độ Bloom</p>
-                  </div>
-                </div>
-              </button>
+          {/* Mockup Content Area */}
+          <div className="p-6 space-y-4">
+            <div className="space-y-1">
+              <div className="text-xs uppercase tracking-wider text-blue-600 font-semibold">
+                Quản trị rủi ro & khủng hoảng ngân hàng
+              </div>
+              <h2 className="text-base font-semibold text-gray-900">
+                Sự cố thanh khoản tại chi nhánh khu vực miền Trung
+              </h2>
             </div>
 
-            {/* Middle Preview Card */}
-            <div className="lg:col-span-5 bg-white rounded-xl border border-slate-200 p-5 shadow-sm space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <div className="flex items-center gap-2">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#059669]"></span>
-                  <span className="text-xs font-bold text-slate-900">AI Lesson Planner</span>
-                </div>
-                <span className="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-semibold border border-emerald-200">
-                  ✓ Chuẩn Bộ GD&ĐT
+            <p className="text-sm text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-md border border-gray-200">
+              Lúc 09:30 sáng, một tin đồn thất thiệt lan truyền trên mạng xã hội khiến lượng người rút tiền mặt tại quầy tăng đột biến vượt quá dự trữ tiền mặt tại quỹ (chỉ đáp ứng được 35% nhu cầu trước 12:00 trưa). Là Giám đốc rủi ro khu vực, quyết định điều hành tức thời của bạn là gì?
+            </p>
+
+            <div className="space-y-2 pt-1">
+              <div className="p-3 rounded-md border border-blue-600 bg-blue-50/50 flex items-center justify-between">
+                <span className="text-sm text-gray-900 font-medium">
+                  A. Điều phối xe tiếp quỹ khẩn cấp từ chi nhánh lân cận & phát thông cáo báo chí chính thức
+                </span>
+                <span className="text-xs text-blue-700 font-semibold px-2 py-0.5 rounded bg-blue-100">
+                  Lựa chọn
                 </span>
               </div>
-
-              <div className="space-y-2 text-xs">
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
-                  <span className="font-semibold text-slate-800 block">1. Mục tiêu bài dạy</span>
-                  <span className="text-slate-500 text-[11px] mt-0.5 block">Nêu rõ kiến thức, năng lực và phẩm chất cần hình thành.</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
-                  <span className="font-semibold text-slate-800 block">2. Hoạt động khởi động & Khám phá</span>
-                  <span className="text-slate-500 text-[11px] mt-0.5 block">Tình huống thực tế dẫn nhập vào bài học.</span>
-                </div>
-                <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100">
-                  <span className="font-semibold text-slate-800 block">3. Luyện tập & Vận dụng</span>
-                  <span className="text-slate-500 text-[11px] mt-0.5 block">Hệ thống bài tập kèm thang đo đánh giá.</span>
-                </div>
+              <div className="p-3 rounded-md border border-gray-200 hover:border-gray-300 text-sm text-gray-600">
+                B. Tạm dừng giao dịch tiền mặt tại quầy và chuyển hướng người dân sang kênh số
               </div>
             </div>
-
-            {/* Right Bullet List */}
-            <div className="lg:col-span-3 space-y-4 text-xs">
-              <div className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-emerald-100 text-[#059669] flex items-center justify-center font-bold text-[10px] mt-0.5">
-                  ✓
-                </div>
-                <div>
-                  <h5 className="font-bold text-slate-900">Bloom Taxonomy Tích Hợp</h5>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Tự động phân bổ đúng tỷ lệ nhận biết, thông hiểu, vận dụng.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-emerald-100 text-[#059669] flex items-center justify-center font-bold text-[10px] mt-0.5">
-                  ✓
-                </div>
-                <div>
-                  <h5 className="font-bold text-slate-900">Trích Dẫn Nguồn Chính Xác</h5>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Mọi dữ kiện đều dẫn chiếu số trang từ giáo trình tải lên.</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-2.5">
-                <div className="w-5 h-5 rounded-full bg-emerald-100 text-[#059669] flex items-center justify-center font-bold text-[10px] mt-0.5">
-                  ✓
-                </div>
-                <div>
-                  <h5 className="font-bold text-slate-900">Xem Lại, Sửa & Xuất Word/PDF</h5>
-                  <p className="text-slate-500 text-[11px] mt-0.5">Xuất tệp chuẩn định dạng A4, sẵn sàng in và giảng dạy.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Privacy Note */}
-          <div className="text-center text-xs text-slate-500 flex items-center justify-center gap-1.5 pt-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[#059669]">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            </svg>
-            <span>Nội dung tài liệu được xử lý hoàn toàn riêng biệt theo từng Workspace — không có chia sẻ dữ liệu giữa các tài khoản.</span>
           </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          5. 4-STEP PROCESS (TỪ TÀI LIỆU ĐẾN BÀI GIẢNG TRONG 4 BƯỚC)
+          3. UNIVERSITY DISCIPLINES
       ───────────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="py-20 bg-slate-50/50 border-y border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Header */}
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-[#059669] border border-emerald-200">
-              ✨ Quy Trình
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Từ tài liệu đến bài giảng <span className="text-[#059669]">trong 4 bước đơn giản</span>
+      <section id="disciplines" className="py-16 px-6 border-b border-gray-200">
+        <div className="max-w-6xl mx-auto space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+              Phù hợp cho các chương trình đào tạo đại học
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Quy trình khép kín giúp giáo viên tiết kiệm hàng giờ chuẩn bị bài mỗi tuần.
+            <p className="text-sm text-gray-600">
+              Mô hình hóa các tình thế ra quyết định thực tế cho đa dạng các khối ngành chuyên nghiệp.
             </p>
           </div>
 
-          {/* 4 Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* Step 1 */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#059669] flex items-center justify-center font-bold">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
-                    </svg>
-                  </div>
-                  <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">
-                    ✓
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-slate-900">Upload Tài Liệu</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Tải lên tài liệu giảng dạy (PDF, DOCX). Hệ thống tự động phân tích cấu trúc, phân đoạn và lập chỉ mục vector.
-                </p>
-              </div>
-
-              <div className="space-y-1.5 pt-2 border-t border-slate-100 text-[10px]">
-                <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-blue-50/60 text-blue-800">
-                  <span>📄 Sách giáo khoa Toán 10.pdf</span>
-                </div>
-                <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-emerald-50/60 text-emerald-800">
-                  <span>📄 Giáo án mẫu Chương 3.docx</span>
-                </div>
-                <div className="flex items-center gap-1.5 p-1.5 rounded-lg bg-purple-50/60 text-purple-800">
-                  <span>📄 Đề cương ôn tập HK1.txt</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 2 */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#059669] flex items-center justify-center font-bold">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                  </div>
-                  <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">
-                    ✓
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-slate-900">RAG Retrieval</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Khi yêu cầu AI tạo nội dung, hệ thống RAG tự động truy xuất đoạn văn bản liên quan nhất từ tài liệu của bạn.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-1 pt-2 border-t border-slate-100 text-[10px]">
-                <span className="px-2 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Khái niệm chính</span>
-                <span className="px-2 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Định nghĩa</span>
-                <span className="px-2 py-1 rounded bg-amber-50 text-amber-800 border border-amber-200 font-semibold">Công thức</span>
-              </div>
-            </div>
-
-            {/* Step 3 */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#059669] flex items-center justify-center font-bold">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                    </svg>
-                  </div>
-                  <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">
-                    ✓
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-slate-900">AI Tạo Nội Dung</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Gemini AI sử dụng nội dung truy xuất để tạo giáo án, đề trắc nghiệm, câu hỏi tự luận — chính xác và có cơ sở.
-                </p>
-              </div>
-
-              <div className="pt-2 border-t border-slate-100 text-[10px] space-y-1">
-                <div className="flex justify-between text-slate-500">
-                  <span>Tiến độ</span>
-                  <span className="font-bold text-[#059669]">100%</span>
-                </div>
-                <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-[#059669] h-full w-full rounded-full"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 4 */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#059669] flex items-center justify-center font-bold">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                  </div>
-                  <span className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold">
-                    04
-                  </span>
-                </div>
-                <h4 className="text-sm font-bold text-slate-900">Chỉnh Sửa & Xuất</h4>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Xem xét, chỉnh sửa nội dung AI tạo ra, sau đó xuất Word hoặc PDF chuyên nghiệp, sẵn sàng sử dụng.
-                </p>
-              </div>
-
-              <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-100 text-center text-[11px] text-[#059669] font-bold">
-                ⭐⭐⭐ Sẵn sàng sử dụng
-              </div>
-            </div>
-          </div>
-
-          {/* Stepper Status Bar */}
-          <div className="flex items-center justify-center gap-2 pt-4">
-            <span className="w-10 h-2 rounded-full bg-emerald-400"></span>
-            <span className="w-10 h-2 rounded-full bg-emerald-400"></span>
-            <span className="w-10 h-2 rounded-full bg-emerald-400"></span>
-            <span className="w-14 h-3 rounded-full bg-[#059669]"></span>
-            <span className="text-xs font-bold text-[#059669] ml-2">Sẵn sàng xuất bản!</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          6. TESTIMONIALS SECTION (ĐƯỢC GIÁO VIÊN TIN TƯỞNG)
-      ───────────────────────────────────────────────────────────── */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          {/* Header */}
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-[#059669] border border-emerald-200">
-              ✨ Đánh Giá
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Được giáo viên <span className="text-[#059669]">tin tưởng sử dụng</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Hàng trăm giảng viên và sinh viên đã tối ưu thời gian học tập và giảng dạy mỗi tuần nhờ EduBranch AI.
-            </p>
-          </div>
-
-          {/* Testimonial Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <span className="text-2xl text-emerald-400 font-serif">“</span>
-                <p className="text-xs text-slate-700 leading-relaxed">
-                  "Bloom Taxonomy tích hợp sẵn giúp tôi phân bổ câu hỏi đúng cấp độ tư duy. Đề thi cân đối hơn nhiều so với trước."
-                </p>
-              </div>
-
-              <div>
-                <div className="text-amber-400 text-xs mb-3">★★★★★</div>
-                <div className="flex items-center gap-2.5 pt-3 border-t border-slate-100">
-                  <div className="w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center font-bold text-xs">
-                    LH
-                  </div>
-                  <div>
-                    <h5 className="text-xs font-bold text-slate-900">Lê Thị Hương</h5>
-                    <p className="text-[10px] text-slate-400">Giáo viên Ngữ văn - THPT Nguyễn Trãi</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2 */}
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <span className="text-2xl text-emerald-400 font-serif">“</span>
-                <p className="text-xs text-slate-700 leading-relaxed">
-                  "Tôi đặc biệt thích chức năng xuất Word/PDF. Giáo án và đề thi được format chuyên nghiệp, sẵn sàng nộp cho tổ bộ môn."
-                </p>
-              </div>
-
-              <div>
-                <div className="text-amber-400 text-xs mb-3">★★★★★</div>
-                <div className="flex items-center gap-2.5 pt-3 border-t border-slate-100">
-                  <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold text-xs">
-                    PD
-                  </div>
-                  <div>
-                    <h5 className="text-xs font-bold text-slate-900">Phạm Đức Huy</h5>
-                    <p className="text-[10px] text-slate-400">Giáo viên Hóa học - THPT Quốc Học Huế</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3 */}
-            <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <span className="text-2xl text-emerald-400 font-serif">“</span>
-                <p className="text-xs text-slate-700 leading-relaxed">
-                  "Upload tài liệu lên là có workspace riêng cho từng lớp rất tiện. Mỗi lớp có bộ kiến thức riêng, AI tạo nội dung đúng trọng tâm."
-                </p>
-              </div>
-
-              <div>
-                <div className="text-amber-400 text-xs mb-3">★★★★★</div>
-                <div className="flex items-center gap-2.5 pt-3 border-t border-slate-100">
-                  <div className="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
-                    HT
-                  </div>
-                  <div>
-                    <h5 className="text-xs font-bold text-slate-900">Hoàng Thị Mai</h5>
-                    <p className="text-[10px] text-slate-400">Giáo viên Tiếng Anh - THCS Yên Hòa</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Dots */}
-          <div className="flex items-center justify-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-slate-200"></span>
-            <span className="w-6 h-2 rounded-full bg-[#059669]"></span>
-            <span className="w-2 h-2 rounded-full bg-slate-200"></span>
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          7. FAQ SECTION (NHỮNG CÂU HỎI THƯỜNG GẶP)
-      ───────────────────────────────────────────────────────────── */}
-      <section id="faq" className="py-20 bg-slate-50/50 border-t border-slate-100">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 space-y-10">
-          <div className="text-center space-y-3">
-            <span className="inline-block px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-[#059669] border border-emerald-200">
-              ✨ Hỏi Đáp
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Những câu hỏi <span className="text-[#059669]">thường gặp</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              Mọi điều bạn cần biết về nền tảng EduBranch AI.
-            </p>
-          </div>
-
-          {/* Accordion List */}
-          <div className="space-y-3">
-            {faqList.map((faq, idx) => {
-              const isOpen = expandedFaq === idx;
-              return (
-                <div
-                  key={idx}
-                  className="rounded-xl border border-slate-200 bg-white overflow-hidden transition-all shadow-2xs"
-                >
-                  <button
-                    type="button"
-                    onClick={() => toggleFaq(idx)}
-                    className="w-full flex items-center justify-between p-4 text-left font-bold text-xs sm:text-sm text-slate-800 hover:text-[#059669] cursor-pointer transition"
-                  >
-                    <span>{faq.q}</span>
-                    <span className="text-slate-400 text-xs ml-4">
-                      {isOpen ? "▲" : "▼"}
-                    </span>
-                  </button>
-                  {isOpen && (
-                    <div className="px-4 pb-4 pt-1 text-xs text-slate-600 leading-relaxed border-t border-slate-50">
-                      {faq.a}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ─────────────────────────────────────────────────────────────
-          8. LARGE GREEN CTA BANNER
-      ───────────────────────────────────────────────────────────── */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-gradient-to-r from-[#059669] via-[#10B981] to-[#047857] text-white p-8 sm:p-12 text-center space-y-6 shadow-xl shadow-emerald-700/20">
-            <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center mx-auto text-white">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-              </svg>
-            </div>
-
-            <div className="space-y-2 max-w-xl mx-auto">
-              <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Tiết kiệm 80% thời gian soạn bài ngay hôm nay
-              </h2>
-              <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed">
-                Tham gia cùng hàng nghìn giáo viên Việt Nam đang sử dụng AI để tạo ra giáo án chất lượng cao, đề thi sáng tạo và tài liệu giảng dạy chuyên nghiệp.
-              </p>
-            </div>
-
-            {/* Quick Email Form */}
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Cảm ơn bạn đã quan tâm! Vui lòng bấm Đăng ký để bắt đầu trải nghiệm ngay.");
-              }}
-              className="flex items-center justify-center gap-2 max-w-md mx-auto"
-            >
-              <input
-                type="email"
-                value={ctaEmail}
-                onChange={(e) => setCtaEmail(e.target.value)}
-                placeholder="Nhập email của bạn..."
-                className="w-full bg-white text-slate-800 text-xs px-4 py-2.5 rounded-xl outline-none placeholder-slate-400"
-              />
-              <button
-                type="submit"
-                className="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {universityDisciplines.map((item) => (
+              <div
+                key={item.code}
+                className="bg-white p-5 rounded-lg border border-gray-200 hover:border-gray-300 transition-colors space-y-2"
               >
-                →
-              </button>
-            </form>
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+                    {item.code}
+                  </span>
+                  <span className="text-xs text-gray-400">Bậc Đại học</span>
+                </div>
+                <h3 className="text-sm font-semibold text-gray-900">
+                  {item.name}
+                </h3>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <p className="text-[11px] text-emerald-100/80">
-              Không cần thẻ tín dụng · Cài đặt trong 5 phút · Bảo mật dữ liệu tuyệt đối
+      {/* ─────────────────────────────────────────────────────────────
+          4. 4 CORE PEDAGOGICAL PILLARS
+      ───────────────────────────────────────────────────────────── */}
+      <section id="features" className="py-16 px-6 border-b border-gray-200 bg-white">
+        <div className="max-w-6xl mx-auto space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+              4 Trụ cột Sư phạm Thực nghiệm
+            </h2>
+            <p className="text-sm text-gray-600">
+              Thiết kế bám sát phương pháp Case Method và nguyên tắc tư duy phản biện đại học.
             </p>
           </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {coreFeatures.map((f) => (
+              <div
+                key={f.id}
+                className="p-6 rounded-lg border border-gray-200 bg-white space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-blue-600">
+                    {f.id}
+                  </span>
+                  <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">
+                    {f.tag}
+                  </span>
+                </div>
+                <h3 className="text-base font-semibold text-gray-900">
+                  {f.title}
+                </h3>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {f.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          9. NEWSLETTER SUBSCRIPTION SECTION
+          5. 4-STEP ACADEMIC WORKFLOW
       ───────────────────────────────────────────────────────────── */}
-      <section className="py-16 bg-slate-50/50 border-t border-slate-100 text-center">
-        <div className="max-w-xl mx-auto px-4 space-y-4">
-          <div className="w-8 h-8 rounded-full bg-emerald-100 text-[#059669] flex items-center justify-center mx-auto">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-            </svg>
+      <section id="workflow" className="py-16 px-6 border-b border-gray-200">
+        <div className="max-w-6xl mx-auto space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+              Quy trình học tập khép kín
+            </h2>
+            <p className="text-sm text-gray-600">
+              Quy trình chuẩn mực từ khâu nạp học liệu của giảng viên đến trải nghiệm giải quyết của sinh viên.
+            </p>
           </div>
 
-          <h3 className="text-xl font-bold text-slate-900">
-            Nhận thông tin cập nhật sớm nhất
-          </h3>
-          <p className="text-xs text-slate-500">
-            Đăng ký để nhận thông báo về tính năng mới, tips giảng dạy với AI và tài nguyên dành riêng cho giáo viên.
-          </p>
-
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              setSubscribed(true);
-            }}
-            className="flex items-center gap-2 max-w-md mx-auto pt-2"
-          >
-            <div className="relative w-full">
-              <input
-                type="email"
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                placeholder="email@truong.edu.vn"
-                required
-                className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-[#059669] focus:ring-1 focus:ring-[#059669]"
-              />
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-slate-400 absolute right-3 top-2.5">
-                <rect width="20" height="16" x="2" y="4" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-            </div>
-            <button
-              type="submit"
-              className="bg-[#059669] hover:bg-[#047857] text-white font-semibold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer"
-            >
-              {subscribed ? "Đã đăng ký!" : "Gửi"}
-            </button>
-          </form>
-
-          <p className="text-[10px] text-slate-400 pt-1">
-            Chúng tôi tôn trọng quyền riêng tư của bạn. Hủy đăng ký bất cứ lúc nào.
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {workflowSteps.map((w) => (
+              <div
+                key={w.step}
+                className="bg-white p-5 rounded-lg border border-gray-200 space-y-3"
+              >
+                <div className="flex items-center justify-between text-xs">
+                  <span className="font-mono font-bold text-gray-400">
+                    BƯỚC {w.step}
+                  </span>
+                  <span className="px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium">
+                    {w.role}
+                  </span>
+                </div>
+                <h3 className="text-sm font-semibold text-gray-900">
+                  {w.title}
+                </h3>
+                <p className="text-xs text-gray-600 leading-relaxed">
+                  {w.desc}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ─────────────────────────────────────────────────────────────
-          10. FOOTER
+          6. DUAL LEARNING MODES
       ───────────────────────────────────────────────────────────── */}
-      <footer className="bg-white border-t border-slate-100 pt-12 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-            {/* Brand column */}
-            <div className="md:col-span-2 space-y-3">
-              <div className="flex items-center gap-2">
-                <EduBranchLogo size={28} />
-                <span className="text-sm font-bold text-slate-900">EduBranch AI</span>
+      <section id="learning-modes" className="py-16 px-6 border-b border-gray-200 bg-white">
+        <div className="max-w-6xl mx-auto space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+              Hai chế độ học tập chuyên biệt
+            </h2>
+            <p className="text-sm text-gray-600">
+              Lựa chọn hình thức phù hợp với mục tiêu sư phạm của từng chủ đề học phần.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Mode 1: Branching Study */}
+            <div className="p-6 rounded-lg border border-teal-200 bg-teal-50/20 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-teal-100 text-teal-800">
+                  BRANCHING STUDY
+                </span>
+                <span className="text-xs text-gray-500 font-mono">Đa ngã rẽ (DAG)</span>
               </div>
-              <p className="text-xs text-slate-500 leading-relaxed max-w-sm">
-                Nền tảng AI hỗ trợ học tập tình huống thực nghiệm, ra quyết định và phản biện thông minh dành cho giảng viên và sinh viên.
+              <h3 className="text-lg font-bold text-gray-900">
+                Học qua cây quyết định phân nhánh
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Người học trực tiếp đưa ra các lựa chọn quyết định liên tiếp. Mỗi quyết định mở ra các nhánh rẽ và dẫn đến kết cục (Outcome) khác nhau. Sau khi hoàn thành, sinh viên hồi cứu toàn bộ hành trình và lập luận cho quyết định của mình.
               </p>
-              <div className="flex items-center gap-2 pt-2 text-slate-400">
-                <span className="p-1.5 rounded-lg border border-slate-200 text-xs">✉</span>
-                <span className="p-1.5 rounded-lg border border-slate-200 text-xs">🔗</span>
+              <div className="pt-2 border-t border-teal-100 text-xs text-teal-900 space-y-1 font-medium">
+                <div>• Trải nghiệm liên tục không ngắt quãng</div>
+                <div>• Hồi cứu hành trình & thấy rõ nhánh đối ứng</div>
+                <div>• Lập luận hồi cứu cho các điểm then chốt</div>
               </div>
             </div>
 
-            {/* Links 1: Sản phẩm */}
-            <div className="space-y-2 text-xs">
-              <h5 className="font-bold text-slate-900">Sản phẩm</h5>
-              <ul className="space-y-1.5 text-slate-500">
-                <li><a href="#features" className="hover:text-[#059669]">Tính năng</a></li>
-                <li><a href="#how-it-works" className="hover:text-[#059669]">Hướng dẫn</a></li>
-                <li><a href="#faq" className="hover:text-[#059669]">FAQ</a></li>
-              </ul>
-            </div>
-
-            {/* Links 2: Tính năng */}
-            <div className="space-y-2 text-xs">
-              <h5 className="font-bold text-slate-900">Tính năng</h5>
-              <ul className="space-y-1.5 text-slate-500">
-                <li><a href="#" className="hover:text-[#059669]">Không gian làm việc</a></li>
-                <li><a href="#" className="hover:text-[#059669]">Soạn Giáo Án AI</a></li>
-                <li><a href="#" className="hover:text-[#059669]">Tạo Đề Thi & Câu Hỏi AI</a></li>
-                <li><a href="#" className="hover:text-[#059669]">Tài Liệu & Kho Tri Thức</a></li>
-              </ul>
-            </div>
-
-            {/* Links 3: Pháp lý & Quản trị */}
-            <div className="space-y-2 text-xs">
-              <h5 className="font-bold text-slate-900">Hệ thống</h5>
-              <ul className="space-y-1.5 text-slate-500">
-                <li><a href="#" className="hover:text-[#059669]">Điều khoản dịch vụ</a></li>
-                <li><a href="#" className="hover:text-[#059669]">Chính sách bảo mật</a></li>
-                <li className="pt-1">
-                  <Link
-                    to="/admin/login"
-                    className="hover:text-[#059669] text-slate-700 font-semibold inline-flex items-center gap-1 transition"
-                  >
-                    <span>🛡️ Cổng Quản trị viên</span>
-                  </Link>
-                </li>
-              </ul>
+            {/* Mode 2: Review Study */}
+            <div className="p-6 rounded-lg border border-pink-200 bg-pink-50/20 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-pink-100 text-pink-800">
+                  REVIEW STUDY
+                </span>
+                <span className="text-xs text-gray-500 font-mono">Tình huống mở</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900">
+                Phân tích tình huống học thuật mở
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Người học tiếp cận một bài toán nghiệp vụ phức tạp không định sẵn nhánh rẽ. Sinh viên độc lập viết đề xuất giải pháp chi tiết, đối thoại phản biện với AI và nhận phản hồi định tính từ giảng viên.
+              </p>
+              <div className="pt-2 border-t border-pink-100 text-xs text-pink-900 space-y-1 font-medium">
+                <div>• Không giới hạn bởi cấu trúc cây</div>
+                <div>• Đề xuất giải pháp toàn diện theo văn phong học thuật</div>
+                <div>• Phản biện Socratic đa chiều</div>
+              </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Bottom Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-slate-100 text-[11px] text-slate-400">
-            <span>© 2026 EduBranch AI. Bảo lưu mọi quyền.</span>
-            <span>Tạo ra với ❤️ dành cho giảng viên và sinh viên Việt Nam</span>
+      {/* ─────────────────────────────────────────────────────────────
+          7. FAQ ACCORDION
+      ───────────────────────────────────────────────────────────── */}
+      <section id="faq" className="py-16 px-6 border-b border-gray-200">
+        <div className="max-w-3xl mx-auto space-y-8">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
+              Câu hỏi thường gặp
+            </h2>
+            <p className="text-sm text-gray-600">
+              Giải đáp về phương pháp sư phạm, cơ chế vận hành và tính bảo mật của EduBranch AI.
+            </p>
+          </div>
+
+          <div className="divide-y divide-gray-200 border-y border-gray-200">
+            {faqList.map((faq, idx) => (
+              <div key={idx} className="py-4">
+                <button
+                  type="button"
+                  onClick={() => setExpandedFaq(expandedFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between text-left font-semibold text-sm text-gray-900 hover:text-blue-600 transition-colors cursor-pointer"
+                >
+                  <span>{faq.q}</span>
+                  <svg
+                    className={`w-4 h-4 shrink-0 transition-transform ${
+                      expandedFaq === idx ? "rotate-180" : ""
+                    }`}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {expandedFaq === idx && (
+                  <p className="mt-2.5 text-xs sm:text-sm text-gray-600 leading-relaxed">
+                    {faq.a}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─────────────────────────────────────────────────────────────
+          8. FOOTER
+      ───────────────────────────────────────────────────────────── */}
+      <footer className="py-10 px-6 bg-white text-xs text-gray-500">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <EduBranchLogo size={20} />
+            <span className="font-semibold text-gray-900 text-sm">
+              EduBranch AI
+            </span>
+            <span className="text-gray-400">·</span>
+            <span>Nền tảng học tập tình huống thực nghiệm bậc Đại học</span>
+          </div>
+
+          <div className="flex items-center gap-6">
+            <Link to="/login" className="hover:text-gray-900 transition-colors">
+              Đăng nhập
+            </Link>
+            <Link to="/register" className="hover:text-gray-900 transition-colors">
+              Đăng ký
+            </Link>
+            <span>Đại học Duy Tân · Capstone 2026</span>
           </div>
         </div>
       </footer>
