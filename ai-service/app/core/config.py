@@ -68,10 +68,10 @@ class Settings(BaseSettings):
     minio_secure: bool = False  # True in production (HTTPS)
 
     # =========================================================================
-    # RAG Configuration
+    # RAG Configuration (AC-1: 500-1000 tokens/chars, overlap 100)
     # =========================================================================
-    rag_chunk_size: int = 512
-    rag_chunk_overlap: int = 64
+    rag_chunk_size: int = 800
+    rag_chunk_overlap: int = 100
     rag_top_k: int = 5
 
     # =========================================================================
