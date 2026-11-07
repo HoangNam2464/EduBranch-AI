@@ -20,6 +20,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from httpx import ASGITransport, AsyncClient
 
+from app.core.config import settings
 from app.core.exceptions import RetrievalException
 from app.main import app
 from app.retrieval.retriever import RetrievedChunk, VectorRetriever
@@ -208,7 +209,7 @@ class TestVectorRetriever:
 class TestRetrievalApiEndpoint:
     """Integration tests for POST /internal/v1/retrieval/query API (AC-1, AC-2)."""
 
-    INTERNAL_HEADERS = {"X-Internal-API-Key": "changeme_internal_ai_service_api_key"}
+    INTERNAL_HEADERS = {"X-Internal-API-Key": settings.ai_service_api_key}
 
     @pytest.mark.asyncio
     async def test_retrieval_query_success_ac1(self):
