@@ -1,14 +1,20 @@
 /**
- * CoursesPage — Giảng viên · Quản lý khóa học
- * Figma Specs: 02.1 (List + Detail Drawer), 02.2 (Create Modal), 02.3 (Delete Modal)
- * Exact Figma Color System: Deep Navy #1E3A8A, Soft Mint #E6F4EA, Dark Banner #1E293B
- * Route: /lecturer/courses
+ * CoursesPage — Giảng viên · Quản lý khóa học & Học phần
+ *
+ * Implements Figma master template:
+ * - Frame 02.1 [309:238]: Course list workspace & interactive course detail drawer
+ * - Frame 02.2 [311:2690]: Create course dialog (560px)
+ * - Frame 02.3 [311:3066]: Delete course confirmation dialog (480px)
+ * - Frame 01.2 [311:766]: Empty state with vector icon
+ * - Frame 01.3 [311:1112]: Error state with retry action
+ *
+ * Standards: 100% compliant with .agents/rules/01-ui-design-standards.md
  */
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { courseService } from "../../services/courseService";
 import { Course } from "../../types";
-import { LoadingSkeletonPage, EmptyStatePage, ErrorStatePage } from "../../components/ui";
+import { Button, Alert, LoadingSkeletonPage, EmptyStatePage, ErrorStatePage } from "../../components/ui";
 
 interface CourseUIInfo {
   iconType: "shield" | "nodes" | "database";
@@ -96,118 +102,107 @@ function getCourseUIInfo(course: Course, index: number): CourseUIInfo {
   };
 }
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
-function ShieldIcon({ className = "w-6 h-6 text-[#03543F]" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      <path d="M9 12l2 2 4-4" />
-    </svg>
-  );
-}
-
-function NodesIcon({ className = "w-6 h-6 text-white" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="18" cy="5" r="3" />
-      <circle cx="6" cy="12" r="3" />
-      <circle cx="18" cy="19" r="3" />
-      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-    </svg>
-  );
-}
-
-function DatabaseIcon({ className = "w-6 h-6 text-[#0284C7]" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <ellipse cx="12" cy="5" rx="9" ry="3" />
-      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
-      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
-    </svg>
-  );
-}
-
-// ── Course Card in List (Figma 02.1) ──────────────────────────────────────────
+// ── Course Card in List (Figma Frame [309:333]) ──────────────────────────────
 function CourseCard({
   course,
   info,
   isSelected,
   onSelect,
+  onDeleteClick,
 }: {
   course: Course;
   info: CourseUIInfo;
   isSelected: boolean;
   onSelect: () => void;
+  onDeleteClick: (e: React.MouseEvent) => void;
 }) {
   return (
     <div
       onClick={onSelect}
-      className={`relative rounded-2xl border p-4 transition-all cursor-pointer ${
+      className={`bg-white rounded-lg border transition-all cursor-pointer p-4 select-none ${
         isSelected
-          ? "border-[#1E3A8A] bg-white shadow-xs ring-1 ring-[#1E3A8A]"
-          : "border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-xs"
+          ? "border-blue-600 ring-2 ring-blue-600/15 shadow-xs"
+          : "border-gray-200 hover:border-gray-300 hover:shadow-xs"
       }`}
     >
       <div className="flex items-start gap-4">
-        {/* Left Badge + Icon Block */}
-        <div className="flex flex-col items-center gap-1.5 flex-shrink-0">
-          <span className="rounded-full bg-[#E6F4EA] px-2 py-0.5 text-[10px] font-semibold text-[#03543F] border border-[#DEF7EC]">
-            Đang dạy
-          </span>
-          <div
-            className={`flex h-12 w-14 items-center justify-center rounded-xl border ${
-              info.iconType === "nodes"
-                ? "bg-[#1E3A8A] border-[#1E3A8A]"
-                : info.iconType === "database"
-                ? "bg-[#E0F2FE] border-[#BAE6FD]"
-                : "bg-[#E6F4EA] border-[#DEF7EC]"
-            }`}
-          >
-            {info.iconType === "nodes" && <NodesIcon />}
-            {info.iconType === "database" && <DatabaseIcon />}
-            {info.iconType === "shield" && <ShieldIcon />}
+        {/* Left Thumbnail Media Block */}
+        <div className="flex flex-col items-start gap-1.5 shrink-0">
+          <div className="w-28 h-20 rounded-md bg-blue-50/70 border border-blue-100 flex items-center justify-center relative overflow-hidden">
+            {info.iconType === "shield" && (
+              <svg className="w-8 h-8 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+              </svg>
+            )}
+            {info.iconType === "nodes" && (
+              <svg className="w-8 h-8 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <line x1="6" y1="3" x2="6" y2="15" />
+                <circle cx="18" cy="6" r="3" />
+                <circle cx="6" cy="18" r="3" />
+                <path d="M18 9a9 9 0 0 1-9 9" />
+              </svg>
+            )}
+            {info.iconType === "database" && (
+              <svg className="w-8 h-8 text-blue-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+                <ellipse cx="12" cy="5" rx="9" ry="3" />
+                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+              </svg>
+            )}
+            <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-800">
+              Đang dạy
+            </span>
           </div>
         </div>
 
-        {/* Center Content */}
+        {/* Center Content Information */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-bold text-slate-900 truncate">
+            <h3 className="text-sm font-semibold text-gray-900 truncate">
               {course.name}
             </h3>
             {course.courseCode && (
-              <span className="rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-mono font-medium text-slate-600">
+              <span className="font-mono text-xs font-medium px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-100">
                 {course.courseCode}
               </span>
             )}
           </div>
 
-          <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-500">
+          <p className="mt-1 text-xs text-gray-500 line-clamp-1 leading-relaxed">
+            {course.description || "Chưa có mô tả chi tiết học phần."}
+          </p>
+
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-gray-500">
+            {/* Instructor */}
             <div className="flex items-center gap-1.5">
-              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-100 text-[9px] font-bold text-[#1E3A8A]">
-                NA
+              <span className="w-4 h-4 rounded bg-gray-200 text-[10px] font-bold text-gray-700 flex items-center justify-center">
+                AN
               </span>
-              <span className="font-medium text-slate-700">{info.lecturerName}</span>
+              <span className="font-medium text-gray-700">{info.lecturerName}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-slate-400">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" />
+            {/* Invite code */}
+            <div className="flex items-center gap-1 text-gray-500">
+              <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3" />
                 <line x1="8" y1="12" x2="16" y2="12" />
               </svg>
               <span>Mã mời: {info.inviteCode}</span>
             </div>
 
-            <div className="flex items-center gap-1 text-slate-400">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            {/* Materials count */}
+            <div className="flex items-center gap-1 text-gray-500">
+              <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
               </svg>
               <span>{info.docCount} tài liệu</span>
             </div>
 
-            <div className="flex items-center gap-1 text-slate-400">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            {/* Cases count */}
+            <div className="flex items-center gap-1 text-gray-500">
+              <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
                 <line x1="6" y1="3" x2="6" y2="15" />
                 <circle cx="18" cy="6" r="3" />
                 <circle cx="6" cy="18" r="3" />
@@ -216,13 +211,26 @@ function CourseCard({
               <span>{info.caseCount} case</span>
             </div>
 
-            <div className="flex items-center gap-1 text-slate-600 font-semibold ml-auto">
-              <span className="flex -space-x-1">
-                <span className="inline-block h-3.5 w-3.5 rounded-full bg-blue-500 ring-1 ring-white" />
-                <span className="inline-block h-3.5 w-3.5 rounded-full bg-amber-500 ring-1 ring-white" />
-              </span>
-              <span>{info.studentCount}</span>
+            {/* Enrolled students */}
+            <div className="flex items-center gap-1 text-gray-700 font-medium ml-auto">
+              <svg className="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <span>{info.studentCount} sinh viên</span>
             </div>
+
+            {/* Delete button */}
+            <button
+              type="button"
+              onClick={onDeleteClick}
+              aria-label="Xóa khóa học"
+              className="p-1 rounded text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors ml-2 cursor-pointer"
+              title="Xóa khóa học"
+            >
+              <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -230,7 +238,7 @@ function CourseCard({
   );
 }
 
-// ── Right Drawer: Chi tiết khóa học (Figma 02.1) ──────────────────────────────
+// ── Right Drawer: Chi tiết khóa học (Figma Frame [309:314]) ──────────────────
 function CourseDetailDrawer({
   course,
   info,
@@ -243,148 +251,124 @@ function CourseDetailDrawer({
   onNavigate: (path: string) => void;
 }) {
   return (
-    <div className="w-[340px] flex-shrink-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs flex flex-col gap-4">
+    <div className="w-80 shrink-0 rounded-lg border border-gray-200 bg-white p-5 shadow-xs flex flex-col gap-4">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+      <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+        <h4 className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
           Chi tiết khóa học
         </h4>
         <div className="flex items-center gap-2">
           <button
+            type="button"
             onClick={() => onNavigate(`/lecturer/courses/${course.id}/materials`)}
-            className="text-xs font-semibold text-[#1E3A8A] hover:underline cursor-pointer"
+            className="text-xs font-semibold text-blue-600 hover:underline cursor-pointer"
           >
-            Mở khóa học
+            Mở học liệu
           </button>
           <button
+            type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 cursor-pointer p-0.5"
+            aria-label="Đóng bảng chi tiết"
+            className="text-gray-400 hover:text-gray-600 cursor-pointer p-0.5"
           >
-            ✕
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
       </div>
 
-      {/* Dark Navy Hero Banner with Shield Outline (#1E293B) */}
-      <div className="relative flex h-32 w-full items-center justify-center rounded-xl bg-[#1E293B] overflow-hidden">
+      {/* Hero Banner with Shield Outline */}
+      <div className="relative flex h-28 w-full items-center justify-center rounded-md bg-[#0B1528] overflow-hidden">
         {course.courseCode && (
-          <span className="absolute top-2.5 left-2.5 rounded bg-blue-900/80 border border-blue-700/50 px-2 py-0.5 text-[10px] font-mono font-medium text-blue-200">
+          <span className="absolute top-2 left-2 rounded bg-blue-900/80 border border-blue-700/50 px-2 py-0.5 text-xs font-mono font-medium text-blue-200">
             {course.courseCode}
           </span>
         )}
-        <div className="flex items-center justify-center text-slate-200">
-          <svg className="w-16 h-16 opacity-90" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-            <path d="M9 12l2 2 4-4" strokeWidth="1.5" />
-          </svg>
-        </div>
+        <svg className="w-12 h-12 text-blue-400/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4" />
+        </svg>
       </div>
 
       {/* Title & Instructor */}
       <div>
-        <h3 className="text-base font-bold text-slate-900 leading-snug">
+        <h3 className="text-sm font-bold text-gray-900 leading-snug">
           {course.name}
         </h3>
-        <div className="mt-1 flex items-center gap-1.5 text-xs text-slate-600">
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-blue-100 text-[9px] font-bold text-[#1E3A8A]">
-            NA
-          </span>
-          <span>{info.lecturerName}</span>
-        </div>
-        <div className="mt-2.5 flex items-center gap-2 flex-wrap">
-          <span className="rounded-full bg-[#E6F4EA] px-2 py-0.5 text-[10px] font-semibold text-[#03543F] border border-[#DEF7EC]">
+        <p className="mt-1 text-xs text-gray-500">
+          Phụ trách: {info.lecturerName}
+        </p>
+        <div className="mt-2 flex items-center gap-2">
+          <span className="rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-2 py-0.5 text-xs font-medium">
             Đang dạy
           </span>
-          <span className="rounded-full bg-[#1E293B] text-white px-2 py-0.5 text-[10px] font-medium">
+          <span className="rounded-full bg-gray-100 text-gray-600 px-2 py-0.5 text-xs font-medium">
             {info.semester}
           </span>
-          <div className="ml-auto flex items-center gap-1 text-xs text-slate-600 font-semibold">
-            <span className="flex -space-x-1">
-              <span className="inline-block h-3.5 w-3.5 rounded-full bg-blue-500 ring-1 ring-white" />
-              <span className="inline-block h-3.5 w-3.5 rounded-full bg-amber-500 ring-1 ring-white" />
-            </span>
-            <span>{info.studentCount}</span>
-          </div>
         </div>
       </div>
 
       {/* 3 Metrics Row */}
-      <div className="grid grid-cols-3 divide-x divide-slate-100 rounded-xl bg-slate-50 border border-slate-100 py-2.5 text-center">
+      <div className="grid grid-cols-3 divide-x divide-gray-100 rounded-md bg-gray-50 border border-gray-100 py-2 text-center">
         <div>
-          <p className="text-[11px] text-slate-400">Sinh viên</p>
-          <p className="mt-0.5 text-base font-bold text-slate-900">{info.studentCount}</p>
+          <p className="text-xs text-gray-500">Sinh viên</p>
+          <p className="text-sm font-bold text-gray-900">{info.studentCount}</p>
         </div>
         <div>
-          <p className="text-[11px] text-slate-400">Tài liệu</p>
-          <p className="mt-0.5 text-base font-bold text-slate-900">{info.docCount}</p>
+          <p className="text-xs text-gray-500">Tài liệu</p>
+          <p className="text-sm font-bold text-gray-900">{info.docCount}</p>
         </div>
         <div>
-          <p className="text-[11px] text-slate-400">Case Study</p>
-          <p className="mt-0.5 text-base font-bold text-slate-900">{info.caseCount}</p>
+          <p className="text-xs text-gray-500">Case</p>
+          <p className="text-sm font-bold text-gray-900">{info.caseCount}</p>
         </div>
       </div>
 
       {/* Về khóa học */}
       <div>
-        <h5 className="text-xs font-bold text-slate-900 mb-1">Về khóa học</h5>
-        <p className="text-xs text-slate-500 leading-relaxed">
-          {course.description ||
-            "Phân tích các mối đe dọa an ninh mạng, xây dựng phương án ứng cứu và quản trị rủi ro trong hệ thống ngân hàng số."}
+        <h5 className="text-xs font-semibold text-gray-900 mb-1">Mô tả học phần</h5>
+        <p className="text-xs text-gray-600 leading-relaxed">
+          {course.description || "Phân tích các tình huống thực tế, rèn luyện tư duy phản biện và năng lực ra quyết định chuyên nghiệp."}
         </p>
       </div>
 
-      {/* Thông tin lớp học */}
-      <div>
-        <h5 className="text-xs font-bold text-slate-900 mb-1.5">Thông tin lớp học</h5>
-        <div className="space-y-1.5 text-xs text-slate-500">
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            <span>Mã mời lớp: <strong className="text-slate-800 font-mono">{info.inviteCode}</strong></span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            <span>{info.semester}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            <span>{info.studentCount} sinh viên đã tham gia</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            <span>Giảng viên phụ trách: {info.lecturerName}</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Đi tới buttons */}
-      <div className="mt-auto space-y-2 pt-2 border-t border-slate-100">
-        <h5 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Đi tới</h5>
+      {/* Quick Navigation Cards */}
+      <div className="mt-auto space-y-2 pt-2 border-t border-gray-100">
+        <h5 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">
+          Không gian làm việc
+        </h5>
         <button
+          type="button"
           onClick={() => onNavigate(`/lecturer/courses/${course.id}/materials`)}
-          className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-3 text-left hover:border-blue-400 hover:bg-blue-50/20 transition cursor-pointer"
+          className="flex w-full items-center justify-between rounded-md border border-gray-200 bg-white p-2.5 text-left hover:border-blue-500 hover:bg-blue-50/30 transition-colors cursor-pointer"
         >
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-[#1E3A8A]">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-900">Tài liệu môn học</p>
-              <p className="text-[11px] text-slate-400">{info.docCount} tệp · PDF, DOCX</p>
+              <p className="text-xs font-semibold text-gray-900">Tài liệu môn học</p>
+              <p className="text-[11px] text-gray-500">{info.docCount} tệp · RAG Grounding</p>
             </div>
           </div>
-          <span className="text-slate-300">›</span>
+          <svg className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
         </button>
 
         <button
+          type="button"
           onClick={() => onNavigate(`/lecturer/courses/${course.id}/cases`)}
-          className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-3 text-left hover:border-blue-400 hover:bg-blue-50/20 transition cursor-pointer"
+          className="flex w-full items-center justify-between rounded-md border border-gray-200 bg-white p-2.5 text-left hover:border-blue-500 hover:bg-blue-50/30 transition-colors cursor-pointer"
         >
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
                 <line x1="6" y1="3" x2="6" y2="15" />
                 <circle cx="18" cy="6" r="3" />
                 <circle cx="6" cy="18" r="3" />
@@ -392,18 +376,20 @@ function CourseDetailDrawer({
               </svg>
             </div>
             <div>
-              <p className="text-xs font-bold text-slate-900">Case Study</p>
-              <p className="text-[11px] text-slate-400">{info.caseCount} case · Branching & Review</p>
+              <p className="text-xs font-semibold text-gray-900">Kịch bản Case Study</p>
+              <p className="text-[11px] text-gray-500">{info.caseCount} tình huống phân nhánh</p>
             </div>
           </div>
-          <span className="text-slate-300">›</span>
+          <svg className="w-4 h-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
         </button>
       </div>
     </div>
   );
 }
 
-// ── Figma 02.2: Modal Khởi tạo khóa học mới ──────────────────────────────────
+// ── Figma 02.2 [311:2690]: Modal Khởi tạo khóa học mới ───────────────────────
 function CreateCourseModal({
   isOpen,
   onClose,
@@ -420,47 +406,68 @@ function CreateCourseModal({
     description: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name.trim() || !form.courseCode.trim()) return;
+    if (!form.name.trim()) {
+      setError("Vui lòng nhập tên khóa học.");
+      return;
+    }
+    if (!form.courseCode.trim()) {
+      setError("Vui lòng nhập mã môn học.");
+      return;
+    }
 
     try {
       setLoading(true);
+      setError(null);
       const res = await courseService.createCourse({
         name: form.name.trim(),
-        courseCode: form.courseCode.trim(),
+        courseCode: form.courseCode.trim().toUpperCase(),
         description: form.description.trim() || undefined,
       });
       onCreated(res);
       onClose();
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      setError(err?.response?.data?.message || "Không thể tạo khóa học. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-      <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
-        <div className="flex items-start justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 p-4">
+      <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-lg border border-gray-200">
+        <div className="flex items-start justify-between pb-3 border-b border-gray-100">
           <div>
-            <h3 className="text-base font-bold text-slate-900">Khởi tạo khóa học mới</h3>
-            <p className="mt-1 text-xs text-slate-500">
+            <h3 className="text-lg font-bold text-gray-900 tracking-tight">
+              Khởi tạo khóa học mới
+            </h3>
+            <p className="mt-1 text-xs text-gray-500">
               Hệ thống sẽ tự động cấp một mã lớp ngẫu nhiên để sinh viên tham gia.
             </p>
           </div>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 cursor-pointer">
-            ✕
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Đóng hộp thoại"
+            className="text-gray-400 hover:text-gray-600 cursor-pointer p-1"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-5 space-y-4">
+        {error && <Alert variant="error" className="mt-4">{error}</Alert>}
+
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Tên khóa học / Học phần <span className="text-red-500">*</span>
             </label>
             <input
@@ -469,13 +476,13 @@ function CreateCourseModal({
               placeholder="Ví dụ: CS301 - Kỹ thuật phần mềm & Kiến trúc hệ thống"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
+              className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Mã môn học <span className="text-red-500">*</span>
               </label>
               <input
@@ -484,17 +491,17 @@ function CreateCourseModal({
                 placeholder="CS301"
                 value={form.courseCode}
                 onChange={(e) => setForm({ ...form, courseCode: e.target.value })}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs font-mono text-slate-900 outline-none focus:border-[#1E3A8A] focus:ring-1 focus:ring-[#1E3A8A]"
+                className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm font-mono text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
                 Học kỳ
               </label>
               <select
                 value={form.semester}
                 onChange={(e) => setForm({ ...form, semester: e.target.value })}
-                className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A] bg-white cursor-pointer"
+                className="block w-full h-10 rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 cursor-pointer"
               >
                 <option>Học kỳ 1 (2026 - 2027)</option>
                 <option>Học kỳ 2 (2026 - 2027)</option>
@@ -504,7 +511,7 @@ function CreateCourseModal({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Mô tả khóa học
             </label>
             <textarea
@@ -512,25 +519,25 @@ function CreateCourseModal({
               placeholder="Mục tiêu môn học, yêu cầu kiến thức nền tảng..."
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-3 py-2 text-xs text-slate-900 outline-none focus:border-[#1E3A8A] resize-none"
+              className="block w-full rounded-md border border-gray-200 px-3 py-2 text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20 resize-none"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
-            <button
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-gray-100">
+            <Button
               type="button"
+              variant="secondary"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
             >
               Hủy bỏ
-            </button>
-            <button
+            </Button>
+            <Button
               type="submit"
-              disabled={loading}
-              className="rounded-xl bg-[#1E3A8A] px-4 py-2 text-xs font-semibold text-white hover:bg-[#172554] disabled:opacity-50 cursor-pointer transition"
+              variant="primary"
+              isLoading={loading}
             >
-              {loading ? "Đang tạo..." : "Tạo khóa học"}
-            </button>
+              Tạo khóa học
+            </Button>
           </div>
         </form>
       </div>
@@ -538,7 +545,7 @@ function CreateCourseModal({
   );
 }
 
-// ── Figma 02.3: Modal Xác nhận xóa khóa học ──────────────────────────────────
+// ── Figma 02.3 [311:3066]: Modal Xác nhận xóa khóa học ───────────────────────
 function DeleteCourseModal({
   isOpen,
   course,
@@ -569,40 +576,44 @@ function DeleteCourseModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-        <h3 className="text-base font-bold text-slate-900">Xóa khóa học này?</h3>
-        <p className="mt-2 text-xs text-slate-500 leading-relaxed">
-          Khóa học, tài liệu môn học và các case study thuộc khóa học sẽ bị xóa. Thao tác này không thể hoàn tác.
-        </p>
-
-        <div className="mt-3 rounded-xl bg-slate-50 border border-slate-100 p-3 text-xs text-slate-700">
-          <strong className="font-semibold text-slate-900">{course.courseCode}</strong> - {course.name} · 4 tài liệu · 5 case
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/40 p-4">
+      <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-lg border border-gray-200 space-y-4">
+        <div>
+          <h3 className="text-lg font-bold text-gray-900 tracking-tight">
+            Xóa khóa học này?
+          </h3>
+          <p className="mt-1 text-xs text-gray-600 leading-relaxed">
+            Khóa học, tài liệu môn học và các case study thuộc khóa học sẽ bị xóa. Thao tác này không thể hoàn tác.
+          </p>
         </div>
 
-        <div className="mt-6 flex items-center justify-end gap-2.5">
-          <button
+        <div className="rounded-md bg-gray-50 border border-gray-200 p-3 text-xs text-gray-700">
+          <strong className="font-semibold text-gray-900">{course.courseCode}</strong> - {course.name}
+        </div>
+
+        <div className="flex items-center justify-end gap-3 pt-2">
+          <Button
             type="button"
+            variant="secondary"
             onClick={onClose}
-            className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 cursor-pointer"
           >
             Hủy bỏ
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
+            variant="danger"
+            isLoading={loading}
             onClick={handleDelete}
-            disabled={loading}
-            className="rounded-xl bg-[#EF4444] px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 disabled:opacity-50 cursor-pointer transition"
           >
-            {loading ? "Đang xóa..." : "Xóa khóa học"}
-          </button>
+            Xóa khóa học
+          </Button>
         </div>
       </div>
     </div>
   );
 }
 
-// ── Main Page (Figma 02.1) ────────────────────────────────────────────────────
+// ── Main Page (Figma Frame [309:238]) ─────────────────────────────────────────
 export function CoursesPage() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
@@ -638,7 +649,7 @@ export function CoursesPage() {
         }
       }
     } catch {
-      // Fallback to demo mock data when Backend is offline
+      // Fallback demo mock data if backend not reachable
       setCourses(MOCK_COURSES);
       if (!selectedCourseId) {
         setSelectedCourseId(MOCK_COURSES[0].id);
@@ -660,27 +671,31 @@ export function CoursesPage() {
   );
 
   return (
-    <div className="flex flex-col gap-5">
-      {/* ── Subheader Controls (Figma 02.1) ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
-        <div className="flex items-center gap-6">
-          <button className="text-sm font-bold text-slate-900 border-b-2 border-[#1E3A8A] pb-4 -mb-4 cursor-pointer">
+    <div className="space-y-6">
+      {/* ── Filter Bar (Figma Frame [309:316]) ── */}
+      <div className="bg-white rounded-lg border border-gray-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+        <div>
+          <h2 className="text-base font-semibold text-gray-900">
             Tất cả khóa học
-          </button>
+          </h2>
+          <p className="text-xs text-gray-500">
+            Quản lý tài liệu và các kịch bản học tập theo môn học
+          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-3">
           {/* Search box */}
-          <div className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 w-44">
+          <div className="relative w-48">
             <input
               type="text"
-              placeholder="Tên khóa học"
+              placeholder="Tìm khóa học..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-transparent outline-none placeholder-slate-400"
+              className="w-full h-9 pl-8 pr-3 text-xs bg-white border border-gray-200 rounded-md placeholder-gray-400 focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
             />
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400">
-              <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <svg className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75}>
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
           </div>
 
@@ -688,21 +703,27 @@ export function CoursesPage() {
           <select
             value={selectedSemester}
             onChange={(e) => setSelectedSemester(e.target.value)}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 outline-none cursor-pointer"
+            className="h-9 rounded-md border border-gray-200 bg-white px-3 text-xs text-gray-700 outline-none focus:border-blue-600 cursor-pointer"
           >
             <option>Học kỳ 1 (2026 - 2027)</option>
             <option>Học kỳ 2 (2026 - 2027)</option>
-            <option>Học kỳ 1 (2025 - 2026)</option>
+            <option>Học kỳ hè (2026 - 2027)</option>
           </select>
 
-          {/* Primary Navy Button (Figma 02.1) */}
-          <button
+          {/* Primary Create Button */}
+          <Button
+            type="button"
+            variant="primary"
+            size="sm"
             onClick={() => setIsCreateOpen(true)}
-            className="flex items-center gap-1.5 rounded-xl bg-[#1E3A8A] px-4 py-1.5 text-xs font-semibold text-white hover:bg-[#172554] transition cursor-pointer shadow-xs"
+            className="flex items-center gap-1.5"
           >
-            <span>+</span>
+            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
             <span>Tạo khóa học mới</span>
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -716,7 +737,7 @@ export function CoursesPage() {
         />
       ) : (
         <div className="flex items-start gap-6">
-          {/* Left: Course Card List */}
+          {/* Left Column: Course Cards List */}
           <div className="flex-1 space-y-3">
             {filteredCourses.map((c, idx) => (
               <CourseCard
@@ -725,27 +746,16 @@ export function CoursesPage() {
                 info={getCourseUIInfo(c, idx)}
                 isSelected={c.id === selectedCourse?.id}
                 onSelect={() => setSelectedCourseId(c.id)}
+                onDeleteClick={(e) => {
+                  e.stopPropagation();
+                  setCourseToDelete(c);
+                  setIsDeleteOpen(true);
+                }}
               />
             ))}
-
-            {/* Pagination footer */}
-            <div className="flex items-center justify-between pt-3 text-xs text-slate-400">
-              <span>Hiển thị 10 v trên {courses.length} khóa học</span>
-              <div className="flex items-center gap-1">
-                <button className="flex h-6 w-6 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50">
-                  ‹
-                </button>
-                <button className="flex h-6 w-6 items-center justify-center rounded bg-[#1E3A8A] text-white font-bold">
-                  1
-                </button>
-                <button className="flex h-6 w-6 items-center justify-center rounded border border-slate-200 text-slate-500 hover:bg-slate-50">
-                  ›
-                </button>
-              </div>
-            </div>
           </div>
 
-          {/* Right: Drawer Detail Panel (Figma 02.1) */}
+          {/* Right Column: Drawer Detail Panel */}
           {selectedCourse && (
             <CourseDetailDrawer
               course={selectedCourse}
