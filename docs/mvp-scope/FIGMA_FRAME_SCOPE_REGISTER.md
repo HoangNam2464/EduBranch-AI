@@ -84,34 +84,34 @@ Mapping đầy đủ Frame → Feature → Task → FE/BE/DB/QA nằm ở `FEATU
 | 1:545, 1:466 | Biểu mẫu suy ngẫm / Đã nộp | CONFIRMED | — | CANDIDATE |
 | 1:790 | Lịch sử lần làm bài | CONFIRMED (DES-012) | Cột "Phản hồi giảng viên" (OPD-009) | CANDIDATE |
 | 1:384, 1:297 | Review Study form / đã phản hồi | CONFIRMED | — | CANDIDATE |
-| 1:1305 | [Ngoài phạm vi] Bàn học | HOLD | P0 §1 cấm, OPD-001 | REFERENCE (OPD-001) |
-| 1:1202 | [Ngoài phạm vi] Khóa học của tôi | HOLD | idem | REFERENCE (OPD-001) |
-| 1:1084 | [Ngoài phạm vi] Tham gia lớp học | HOLD | idem | REFERENCE (OPD-001) |
+| 1:1305 | Bàn học (page 08 `07.2`) | **MVP** (OPD-001 → A, 2026-11-12) | Thiếu task; P0 §1 cần sửa | CANDIDATE |
+| 1:1202 | Khóa học của tôi (page 08 `07.3`) | **MVP** (OPD-001 → A, 2026-11-12) | idem | CANDIDATE |
+| 1:1084 | Tham gia lớp học (page 08 `07.4`) | **MVP** (OPD-001 → A, 2026-11-12) | Thiếu task và bảng `course_enrollments` | CANDIDATE |
 
 > Lưu ý: tiền tố `[Ngoài phạm vi]` được thêm trong phiên làm việc trước theo nhận định chưa đủ căn cứ. Theo phân tích này, nhãn đúng phải là **"[HOLD · OPD-001]"**. Chưa sửa tên frame.
 
 ### 2.3. Lecturer
 | Frame ID | Tên | Phân loại | Vấn đề cụ thể | Đề xuất trạng thái |
 |---|---|---|---|---|
-| 1:3490 | Tổng quan | PROPOSED | Không có route (D-05) | NO BASIS |
-| 34:3183 | Lecturer Dashboard — Revision 01 | PROPOSED | Trùng 1:3490 | NO BASIS |
+| 1:3490 | Tổng quan | PROPOSED | Bản tham chiếu. D-05 chốt có dashboard 2026-11-12 → bản dùng là `34:3183` (page 08 `07.1`) | REFERENCE |
+| 34:3183 | Lecturer Dashboard — Revision 01 (page 08 `07.1`) | **MVP** (D-05 → có, 2026-11-12) | Thiếu task | CANDIDATE |
 | 1:2431 | Quản lý khóa học | CONFIRMED | Dòng "Mã mời tham gia lớp" (OPD-001) | CANDIDATE sau khi tách phần mã mời |
 | 1:1465 | Hộp thoại khởi tạo khóa học | CONFIRMED | Câu "tự động cấp mã lớp" (OPD-001) | idem |
 | 1:2258 | Chi tiết khóa học — Tài liệu | CONFIRMED | "Mã mời: SEC7A2" (OPD-001); **chưa đủ 4 trạng thái + Retry** (DES-004 AC-1/2) | CANDIDATE sau khi hoàn thiện |
 | 29:1106 | Xác nhận xóa tài liệu | CONFIRMED | — | CANDIDATE |
 | 16:6 | RAG Source Inspector | CONFIRMED | — | CANDIDATE |
 | 1:2583 | Quản lý Case Study | CONFIRMED | "Nhân bản · Lưu trữ" (OPD-007/014); "Hạn nộp" (D-03) | CANDIDATE có điều kiện |
-| 1:3088, 1:2939, 1:2818 | AI Studio 3 bước | CONFIRMED (chức năng) | Wizard thay modal (OPD-006); icon chế độ trong 1:3088 bị xóa nhầm ở phiên trước | REFERENCE (OPD-006) |
+| 1:3088, 1:2939, 1:2818 | AI Studio 3 bước | CONFIRMED (chức năng) | Wizard thay modal — **OPD-006 chốt wizard 2026-11-12** (page 08 `07.5`–`07.7`); cần đổi tên/AC DES-006 | CANDIDATE |
 | 1:3219 | Trình chỉnh sửa Case Study | CONFIRMED | Chưa gắn Stepper (DES-009); **"AI gợi ý / Tạo lại phần này bằng AI" trái P1 §4 Boundary**; câu "Sinh viên bắt buộc… 2 vòng phản biện AI" trái FR-BS-07; checkbox pivotal (D-06); version pill (OPD-007) | CANDIDATE sau khi sửa |
 | 1:1444 | Hộp thoại phê duyệt và xuất bản | CONFIRMED | Trường deadline (D-03); checkbox "Gửi thông báo in-app và email" (PHASE 2) | CANDIDATE sau khi bỏ checkbox thông báo |
 | 1:1852 | Hàng đợi Review và phản hồi | CONFIRMED | MSSV (D-04) | CANDIDATE |
 | 1:1702 | Chi tiết phản hồi lập luận | CONFIRMED | Thẻ "Gợi ý phân tích từ AI" trái P3 §2 Boundary (OPD-010) | CANDIDATE sau khi tách thẻ AI |
 | 1:1493 | Thống kê luồng học tập | CONFIRMED | "Xuất dữ liệu CSV" (OPD-011); "Cần nhắc nhở hạn nộp" (PHASE 2) | CANDIDATE có điều kiện |
-| 1:2081 | Rubric nghiên cứu | HOLD | OPD-011 | REFERENCE (OPD-011) |
+| 1:2081 | Rubric nghiên cứu (page 08 `07.8`) | **MVP** (OPD-011 → A, 2026-11-12) | Thiếu task | CANDIDATE |
 
 ### 2.4. Admin (toàn bộ phụ thuộc OPD-015)
 
-> **Cập nhật 2026-11-12 (PO):** OPD-015 đã quyết phương án B. Admin thuộc MVP với đủ 10 màn; thiết kế mới ở page 08, section `10 · Admin`. Màn Cấu hình dịch vụ AI (`1:5543`) chỉ để xem (OPD-013). `1:4511` vẫn HOLD do OPD-011. Bảng dưới là trạng thái trước quyết định, giữ để đối chiếu; trạng thái hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`.
+> **Cập nhật 2026-11-12 (PO):** OPD-015 đã quyết phương án B. Admin thuộc MVP với đủ 10 màn; thiết kế mới ở page 08, section `10 · Admin`. Màn Cấu hình dịch vụ AI (`1:5543`) chỉ để xem (OPD-013). `1:4511` chuyển MVP khi OPD-011 chốt A (2026-11-12). Bảng dưới là trạng thái trước quyết định, giữ để đối chiếu; trạng thái hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`.
 | Frame ID | Tên | Phân loại | Đề xuất trạng thái |
 |---|---|---|---|
 | 1:4477 | Admin · Đăng nhập | PROPOSED (`/login` dùng chung) | NO BASIS |
@@ -121,7 +121,7 @@ Mapping đầy đủ Frame → Feature → Task → FE/BE/DB/QA nằm ở `FEATU
 | 1:4795 | Admin · Quản lý khóa học | HOLD | REFERENCE (OPD-015, OPD-014) |
 | 1:5043 | Admin · Quản lý Case Study | PROPOSED | REFERENCE (OPD-015) |
 | 1:5543 | Admin · Cấu hình dịch vụ AI | HOLD | REFERENCE (OPD-013, OPD-015) |
-| 1:4511 | Admin · Nghiên cứu và Rubric | HOLD | REFERENCE (OPD-011 + OPD-015) |
+| 1:4511 | Admin · Nghiên cứu và Rubric (page 08 `10.8`) | **MVP** (OPD-011 → A, OPD-015 → B, 2026-11-12) | CANDIDATE |
 | 1:5302 | Admin · Nhật ký hệ thống | HOLD | REFERENCE (OPD-015) |
 | 1:4345 | Admin · Cài đặt hệ thống | PHASE 2 / PROPOSED | NO BASIS |
 

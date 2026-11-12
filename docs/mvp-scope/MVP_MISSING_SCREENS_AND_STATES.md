@@ -1,6 +1,7 @@
 # MVP — Màn hình và trạng thái còn thiếu
 
 > **Status**: Draft — chờ Project Owner duyệt · **Ngày**: 2026-11-03.
+> **Cập nhật 2026-11-12 (quyết định PO):** OPD-001 → A (mã mời + Bàn học, Khóa học của tôi, Tham gia lớp), OPD-006 → wizard 3 bước (AI Studio), OPD-011 → A (rubric trong nền tảng, gồm Admin 10.8), D-05 → có dashboard giảng viên; Hồ sơ tài khoản 09.1/09.2 thuộc MVP. Các frame này không còn HOLD (page 08 section 07, 09). Kết luận HOLD bên dưới cho các mục này là trạng thái trước quyết định; phân loại hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`. Backlog vẫn thiếu task cho các màn này.
 > **Phương pháp**: đối chiếu 38 frame MVP (Page 1, `0:1`) với yêu cầu trạng thái trong P0–P4, DES-002 và tên task. Chỉ liệt kê trạng thái **có liên quan thực tế** đến luồng; không thêm màn để đủ checklist.
 > **Giới hạn bằng chứng**: phần lớn kết luận dựa trên tên frame, chữ và instance đọc từ `get_metadata`. Chỉ `1:3490`, `34:3183` được xem bằng ảnh. Mục ghi "cần xem ảnh" chưa được kiểm bằng hình.
 

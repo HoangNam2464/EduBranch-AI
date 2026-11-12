@@ -10,7 +10,7 @@
 
 | Mức | Định nghĩa | OPD |
 |---|---|---|
-| **A. Chặn chốt giao diện** | Mỗi phương án dẫn đến một tập màn hình/route khác nhau. Không thể lock UI khi chưa chọn. | OPD-001, OPD-005, OPD-006, OPD-011, OPD-015 |
+| **A. Chặn chốt giao diện** | Mỗi phương án dẫn đến một tập màn hình/route khác nhau. Không thể lock UI khi chưa chọn. | OPD-005 còn mở. Đã quyết 2026-11-12: OPD-001 (A), OPD-006 (wizard), OPD-011 (A), OPD-015 (B) |
 | **B. Chặn một trạng thái hoặc thành phần UI** | Màn chính đã lock được, nhưng một dialog, banner, nút hay copy phụ thuộc phương án. | OPD-002, OPD-003, OPD-004, OPD-007, OPD-008, OPD-009, OPD-010, OPD-014 |
 | **C. Chỉ ảnh hưởng implementation** | Giao diện gần như không đổi giữa các phương án. | OPD-012, OPD-013 |
 
@@ -35,6 +35,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 
 - **Frame bị ảnh hưởng**: 1:1305, 1:1202, 1:1084, 1:2431 (dòng mã mời), 1:2258 (mã mời), 1:1465 (câu tự cấp mã lớp).
 - **Trạng thái frame cho đến khi có quyết định**: giữ làm tham khảo, **không Ready for Dev**.
+- **ĐÃ QUYẾT ĐỊNH 2026-11-12 (PO):** chọn **Option A — mã mời + trang của sinh viên**. Bàn học, Khóa học của tôi, Tham gia lớp học thuộc MVP (page 08: 07.2, 07.3, 07.4; hồ sơ sinh viên 09.2). Mã mời trên màn giảng viên được giữ. Việc còn lại: thêm `course_enrollments` và các API ghi danh / trang sinh viên; bổ sung task BE/FE/QA; sửa P0 §1, P2 §1, SITE-ARCHITECTURE §5.3 (đang ghi không có trang danh sách cho sinh viên); làm rõ thống kê tính theo "sinh viên đã ghi danh".
 
 ### OPD-007 — Chỉnh sửa case sau khi xuất bản (khóa cấu trúc hay tạo phiên bản)
 - **Mức**: B (chặn variant `PUBLISHED` của action bar và copy hộp thoại xuất bản)
@@ -73,6 +74,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 | Rủi ro | Deliverable 6 phụ thuộc dữ liệu thu được trong Week 12–13 | Thao tác thủ công, dữ liệu rời rạc |
 
 - **Nhận xét**: Đây là chỗ **Proposal và backlog lệch nhau**. Proposal có chức năng và vai trò FE riêng, backlog không có task. Dù chọn phương án nào, PO cũng cần xác nhận cách sinh **dữ liệu cho Deliverable 6**.
+- **ĐÃ QUYẾT ĐỊNH 2026-11-12 (PO):** chọn **A — rubric trong nền tảng**. Rubric giảng viên (page 08 `07.8`) và Admin "Nghiên cứu & Rubric" (`10.8`) thuộc MVP. Việc còn lại: phân rã task BE `evaluation/`, FE form rubric, export CSV ẩn danh (FR-EVAL-04/05), QA kiểm tra loại bỏ PII.
 
 ### OPD-014 — Phạm vi xóa và lưu giữ dữ liệu
 - **Mức**: B (copy của hộp thoại xóa; có hay không thao tác "Lưu trữ")
@@ -98,7 +100,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 | Tính phù hợp với Proposal | Đáp ứng "Manage accounts & roles" | Đáp ứng đủ 3 luồng | Đáp ứng bằng vận hành, nhưng không có UI |
 
 - **Nhận xét**: Proposal yêu cầu **năng lực** Admin nhưng không yêu cầu **giao diện**. Cả 3 phương án đều có thể diễn giải là đáp ứng Proposal. Đây thực sự là quyết định của PO/Scrum Master về năng lực sprint.
-- **ĐÃ QUYẾT ĐỊNH 2026-11-12 (PO):** chọn **B — đủ 10 màn**, Admin thuộc MVP, không chờ duyệt thêm. Màn "Dịch vụ AI" chỉ để xem (provider cố định trong `.env`, giữ OPD-013). Màn "Nghiên cứu & Rubric" của Admin vẫn HOLD theo OPD-011. Thiết kế: page 08, section `10 · Admin` (10.1–10.10). Việc còn lại: bổ sung task BE/FE/QA cho Admin vào `01_MASTER-TASKS.md`; sửa rule `feature-authentication.md` (đang ghi *"Admin… not in MVP"*).
+- **ĐÃ QUYẾT ĐỊNH 2026-11-12 (PO):** chọn **B — đủ 10 màn**, Admin thuộc MVP, không chờ duyệt thêm. Màn "Dịch vụ AI" chỉ để xem (provider cố định trong `.env`, giữ OPD-013). Màn "Nghiên cứu & Rubric" của Admin thuộc MVP từ khi OPD-011 chốt A (2026-11-12). Thiết kế: page 08, section `10 · Admin` (10.1–10.10). Việc còn lại: bổ sung task BE/FE/QA cho Admin vào `01_MASTER-TASKS.md`; sửa rule `feature-authentication.md` (đang ghi *"Admin… not in MVP"*).
 
 ---
 
@@ -110,7 +112,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 | OPD-003 | Lượt làm dở: tiếp tục hay hủy | B | 1:972 | BE-020 có "Resumption" nên resume là IMPLIED. Chỉ hộp thoại "hủy lượt đang làm dở" phụ thuộc OPD. |
 | OPD-004 | Giới hạn số lượt làm | B | 1:972, 1:790 | Không có nguồn yêu cầu giới hạn. Proposal: retry *"not automatically compared, ranked or scored"*. Chỉ ảnh hưởng trạng thái disabled của nút Retry. |
 | OPD-005 | Challenge Support: modal, inline hay trang riêng | **A** | 27:321, 1:619, 05.6, 05.7 | SITE-ARCHITECTURE §5.3 đã định nghĩa **route riêng** `/student/cases/:caseId/challenge/:sessionId` (*"Dedicated full-page"*). Page 2 theo route này. OPD đề xuất modal, trái với sitemap. |
-| OPD-006 | Sinh case: wizard 3 bước hay modal | **A** | 1:3088, 1:2939, 1:2818, 03.2, 03.3 | Tên task DES-006 là *"Case Generation **Modal**"*. P1 §3 và `05_FIGMA` Frame 03.2 đều là modal. Wizard không có route trong sitemap. |
+| OPD-006 | Sinh case: wizard 3 bước hay modal | **A** | 1:3088, 1:2939, 1:2818, 03.2, 03.3 | Tên task DES-006 là *"Case Generation **Modal**"*. P1 §3 và `05_FIGMA` Frame 03.2 đều là modal. Wizard không có route trong sitemap. **Đã quyết 2026-11-12 (PO): wizard 3 bước** (page 08 `07.5`–`07.7`); cần đổi tên/AC của DES-006 và thêm route vào sitemap. |
 | OPD-009 | SV xem phản hồi GV cho lượt Branching ở đâu | B | 1:790, 04.4 | Page 2 04.4 đã hiển thị "Lecturer feedback: Not yet provided" ngay trên màn Reflection. |
 | OPD-010 | AI gợi ý phản hồi cho GV | B | 1:1702 | **P3 §2 Boundary: *"No AI-generated feedback suggestions"*** loại trừ rõ trong spec hiện hành. |
 | OPD-012 | Sinh case khi một số tài liệu FAILED | C | 1:2939, 03.2 | Spec `05_FIGMA` 03.2 đã nêu chỉ chọn tài liệu `COMPLETED`. Nút Retry đã thuộc FE-005. |
@@ -126,7 +128,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 | **D-02** | **Ngôn ngữ UI**: tiếng Anh học thuật (theo rule `01-ui-design-standards §7`) hay tiếng Việt? | A | Ảnh hưởng mọi frame, i18n FE và copy lỗi BE. Nếu chọn tiếng Việt thì phải sửa rule. |
 | D-03 | Hiển thị hạn nộp trên case trong MVP? Tài liệu nói có, nhưng thiếu task và cột `due_date`. | B | Field trên dialog xuất bản và trên màn case intro |
 | D-04 | Có thu thập MSSV / Khoa không? | B | Field đăng ký, hàng đợi feedback, quyền riêng tư (FR-EVAL-05) |
-| D-05 | Có màn Tổng quan (dashboard) cho Giảng viên không? Màn đầu tiên hiện được spec là Courses. | B | 2 frame Page 1 (1:3490, 34:3183) |
+| D-05 | Có màn Tổng quan (dashboard) cho Giảng viên không? Màn đầu tiên hiện được spec là Courses. | B | 2 frame Page 1 (1:3490, 34:3183). **Đã quyết 2026-11-12 (PO): có dashboard** (page 08 `07.1`); chưa có task. |
 | D-06 | "Quyết định then chốt" do giảng viên gắn cờ hay hệ thống tự xác định? | B | Checkbox trong editor, badge trong Journey Review, cần trường DB |
 | D-07 | Có tạo case thủ công trong MVP không? Có nút trong DES-006, không có task BE. | B | Nút "Create Manual" trên 03.1 |
 
@@ -136,8 +138,8 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 
 ```
 Vòng 1 — trước khi lock bất kỳ màn nào:   D-01 (baseline) → D-02 (ngôn ngữ)
-Vòng 2 — lock khung điều hướng:          OPD-001 (student entry) → OPD-008 (duyệt GV; OPD-015 đã quyết 2026-11-12: Admin MVP, đủ 10 màn)
-Vòng 3 — lock các luồng chính:           OPD-006 (modal/wizard) → OPD-005 (Challenge container) → OPD-011 (rubric)
+Vòng 2 — lock khung điều hướng:          OPD-008 (duyệt GV)   [đã quyết 2026-11-12: OPD-001 → A, OPD-015 → B]
+Vòng 3 — lock các luồng chính:           OPD-005 (Challenge container)   [đã quyết 2026-11-12: OPD-006 → wizard, OPD-011 → A]
 Vòng 4 — lock trạng thái phụ:            OPD-007 (+ sửa DES-009) → OPD-014 → OPD-002 → OPD-009 → OPD-010 → D-03..D-07
 Không chặn UI:                           OPD-003, OPD-004, OPD-012, OPD-013
 ```

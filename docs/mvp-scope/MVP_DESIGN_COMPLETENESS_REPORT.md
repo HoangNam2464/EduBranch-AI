@@ -1,6 +1,7 @@
 # MVP Design Completeness Report
 
 > **Trạng thái**: `DRAFT — CHỜ PROJECT OWNER PHÊ DUYỆT` · Ngày: 2026-11-01
+> **Cập nhật 2026-11-12 (quyết định PO):** OPD-001 → A (mã mời + Bàn học, Khóa học của tôi, Tham gia lớp), OPD-006 → wizard 3 bước (AI Studio), OPD-011 → A (rubric trong nền tảng, gồm Admin 10.8), D-05 → có dashboard giảng viên; Hồ sơ tài khoản 09.1/09.2 thuộc MVP. Các frame này không còn HOLD (page 08 section 07, 09). Kết luận HOLD bên dưới cho các mục này là trạng thái trước quyết định; phân loại hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`. Backlog vẫn thiếu task cho các màn này.
 > **Bộ tài liệu**: `MVP_SCOPE_EVIDENCE_MATRIX.md` · `FEATURE_HIERARCHY_AND_BACKLOG_MAPPING.md` · `FIGMA_FRAME_SCOPE_REGISTER.md` · `AUTHENTICATION_SCOPE_ANALYSIS.md` · `OPEN_DECISIONS_MVP_IMPACT.md` · tài liệu này.
 > **Không có thay đổi nào** đã được thực hiện trên Figma, backlog, code hay database.
 
