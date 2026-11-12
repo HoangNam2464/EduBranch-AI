@@ -164,7 +164,7 @@ font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Hel
 | `text-overline` | `11px / 16px` | `500`, uppercase | `Eduva/Overline`: 1–3 word category labels only |
 | `text-mono` | `13px / 20px` | `400`, Roboto Mono | `Eduva/Mono`: course codes, file extensions, counts |
 
-Public pages (Home, How it works, FAQ — Figma page 08, frames 00.2 / 00.6 / 00.7, adopted 2026-11-12) use **Be Vietnam Pro SemiBold** for headings only; body text stays Roboto. Figma text styles `EduBranch/Public Hero` (60/70), `EduBranch/Public H2` (40/50), `EduBranch/Public H3` (22/30), `EduBranch/Public Statement` (Medium 28/38). App screens never use Be Vietnam Pro.
+The public site is a single scrolling landing page (`/`, Figma page 08, frame 00.2; PO decision 2026-11-12: the former separate How it works / FAQ frames 00.6 / 00.7 were merged into it as anchor sections `#cach-hoat-dong`, `#hai-che-do`, `#cau-hoi` on one uniform `bg/canvas` background). It uses **Be Vietnam Pro SemiBold** for headings only; body text stays Roboto. Figma text styles `EduBranch/Public Hero` (60/70), `EduBranch/Public H2` (40/50), `EduBranch/Public H3` (22/30), `EduBranch/Public Statement` (Medium 28/38). App screens never use Be Vietnam Pro.
 
 Rules:
 - Never use color alone to indicate emphasis where weight can do the job.

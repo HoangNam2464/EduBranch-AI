@@ -53,7 +53,7 @@ The system strictly serves two distinct academic user roles:
 Because the Sprint Backlog tasks focus on core functional workflows, the Figma Master Template (`docs/05_FIGMA.md`) explicitly covers both the **foundational/public screens** (`/`, `/login`, `/register`, App Shells, Course Catalog, 403/404) and the **core academic feature screens**:
 
 ### 5.1. Public & Onboarding Routes (`PublicLayout`)
-- `/` — **Product Landing & Academic Introduction Page**: Introduces EduBranch-AI, compares `Branching Study` vs `Review Study`, illustrates the 4-step Human-in-the-Loop workflow, and provides direct entry (`Sign In` / `Create Account`).
+- `/` — **Product Landing & Academic Introduction Page**: Introduces EduBranch-AI, compares `Branching Study` vs `Review Study`, illustrates the 5-step Human-in-the-Loop workflow, answers common questions, and provides direct entry (`Sign In` / `Create Account`). Single scrolling page: How it works (`#cach-hoat-dong`), learning modes (`#hai-che-do`) and FAQ (`#cau-hoi`) are anchor sections reached from the public nav, not separate routes.
 - `/login` — **Sign In Page**: University email & password authentication (`pages/auth/LoginPage.tsx`).
 - `/register` — **Account Registration Page**: University account creation with explicit `Lecturer` / `Student` role selection (`pages/auth/RegisterPage.tsx`).
 

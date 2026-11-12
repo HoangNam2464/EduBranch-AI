@@ -196,7 +196,7 @@ Every feature must use these consistent vector icon metaphors (never emojis):
 font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 ```
 Headings use **Regular (400)** exactly as in the Eduva template; hierarchy comes from size and the surface layout. Figma text styles: `Eduva/*` (page `02 · Eduva – Design System`).
-Public pages only (Home, How it works, FAQ): headings use **Be Vietnam Pro SemiBold** via `EduBranch/Public *` text styles; body text stays Roboto. Never use Be Vietnam Pro on app screens.
+Public landing page only (`/`, including its How it works and FAQ sections): headings use **Be Vietnam Pro SemiBold** via `EduBranch/Public *` text styles; body text stays Roboto. Never use Be Vietnam Pro on app screens.
 
 | Token | Size / Line-Height | Weight | Usage |
 |---|:---:|:---:|---|
@@ -348,7 +348,7 @@ Public pages only (Home, How it works, FAQ): headings use **Be Vietnam Pro SemiB
 > Mirrors `frontend/src/app/router.tsx`, `docs/design/SITE-ARCHITECTURE.md`, and the Figma Master Template (`docs/05_FIGMA.md`).
 
 ### 8.1. Public & Onboarding Routes (`PublicLayout`)
-- `/` — Product Landing & Academic Introduction Page (Hero, Dual Learning Modes `Branching Study` vs `Review Study`, 4-Step Faculty/Student Workflow, Entry CTAs).
+- `/` — Product Landing & Academic Introduction Page, a single scrolling page (Hero, auto-playing 5-step workflow `#cach-hoat-dong`, Dual Learning Modes `Branching Study` vs `Review Study` `#hai-che-do`, draft lifecycle, per-role cards, FAQ with search `#cau-hoi`, Entry CTAs). Public nav links smooth-scroll to these anchors; there are no separate How it works / FAQ routes.
 - `/login` — University email/password sign-in.
 - `/register` — Account registration with role selection (`STUDENT` | `LECTURER`).
 

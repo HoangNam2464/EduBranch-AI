@@ -7,6 +7,8 @@
 > **Cập nhật 2026-11-12 (quyết định PO):** Admin thuộc MVP, không chờ duyệt thêm (OPD-015 → phương án B, đủ 10 màn). Màn "Dịch vụ AI" chỉ để xem vì provider cố định trong `.env` (OPD-013). "Nghiên cứu & Rubric" của Admin vẫn HOLD do OPD-011. Thiết kế mới nằm ở page `08 · EduBranch – Bản hoàn chỉnh`, section `10 · Admin · Quản trị hệ thống` (frame 10.1–10.10). Backlog `01_MASTER-TASKS.md` chưa có task Admin — cần bổ sung.
 > **Cập nhật 2026-11-12 (quyết định PO):** đăng nhập/đăng ký bằng **Google và Microsoft** (OAuth / OpenID Connect) thuộc MVP, trên 00.3, 00.4, 00.5 (không áp dụng cho đăng nhập quản trị 10.1). Thay thế kết luận PHASE 2 trong `AUTHENTICATION_SCOPE_ANALYSIS.md` và PSD-09. `01_MASTER-TASKS.md §4.6` (giữ nguyên theo HANDOVER_DIRECTIVE) vẫn ghi OAuth là Post-MVP — cần PO/mentor xác nhận việc bổ sung task BE/FE/QA.
 
+> **Cập nhật 2026-11-12 (quyết định PO):** trang công khai gộp thành **một trang cuộn** (00.2). Hai frame đề xuất 00.6 "Cách hoạt động" và 00.7 "Câu hỏi thường gặp" trên page 08 đã gộp vào 00.2 thành khối neo và bị xóa. Hai frame này chưa từng được tính trong register, nên tổng số frame không đổi.
+
 ## 1. Quy tắc phân loại
 
 | Nhóm | Định nghĩa dùng trong tài liệu |
@@ -40,7 +42,7 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 | Node | Frame | Nhóm | Bằng chứng | Phần tử cần xử lý |
 |---|---|---|---|---|
 | `91:2601` | 00.1 · Sơ đồ ứng dụng & luồng người dùng | MVP (tài liệu IA, không phải màn dev) | DES-001 (3 SP); SITE-ARCHITECTURE §5 | Nội dung sơ đồ ghi "15 route MVP" và "sinh viên vào case qua đường dẫn trực tiếp" — OPD-001 chưa đóng (PO-25) |
-| `90:2572` | 00.2 · Trang giới thiệu | MVP | P0 §0; `05_FIGMA.md §1.5` gom vào DES-001 | — |
+| `90:2572` | 00.2 · Trang giới thiệu | MVP | P0 §0; `05_FIGMA.md §1.5` gom vào DES-001 | **PO 2026-11-12**: trang công khai là một trang cuộn; "Cách hoạt động" (`#cach-hoat-dong`) và "Câu hỏi thường gặp" (`#cau-hoi`) là khối neo trong trang, không có route riêng. Thiết kế hiện hành: page 08, frame `496:4734` |
 | `1:2` | 00.3 · Đăng nhập · Mặc định | MVP | Proposal ¶129 "Account and role management"; BE-001, FE-002; route `POST /api/v1/auth/login` có trong code | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft" (component `EB/Social Sign-in`); **P2**: liên kết "Quên mật khẩu?" (`01_MASTER-TASKS §4.6`) |
 | `1:52` | 00.4 · Đăng ký · Sinh viên | MVP | ¶129; BE-001, FE-002; `POST /api/v1/auth/register` | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft" |
 | `1:122` | 00.5 · Đăng ký · Giảng viên | MVP | ¶129; BE-001, FE-002 | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft"; **H(OPD-008)**: khối "Lưu ý" về kích hoạt tài khoản giảng viên |
