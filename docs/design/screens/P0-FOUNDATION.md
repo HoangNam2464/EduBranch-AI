@@ -105,7 +105,7 @@ Centered card (max-width ~400px) on `bg-canvas`, vertically centered on the view
 - **Success**: redirect to `/lecturer/courses` or the student's case route based on returned `role`.
 
 ### Boundary
-No social login buttons (Google/Facebook/GitHub) — explicitly out of scope (`FEATURE-AUTH-AND-ROLES.md` §13). No "remember me" / SSO / MFA UI.
+Social login is limited to "Tiếp tục với Google" and "Tiếp tục với Microsoft" below the primary button on `/login` and `/register` (PO decision 2026-11-12, component `EB/Social Sign-in`); no other providers (Facebook/GitHub), not on the admin login. No campus SSO / MFA UI.
 
 ---
 

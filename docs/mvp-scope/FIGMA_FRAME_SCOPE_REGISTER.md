@@ -63,9 +63,9 @@ Mapping đầy đủ Frame → Feature → Task → FE/BE/DB/QA nằm ở `FEATU
 ### 2.1. Auth & Email
 | Frame ID | Tên | Phân loại | Vấn đề cụ thể | Đề xuất trạng thái |
 |---|---|---|---|---|
-| 1:2 | Đăng nhập · Mặc định | CONFIRMED | Nút "Đăng nhập với Google" (PHASE 2) | CANDIDATE sau khi ẩn nút Google |
-| 1:52 | Đăng ký · Sinh viên | CONFIRMED (đăng ký) | Nút Google (PHASE 2); trường MSSV (UNKNOWN); tách 2 form trái P0 §3 | CANDIDATE có điều kiện (D-04) |
-| 1:122 | Đăng ký · Giảng viên | CONFIRMED (đăng ký) | Nút Google; trường Khoa (UNKNOWN); thông báo xác minh (OPD-008) | REFERENCE (OPD-008) |
+| 1:2 | Đăng nhập · Mặc định | CONFIRMED | Nút Google/Microsoft: MVP từ 2026-11-12 (PSD-09) | CANDIDATE |
+| 1:52 | Đăng ký · Sinh viên | CONFIRMED (đăng ký) | Nút Google/Microsoft (MVP từ 2026-11-12); trường MSSV (UNKNOWN); tách 2 form trái P0 §3 | CANDIDATE có điều kiện (D-04) |
+| 1:122 | Đăng ký · Giảng viên | CONFIRMED (đăng ký) | Nút Google/Microsoft (MVP từ 2026-11-12); trường Khoa (UNKNOWN); thông báo xác minh (OPD-008) | REFERENCE (OPD-008) |
 | 1:196, 1:223 | Quên mật khẩu · Nhập email / Đã gửi | PHASE 2 | `01_MASTER-TASKS §4.6` | PHASE 2 AREA |
 | 1:250, 1:279 | Mật khẩu mới · Biểu mẫu / Thành công | PHASE 2 | idem | PHASE 2 AREA |
 | 26:78 | Email · Hướng dẫn đặt lại mật khẩu | PHASE 2 | idem | PHASE 2 AREA |
@@ -110,6 +110,8 @@ Mapping đầy đủ Frame → Feature → Task → FE/BE/DB/QA nằm ở `FEATU
 | 1:2081 | Rubric nghiên cứu | HOLD | OPD-011 | REFERENCE (OPD-011) |
 
 ### 2.4. Admin (toàn bộ phụ thuộc OPD-015)
+
+> **Cập nhật 2026-11-12 (PO):** OPD-015 đã quyết phương án B. Admin thuộc MVP với đủ 10 màn; thiết kế mới ở page 08, section `10 · Admin`. Màn Cấu hình dịch vụ AI (`1:5543`) chỉ để xem (OPD-013). `1:4511` vẫn HOLD do OPD-011. Bảng dưới là trạng thái trước quyết định, giữ để đối chiếu; trạng thái hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`.
 | Frame ID | Tên | Phân loại | Đề xuất trạng thái |
 |---|---|---|---|
 | 1:4477 | Admin · Đăng nhập | PROPOSED (`/login` dùng chung) | NO BASIS |

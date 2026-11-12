@@ -35,9 +35,9 @@ Page: `Page 1` cho tất cả. Trạng thái: MVP cho tất cả (chưa Ready fo
 |---|---|---|---|---|---|
 | `91:2601` | 00.1 · Sơ đồ ứng dụng | M1 (IA) | Tất cả | DES-001 (3) | Câu "vào case qua đường dẫn trực tiếp" (OPD-001) |
 | `90:2572` | 00.2 · Trang giới thiệu | M1 | Công khai | DES-001 (3) | — |
-| `1:2` | 00.3 · Đăng nhập | M1 | Công khai | FE-002 (3), BE-001 (5) | Google, Quên mật khẩu (Phase 2) |
-| `1:52` | 00.4 · Đăng ký · Sinh viên | M1 | Công khai | FE-002 (3), BE-001 (5) | Google (Phase 2) |
-| `1:122` | 00.5 · Đăng ký · Giảng viên | M1 | Công khai | FE-002 (3), BE-001 (5) | Google (Phase 2); thông báo kích hoạt (OPD-008) |
+| `1:2` | 00.3 · Đăng nhập | M1 | Công khai | FE-002 (3), BE-001 (5) | Google/Microsoft: MVP (PO 2026-11-12, chưa có task); Quên mật khẩu (Phase 2) |
+| `1:52` | 00.4 · Đăng ký · Sinh viên | M1 | Công khai | FE-002 (3), BE-001 (5) | Google/Microsoft: MVP (PO 2026-11-12, chưa có task) |
+| `1:122` | 00.5 · Đăng ký · Giảng viên | M1 | Công khai | FE-002 (3), BE-001 (5) | Google/Microsoft: MVP (PO 2026-11-12, chưa có task); thông báo kích hoạt (OPD-008) |
 | `86:2446` | 01.1 · Đang tải | M1/M2 | Giảng viên | DES-002 (5) | Mã tham gia (OPD-001) |
 | `86:2107` | 01.2 · Trống | M1/M2 | Giảng viên | DES-002 (5) | idem |
 | `86:2277` | 01.3 · Lỗi | M1/M2 | Giảng viên | DES-002 (5) | idem |

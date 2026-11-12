@@ -98,6 +98,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 | Tính phù hợp với Proposal | Đáp ứng "Manage accounts & roles" | Đáp ứng đủ 3 luồng | Đáp ứng bằng vận hành, nhưng không có UI |
 
 - **Nhận xét**: Proposal yêu cầu **năng lực** Admin nhưng không yêu cầu **giao diện**. Cả 3 phương án đều có thể diễn giải là đáp ứng Proposal. Đây thực sự là quyết định của PO/Scrum Master về năng lực sprint.
+- **ĐÃ QUYẾT ĐỊNH 2026-11-12 (PO):** chọn **B — đủ 10 màn**, Admin thuộc MVP, không chờ duyệt thêm. Màn "Dịch vụ AI" chỉ để xem (provider cố định trong `.env`, giữ OPD-013). Màn "Nghiên cứu & Rubric" của Admin vẫn HOLD theo OPD-011. Thiết kế: page 08, section `10 · Admin` (10.1–10.10). Việc còn lại: bổ sung task BE/FE/QA cho Admin vào `01_MASTER-TASKS.md`; sửa rule `feature-authentication.md` (đang ghi *"Admin… not in MVP"*).
 
 ---
 
@@ -113,7 +114,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 | OPD-009 | SV xem phản hồi GV cho lượt Branching ở đâu | B | 1:790, 04.4 | Page 2 04.4 đã hiển thị "Lecturer feedback: Not yet provided" ngay trên màn Reflection. |
 | OPD-010 | AI gợi ý phản hồi cho GV | B | 1:1702 | **P3 §2 Boundary: *"No AI-generated feedback suggestions"*** loại trừ rõ trong spec hiện hành. |
 | OPD-012 | Sinh case khi một số tài liệu FAILED | C | 1:2939, 03.2 | Spec `05_FIGMA` 03.2 đã nêu chỉ chọn tài liệu `COMPLETED`. Nút Retry đã thuộc FE-005. |
-| OPD-013 | Đổi AI provider khi đang chạy | C | 1:5543 | Chỉ có ý nghĩa nếu OPD-015 có màn này. |
+| OPD-013 | Đổi AI provider khi đang chạy | C | 1:5543 → page 08 `10.7` | OPD-015 đã chọn B (2026-11-12): màn Dịch vụ AI chỉ để xem, không đổi provider trên giao diện. |
 
 ---
 
@@ -135,7 +136,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 
 ```
 Vòng 1 — trước khi lock bất kỳ màn nào:   D-01 (baseline) → D-02 (ngôn ngữ)
-Vòng 2 — lock khung điều hướng:          OPD-001 (student entry) → OPD-015 + OPD-008 (admin & duyệt GV, quyết cùng nhau)
+Vòng 2 — lock khung điều hướng:          OPD-001 (student entry) → OPD-008 (duyệt GV; OPD-015 đã quyết 2026-11-12: Admin MVP, đủ 10 màn)
 Vòng 3 — lock các luồng chính:           OPD-006 (modal/wizard) → OPD-005 (Challenge container) → OPD-011 (rubric)
 Vòng 4 — lock trạng thái phụ:            OPD-007 (+ sửa DES-009) → OPD-014 → OPD-002 → OPD-009 → OPD-010 → D-03..D-07
 Không chặn UI:                           OPD-003, OPD-004, OPD-012, OPD-013

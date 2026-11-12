@@ -37,6 +37,7 @@ Vì vậy tài liệu dừng ở bước phân loại và chờ PO.
 - **Bằng chứng**: Proposal ¶129 chỉ nêu Lecturer / Student; Deliverable 1 chỉ có giao diện giảng viên và sinh viên; không có task Admin. CPD-07 (Draft) ghi phạm vi module Admin còn mở.
 - **Xung đột**: xếp 6 frame Admin vào PHASE 2 đã loại trước phương án B (đủ 10 màn) của OPD-015.
 - **Đề xuất**: PO xác nhận cách xếp này. Các frame HOLD: `1:4477`, `1:4025`, `30:1864`, `1:4511`; PHASE 2: `1:3715`, `1:4795`, `1:5043`, `1:5543`, `1:5302`, `1:4345`.
+- **ĐÃ QUYẾT ĐỊNH 2026-11-12 (PO):** hướng trên được thay thế. Admin thuộc **MVP**, không chờ duyệt thêm (OPD-015 → B, đủ 10 màn). 9 frame chuyển sang MVP: `1:4477`, `1:3715`, `1:4025`, `30:1864`, `1:4795`, `1:5043`, `1:5543` (chỉ xem, OPD-013), `1:5302`, `1:4345`. `1:4511` (Nghiên cứu & Rubric) vẫn HOLD theo OPD-011. Xác minh giảng viên (OPD-008) vẫn mở. Thiết kế mới: page 08, section `10 · Admin` (10.1–10.10).
 
 ### PSD-05 — Dashboard giảng viên (D-05)
 - **Hướng PO**: giữ Revision 01 (`34:3183`) làm ứng viên; lưu bản gốc (`1:3490`); không duyệt Revision 01.
@@ -62,6 +63,7 @@ Vì vậy tài liệu dừng ở bước phân loại và chờ PO.
 - **Hướng PO**: loại khỏi MVP.
 - **Bằng chứng**: `01_MASTER-TASKS §4.6` xếp OAuth/SSO vào Post-MVP (Phase 2).
 - **Đề xuất**: xếp **PHASE 2** (không phải OUT OF SCOPE) theo backlog. Nút Google trên `1:2`, `1:52`, `1:122` sẽ được gỡ khỏi bản MVP khi PO duyệt sửa thiết kế.
+- **ĐÃ QUYẾT ĐỊNH 2026-11-12 (PO):** hướng trên được thay thế. Đăng nhập/đăng ký bằng **Google và Microsoft** thuộc **MVP**, trên 00.3, 00.4, 00.5 của page 08 (component `EB/Social Sign-in`); đăng nhập quản trị không có. SSO LDAP/SAML của trường vẫn ngoài phạm vi. Việc còn mở: quy tắc gán vai trò khi đăng nhập lần đầu, liên kết khi trùng email với tài khoản mật khẩu, có giới hạn domain email trường hay không (liên quan OPD-008), và bổ sung task BE/FE/QA vì `01_MASTER-TASKS §4.6` vẫn ghi Post-MVP.
 
 ### PSD-10 — Các phần tử MVP còn chờ quyết định
 | Phần tử | Frame | Quyết định |

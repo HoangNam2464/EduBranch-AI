@@ -52,7 +52,7 @@ Chú thích cột: **P** = Proposal V1.2 · **BL** = backlog task cha · **Spec*
 | Trường MSSV / Khoa khi đăng ký | — | — | Không có trong FR-AUTH-01 §6 Inputs; FR-EVAL-05 yêu cầu loại bỏ student ID khỏi dữ liệu export | 1:52, 1:122, 1:1852, 1:4025 | — | ❌ | ❌ | ❌ không có cột | — | — | **UNKNOWN**: trường dữ liệu không có trong domain model |
 | JWT, phiên hết hạn, route guard theo vai trò | §4 | FE-001 (DONE), BE-002 | FR-AUTH-03/04; P0 §1 | — | 01.5 (403) | ✅ | ✅ PrivateRoute | — | ✅ QA-002 | — | **CONFIRMED MVP** |
 | Đăng xuất | — | FE-001 | P0 §1 Actions | trong sidebar | trong shell | — | ✅ | — | — | — | **IMPLIED UNDER MVP FEATURE** (Auth) |
-| **Google Sign-In / OAuth** | Không đề cập; Context Diagram không có Identity Provider | Không có; **`01_MASTER-TASKS.md §4.6` liệt kê "xác thực mạng xã hội/Google OAuth" là Post-MVP (Phase 2)** | `FEATURE-AUTH-AND-ROLES.md §13`: *"Social OAuth / OpenID login (Google…) — strictly excluded"*; `feature-authentication.md` Excluded; P0 §2 Boundary | 1:2, 1:52, 1:122 có nút Google | Không có | ❌ | ❌ | ❌ | ❌ | — | **PHASE 2** (ngoài MVP, có căn cứ rõ). Xem `AUTHENTICATION_SCOPE_ANALYSIS.md`. |
+| **Google Sign-In / OAuth** | Không đề cập; Context Diagram không có Identity Provider | Không có; **`01_MASTER-TASKS.md §4.6` liệt kê "xác thực mạng xã hội/Google OAuth" là Post-MVP (Phase 2)** | `FEATURE-AUTH-AND-ROLES.md §13`: *"Social OAuth / OpenID login (Google…) — strictly excluded"*; `feature-authentication.md` Excluded; P0 §2 Boundary | 1:2, 1:52, 1:122 có nút Google | Không có | ❌ | ❌ | ❌ | ❌ | — | ~~PHASE 2~~ → **MVP (quyết định PO 2026-11-12)**: Google + Microsoft trên 00.3/00.4/00.5. Backlog §4.6 chưa đổi. Xem PSD-09. |
 | Quên mật khẩu / đặt lại mật khẩu | Không đề cập | **`01_MASTER-TASKS.md §4.6`: "Password Reset, Change Password… quy trình khôi phục mật khẩu qua email SMTP" là Post-MVP (Phase 2)** | Không có FR | 1:196, 1:223, 1:250, 1:279, 26:78 | — | ❌ | ❌ | ❌ | ❌ | — | **PHASE 2** |
 | Email kích hoạt tài khoản | Không đề cập | Không có | Không có FR. FR-AUTH chỉ ghi `is_active` dùng để chặn đăng nhập | 26:148 | — | ❌ | ❌ | — | — | liên quan OPD-008 | **PROPOSED**: chưa thuộc yêu cầu được phê duyệt |
 | Duyệt tài khoản Giảng viên | Context Diagram: Admin *"Manage accounts & roles"* | Không có | FR-AUTH §12: `is_active=false` → 403 (**code hiện không kiểm tra**, `auth.service.ts` dòng 55–67) | 1:122 (thông báo), 1:4025 (tab chờ duyệt) | — | ❌ | ❌ | ✅ `is_active` | — | **OPD-008** | **HOLD** |
@@ -143,7 +143,7 @@ Chú thích cột: **P** = Proposal V1.2 · **BL** = backlog task cha · **Spec*
 | IMPLIED UNDER MVP FEATURE | 6 | Logout, Landing `/`, Case intro, Resume attempt, Course delete action, Student view of Branching feedback |
 | PROPOSED | 6 | Email kích hoạt, Dashboard GV, Admin dashboard, Admin login riêng, Admin case mgmt, Admin settings |
 | HOLD | 20 | Mã mời, Dashboard SV, Khóa học của tôi, Rubric, CSV, Admin user/course/log/AI config, Wizard, Versioning, AI hint, Deadline, Pivotal-required, Challenge container… |
-| PHASE 2 | 5 | Google Sign-In, Quên/đặt lại mật khẩu, Đổi mật khẩu, Gửi nhắc hạn, Survey in-platform |
+| PHASE 2 | 4 | Quên/đặt lại mật khẩu, Đổi mật khẩu, Gửi nhắc hạn, Survey in-platform (Google Sign-In chuyển sang MVP theo quyết định PO 2026-11-12, kèm Microsoft) |
 | OUT OF SCOPE | 1 | Nút "AI gợi ý / Tạo lại bằng AI" trong Case Editor |
 | UNKNOWN | 3 | Trường MSSV/Khoa, cờ pivotal, UI theo dõi chi phí AI |
 

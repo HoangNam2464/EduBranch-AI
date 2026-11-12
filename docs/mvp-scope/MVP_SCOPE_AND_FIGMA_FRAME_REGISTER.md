@@ -4,6 +4,8 @@
 > **Figma**: file `6CtSgJPKo4jCIbB7WwCaWw`, page `Page 1` (`0:1`), đọc bằng `get_metadata` và `get_screenshot` (session `d524bf8e-77e9-416f-986d-699eff2ab367`). Không dùng `use_figma`.
 > **Nguồn đối chiếu**: Proposal V1.2 (PO-10; bản cục bộ `docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`, đoạn trích theo số đoạn `¶`), `docs/01_MASTER-TASKS.md` (84 task / 336 SP), `docs/OPEN_PRODUCT_DECISIONS.md` v1.1.2 trên nhánh `feature/design-system` (Draft; mọi OPD `OPEN / PENDING`; mục CPD cũng là Draft), các quyết định PO-1..27, route trong `backend/src/**/*.controller.ts` tại `02028b2`.
 > **Không frame nào được đánh dấu Ready for Dev hay Approved trong tài liệu này.** Phân loại dưới đây là đề xuất có bằng chứng; PO duyệt riêng.
+> **Cập nhật 2026-11-12 (quyết định PO):** Admin thuộc MVP, không chờ duyệt thêm (OPD-015 → phương án B, đủ 10 màn). Màn "Dịch vụ AI" chỉ để xem vì provider cố định trong `.env` (OPD-013). "Nghiên cứu & Rubric" của Admin vẫn HOLD do OPD-011. Thiết kế mới nằm ở page `08 · EduBranch – Bản hoàn chỉnh`, section `10 · Admin · Quản trị hệ thống` (frame 10.1–10.10). Backlog `01_MASTER-TASKS.md` chưa có task Admin — cần bổ sung.
+> **Cập nhật 2026-11-12 (quyết định PO):** đăng nhập/đăng ký bằng **Google và Microsoft** (OAuth / OpenID Connect) thuộc MVP, trên 00.3, 00.4, 00.5 (không áp dụng cho đăng nhập quản trị 10.1). Thay thế kết luận PHASE 2 trong `AUTHENTICATION_SCOPE_ANALYSIS.md` và PSD-09. `01_MASTER-TASKS.md §4.6` (giữ nguyên theo HANDOVER_DIRECTIVE) vẫn ghi OAuth là Post-MVP — cần PO/mentor xác nhận việc bổ sung task BE/FE/QA.
 
 ## 1. Quy tắc phân loại
 
@@ -22,9 +24,9 @@
 
 | Nhóm | Số frame |
 |---|:-:|
-| MVP | 38 |
-| HOLD | 15 |
-| PHASE 2 | 11 |
+| MVP | 47 (38 + 9 màn Admin, quyết định PO 2026-11-12) |
+| HOLD | 12 |
+| PHASE 2 | 5 |
 | OUT OF SCOPE | 2 |
 | **Tổng frame** | **66** |
 | Node không phải frame (section 09) | 2 (`30:1127` Vector, `81:2036` instance Badge) — node rác, không phân loại |
@@ -39,9 +41,9 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 |---|---|---|---|---|
 | `91:2601` | 00.1 · Sơ đồ ứng dụng & luồng người dùng | MVP (tài liệu IA, không phải màn dev) | DES-001 (3 SP); SITE-ARCHITECTURE §5 | Nội dung sơ đồ ghi "15 route MVP" và "sinh viên vào case qua đường dẫn trực tiếp" — OPD-001 chưa đóng (PO-25) |
 | `90:2572` | 00.2 · Trang giới thiệu | MVP | P0 §0; `05_FIGMA.md §1.5` gom vào DES-001 | — |
-| `1:2` | 00.3 · Đăng nhập · Mặc định | MVP | Proposal ¶129 "Account and role management"; BE-001, FE-002; route `POST /api/v1/auth/login` có trong code | **P2**: nút "Đăng nhập với Google", liên kết "Quên mật khẩu?" (`01_MASTER-TASKS §4.6`) |
-| `1:52` | 00.4 · Đăng ký · Sinh viên | MVP | ¶129; BE-001, FE-002; `POST /api/v1/auth/register` | **P2**: "Đăng ký với Google" |
-| `1:122` | 00.5 · Đăng ký · Giảng viên | MVP | ¶129; BE-001, FE-002 | **P2**: "Đăng ký với Google"; **H(OPD-008)**: khối "Lưu ý" về kích hoạt tài khoản giảng viên |
+| `1:2` | 00.3 · Đăng nhập · Mặc định | MVP | Proposal ¶129 "Account and role management"; BE-001, FE-002; route `POST /api/v1/auth/login` có trong code | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft" (component `EB/Social Sign-in`); **P2**: liên kết "Quên mật khẩu?" (`01_MASTER-TASKS §4.6`) |
+| `1:52` | 00.4 · Đăng ký · Sinh viên | MVP | ¶129; BE-001, FE-002; `POST /api/v1/auth/register` | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft" |
+| `1:122` | 00.5 · Đăng ký · Giảng viên | MVP | ¶129; BE-001, FE-002 | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft"; **H(OPD-008)**: khối "Lưu ý" về kích hoạt tài khoản giảng viên |
 
 ### Section `93:2602` — 01 · Trạng thái dùng chung
 
@@ -122,16 +124,16 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 | `1:3490` | Giảng viên · Tổng quan (bản gốc) | **OUT OF SCOPE** (lưu trữ tham chiếu) | Hướng PO §4: giữ làm bản tham chiếu | Không xóa |
 | `34:3183` | Lecturer Dashboard — Revision 01 | **HOLD (D-05)** | Không có yêu cầu hay task cho dashboard giảng viên; P1 §1 ghi Courses là màn đầu tiên | Ứng viên làm việc theo hướng PO; **chưa duyệt**. So sánh ở §4 |
 | `26:148` | Email · Kích hoạt tài khoản | **HOLD (OPD-008)** | Không có task | — |
-| `1:4477` | Admin · Đăng nhập | **HOLD (OPD-015)** | Chỉ cần nếu có màn quản lý người dùng | — |
-| `1:3715` | Admin · Bảng điều khiển | **PHASE 2** | Hướng PO §3 (giám sát chi phí AI, cải tiến quản trị); không có task | Cũng nằm trong phương án B của OPD-015 |
-| `1:4025` | Admin · Quản lý người dùng | **HOLD (OPD-015, OPD-008)** | Hướng PO §3 HOLD | Có tab chờ duyệt giảng viên |
-| `30:1864` | Admin · Khóa người dùng | **HOLD (OPD-015)** | idem | — |
-| `1:4795` | Admin · Quản lý khóa học | **PHASE 2** | Hướng PO §3 "other administrative enhancements" | — |
-| `1:5043` | Admin · Quản lý Case Study | **PHASE 2** | idem | — |
-| `1:5543` | Admin · Cấu hình dịch vụ AI | **PHASE 2** | Hướng PO §3 "Advanced AI configuration"; liên quan OPD-013 | — |
-| `1:4511` | Admin · Nghiên cứu và Rubric | **HOLD (OPD-011, OPD-015)** | Hướng PO §3 HOLD | — |
-| `1:5302` | Admin · Nhật ký hệ thống | **PHASE 2** | Hướng PO §3 "Admin logs" | — |
-| `1:4345` | Admin · Cài đặt hệ thống | **PHASE 2** | Hướng PO §3 | — |
+| `1:4477` | Admin · Đăng nhập → page 08 `10.1` | **MVP** (PO 2026-11-12) | Context Diagram: Admin; OPD-015 → B | Không có liên kết đăng ký |
+| `1:3715` | Admin · Bảng điều khiển → `10.2` | **MVP** (PO 2026-11-12) | idem | Chỉ số toàn hệ thống; không giám sát chi phí AI |
+| `1:4025` | Admin · Quản lý người dùng → `10.3` | **MVP** (PO 2026-11-12) | Context Diagram *"Manage accounts & roles"* | **H(OPD-008)**: chưa có tab chờ duyệt giảng viên; khóa/mở khóa dựa trên `users.is_active` |
+| `30:1864` | Admin · Khóa người dùng → `10.4` | **MVP** (PO 2026-11-12) | idem | — |
+| `1:4795` | Admin · Quản lý khóa học → `10.5` | **MVP** (PO 2026-11-12) | Context Diagram *"courses"* | Chỉ xem; **H(OPD-014)** nếu thêm thao tác xóa/lưu trữ |
+| `1:5043` | Admin · Quản lý Case Study → `10.6` | **MVP** (PO 2026-11-12) | idem | Chỉ có thao tác Xem |
+| `1:5543` | Admin · Dịch vụ AI (chỉ xem) → `10.7` | **MVP** (PO 2026-11-12) | Context Diagram *"API & system logs"*; OPD-013 | Không có thao tác đổi provider/mô hình (provider cố định trong `.env`) |
+| `1:4511` | Admin · Nghiên cứu và Rubric → `10.8` | **HOLD (OPD-011)** | Proposal ¶140 Evaluation module | OPD-015 đã đóng; chỉ còn chờ OPD-011 |
+| `1:5302` | Admin · Nhật ký hệ thống → `10.9` | **MVP** (PO 2026-11-12) | Context Diagram *"API & system logs"* | — |
+| `1:4345` | Admin · Cài đặt hệ thống → `10.10` | **MVP** (PO 2026-11-12) | Quyết định PO | Mục AI chỉ tham chiếu (OPD-013) |
 
 ### Section `93:2609` — 08 · Phase 2 · Quên & đặt lại mật khẩu
 
