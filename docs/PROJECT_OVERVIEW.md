@@ -31,10 +31,10 @@ Students learn not by passively reading outcomes, but by making decisions, compl
 | Actor | Role |
 |---|---|
 | **Lecturer** | Creates courses; uploads teaching materials; triggers AI case generation; inspects, edits, approves, and publishes cases; shares case link with students; reviews student attempts/submissions; writes qualitative feedback; uses statistics for class discussion. |
-| **Student** | Accesses case via direct link from lecturer. In Branching Study: navigates the experience, makes consecutive decisions, completes the journey, reviews the full path retrospectively, writes reasoning and reflection, and may retry. In Review Study: analyzes context, proposes solution, receives feedback, reflects. |
+| **Student** | Joins a class by invite code and opens published cases from the student desk or "My courses"; a direct link from the lecturer also works. In Branching Study: navigates the experience, makes consecutive decisions, completes the journey, reviews the full path retrospectively, writes reasoning and reflection, and may retry. In Review Study: analyzes context, proposes solution, receives feedback, reflects. |
 | **Admin** | System administrator (Proposal V1.2 Context Diagram): manages user accounts and roles, manages courses, monitors API and system health logs. |
 
-> **Students do not create cases.** Students do not browse case lists. Student access is always via a direct link provided by the Lecturer.
+> **Students do not create cases.** Students only see `PUBLISHED` cases of classes they joined. Update 2026-11-12 (PO decision OPD-001 → A): students join a class with an invite code and browse their courses and assigned cases on the student desk; the direct case link from the lecturer remains available.
 
 ---
 

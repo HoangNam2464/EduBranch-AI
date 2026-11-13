@@ -250,7 +250,7 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
 - **Full-viewport workspace** (`CaseReviewPage`): same shell; the canvas holds the lifecycle action bar + split editor.
 
 ### 5.2. Student Portal Shell (`StudentLayout.tsx`)
-- **Pedagogical Context (unchanged)**: Students access specific published cases via direct links. Any course-browsing navigation (`Bàn học`, `Khóa học của tôi`, `Tham gia lớp học`) depends on **OPD-001** and stays HOLD until the PO closes it.
+- **Pedagogical Context**: OPD-001 was decided as option A (PO 2026-11-12). Students reach published cases from `Bàn học` (desk), `Khóa học của tôi` and `Tham gia lớp học` (join a class by invite code); a direct case link from the lecturer still works. Students only ever see `PUBLISHED` cases.
 - **Structure**: same visual shell as §5.1 (sidebar + canvas panel) so both roles share one system. Reading and writing areas inside the canvas are constrained to the `65–75ch` measure (§4.1); case context sits in a left column card, the working area in the main column.
 
 ### 5.3. Public Auth Shell (`PublicLayout.tsx`, `LoginPage.tsx`, `RegisterPage.tsx`)
@@ -258,8 +258,9 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
 - Product previews in the brand panel must show real EduBranch screens — never template mockups with foreign data.
 - Local dev quick-access controls (when `import.meta.env.DEV` is true) use secondary button styling with SVG icons — never purple/emoji buttons.
 
-### 5.4. Public Marketing Pages (`/`, `Cách hoạt động`, `FAQ`)
-- Top navigation bar (`72px`, white) + content container `1200px`; headline/FAQ reading column `768px`.
+### 5.4. Public Landing Page (`/`, one scrolling page)
+- `Cách hoạt động`, `Hai chế độ học` and `Câu hỏi thường gặp` are anchor sections of `/` (`#cach-hoat-dong`, `#hai-che-do`, `#cau-hoi`), not separate routes; the sticky top navigation smooth-scrolls to them.
+- Top navigation bar (`72px`, white) + content container `1200px`; uniform `bg/canvas` page background with white cards.
 - One idea per section, `96px` vertical section rhythm, section title `text-display` + one lead sentence. No eyebrow pill on every section, no blurred blobs, no gradient text.
 - Process sections show the **actual product state** at each step (files, statuses, a case node), not decorative icons.
 
@@ -352,21 +353,42 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
 - `/login` — University email/password sign-in.
 - `/register` — Account registration with role selection (`STUDENT` | `LECTURER`).
 
+> Figma frame codes in brackets refer to page `08 · EduBranch – Bản hoàn chỉnh`; per-screen behaviour is in `docs/design/UX-SCREEN-NOTES.md`.
+
 ### 8.2. Lecturer Routes (`LecturerLayout`)
-- `/lecturer/courses` — Course catalog & course creation modal.
-- `/lecturer/courses/:courseId/materials` — PDF/DOCX upload dropzone & RAG processing status table.
-- `/lecturer/courses/:courseId/cases` — Course case list, mode filter (`All` / `Branching Study` / `Review Study`), and `Generate Case` modal.
-- `/lecturer/cases/:caseId/review` — **Human-in-the-Loop Gate**: 4-step status stepper + ReactFlow Decision Tree canvas & side-by-side node editor (for `BRANCHING_STUDY`) or context/problem form editor (for `REVIEW_STUDY`).
-- `/lecturer/cases/:caseId/feedback` — Inspect student Branching Attempts and Review Study submissions; author qualitative `lecturer_feedback`.
-- `/lecturer/statistics` — Cohort completion rate, attempt count, and branch-selection distribution.
+- `/lecturer/dashboard` — Lecturer dashboard: deadlines calendar, submissions awaiting feedback, to-do list [07.1] (D-05 decided: in MVP).
+- `/lecturer/courses` — Course catalog with detail panel, course creation and deletion dialogs [02.1–02.3].
+- `/lecturer/courses/:courseId/materials` — Upload dropzone, processing steps and compact uploaded-file list [02.4–02.6].
+- `/lecturer/courses/:courseId/materials/:materialId/rag` — Indexed excerpts of one document [02.7].
+- `/lecturer/cases` and `/lecturer/courses/:courseId/cases` — Case library with status and mode filters [03.1–03.3].
+- `/lecturer/ai-studio` — **3-step generation wizard** (OPD-006 decided: wizard, not a modal): course & mode [07.6] → topic & source documents [07.5] → confirm configuration [07.7]; generation progress / failure [03.2, 03.3].
+- `/lecturer/cases/:caseId/review` — **Human-in-the-Loop Gate**: case editor with decision-tree panel and source excerpts [03.4, 03.5], review bar with 4 lifecycle states [03.6], publish dialog [03.7].
+- `/lecturer/feedback` and `/lecturer/feedback/:submissionId` — Review queue and submission detail with qualitative feedback [04.1, 04.2, 04.2b].
+- `/lecturer/statistics` — Learning-flow statistics [04.3].
+- `/lecturer/cases/:caseId/rubric` — Research rubric for case quality [07.8] (OPD-011 decided: in-platform).
+- `/lecturer/profile` — Account profile [09.1].
 
 ### 8.3. Student Routes (`StudentLayout`)
+- `/student/desk` — Student desk: assigned cases, progress, schedule [07.2].
+- `/student/courses` — My courses; joining a class by invite code opens a dialog [07.3, 07.4].
+- `/student/history` and `/student/cases/:caseId/history` — Attempt history and new-attempt dialog [05.9, 05.10].
+- `/student/profile` — Account profile without scores [09.2].
 - `/student/cases/:caseId/branching-play` — **Phase 1 (Experience)**: Distraction-free situation reading and immediate option selection (no mid-flow consequence card, no mid-flow reasoning form, no ReactFlow canvas).
 - `/student/cases/:caseId/attempt/:attemptId/review` — **Phase 2 (REVIEW)**: Full chronological path replay, revealed consequences (`consequence`), alternative options, and retrospective `reasoning_text` capture.
 - `/student/cases/:caseId/attempt/:attemptId/reflect` — **Phase 3 (Reflection & Retry)**: Post-journey metacognitive `reflection_text` submission and `Try Another Path` (creates `attempt_number + 1`).
-- `/student/cases/:caseId/challenge/:sessionId` — **Cross-Mode Socratic Support**: 1–2 rounds of counter-questions probing student reasoning (zero grading).
+- `/student/cases/:caseId/challenge/:sessionId` — **Cross-Mode Socratic Support**: 1–2 rounds of counter-questions probing student reasoning (zero grading). Figma draws it as a dialog over Journey Review [05.5, 05.6]; modal vs. full page is still **OPD-005 (HOLD)**.
 - `/student/cases/:caseId/review-study` — **Review Study Workspace**: Read `context_text` & `problem_text`, submit `student_analysis` (optional), `proposed_solution` (required), and `reasoning_text` (required). Single submission per case.
 - `/student/cases/:caseId/review-study/:submissionId/feedback` — View human Lecturer Feedback (`REVIEWED`) and submit final Reflection (`REFLECTED`).
+
+### 8.4. Admin Routes (`AdminLayout`, OPD-015 decided: in MVP)
+- `/admin/login` — Admin sign-in, email + password only [10.1].
+- `/admin/dashboard` — System dashboard with admin-only charts [10.2].
+- `/admin/users` — User management, lock/unlock via `users.is_active` [10.3, 10.4].
+- `/admin/courses`, `/admin/cases` — System-wide read-only lists [10.5, 10.6].
+- `/admin/ai-service` — AI service status, view only (provider fixed in `.env`, OPD-013) [10.7].
+- `/admin/rubric` — Research & rubric oversight [10.8].
+- `/admin/logs` — System log [10.9].
+- `/admin/settings` — Platform settings [10.10].
 
 ---
 

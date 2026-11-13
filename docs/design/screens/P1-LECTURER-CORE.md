@@ -12,7 +12,7 @@
 Entry point for the Lecturer role. Lists owned courses; allows creating a new course (`FEATURE-COURSE-AND-MATERIALS.md` FR-MAT-01).
 
 ### User & Context
-Lecturer only. First screen after login.
+Lecturer only. Main entry for course work; since D-05 was decided (2026-11-12) the first screen after login is the lecturer dashboard (`/lecturer/dashboard`, Figma 07.1), which links here.
 
 ### Layout
 Page header ("Courses", `text-display`) + primary button "New Course" (top-right) + grid or table of course cards.
@@ -71,11 +71,11 @@ Breadcrumb (Courses → [Course Name] → Cases). Filter tabs or segmented contr
 Per case (Case Card): `title`, `learning_mode` badge, `status` badge, short `description`, `updatedAt`, AI-origin marker while `status = DRAFT`.
 
 ### Actions
-- **Generate Case**: opens a modal — `topic` (required text, 10–500 chars per `FR-GEN-01`/inputs table), optional `materialIds` multi-select (sourced from the course's completed materials only), optional `targetNodeCount`. On submit, redirects to `/lecturer/cases/:caseId/review` once the draft is created.
+- **Generate Case** ("Tạo Case mới bằng AI"): opens the **3-step AI Studio wizard** at `/lecturer/ai-studio` (OPD-006 decided 2026-11-12; Figma 07.6 course & mode → 07.5 topic & source documents → 07.7 confirm). The wizard collects `topic` (required text, 10–500 chars per `FR-GEN-01`/inputs table), optional `materialIds` multi-select (sourced from the course's completed materials only), optional `targetNodeCount`. On submit, redirects to `/lecturer/cases/:caseId/review` once the draft is created.
 - Click a case card → `/lecturer/cases/:caseId/review`.
 
 ### States
-- **Generation in progress**: after submitting the Generate Case modal, show a loading state (this can take several seconds — LLM call + validation retries per `FEATURE-CASE-GENERATION.md` FR-GEN-05); do not block the whole screen silently — show a visible "Generating your case…" state, and route to Case Review once ready.
+- **Generation in progress**: after confirming the last wizard step, show a loading state (this can take several seconds — LLM call + validation retries per `FEATURE-CASE-GENERATION.md` FR-GEN-05); do not block the whole screen silently — show a visible "Generating your case…" state, and route to Case Review once ready.
 - **Generation failure**: if the AI service exhausts retries (HTTP 502 per §12), show an error toast: "Case generation failed — please try again, or refine your topic." Do not create a broken/partial case record for the lecturer to see.
 - **Empty (no materials yet)**: if the course has zero completed materials, disable "Generate Case" and show a hint pointing to the Materials screen first — generation quality depends on ingested material (`FEATURE-DOCUMENT-PROCESSING-AND-RAG.md`), and this is a real prerequisite, not an invented restriction.
 
