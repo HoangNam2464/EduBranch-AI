@@ -1,6 +1,7 @@
 # Feature Hierarchy & Backlog Mapping
 
 > **Trạng thái**: `DRAFT — CHỜ PROJECT OWNER PHÊ DUYỆT` · Ngày: 2026-11-01
+> **Cập nhật 2026-11-12 (quyết định PO):** OPD-001 → A (mã mời + Bàn học, Khóa học của tôi, Tham gia lớp), OPD-006 → wizard 3 bước (AI Studio), OPD-011 → A (rubric trong nền tảng, gồm Admin 10.8), D-05 → có dashboard giảng viên; Hồ sơ tài khoản 09.1/09.2 thuộc MVP. Các frame này không còn HOLD (page 08 section 07, 09). Kết luận HOLD bên dưới cho các mục này là trạng thái trước quyết định; phân loại hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`. Backlog vẫn thiếu task cho các màn này.
 > **Nguyên tắc**: Không tạo task hay Story Points mới. Chỗ thiếu phân rã được ghi là **"Đề xuất task con — cần xác nhận"** và không gán SP. Endpoint chỉ ghi khi đã có trong tài liệu dự án. Endpoint chưa có ghi `UNKNOWN`.
 
 ---

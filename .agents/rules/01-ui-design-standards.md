@@ -8,7 +8,8 @@ trigger: always_on
 
 # EduBranch-AI — UI/UX Design Standards & Anti-Clutter Rulebook
 
-> **Canonical Reference**: Synchronized 100% with [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](../../docs/design/GLOBAL-DESIGN-SYSTEM.md) and [`docs/05_FIGMA.md`](../../docs/05_FIGMA.md).
+> **Canonical Reference**: Synchronized with [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](../../docs/design/GLOBAL-DESIGN-SYSTEM.md) and [`docs/05_FIGMA.md`](../../docs/05_FIGMA.md).
+> **Visual language v2 (2026-11-12, PO decision in chat)** (typography and imagery aligned to the Eduva template later on 2026-11-12; canonical Figma reference: page `08 · EduBranch – Bản hoàn chỉnh`): The style rules in §1 (rules 3 and 5), §2, §3 (colors), §4, §5, §6 (colors/shapes) and §7 (language) were rewritten to adopt the layered navy/sky visual language of the licensed Eduva template (Figma page `03 · Eduva – Screens`, 14 original desktop screens) and the EduBranch design system derived from it. The previous flat gray/`#2563EB` rules are retired. **All product, pedagogy, accessibility and security rules are unchanged.**
 > **Scope**: All Frontend (`frontend/src/`) components, layouts, pages, ReactFlow graphs, and Figma/Stitch design specifications (`DES-001` → `DES-015`, `FE-001` → `FE-022`).
 > **Figma-First Master Template Mandate (Khuôn mẫu chuẩn từ Link Figma)**:
 > - Các task trong Sprint Backlog (`01_MASTER-TASKS.md` / `02_SPRINT-TASKS.md`) chỉ tập trung đặc tả các **tính năng nghiệp vụ chính**, còn các trang nền tảng/bao quanh như **Trang Giới thiệu (`/` — Landing Page)**, **Đăng nhập (`/login`)**, **Đăng ký (`/register`)**, **Khung điều hướng (`LecturerLayout`, `StudentLayout`, `PublicLayout`)**, **Quản lý Học phần (`/lecturer/courses` & Modals)**, **Thống kê (`/lecturer/statistics`)** và **Trang lỗi (`403` / `404`)** không có mã task riêng lẻ.
@@ -18,7 +19,7 @@ trigger: always_on
 
 ## 1. Core Aesthetic Mandate & 7 Strict Anti-"AI-Slop" Rules
 
-EduBranch-AI is a **university-level academic authoring and case-learning platform** (similar in visual rigor to Notion, Linear, Coursera Academic, or Harvard Business Publishing). It must feel **calm, intellectually rigorous, high-contrast, utilitarian, and content-first**.
+EduBranch-AI is a **university-level academic authoring and case-learning platform**. It must feel **calm, structured, data-rich and content-first**: a layered workspace (white shell, soft blue-gray canvas, white cards) with one navy brand color and one sky accent, where every color carries meaning.
 
 To eliminate the amateurish "AI-generated template" look, every screen and component MUST obey these **7 Non-Negotiable Prohibitions**:
 
@@ -29,102 +30,110 @@ To eliminate the amateurish "AI-generated template" look, every screen and compo
    - **Forbidden**: Using text characters like `->`, `&rarr;`, `←`, `↑`, `✕`, `&times;`, `✓`, or `•` as standalone UI buttons or icons.
    - **Required**: Use vector SVG icons (`ChevronRight`, `ArrowLeft`, `Upload`, `X`, `Check`, etc.) with proper `aria-label` or `aria-hidden="true"`.
 3. **ZERO Purple / Indigo / Rainbow "AI Colors" (STRICT BAN)**:
-   - **Forbidden**: Indigo/violet/purple (`#6366F1`, `purple-*`, `indigo-*`, `violet-*`), decorative gradients (`bg-gradient-to-*`), neon borders, or glowing shadows.
-   - **Required**: Strictly **Light Theme Only** with neutral gray surfaces and a single restrained academic blue accent (`#2563EB`) plus locked semantic status/mode badges (see §2).
+   - **Forbidden**: Indigo/violet/purple (`#6366F1`, `purple-*`, `indigo-*`, `violet-*`), rainbow palettes, neon borders, glowing shadows, blurred gradient blobs, gradient-filled text, and decorative gradients on cards or buttons.
+   - **Required**: Light theme only. Brand = navy `#2A4E7F` (actions, active states, primary data series) + sky `#00A5F5` (secondary data series, highlights — never text). Every other color is a locked semantic token (§2). The **only** gradient allowed is the brand panel gradient (§2.9) on the public/auth hero panel.
 4. **ZERO Preachy "Instructional Callout Spam" (STRICT BAN)**:
-   - **Forbidden**: Placing 2–4 colored alert boxes (`bg-blue-50`, `bg-amber-50`, `bg-purple-50`, `bg-emerald-50`) on a page to lecture the user on product rules (e.g., *"💡 Mục tiêu của giai đoạn REVIEW:..."*, *"🔒 Nguyên tắc sư phạm: AI hoàn toàn không chấm điểm..."*, *"* Chọn một phương án để tiến thẳng..."*).
-   - **Required**: Maximum **1** contextual alert banner per screen (used only for active errors, warnings, or status transitions). Routine helper guidance belongs in a single concise `12px` `text-muted` (`#9CA3AF`) or `text-secondary` (`#4B5563`) caption line.
-5. **ZERO "Box-Inside-Box-Inside-Box" Nesting (STRICT BAN)**:
-   - **Forbidden**: Wrapping a `bg-white border rounded-xl` card inside another `bg-gray-50 border rounded-lg` box inside another `bg-white border` box.
-   - **Required**: Maximum **1 card container layer** (`bg-surface` `#FFFFFF` with `1px solid #E5E7EB`) resting on the page canvas (`bg-canvas` `#F9FAFB`). Separate internal sections using whitespace (`24px`) and thin `1px` horizontal dividers (`border-gray-200`), or a flat `bg-surface-muted` (`#F3F4F6`) block without heavy borders.
+   - **Forbidden**: Placing 2–4 colored alert boxes on a page to lecture the user on product rules (e.g., *"💡 Mục tiêu của giai đoạn REVIEW:..."*, *"🔒 Nguyên tắc sư phạm: AI hoàn toàn không chấm điểm..."*, *"* Chọn một phương án để tiến thẳng..."*).
+   - **Required**: Maximum **1** contextual alert banner per screen (used only for active errors, warnings, or status transitions). Routine helper guidance belongs in a single concise `12px` `text-secondary` (`#696A70`) caption line.
+5. **ZERO Uncontrolled Nesting (STRICT BAN)**:
+   - **Forbidden**: A bordered card inside another bordered card; more than 3 surface levels; a colored tinted box inside a colored tinted box.
+   - **Required**: Fixed surface ladder (§4.3): **page shell** (`bg-page` white) → **canvas panel** (`bg-canvas` `#F3F6FC`, radius 18) → **card** (`bg-surface` white, radius 12, **no border, no shadow**) → at most **one inset block** (`bg-surface-muted` `#EEF2F9`, radius 8, no border). Inside a card, separate sections with whitespace (16–24px) or a 1px `border-default` divider.
 6. **ZERO Language Mixing on the Same Screen (STRICT BAN)**:
-   - **Forbidden**: Mixing English headings/buttons (`Create an account`, `My Courses`, `Node 1 Editor`) with verbose Vietnamese paragraphs or labels on the same portal or screen.
-   - **Required**: Maintain 100% consistent, concise academic terminology within each screen flow (see §7).
+   - **Forbidden**: Mixing English headings/buttons (`Create an account`, `My Courses`, `Node 1 Editor`) with Vietnamese labels on the same screen; leftover template copy (`Add Student`, `Total`, `$`, sample names) in any frame.
+   - **Required**: 100% Vietnamese UI chrome with consistent academic terminology (see §7). Fixed product terms `Branching Study`, `Review Study`, `Case Study`, `AI Draft`, `AI-assisted` stay as proper names.
 7. **ZERO Chatbot / Gamification Gimmicks (STRICT BAN)**:
-   - **Forbidden**: Chat bubble tails, robot/human avatars, typing-dot animations, progress rings, confetti, score badges, or "vs." debate framing.
-   - **Required**: AI is a background function marked only by a neutral gray pill tag (`AI Draft` or `AI-assisted`) when required.
+   - **Forbidden**: Chat bubble tails, robot/human avatars for AI, typing-dot animations, progress rings used as achievement meters, confetti, score badges, or "vs." debate framing. (Data donut/gauge charts on the lecturer Statistics screen are data visualisation, not gamification, and are allowed.)
+   - **Required**: AI is a background function marked only by a neutral gray tag (`AI Draft` or `AI-assisted`) when required.
 
 ---
 
 ## 2. Color System & Design Tokens (Locked Hex Values)
 
 > **Theme Mode**: **LIGHT MODE ONLY**. Dark mode (`dark:*`) is strictly forbidden.
-> **Rule**: Never invent arbitrary hex values or use unapproved Tailwind color scales (`purple`, `indigo`, `violet`, `cyan`, `lime`, `fuchsia`, `rose`). Use ONLY the tokens below.
+> **Rule**: Never invent arbitrary hex values. Use ONLY the tokens below (Figma: collections `EduBranch · Primitives` / `EduBranch · Color`). Every text/background pair below meets WCAG AA at its intended size.
 
 ### 2.1. Surfaces & Backgrounds
 
-| Token Name | Hex | Tailwind Class | Usage |
-|---|:---:|---|---|
-| `bg-canvas` | `#F9FAFB` | `bg-[#F9FAFB]` / `bg-gray-50` | Root page background behind all layouts |
-| `bg-surface` | `#FFFFFF` | `bg-white` | Primary cards, panels, modals, table body rows, sidebar |
-| `bg-surface-muted` | `#F3F4F6` | `bg-gray-100` | Table header rows, code/excerpt blocks, disabled inputs, subtle callout fill |
-| `bg-surface-hover` | `#F3F4F6` | `hover:bg-gray-100` | Hover background for interactive table rows and nav items |
+| Token Name | Hex | Usage |
+|---|:---:|---|
+| `bg-page` | `#FFFFFF` | Outer app shell behind the canvas panel; sidebar; top bar |
+| `bg-canvas` | `#F3F6FC` | Rounded content canvas panel (radius 18) that holds all cards; auth form side |
+| `bg-surface` | `#FFFFFF` | Cards, panels, modals, table body rows |
+| `bg-surface-muted` | `#EEF2F9` | The single allowed inset block inside a card, table header row, excerpt/code blocks, disabled inputs |
+| `bg-surface-hover` | `#E8EDF6` | Hover background for interactive rows, list items and nav items |
+| `bg-selected` | `#DFEDF9` | Selected row/list item, active nav item, selected filter segment |
 
 ### 2.2. Typography Colors
 
-| Token Name | Hex | Tailwind Class | Usage |
-|---|:---:|---|---|
-| `text-primary` | `#111827` | `text-gray-900` | Page titles, headings, primary case body text, active form values |
-| `text-secondary` | `#4B5563` | `text-gray-600` | Supporting descriptions, table cell text, inactive navigation items, form labels |
-| `text-muted` | `#9CA3AF` | `text-gray-400` | Input placeholders, timestamps, breadcrumbs separator, helper captions (`12px` only) |
-| `text-inverse` | `#FFFFFF` | `text-white` | Text inside filled primary or destructive buttons |
-| `text-link` | `#2563EB` | `text-blue-600 hover:underline` | Inline text links |
+| Token Name | Hex | Usage |
+|---|:---:|---|
+| `text-primary` | `#202124` | Page titles, headings, primary body text, active form values |
+| `text-secondary` | `#696A70` | Supporting descriptions, table cell text, form helper text, inactive nav items |
+| `text-muted` | `#909198` | **Placeholders, disabled text and decorative icons only** — never for information the user must read (fails AA for body text) |
+| `text-inverse` | `#FFFFFF` | Text on filled navy or destructive surfaces |
+| `text-link` | `#2A4E7F` | Inline text links (`hover:underline`) |
 
 ### 2.3. Borders & Dividers
 
-| Token Name | Hex | Tailwind Class | Usage |
-|---|:---:|---|---|
-| `border-default` | `#E5E7EB` | `border-gray-200` | Card borders, input borders, table dividers, sidebar/header borders |
-| `border-strong` | `#D1D5DB` | `border-gray-300` | Hover border on clickable cards/inputs, terminal node border |
-| `border-focus` | `#2563EB` | `border-blue-600 ring-blue-600/20` | Active focus ring (`2px`) and selected option/node border |
+| Token Name | Hex | Usage |
+|---|:---:|---|
+| `border-default` | `#E1E8F5` | Input borders, table row dividers, in-card section dividers. **Not used around cards.** |
+| `border-strong` | `#D1D9E8` | Hover border on inputs, outlined mode tags, secondary buttons |
+| `border-focus` | `#2A4E7F` | 2px focus ring (plus 3px `#00A5F5` at 30% halo) and selected option border |
 
-### 2.4. Primary Action Accent (`action-primary` — Single Brand Accent)
+### 2.4. Brand Actions (`action-*`)
 
-| Token Name | Hex | Tailwind Class | Usage |
-|---|:---:|---|---|
-| `action-primary` | `#2563EB` | `bg-blue-600` / `text-blue-600` | Primary CTA button (max 1 per screen/section), active tab indicator, active nav item |
-| `action-primary-hover` | `#1D4ED8` | `hover:bg-blue-700` | Hover state for primary buttons |
-| `action-primary-active` | `#1E40AF` | `active:bg-blue-800` | Pressed state for primary buttons |
-| `action-primary-disabled` | `#93C5FD` | `disabled:bg-blue-300` | Disabled primary button fill |
-| `action-primary-subtle` | `#EFF6FF` | `bg-blue-50` | Active sidebar navigation item background tint, informational banner fill |
+| Token Name | Hex | Usage |
+|---|:---:|---|
+| `action-primary` | `#2A4E7F` | Primary CTA (max 1 per view/section), active nav item, active tab indicator, links |
+| `action-primary-hover` | `#223F68` | Hover |
+| `action-primary-active` | `#1B3253` | Pressed |
+| `action-primary-disabled` | `#94A7C0` | Disabled primary fill |
+| `action-primary-subtle` | `#DFEDF9` | Active nav background, secondary-tinted button, info banner fill |
+| `action-accent` | `#00A5F5` | Data highlight only: chart series 2, selected calendar day, progress fill. **Never** text, never a filled button with white text (contrast 2.7:1) |
+| `action-danger` | `#D11F1F` | Destructive button fill (white text 5.3:1) |
 
 ### 2.5. Case Lifecycle Status Tokens (`DRAFT → REVIEWED → APPROVED → PUBLISHED`)
 
-Status badges MUST always pair the background, text, and `6px` status dot hex below. Never use `purple` for `APPROVED` or `amber` for `DRAFT`.
+Status badges are **filled pills with a 6px dot** and MUST always pair the background, text and dot below. One status = one color everywhere (never color the same status differently on different cards).
 
-| Status | Token Prefix | Badge BG | Badge Text | Dot / Icon Hex | Meaning |
-|---|---|:---:|:---:|:---:|---|
-| `DRAFT` | `status-draft` | `#F3F4F6` | `#4B5563` | `#9CA3AF` | Newly generated by AI or created; not yet edited by Lecturer |
-| `REVIEWED` | `status-reviewed` | `#EFF6FF` | `#1D4ED8` | `#2563EB` | Edited/inspected by Lecturer; awaiting formal sign-off |
-| `APPROVED` | `status-approved` | `#FFFBEB` | `#92400E` | `#D97706` | Approved by Lecturer; ready for publication (hidden from students) |
-| `PUBLISHED` | `status-published` | `#F0FDF4` | `#166534` | `#16A34A` | Live and accessible to Students via direct link |
+| Status | Badge BG | Badge Text | Dot | Meaning |
+|---|:---:|:---:|:---:|---|
+| `DRAFT` (Bản nháp) | `#EEF2F9` | `#696A70` | `#909198` | Newly generated by AI or created; not yet edited by Lecturer |
+| `REVIEWED` (Đã rà soát) | `#DFEDF9` | `#2A4E7F` | `#00A5F5` | Edited/inspected by Lecturer; awaiting formal sign-off |
+| `APPROVED` (Đã phê duyệt) | `#FFF1DE` | `#9A5700` | `#F58A00` | Approved by Lecturer; ready for publication (hidden from students) |
+| `PUBLISHED` (Đã xuất bản) | `#E1F7E9` | `#007A2D` | `#00B343` | Live and accessible to Students via direct link |
 
 ### 2.6. Learning Mode Tokens (`BRANCHING_STUDY` vs `REVIEW_STUDY`)
 
-Visually distinct from all status badges and `action-primary` so a Case Card can display both Mode and Status simultaneously without color collision:
+Learning modes use a **different shape** from status so both can sit on one card without collision: an **outlined rectangular tag** (radius 6, white fill, 1px border, 14px icon), never a filled pill.
 
-| Learning Mode | Token Prefix | Badge BG | Badge Text | Border (Optional) | Meaning |
-|---|---|:---:|:---:|:---:|---|
-| `BRANCHING_STUDY` | `mode-branching` | `#F0FDFA` | `#0F766E` | `#CCFBF1` | Interactive multi-branch decision tree scenario (Teal) |
-| `REVIEW_STUDY` | `mode-review` | `#FDF2F8` | `#BE185D` | `#FCE7F3` | Open case analysis & solution proposal without tree (Pink/Rose) |
+| Learning Mode | Border | Text + Icon | Icon | Meaning |
+|---|:---:|:---:|---|---|
+| `BRANCHING_STUDY` | `#D1D9E8` | `#2A4E7F` | `GitFork` | Interactive multi-branch decision tree scenario |
+| `REVIEW_STUDY` | `#B3E4FC` | `#00699E` | `FileCheck2` | Open case analysis & solution proposal without tree |
 
 ### 2.7. AI-Origin Marker (`ai-support`)
 
-Used **only** as a compact neutral pill (`AiOriginTag`) on `DRAFT` cases before lecturer edits or on AI Challenge Support counter-question cards:
-
-| Token Name | Hex | Tailwind Class | Usage |
-|---|:---:|---|---|
-| `ai-support-bg` | `#F3F4F6` | `bg-gray-100` | Neutral pill background (never colored, never glowing) |
-| `ai-support-text` | `#4B5563` | `text-gray-600` | Pill label text (`AI Draft` or `AI-assisted`) + outline icon stroke |
+| Token Name | Hex | Usage |
+|---|:---:|---|
+| `ai-support-bg` | `#EEF2F9` | Neutral tag background (never colored, never glowing) |
+| `ai-support-text` | `#696A70` | Tag label text (`AI Draft` or `AI-assisted`) + 14px outline icon (`Cpu` / `FileCode`) |
 
 ### 2.8. Semantic Feedback Colors
 
-| Token Name | Foreground Hex | Background Tint | Border Tint | Usage |
-|---|:---:|:---:|:---:|---|
-| `semantic-success` | `#16A34A` | `#F0FDF4` | `#BBF7D0` | Completed material ingestion, toast confirmation |
-| `semantic-warning` | `#D97706` | `#FFFBEB` | `#FDE68A` | Processing/pending state, unpublish warning |
-| `semantic-error` | `#DC2626` | `#FEF2F2` | `#FECACA` | Validation error, failed ingestion, destructive button (`bg-red-600`) |
-| `semantic-info` | `#2563EB` | `#EFF6FF` | `#BFDBFE` | Neutral system notice |
+| Token Name | Icon / Fill | Text on tint | Background Tint | Border Tint | Usage |
+|---|:---:|:---:|:---:|:---:|---|
+| `semantic-success` | `#00B343` | `#007A2D` | `#E1F7E9` | `#B3E8C7` | Completed ingestion, toast confirmation |
+| `semantic-warning` | `#F58A00` | `#9A5700` | `#FFF1DE` | `#FFD9A8` | Processing/pending, unpublish warning |
+| `semantic-error` | `#FF3535` | `#D11F1F` | `#FFE5E5` | `#FFBCBC` | Validation error, failed ingestion |
+| `semantic-info` | `#2A4E7F` | `#2A4E7F` | `#DFEDF9` | `#D1D9E8` | Neutral system notice |
+
+### 2.9. Data Visualisation & Brand Gradient
+
+- **Chart series** (max 3 per chart): series-1 `#2A4E7F` (the focal series), series-2 `#00A5F5`, series-3 `#D1D6E0` (baseline / "others"). Heatmap ramp: `#EEF2F9` → `#B3E4FC` → `#00A5F5` → `#2A4E7F`. Every chart has a legend or direct labels and real axis units.
+- Charts never color branches or outcomes as good/bad (no green-vs-red decision paths).
+- **Brand panel gradient** (only allowed gradient): linear 135°, `#2A4E7F` → `#00A5F5`, used solely for the left panel of `/login`, `/register` and the public landing hero.
 
 ---
 
@@ -139,19 +148,20 @@ Used **only** as a compact neutral pill (`AiOriginTag`) on `DRAFT` cases before 
   - `strokeWidth={1.75}` (or `1.5` for `24px` empty-state icons)
   - `strokeLinecap="round"`
   - `strokeLinejoin="round"`
-- **Color Inheritance**: Icons must always use `stroke="currentColor"` and inherit the parent text token (`text-secondary` `#4B5563` or `text-muted` `#9CA3AF` at rest; `text-primary` `#111827` or `action-primary` `#2563EB` on active/hover). Never render multi-color, filled-cartoon, or 3D icons.
+- **Color Inheritance**: Icons must always use `stroke="currentColor"` and inherit the parent text token (`text-secondary` `#696A70` at rest; `text-primary` `#202124` or `action-primary` `#2A4E7F` on active/hover). Never render multi-color, filled-cartoon, or 3D icons.
+- **Icon tiles**: A 32px or 40px square tile (radius 8) behind an icon is allowed for metric cards, list leading items, empty/error states and the upload dropzone. Default tile = `#DFEDF9` with a `#2A4E7F` icon. A semantic tint (success/warning/error) is allowed **only** when the tile itself communicates that state. Rainbow tiles (different tints on sibling cards for decoration) are forbidden.
 - **Accessibility**:
   - Decorative icons next to text labels MUST have `aria-hidden="true"`.
-  - Icon-only buttons (e.g., Modal Close, Delete row action) MUST have an explicit `aria-label="..."` and a minimum hit target of `32px × 32px` (`p-1.5 rounded-md`).
+  - Icon-only buttons (e.g., Modal Close, Delete row action) MUST have an explicit `aria-label="..."` and a minimum hit target of `32px × 32px`.
 
 ### 3.2. Icon Size Scale
 
-| Size Token | Dimensions | Tailwind Class | Usage Context |
-|---|:---:|---|---|
-| `icon-xs` | `14px × 14px` | `h-3.5 w-3.5 shrink-0` | Inside compact badges (`AiOriginTag`, status indicators, metadata tags) |
-| `icon-sm` | `16px × 16px` | `h-4 w-4 shrink-0` | Inside buttons (`gap-2`), sidebar nav items (`gap-2.5`), breadcrumbs, table row actions |
-| `icon-md` | `20px × 20px` | `h-5 w-5 shrink-0` | Modal close button, alert/toast leading icon, card header icon |
-| `icon-lg` | `24px × 24px` | `h-6 w-6 shrink-0` | Inside a `40px × 40px` (`h-10 w-10 rounded-lg bg-gray-100 text-gray-500`) container for `EmptyState`, `ErrorState`, and file upload dropzone |
+| Size Token | Dimensions | Usage Context |
+|---|:---:|---|
+| `icon-xs` | `14px` | Inside badges, mode tags, AI tags, metadata rows |
+| `icon-sm` | `16px` | Inside buttons, table row actions, breadcrumbs |
+| `icon-md` | `20px` | Sidebar nav items, modal close button, alert/toast leading icon, icon tiles (32px) |
+| `icon-lg` | `24px` | Icon tiles (40px) for EmptyState, ErrorState and upload dropzone |
 
 ### 3.3. Canonical Domain Icon Mapping
 
@@ -159,21 +169,21 @@ Every feature must use these consistent vector icon metaphors (never emojis):
 
 | UI Element / Concept | Required Vector Icon Metaphor (Lucide / SVG Equivalent) | Forbidden Replacement |
 |---|---|---|
-| Brand Header Wordmark | **Text-only** `EduBranch AI` (or minimal geometric branch node SVG `GitFork` `18px` in `#2563EB`) | 🚫 `🌿` leaf emoji |
-| Sidebar: Courses | `BookOpen` (`16px`) | 🚫 `📚` |
-| Sidebar: Teaching Materials | `FileText` or `Files` (`16px`) | 🚫 `📋` / `📄` |
-| Sidebar: Case Studies | `GitBranch` (`16px`) | 🚫 `🎯` |
-| Sidebar: Statistics | `BarChart2` (`16px`) | 🚫 `📊` |
-| Sidebar: Sign Out / Logout | `LogOut` (`16px`) | 🚫 Door emoji |
-| Upload Dropzone | `UploadCloud` (`24px` inside `40px` `bg-gray-100` square) | 🚫 `↑` text character |
-| Empty State | `Inbox` or `FolderOpen` (`24px` inside `40px` `bg-gray-100` square) | 🚫 `📭` mailbox emoji |
-| Error / Validation Alert | `AlertCircle` (`20px` in `#DC2626`) | 🚫 `❌` / `⚠️` |
-| Warning Banner | `AlertTriangle` (`20px` in `#D97706`) | 🚫 `⚡` |
-| Completed / Success | `CheckCircle2` or `Check` (`16px` in `#16A34A`) | 🚫 `✅` / `✓` text |
-| AI-Origin Tag (`AiOriginTag`) | `FileCode` or `Cpu` (`14px` neutral `#4B5563`) | 🚫 `✦` / `✨` / `🤖` |
-| AI Challenge Support Card | `HelpCircle` or `MessageSquare` (`16px` neutral `#4B5563`) | 🚫 `🤖` robot face |
-| Lecturer Feedback Block | `UserCheck` or `MessageSquareText` (`16px` `#4B5563`) | 🚫 `👨‍🏫` teacher emoji |
-| Terminal Outcome Node | `Flag` (`14px` `#4B5563`) | 🚫 `🏁` checkered flag emoji |
+| Brand Header Wordmark | `EduBranch AI` wordmark with the official logo mark (Figma component `EB/Logo Mark`, source page 03 "Icon K3"; 32px in app shells, 36px on auth panels; never recolour or redraw) | 🚫 `🌿` leaf emoji |
+| Sidebar: Courses | `BookOpen` (`20px`) | 🚫 `📚` |
+| Sidebar: Teaching Materials | `FileText` or `Files` | 🚫 `📋` / `📄` |
+| Sidebar: Case Studies | `GitBranch` | 🚫 `🎯` |
+| Sidebar: Statistics | `BarChart2` | 🚫 `📊` |
+| Sidebar: Sign Out / Logout | `LogOut` | 🚫 Door emoji |
+| Upload Dropzone | `UploadCloud` (`24px` inside `40px` icon tile) | 🚫 `↑` text character |
+| Empty State | `Inbox` or `FolderOpen` (`24px` inside `40px` icon tile) | 🚫 `📭` mailbox emoji |
+| Error / Validation Alert | `AlertCircle` (`20px` in `#FF3535`) | 🚫 `❌` / `⚠️` |
+| Warning Banner | `AlertTriangle` (`20px` in `#F58A00`) | 🚫 `⚡` |
+| Completed / Success | `CheckCircle2` or `Check` (`16px` in `#00B343`) | 🚫 `✅` / `✓` text |
+| AI-Origin Tag (`AiOriginTag`) | `FileCode` or `Cpu` (`14px` `#696A70`) | 🚫 `✦` / `✨` / `🤖` |
+| AI Challenge Support Card | `HelpCircle` or `MessageSquare` (`16px` `#696A70`) | 🚫 `🤖` robot face |
+| Lecturer Feedback Block | `UserCheck` or `MessageSquareText` (`16px` `#696A70`) | 🚫 `👨‍🏫` teacher emoji |
+| Terminal Outcome Node | `Flag` (`14px` `#696A70`) | 🚫 `🏁` checkered flag emoji |
 | Navigation / Breadcrumb | `ChevronRight` (`14px`), `ArrowLeft` (`16px`), `ArrowRight` (`16px`) | 🚫 `->`, `&rarr;`, `←` |
 | Modal Close | `X` (`20px` stroke) | 🚫 `✕` / `&times;` |
 
@@ -182,75 +192,76 @@ Every feature must use these consistent vector icon metaphors (never emojis):
 ## 4. Typography, Spacing, Radius & Elevation
 
 ### 4.1. Font Stack & Type Hierarchy
-Use the native system sans-serif stack for crisp, fast academic reading:
 ```css
-font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 ```
+Headings use **Regular (400)** exactly as in the Eduva template; hierarchy comes from size and the surface layout. Figma text styles: `Eduva/*` (page `02 · Eduva – Design System`).
+Public landing page only (`/`, including its How it works and FAQ sections): headings use **Be Vietnam Pro SemiBold** via `EduBranch/Public *` text styles; body text stays Roboto. Never use Be Vietnam Pro on app screens.
 
-| Token | Size / Line-Height | Weight | Tailwind Equivalent | Usage |
-|---|:---:|:---:|---|---|
-| `text-display` | `24px / 32px` | `600` (Semibold) | `text-2xl font-semibold tracking-tight text-gray-900` | Page title in `PageHeader` |
-| `text-h1` | `20px / 28px` | `600` (Semibold) | `text-xl font-semibold text-gray-900` | Major section title, case title in player |
-| `text-h2` | `16px / 24px` | `600` (Semibold) | `text-base font-semibold text-gray-900` | Card title, modal title, side-panel title |
-| `text-h3` | `14px / 20px` | `600` (Semibold) | `text-sm font-semibold text-gray-900` | Subsection header, form group title |
-| `text-body` | `14px / 22px` | `400` (Regular) | `text-sm leading-relaxed text-gray-900` | Standard body copy, situation text, table cells |
-| `text-body-strong` | `14px / 20px` | `500` (Medium) | `text-sm font-medium text-gray-700` | Form field labels, button labels, active nav links |
-| `text-caption` | `12px / 16px` | `400` / `500` | `text-xs text-gray-500` | Timestamps, helper captions, badge text, table headers (`uppercase tracking-wider`) |
-| `text-mono` | `12px / 18px` | `400` | `font-mono text-xs text-gray-600` | Course codes (`BUS301`), file extensions (`PDF`), chunk counts |
+| Token | Size / Line-Height | Weight | Usage |
+|---|:---:|:---:|---|
+| `text-display` | `40px / 48px` | `500` | Public pages: hero and section headings (Eduva landing) |
+| `text-metric` | `28px / 36px` | `500` | `Eduva/Display`: metric values, profile names |
+| `text-h1` | `22px / 28px` | `400` | `Eduva/H1`: app page title in the header |
+| `text-h2` | `20px / 28px` | `400` | `Eduva/H2`: large panel titles |
+| `text-h3` | `16px / 24px` | `400` | `Eduva/H3`: card titles, list item titles, modal titles |
+| `text-body` | `14px / 20px` | `400` | `Eduva/Body`: body copy, table cells, form values |
+| `text-body-strong` | `14px / 20px` | `500` | `Eduva/Body Strong`: field labels, button labels, active nav |
+| `text-prose` | `15px / 22px` | `400` | `Eduva/Body Prose`: long-form reading (situation, context, problem, consequence, feedback) |
+| `text-caption` | `12px / 16px` | `400` / `500` | `Eduva/Caption`, `Eduva/Caption Strong`: timestamps, helper text, badges, table headers |
+| `text-overline` | `11px / 16px` | `500`, uppercase | `Eduva/Overline`: 1–3 word category labels only |
+| `text-mono` | `13px / 20px` | `400`, Roboto Mono | `Eduva/Mono`: course codes, file extensions, counts |
 
-- **Reading Measure Rule**: Long-form academic reading (case `situation`, `context_text`, `problem_text`, `consequence`, `lecturer_feedback`) MUST be constrained to `65–75ch` (`max-w-prose` or `max-w-3xl`) with `leading-relaxed` (`1.625`) line height.
-- **No All-Caps Sentences**: Use `uppercase tracking-wider text-xs` ONLY for short 1–3 word category labels or table column headers — never for full sentences or instructions.
+- **Minimum size**: nothing the user must read is smaller than `12px`.
+- **Reading Measure Rule**: Long-form academic reading (case `situation`, `context_text`, `problem_text`, `consequence`, `lecturer_feedback`) MUST be constrained to `65–75ch` with `text-prose`.
+- **Imagery**: course/case covers, avatars, product mockups and illustrations from the Eduva template are part of the visual language. Never replace them with text-only blocks. A status pill may sit on the top-left of a cover, as in the template.
+- **No All-Caps Sentences**: `text-overline` ONLY for short 1–3 word category labels — never for full sentences or instructions.
 
-### 4.2. Spacing Scale (Strict 4px/8px Grid)
-- Allowed spacing values: `4px` (`1`), `8px` (`2`), `12px` (`3`), `16px` (`4`), `20px` (`5`), `24px` (`6`), `32px` (`8`), `48px` (`12`).
-- **Page container padding**: `px-6 py-8` desktop (`px-4 py-6` mobile).
-- **Card internal padding**: `p-6` (`24px`) desktop, `p-4` (`16px`) compact/mobile.
-- **Vertical gap between page sections**: `space-y-6` (`24px`).
-- **Vertical gap between form fields**: `space-y-4` (`16px`).
-- **Gap between label and input**: `mb-1.5` (`6px`).
+### 4.2. Spacing Scale (Strict 4px Grid)
+- Allowed spacing values: `4`, `8`, `12`, `16`, `20`, `24`, `32`, `48`, `64` px.
+- **Canvas panel padding**: `24px`. **Gap between cards**: `16px` (dense dashboards) or `20px`.
+- **Card internal padding**: `20px` (dense) or `24px` (forms, reading).
+- **Vertical gap between form fields**: `16px`. **Label → input**: `6px`.
 
-### 4.3. Border Radius & Elevation
+### 4.3. Surface Ladder, Border Radius & Elevation
+- **Surface ladder (max 3 levels below the shell)**: `bg-page` → `bg-canvas` panel → `bg-surface` card → one `bg-surface-muted` inset block. See §1 rule 5.
 - **Border Radius**:
-  - `radius-sm` (`6px` / `rounded-md`): Inputs, selects, textareas, buttons, icon buttons, rectangular tags (`courseCode`).
-  - `radius-lg` (`8px` / `rounded-lg`): Standard Cards, Alert banners, Table containers, ReactFlow nodes.
-  - `radius-xl` (`12px` / `rounded-xl`): Modals and Dialogs only.
-  - `radius-full` (`9999px` / `rounded-full`): **Strictly reserved for Status Badges and Learning Mode Badges**. Buttons must NEVER be pill-shaped (`rounded-full`).
-- **Elevation (Flat-First Principle)**:
-  - **Cards at rest**: `elevation-0` — `bg-white border border-gray-200` with **no shadow** (or `shadow-none`). Borders do the structural separation work.
-  - **Interactive Clickable Cards on hover**: `hover:border-gray-300 hover:shadow-xs transition-all`.
-  - **Modals / Dialogs**: `shadow-lg border border-gray-200` over `bg-gray-900/40` backdrop (no heavy blur effects).
+  - `radius-sm` (`6px`): Inputs, selects, textareas, buttons, icon buttons, mode tags, course-code tags.
+  - `radius-md` (`8px`): Inset blocks, icon tiles, thumbnails, table containers, segmented filters, toasts.
+  - `radius-lg` (`12px`): Cards.
+  - `radius-xl` (`18px`): Canvas panel, modals, auth brand panel.
+  - `radius-full` (`9999px`): **Only** status badges, AI tag, avatars and count chips. Buttons and mode tags are never pill-shaped.
+- **Elevation (Flat-First)**:
+  - Cards at rest: **no border, no shadow** — the `#F3F6FC` canvas does the separation work.
+  - Clickable cards on hover: background stays white, `0 2px 8px rgba(32,33,36,0.06)`.
+  - Popovers/dropdowns: `0 4px 16px rgba(32,33,36,0.08)`.
+  - Modals/dialogs: `0 12px 32px rgba(32,33,36,0.16)` over a `rgba(32,33,36,0.40)` scrim that covers the **full** viewport (no blur).
 
 ---
 
 ## 5. App Shell & Layout Architecture by User Role
 
 ### 5.1. Lecturer Portal Shell (`LecturerLayout.tsx`)
-- **Structure**: Persistent 2-column desktop layout (`min-h-screen bg-[#F9FAFB] flex`):
-  - **Left Sidebar (`w-60` / `240px` fixed on desktop, `bg-white border-r border-gray-200 flex flex-col`)**:
-    - **Top Brand Header (`h-14 px-5 border-b border-gray-200 flex items-center justify-between`)**: Clean wordmark `EduBranch AI` (`text-base font-semibold text-gray-900`) + subtle `Lecturer` badge (`bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded`).
-    - **Primary Navigation (`p-3 space-y-1 flex-1`)**:
-      - `Courses` (`/lecturer/courses`) with `BookOpen` (`16px`) icon.
-      - `Statistics` (`/lecturer/statistics`) with `BarChart2` (`16px`) icon.
-      - **Contextual Course Sub-Navigation** (rendered when URL matches `/lecturer/courses/:courseId/*` or `/lecturer/cases/:caseId/*`): indented section showing `Materials`, `Case Studies`, `Case Review`, `Feedback` with `16px` outline icons.
-      - Active nav item style: `bg-blue-50 text-blue-600 font-medium` with `aria-current="page"`. Inactive: `text-gray-600 hover:bg-gray-100 hover:text-gray-900`.
-    - **Bottom User Footer (`p-4 border-t border-gray-200`)**: Displays lecturer full name (`text-sm font-medium text-gray-900 truncate`), role caption, and `Sign out` button with `LogOut` (`16px`) icon.
-  - **Main Content Area (`flex-1 min-w-0`)**:
-    - Standard pages: `max-w-6xl mx-auto px-6 py-8`.
-    - Full-viewport workspace (`CaseReviewPage`): `h-[calc(100vh)] flex flex-col overflow-hidden` with top lifecycle action bar (`h-14`) + split pane (`65%` ReactFlow canvas / `35%` `w-96` right node-editor panel).
+- **Structure**: `bg-page` white shell, `1440px` design width:
+  - **Left Sidebar (`240px`, `bg-page`, no border)**: brand wordmark + role caption (`Không gian giảng viên`), primary navigation (`Khóa học`, `Case Study`, `Phản hồi sinh viên`, `Thống kê học tập`), user footer (name, email, `Đăng xuất`).
+    - Active nav item: `bg-selected` `#DFEDF9` fill, `#2A4E7F` text + icon, radius 8, `aria-current="page"`. Inactive: `text-secondary`, hover `bg-surface-hover`.
+  - **Canvas Panel (`flex-1`, `bg-canvas`, radius 18, margin 12px, padding 24px)**: top bar (page title `text-h1`, optional breadcrumb, search, notifications, user chip) followed by the page's cards.
+  - Footer line inside the canvas: copyright + policy links in `text-caption` `text-secondary`. No social-link placeholders.
+- **Full-viewport workspace** (`CaseReviewPage`): same shell; the canvas holds the lifecycle action bar + split editor.
 
 ### 5.2. Student Portal Shell (`StudentLayout.tsx`)
-- **Pedagogical Context**: Students access specific published cases via direct links (no course-browsing sidebar).
-- **Structure**: Focused single-column academic workspace (`min-h-screen bg-[#F9FAFB] flex flex-col`):
-  - **Top Header (`h-14 bg-white border-b border-gray-200 px-6 flex items-center justify-between`)**:
-    - Left: Wordmark `EduBranch AI` (`text-sm font-semibold text-gray-900`) + vertical divider (`h-4 w-px bg-gray-200`) + `LearningModeBadge` (`Branching Study` or `Review Study`).
-    - Right: Student name (`text-sm text-gray-600`) + `Sign out` button (`LogOut` `16px` icon).
-  - **Main Reading & Writing Container**: `max-w-3xl w-full mx-auto px-6 py-8 flex-1` — keeps the student's eyes focused on a comfortable `65–75ch` reading column without peripheral clutter.
+- **Pedagogical Context (unchanged)**: Students access specific published cases via direct links. Any course-browsing navigation (`Bàn học`, `Khóa học của tôi`, `Tham gia lớp học`) depends on **OPD-001** and stays HOLD until the PO closes it.
+- **Structure**: same visual shell as §5.1 (sidebar + canvas panel) so both roles share one system. Reading and writing areas inside the canvas are constrained to the `65–75ch` measure (§4.1); case context sits in a left column card, the working area in the main column.
 
 ### 5.3. Public Auth Shell (`PublicLayout.tsx`, `LoginPage.tsx`, `RegisterPage.tsx`)
-- Centered single-column layout (`min-h-screen bg-[#F9FAFB] flex flex-col justify-center py-12 px-4`).
-- Clean wordmark `EduBranch AI` + 1-line subtitle (`University Case-Based Learning Platform`) above a single `max-w-md w-full mx-auto bg-white border border-gray-200 rounded-lg p-8` card.
-- **Note**: Ensure `LoginPage` and `RegisterPage` do not duplicate the outer `min-h-screen` header if rendered inside `PublicLayout` (render header once cleanly).
-- Local dev quick-access controls (when `import.meta.env.DEV` is true) must use neutral `bg-gray-50 border-gray-200 text-gray-700 hover:bg-gray-100` styling with SVG icons — never purple/emoji buttons.
+- Full-bleed **50/50 split screen**: left = brand panel (§2.9 gradient, radius 18, wordmark, one-line value proposition, one product preview); right = form column (`max-w-[400px]`, centered) on `bg-page`.
+- Product previews in the brand panel must show real EduBranch screens — never template mockups with foreign data.
+- Local dev quick-access controls (when `import.meta.env.DEV` is true) use secondary button styling with SVG icons — never purple/emoji buttons.
+
+### 5.4. Public Marketing Pages (`/`, `Cách hoạt động`, `FAQ`)
+- Top navigation bar (`72px`, white) + content container `1200px`; headline/FAQ reading column `768px`.
+- One idea per section, `96px` vertical section rhythm, section title `text-display` + one lead sentence. No eyebrow pill on every section, no blurred blobs, no gradient text.
+- Process sections show the **actual product state** at each step (files, statuses, a case node), not decorative icons.
 
 ---
 
@@ -259,73 +270,76 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
 ### 6.1. Core Shared Primitives (`src/components/ui/index.tsx`)
 1. **`Button`**:
    - Variants:
-     - `primary`: `bg-[#2563EB] text-white hover:bg-[#1D4ED8] active:bg-[#1E40AF] disabled:bg-[#93C5FD]`
-     - `secondary`: `bg-white text-[#111827] border border-[#E5E7EB] hover:bg-[#F3F4F6]`
-     - `danger`: `bg-[#DC2626] text-white hover:bg-red-700`
-     - `ghost`: `bg-transparent text-[#4B5563] hover:bg-[#F3F4F6] hover:text-[#111827]`
-   - Sizes: `sm` (`h-8 px-3 text-xs`), `md` (`h-10 px-4 text-sm`), `lg` (`h-11 px-5 text-sm`). Always `rounded-md font-medium`.
-   - **Rule**: Maximum **one** `primary` button visible per view/modal to establish an unmistakable primary action.
+     - `primary`: `bg-[#2A4E7F] text-white hover:bg-[#223F68] active:bg-[#1B3253] disabled:bg-[#94A7C0]`
+     - `secondary`: `bg-white text-[#202124] border border-[#D1D9E8] hover:bg-[#E8EDF6]`
+     - `tonal`: `bg-[#DFEDF9] text-[#2A4E7F] hover:bg-[#D1E4F5]` — repeated row actions and secondary emphasis
+     - `danger`: `bg-[#D11F1F] text-white hover:bg-[#B01818]`
+     - `ghost`: `bg-transparent text-[#696A70] hover:bg-[#E8EDF6] hover:text-[#202124]`
+   - Sizes: `sm` (`h-8 px-3 text-xs`), `md` (`h-10 px-4 text-sm`), `lg` (`h-11 px-5 text-sm`). Always `rounded-md` (6px) `font-medium`.
+   - **Rule**: Maximum **one** `primary` button visible per view/modal. Repeated row/card actions use `tonal` or `secondary` `sm`.
 2. **`Input`, `Select`, `Textarea`**:
-   - Associated `<label htmlFor={id}>` (`text-sm font-medium text-gray-700 mb-1.5 block`) is mandatory — never rely on `placeholder` alone.
-   - Input/Select height: `h-10` (`40px`), `px-3 py-2 text-sm bg-white border border-gray-200 rounded-md`.
-   - Focus state: `focus:outline-none focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/20`.
-   - Academic writing `Textarea` (Student Reasoning, Proposed Solution, Reflection, Lecturer Feedback): minimum `rows={4}` (`min-h-[120px]`), `leading-relaxed`, vertical resize enabled.
+   - Associated `<label htmlFor={id}>` (`text-sm font-medium text-[#202124] mb-1.5 block`) is mandatory — never rely on `placeholder` alone.
+   - Input/Select height: `h-10` (`40px`), `px-3 text-sm bg-white border border-[#E1E8F5] rounded-md`.
+   - Focus state: `focus:outline-none focus:border-[#2A4E7F] focus:ring-[3px] focus:ring-[#00A5F5]/30`.
+   - Academic writing `Textarea` (Student Reasoning, Proposed Solution, Reflection, Lecturer Feedback): minimum `rows={4}` (`min-h-[120px]`), `text-prose`, vertical resize enabled.
 3. **`CaseStatusBadge` & `LearningModeBadge`**:
-   - `CaseStatusBadge`: Pill (`rounded-full px-2.5 py-0.5 text-xs font-medium inline-flex items-center gap-1.5`) with a `6px` (`h-1.5 w-1.5 rounded-full`) colored dot and text label (`Draft`, `Reviewed`, `Approved`, `Published`) using exact §2.5 tokens.
-   - `LearningModeBadge`: Pill (`rounded-full px-2.5 py-0.5 text-xs font-medium`) using exact §2.6 tokens (`Branching Study` in Teal, `Review Study` in Pink).
+   - `CaseStatusBadge`: filled pill (`rounded-full px-2.5 py-0.5 text-xs font-medium inline-flex items-center gap-1.5`) with **one** `6px` dot and a Vietnamese label, exact §2.5 tokens. Never render two dots.
+   - `LearningModeBadge`: outlined tag (`rounded-md border px-2 py-0.5 text-xs font-medium inline-flex items-center gap-1` + 14px icon), exact §2.6 tokens.
 4. **`AiOriginTag`**:
-   - Neutral gray pill (`bg-gray-100 text-gray-600 rounded-full px-2 py-0.5 text-xs font-medium inline-flex items-center gap-1`) with a `14px` outline SVG icon + `AI Draft` or `AI-assisted`. Shown on `DRAFT` cases only; hidden once status advances to `REVIEWED`/`APPROVED`/`PUBLISHED`.
+   - Neutral pill (`bg-[#EEF2F9] text-[#696A70] rounded-full px-2 py-0.5 text-xs font-medium inline-flex items-center gap-1`) with a `14px` outline SVG icon + `AI Draft` or `AI-assisted`. Shown on `DRAFT` cases only; hidden once status advances to `REVIEWED`/`APPROVED`/`PUBLISHED`.
 5. **`Skeleton`, `EmptyState`, `ErrorState`**:
-   - Loading tables/cards must use `Skeleton` (`animate-pulse bg-gray-100 rounded-md`) matching the layout shape rather than a bare text string `"Loading..."`.
-   - `EmptyState` and `ErrorState` must use a `24px` outline SVG inside a `40px` `rounded-lg bg-gray-100` (or `bg-red-50` for error) container + concise title + 1-sentence description + optional action button.
+   - Loading tables/cards must use `Skeleton` (`animate-pulse bg-[#EEF2F9] rounded-md`) matching the layout shape rather than a bare text string `"Loading..."`.
+   - `EmptyState` and `ErrorState` use a `24px` outline SVG inside a `40px` icon tile (`#DFEDF9`, or `#FFE5E5` for error) + concise title + 1-sentence description + optional action button.
+6. **`MetricCard`**: label (`text-body` `text-secondary`) top-left, value (`text-metric`) below, optional 32px default icon tile top-right, optional delta/caption line in `text-caption`. All metric cards on one screen use the same tile color.
 
 ### 6.2. Product-Specific Domain Widgets
 1. **Publish / Review Status Stepper (`CaseReviewPage`)**:
-   - Horizontal 4-step indicator (`1. Draft` → `2. Reviewed` → `3. Approved` → `4. Published`) in the Case Review top bar.
+   - Horizontal 4-step indicator (`1. Bản nháp` → `2. Đã rà soát` → `3. Đã phê duyệt` → `4. Đã xuất bản`) in the Case Review action bar. Completed steps: `#2A4E7F` filled circle with `Check`, navy connector; current step: navy outline + bold label; future: `text-secondary`, `#E1E8F5` connector.
    - Shows current lifecycle stage and enables only valid state-machine transitions (`Save Edits`, `Mark as Reviewed`, `Approve Case`, `Publish Case` behind confirmation modal).
 2. **ReactFlow Decision Tree Canvas & Nodes (`CaseReviewPage` — Lecturer Only)**:
-   - **Canvas Background**: `#F9FAFB` with subtle dot/grid pattern (`#E5E7EB`).
-   - **Edges**: Smoothstep directed edges in neutral slate `#9CA3AF` (`strokeWidth: 1.75`), turning `#2563EB` when selected. Edge label in `11px` `#4B5563` on `#FFFFFF` pill background. **Never use `#6366f1` indigo edges.**
-   - **Decision Node Card**: `w-64 bg-white border border-gray-200 rounded-lg p-3.5 text-left shadow-xs`.
-     - Selected state: `border-[#2563EB] ring-2 ring-[#2563EB]/20`.
-     - Root node badge: `Start` (`bg-blue-50 text-blue-700 text-[11px] font-medium px-2 py-0.5 rounded`).
-     - Terminal node badge: `Outcome` (`bg-gray-100 text-gray-700 text-[11px] font-medium px-2 py-0.5 rounded` with `12px` `Flag` SVG icon).
-     - **Strict Guardrail**: Never color-code nodes green vs. red/rose (`border-emerald-500` / `border-rose-400`) — there is no "right" or "wrong" branch in EduBranch-AI.
+   - **Canvas Background**: `#F3F6FC` with subtle dot pattern (`#D1D9E8`).
+   - **Edges**: Smoothstep directed edges in `#94A7C0` (`strokeWidth: 1.75`), turning `#2A4E7F` when selected. Edge label in `11px` `#696A70` on a white pill. **Never use indigo edges.**
+   - **Decision Node Card**: `w-64 bg-white rounded-lg p-3.5 text-left border border-[#E1E8F5]` (nodes are the one place a card keeps a border, because they sit on a dotted canvas).
+     - Selected state: `border-[#2A4E7F] ring-[3px] ring-[#00A5F5]/30`.
+     - Root node badge: `Bắt đầu` (`bg-[#DFEDF9] text-[#2A4E7F] text-[11px] font-medium px-2 py-0.5 rounded`).
+     - Terminal node badge: `Kết cục` (`bg-[#EEF2F9] text-[#696A70] text-[11px] font-medium px-2 py-0.5 rounded` with `12px` `Flag` SVG icon).
+     - **Strict Guardrail**: Never color-code nodes green vs. red — there is no "right" or "wrong" branch in EduBranch-AI.
 3. **Branching Case Player — Experience Phase (`BranchingCasePlayerPage`)**:
-   - Header bar: Case title, `Attempt #N` tag, and current step counter (`Decision Point N` — never a percentage bar since path depth is dynamic).
-   - Situation Card: Clean `bg-white border border-gray-200 rounded-lg p-6` with readable `15px`/`16px` (`text-base leading-relaxed text-gray-900`) prose.Optional `contextData` rendered in a subtle `bg-gray-50 border-l-2 border-gray-300 pl-4 py-2 text-sm text-gray-600` block.
-   - Option Selector: Vertical stack of full-width option buttons (`bg-white border border-gray-200 rounded-lg p-4 text-left hover:border-[#2563EB] hover:bg-blue-50/30 transition-colors flex items-start gap-3`). Option index badge (`A`, `B`, `C` or `1`, `2`, `3`) in a `24px` `rounded-md bg-gray-100 text-gray-700 font-medium text-xs` square.
+   - Header bar: Case title, `Lượt làm #N` tag, and current step counter (`Điểm quyết định N` — never a percentage bar since path depth is dynamic).
+   - Situation Card: white card with readable `text-prose`. Optional `contextData` rendered in the single inset block (`bg-[#EEF2F9] rounded-md px-4 py-3 text-sm text-[#696A70]`).
+   - Option Selector: Vertical stack of full-width option buttons (`bg-white border border-[#E1E8F5] rounded-md p-4 text-left hover:border-[#2A4E7F] hover:bg-[#F3F6FC] flex items-start gap-3`). Option index badge (`A`, `B`, `C`) in a `24px` `rounded-md bg-[#EEF2F9] text-[#202124] font-medium text-xs` square.
    - **Immediate Transition**: Clicking an option immediately advances to the next node. **Zero consequence cards, zero reasoning textareas, and zero instructional banners mid-flow.**
 4. **Branching REVIEW Phase Timeline (`BranchingReviewPage`)**:
-   - Vertical chronological timeline (`border-l-2 border-gray-200 ml-3 pl-6 space-y-6`).
-   - Each step card (`bg-white border border-gray-200 rounded-lg p-6`) displays in clear order:
-     1. **Step Header**: `Decision Point #N` badge (without exposing internal `nodeId` to students).
+   - Vertical chronological timeline (`border-l-2 border-[#E1E8F5] ml-3 pl-6 space-y-6`).
+   - Each step card (white card, radius 12, `p-6`) displays in clear order:
+     1. **Step Header**: `Điểm quyết định #N` badge (without exposing internal `nodeId` to students).
      2. **Situation Summary**: Compact text of the dilemma faced.
-     3. **Chosen Option vs. Alternatives**: Chosen option highlighted with a clean `#2563EB` or `#0F766E` left border (`bg-gray-50 border-l-2 border-[#2563EB] px-3.5 py-2.5`); unselected options listed below in muted `text-gray-500 text-xs` (never `line-through` which implies an error).
-     4. **Consequence Reveal**: `bg-[#F0FDFA]/60 border-l-2 border-[#0F766E] px-4 py-3 rounded-r-md` with label `Consequence` (`text-xs font-semibold text-[#0F766E] uppercase tracking-wider mb-1`).
-     5. **Retrospective Reasoning Input**: Standard `Textarea` labeled `Your Reasoning (Optional — recommended for pivotal decisions)` + secondary action button `Challenge Reasoning` (with `MessageSquare` SVG icon, styled as `Button variant="secondary" size="sm"` — never a purple robot button).
+     3. **Chosen Option vs. Alternatives**: Chosen option in the inset block with a `2px` `#2A4E7F` left border; unselected options listed below in `text-secondary text-xs` (never `line-through`, which implies an error).
+     4. **Consequence Reveal**: inset block `bg-[#EEF2F9] border-l-2 border-[#2A4E7F] px-4 py-3 rounded-r-md` with label `Hậu quả` (`text-overline` `#2A4E7F`).
+     5. **Retrospective Reasoning Input**: Standard `Textarea` labeled `Lập luận của bạn (không bắt buộc — khuyến khích với quyết định then chốt)` + `secondary` `sm` button `Phản biện lập luận` (with `MessageSquare` icon).
 5. **AI Challenge Support Panel (`ChallengeSupportPage`)**:
-   - Header with `Round 1 of 2` / `Round 2 of 2` step badge.
+   - Header with `Vòng 1/2` / `Vòng 2/2` step badge.
    - Neutral stacked cards (not left/right chat bubbles):
-     - Student Reasoning card: `bg-gray-50 border border-gray-200 rounded-lg p-4`.
-     - AI Counter-Question card: `bg-white border border-gray-200 rounded-lg p-5` with `AiOriginTag` (`AI Challenge Question · Round N`) in the header.
-   - Hard-capped at 2 rounds: once `isCompleted = true`, replace the reply form with a calm completion footer (`Session complete — maximum 2 rounds reached`) and a primary button to return to the Review/Reflection flow.
+     - Student Reasoning: inset block (`bg-[#EEF2F9] rounded-md p-4`).
+     - AI Counter-Question: white card with `AiOriginTag` (`AI-assisted · Vòng N`) in the header.
+   - Hard-capped at 2 rounds: once `isCompleted = true`, replace the reply form with a calm completion footer and a primary button to return to the Review/Reflection flow.
 6. **Lecturer Feedback Block (`LecturerFeedbackPage`, `ReviewFeedbackPage`)**:
-   - Rendered as a structured academic evaluation card (`bg-gray-50 border border-gray-200 rounded-lg p-5`) with `UserCheck` (`16px`) icon and `Lecturer Feedback` header — never yellow/amber warning colors or teacher emojis.
+   - Structured academic evaluation card (white card; feedback text in the inset block) with `UserCheck` (`16px`) icon and `Phản hồi của giảng viên` header — never yellow/amber warning colors or teacher emojis.
 7. **Statistics Widgets (`StatisticsPage`)**:
-   - Metric summary cards: Label at top (`text-xs font-medium text-gray-500 uppercase tracking-wider`), large metric value below (`text-2xl font-semibold text-gray-900`), optional subtle `16px` outline icon in top-right (`text-gray-400`).
-   - Branch distribution bars: Horizontal progress bars using `action-primary` (`#2563EB`) at `100%`, `70%`, `40%` opacity steps — never a multi-color rainbow chart.
+   - Metric summary cards per §6.1.6.
+   - Charts per §2.9: max 3 series (navy, sky, neutral); branch-selection distribution uses navy for the focal branch and sky/neutral for the rest — never a rainbow and never success/error colors on branches.
 
 ---
 
 ## 7. Language & Microcopy Standards
 
 1. **Single-Language Consistency per Screen**:
-   - Do not mix English UI chrome (`Create Course`, `Upload Material`, `Node Editor`) with Vietnamese labels on the same page.
-   - Standardize UI labels to clean, concise **Academic English** across all product components and screens (matching the Backend DTOs, Figma tasks `DES-001`–`DES-015`, and `GLOBAL-DESIGN-SYSTEM.md`), while user-inputted content (course names, case text, student reasoning, lecturer feedback) naturally supports full Vietnamese UTF-8 text.
+   - UI chrome is **Vietnamese** (PO decision 2026-11-02). Do not mix English UI chrome (`Create Course`, `Upload Material`, `Add Student`) with Vietnamese labels on the same page. User-inputted content supports full Vietnamese UTF-8 text.
+   - Product proper names stay as-is: `EduBranch AI`, `Branching Study`, `Review Study`, `Case Study`, `AI Draft`, `AI-assisted`, `Journey Review`.
 2. **Concise Academic Tone**:
-   - Button labels must be 1–3 words in Title Case (`Create Course`, `Generate Case`, `Publish Case`, `Save Changes`, `Complete Review`, `Submit Reflection`, `Try Another Path`).
-   - Avoid exclamation marks (`!`), conversational filler, or grading terminology (`Score`, `Grade`, `Pass`, `Fail`, `Correct`, `Wrong`).
+   - Button labels are 1–3 words, sentence case (`Tạo khóa học`, `Sinh case`, `Xuất bản`, `Lưu thay đổi`, `Nộp suy ngẫm`, `Thử hướng khác`).
+   - Avoid exclamation marks (`!`), conversational filler, or grading terminology (`Điểm`, `Đạt`, `Trượt`, `Đúng`, `Sai`, `Score`, `Grade`).
+   - Never show raw data formats (JSON, enum keys such as `ACTIVE`, internal IDs) to users; translate them into readable Vietnamese.
 
 ---
 
@@ -334,7 +348,7 @@ font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe
 > Mirrors `frontend/src/app/router.tsx`, `docs/design/SITE-ARCHITECTURE.md`, and the Figma Master Template (`docs/05_FIGMA.md`).
 
 ### 8.1. Public & Onboarding Routes (`PublicLayout`)
-- `/` — Product Landing & Academic Introduction Page (Hero, Dual Learning Modes `Branching Study` vs `Review Study`, 4-Step Faculty/Student Workflow, Entry CTAs).
+- `/` — Product Landing & Academic Introduction Page, a single scrolling page (Hero, auto-playing 5-step workflow `#cach-hoat-dong`, Dual Learning Modes `Branching Study` vs `Review Study` `#hai-che-do`, draft lifecycle, per-role cards, FAQ with search `#cau-hoi`, Entry CTAs). Public nav links smooth-scroll to these anchors; there are no separate How it works / FAQ routes.
 - `/login` — University email/password sign-in.
 - `/register` — Account registration with role selection (`STUDENT` | `LECTURER`).
 

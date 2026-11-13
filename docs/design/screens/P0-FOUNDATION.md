@@ -12,26 +12,17 @@
 ### Purpose & Function
 Provides a clear, authoritative academic landing page for unauthenticated visitors, faculty, and students visiting the root URL (`/`). Explains what EduBranch-AI is without marketing fluff or "AI-hype" clichés, and directs users to `/login` or `/register`.
 
-### Layout (`1440px` Desktop Frame on `bg-canvas` `#F9FAFB`)
-1. **Top Public Navigation Bar (`height: 64px`, `bg-surface` `#FFFFFF`, `border-bottom: 1px solid #E5E7EB`)**:
-   - Left: Brand mark (`28×28px` `#2563EB` rounded-md square with white `GitBranch` vector icon) + `"EduBranch AI"` (`16px SemiBold #111827`) + subtle tag `"University Edition"` (`#F3F4F6 / #4B5563`).
-   - Center anchor links (`14px #4B5563`): `Overview` · `Learning Modes` · `Academic Governance` · `Workflow`.
-   - Right actions: Secondary button `"Sign In"` (`/login`) + Primary button `"Create Account"` (`/register`).
-2. **Hero Section (`max-w-6xl` centered, `py-20`, 2-column asymmetric split `55% / 45%`)**:
-   - Left column:
-     - Eyebrow pill (`#EFF6FF / #1D4ED8`): `"EXPERIENTIAL CASE-BASED LEARNING PLATFORM"`.
-     - Headline (`36px/44px SemiBold #111827`): `"Transform University Course Materials into Interactive Decision Scenarios."`
-     - Subtitle (`16px/26px #4B5563`): `"Ground case studies in your actual syllabi and readings. Guide students through realistic multi-branch dilemmas, retrospective consequence analysis, and Socratic reasoning challenges — with 100% faculty editorial control."`
-     - CTA Row: Primary button `"Sign In to Portal"` (`#2563EB`) + Secondary button `"Register Account"`.
-   - Right column:
-     - Clean architectural preview card (`#FFFFFF`, `border 1px #E5E7EB`, `radius 12px`, `padding 24px`) showing a miniature, non-interactive diagram of a `Published` Branching Case node branching into 2 options and a `Consequence` reveal block (`4px` teal border `#0F766E`).
-3. **Dual Learning Modes Section (`max-w-6xl`, 2 side-by-side cards `bg-surface #FFFFFF`, `border 1px #E5E7EB`, `radius 12px`, `p-8`)**:
-   - **Card 1 — `Branching Study` (`mode-branching` `#F0FDFA / #0F766E` badge + `GitFork` icon)**: Explains the 3-Phase Experience-First flow (`Phase 1: Uninterrupted Decision Navigation` → `Phase 2: Consequence Reveal & Retrospective Reasoning` → `Phase 3: Post-Case Reflection & Retry`).
-   - **Card 2 — `Review Study` (`mode-review` `#FDF2F8 / #BE185D` badge + `FileCheck2` icon)**: Explains open-ended case analysis (`Context & Data` → `Problem Statement` → `Proposed Solution & Reasoning` → `Lecturer Qualitative Feedback`).
-4. **4-Step Academic Governance Strip (`bg-surface #FFFFFF`, `border-y 1px #E5E7EB`, `py-16`)**:
-   - Horizontal 4-column step grid (`1. Ingest Course Materials (PDF/DOCX)` → `2. Generate Grounded Case Draft` → `3. Lecturer Review, Edit & Publish` → `4. Student Learning & 2-Round Socratic Challenge`).
-5. **Footer (`height: 72px`, `bg-canvas #F9FAFB`, `border-t 1px #E5E7EB`)**:
-   - Left: `"EduBranch AI — University Experiential Case-Based Learning Platform"`. Right: `"Light-First Academic Design System · Proposal V1.2"`.
+### Layout (`1440px` desktop, ONE scrolling page on a uniform `bg/canvas` background)
+> Updated 2026-11-12 (PO decision). Figma: page `08 · EduBranch – Bản hoàn chỉnh`, frame **00.2 · Chung · Trang giới thiệu**. The former separate frames 00.6 "Cách hoạt động" and 00.7 "Câu hỏi thường gặp" were merged into this page as anchor sections and deleted; there are no `/how-it-works` or `/faq` routes. UI copy is Vietnamese; colours are EduBranch navy `#2A4E7F` / sky `#00A5F5`. Headings use `EduBranch/Public *` (Be Vietnam Pro), body Roboto.
+
+1. **Public nav (`EB/Public Nav`, sticky, white)**: logo + "EduBranch AI"; links "Cách hoạt động" · "Hai chế độ học" · "Câu hỏi thường gặp" smooth-scroll to `#cach-hoat-dong`, `#hai-che-do`, `#cau-hoi` (`scroll-margin-top` = nav height; scroll-spy bolds the link of the section in view). From `/login` / `/register` these links go to `/#anchor`. Right: "Đăng nhập" (`/login`) + primary "Đăng ký" (`/register`).
+2. **Hero**: headline "Mỗi quyết định mở ra một nhánh mới", lead, CTAs "Đăng ký tài khoản" + "Xem cách hoạt động" (scrolls to `#cach-hoat-dong`); right side is a real branching-decision diagram (situation → options A/B/C → consequence).
+3. **Cách hoạt động `#cach-hoat-dong`**: 5 auto-playing step cards — Tải tài liệu → AI soạn bản nháp → Duyệt & xuất bản → Sinh viên làm bài → Phản hồi & suy ngẫm — each with icon tile, number badge (✓ navy when done), role chip and a mini UI demo; connectors (solid when done, dashed ahead); progress pills + status line underneath. Motion: 2,500 ms per step, 1,500 ms pause then loop; active card raised with sky border; future cards 55% opacity; click a card/pill to jump; `prefers-reduced-motion` disables auto-play (pattern: `HowItWorksSection` with framer-motion).
+4. **Hai chế độ học `#hai-che-do`**: two cards, Branching Study and Review Study, each with a small visual preview and 3 bullet points.
+5. **Vòng đời bản nháp (navy band)**: statement "AI chỉ soạn bản nháp. Giảng viên quyết định điều gì đến tay sinh viên." + horizontal track Bản nháp → Đã rà soát → Đã phê duyệt → (lock "Mở cho lớp") → Đã xuất bản, highlighting that students see a case only once published.
+6. **Theo vai trò**: "Cho giảng viên" / "Cho sinh viên" cards with 4 points and a register button each.
+7. **Câu hỏi thường gặp `#cau-hoi`**: centered heading, search field, popular-topic chips, 2×2 accordion groups (Chung, Giảng viên, Sinh viên, AI và tài liệu — 10 questions), contact card (support email).
+8. **Kêu gọi** CTA card + **`EB/Public Footer`** (product/account/legal links; product links use the same anchors).
 
 ### Boundary
 Zero dark-mode hero sections, zero glowing purple/indigo gradients, zero 3D robot illustrations, zero fake customer testimonials or pricing tables (this is an academic university platform, not a commercial SaaS sales page).
@@ -105,7 +96,7 @@ Centered card (max-width ~400px) on `bg-canvas`, vertically centered on the view
 - **Success**: redirect to `/lecturer/courses` or the student's case route based on returned `role`.
 
 ### Boundary
-No social login buttons (Google/Facebook/GitHub) — explicitly out of scope (`FEATURE-AUTH-AND-ROLES.md` §13). No "remember me" / SSO / MFA UI.
+Social login is limited to "Tiếp tục với Google" and "Tiếp tục với Microsoft" below the primary button on `/login` and `/register` (PO decision 2026-11-12, component `EB/Social Sign-in`); no other providers (Facebook/GitHub), not on the admin login. No campus SSO / MFA UI.
 
 ---
 

@@ -1,6 +1,7 @@
 # MVP Design Completeness Report
 
 > **Trạng thái**: `DRAFT — CHỜ PROJECT OWNER PHÊ DUYỆT` · Ngày: 2026-11-01
+> **Cập nhật 2026-11-12 (quyết định PO):** OPD-001 → A (mã mời + Bàn học, Khóa học của tôi, Tham gia lớp), OPD-006 → wizard 3 bước (AI Studio), OPD-011 → A (rubric trong nền tảng, gồm Admin 10.8), D-05 → có dashboard giảng viên; Hồ sơ tài khoản 09.1/09.2 thuộc MVP. Các frame này không còn HOLD (page 08 section 07, 09). Kết luận HOLD bên dưới cho các mục này là trạng thái trước quyết định; phân loại hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`. Backlog vẫn thiếu task cho các màn này.
 > **Bộ tài liệu**: `MVP_SCOPE_EVIDENCE_MATRIX.md` · `FEATURE_HIERARCHY_AND_BACKLOG_MAPPING.md` · `FIGMA_FRAME_SCOPE_REGISTER.md` · `AUTHENTICATION_SCOPE_ANALYSIS.md` · `OPEN_DECISIONS_MVP_IMPACT.md` · tài liệu này.
 > **Không có thay đổi nào** đã được thực hiện trên Figma, backlog, code hay database.
 
@@ -120,7 +121,7 @@ Có, đều ở **Page 1**:
 |:-:|---|---|---|
 | R-1 | Quyết định D-01 trước: dùng **Page 2 làm khung baseline**, bổ sung màn từ Page 1 khi chức năng đã CONFIRMED | Page 2 truy xuất 1-1 về backlog. Giảm rủi ro FE dựng màn không có API. | PO |
 | R-2 | Quyết định D-02 ngôn ngữ UI. Nếu chọn tiếng Việt thì sửa rule `01-ui-design-standards §7` trước. | Tránh FE/QA theo hai chuẩn | PO |
-| R-3 | Giữ Google Sign-In, quên/đặt lại/đổi mật khẩu, nhắc hạn ở **Phase 2** theo `01_MASTER-TASKS §4.6` | Có căn cứ rõ | PO xác nhận |
+| R-3 | Giữ Google Sign-In, quên/đặt lại/đổi mật khẩu, nhắc hạn ở **Phase 2** theo `01_MASTER-TASKS §4.6` | Có căn cứ rõ | PO xác nhận. **2026-11-12:** PO đưa Google + Microsoft Sign-In vào MVP; phần còn lại giữ Phase 2 |
 | R-4 | Gỡ khỏi baseline các thành phần có câu loại trừ rõ: nút "AI gợi ý / Tạo lại bằng AI" (1:3219), câu "bắt buộc 2 vòng phản biện" (1:3219), "1 / 3" (1:906) | Trái spec hiện hành | PO xác nhận |
 | R-5 | Quyết OPD-001, OPD-015 + OPD-008 (cùng lúc), OPD-006, OPD-005, OPD-011 theo thứ tự trong `OPEN_DECISIONS_MVP_IMPACT.md §5` | Chặn lock UI | PO / Mentor |
 | R-6 | Cập nhật DES-009 cho khớp với kết quả OPD-007 | Spec và OPD đang đi hai hướng | PO |
