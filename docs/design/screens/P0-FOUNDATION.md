@@ -32,11 +32,13 @@ Zero dark-mode hero sections, zero glowing purple/indigo gradients, zero 3D robo
 ## 1. App Shell & Role-Aware Navigation
 
 ### Purpose & Function
-Provides the persistent frame (sidebar/nav + content area) that every authenticated screen renders inside. Two distinct shells exist — `LecturerLayout` and `StudentLayout` — plus a minimal `PublicLayout` for `/login` and `/register`.
+Provides the persistent frame (sidebar/nav + content area) that every authenticated screen renders inside. Three role shells exist — `LecturerLayout`, `StudentLayout` and `AdminLayout` — built on the same shared sidebar, header actions and footer components (Figma page 08), plus `PublicLayout` for `/`, `/login` and `/register`.
 
 ### User & Context
-- **Lecturer** sees `LecturerLayout`: full management nav (Courses, Statistics) plus contextual sub-nav once inside a course (Materials, Cases, Review, Feedback).
-- **Student** sees `StudentLayout`: a lighter nav, since students mostly deep-link into a specific case from an external LMS/course link rather than browsing a dashboard — case is a required route param on every student route (`SITE-ARCHITECTURE.md §5.3`).
+- **Lecturer** sees `LecturerLayout`: Khóa học, Case Study, Phản hồi sinh viên, Thống kê học tập; dashboard [07.1] and AI Studio [07.5–07.7] are reachable from it.
+- **Student** sees `StudentLayout`: Bàn học, Khóa học của tôi, Tham gia lớp học (OPD-001 → A, 2026-11-12). Case routes still carry the case id; a direct case link from the lecturer also works.
+- **Admin** sees `AdminLayout` with the 8 admin sections (OPD-015 → B).
+- The sidebar can collapse to a 72px icon rail (`Collapsed=True`); header actions include search (Ctrl K), VI/EN switch, light/dark toggle (dark theme not designed yet), notifications, settings and account.
 - **When used**: On every authenticated screen; this is the persistent frame, not a standalone route.
 
 ### Information Hierarchy & Layout

@@ -19,14 +19,16 @@ Lecturers remain strictly in the loop: every AI-generated case starts in `DRAFT`
 
 ## 2. Target Users & Roles
 
-The system strictly serves two distinct academic user roles:
+The system serves two academic user roles plus a system administrator (Admin, in MVP since OPD-015 → B, 2026-11-12):
 
 | User Role | Responsibilities & Activities | Core Needs in UI |
 |---|---|---|
 | **Lecturer (`LECTURER`)** | Manages courses, uploads teaching materials (PDF/DOCX), triggers AI case generation, reviews and edits decision trees via interactive visual editor (ReactFlow) or Review Study form editor, approves/publishes cases, inspects student branch choices, reasoning, and statistics, provides qualitative academic feedback. | Uncluttered management workspace (`240px` left sidebar), split-screen ReactFlow editor, fast document ingestion, clear publication lifecycle controls. |
 | **Student (`STUDENT`)** | Participates in **Branching Study** (Phase 1: consecutive decision-point navigation → Phase 2: REVIEW screen revealing consequences + retrospective Student Reasoning + optional AI Challenge Support → Phase 3: Reflection & Retry) and **Review Study** (analyzes case context and problems, submits proposed solutions and reasoning, inspects lecturer feedback, writes reflection). | Distraction-free reading experience (`56px` compact top bar, `max-w-3xl` single-column prose layout), clear retrospective consequence analysis, structured Socratic counter-question threads. |
 
-*(Note: Unauthenticated visitors only have access to `/login` and `/register`).*
+| **Admin (`ADMIN`)** | Manages accounts (lock/unlock), views system-wide courses, cases, AI service status (view only), logs, research rubric and platform settings. | One dashboard with admin-only charts; read-mostly tables; no editing of lecturer content. |
+
+*(Note: Unauthenticated visitors only have access to `/`, `/login` and `/register`; admins sign in at `/admin/login`).*
 
 ---
 
@@ -42,13 +44,13 @@ The system strictly serves two distinct academic user roles:
 ## 4. Product Experience Attributes
 
 - **Academic & Focused**: Engineered for critical thinking — zero Unicode emojis, zero ASCII symbol hacks, zero gamified badges, and zero purple/indigo "AI-slop" gradients.
-- **Efficient & Professional**: High-density management layouts for lecturers (`max-w-7xl`) paired with calm, distraction-free reading layouts for students (`max-w-3xl`).
+- **Efficient & Professional**: One shared app shell (sidebar, header actions, footer) for lecturer, student and admin; reading and writing areas keep a 65–75 character measure.
 - **Predictable & Governed**: Transparent AI provenance showing which teaching materials informed each case dilemma.
-- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`#F8FAFC` canvas, `#FFFFFF` cards, `#E2E8F0` hairlines, `#2563EB` primary action) suitable for extended analytical reading and review sessions.
+- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`bg/canvas` page background, white cards, light hairlines, navy `#2A4E7F` primary action and sky `#00A5F5` accent — see `GLOBAL-DESIGN-SYSTEM.md`) suitable for extended analytical reading and review sessions.
 
 ---
 
-## 5. Canonical Application Sitemap (15 Routes — Full Figma Template Coverage)
+## 5. Canonical Application Sitemap (Figma page 08)
 
 Because the Sprint Backlog tasks focus on core functional workflows, the Figma Master Template (`docs/05_FIGMA.md`) explicitly covers both the **foundational/public screens** (`/`, `/login`, `/register`, App Shells, Course Catalog, 403/404) and the **core academic feature screens**:
 
@@ -57,21 +59,38 @@ Because the Sprint Backlog tasks focus on core functional workflows, the Figma M
 - `/login` — **Sign In Page**: University email & password authentication (`pages/auth/LoginPage.tsx`).
 - `/register` — **Account Registration Page**: University account creation with explicit `Lecturer` / `Student` role selection (`pages/auth/RegisterPage.tsx`).
 
-### 5.2. Lecturer Portal (`LecturerLayout` — `240px` Left Sidebar)
-- `/lecturer/courses` — Course catalog & creation interface (`CoursesPage.tsx`).
-- `/lecturer/courses/:courseId/materials` — Teaching materials upload center (`MaterialsPage.tsx`).
-- `/lecturer/courses/:courseId/cases` — Case study management, filter by learning mode (`BRANCHING_STUDY` vs `REVIEW_STUDY`), trigger AI Case Generation (`CasesPage.tsx`).
-- `/lecturer/cases/:caseId/review` — Interactive ReactFlow Decision Tree Editor (`BRANCHING_STUDY`) or structured form editor (`REVIEW_STUDY`), node editing, approval and publishing workflow (`CaseReviewPage.tsx`).
-- `/lecturer/cases/:caseId/feedback` — Review student attempts/submissions and submit qualitative lecturer feedback (`LecturerFeedbackPage.tsx`).
-- `/lecturer/statistics` — Branch selection distribution, participation metrics, and attempt analytics (`StatisticsPage.tsx`).
+> Update 2026-11-13: Figma page `08 · EduBranch – Bản hoàn chỉnh` is the finalized UI. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md). The same list is mirrored in `.agents/rules/01-ui-design-standards.md §8`.
 
-### 5.3. Student Portal (`StudentLayout` — `56px` Compact Top Header)
-- `/student/cases/:caseId/branching-play` — **Branching Case Player (Phase 1: Experience)**: Situation → Select Option → Immediate Advance (`selected_option_id` recorded, no reasoning form or consequence card mid-flow) → Terminal Outcome Card (`BranchingCasePlayerPage.tsx`).
-- `/student/cases/:caseId/attempt/:attemptId/review` — **Branching Study Review & Analysis (Phase 2: REVIEW)**: Reveals full chronological decision journey, lecturer-authored `consequence` for each chosen option, per-decision-point retrospective Student Reasoning input (`10–2000` chars), and per-node AI Challenge Support trigger (`BranchingReviewPage.tsx`).
-- `/student/cases/:caseId/attempt/:attemptId/reflect` — **Post-Outcome Reflection (Phase 3: Reflection & Retry)**: Final reflection submission (`reflection_text`) and immutable `Retry Case (New Attempt)` action (`ReflectionPage.tsx`).
-- `/student/cases/:caseId/challenge/:sessionId` — **AI Reasoning / Challenge Support**: Dedicated full-page 1–2 round Socratic counter-question thread supporting both Branching Study and Review Study (`ChallengeSupportPage.tsx`).
-- `/student/cases/:caseId/review-study` — **Review Study Workspace**: Case context & problem analysis, proposed solution formulation, and reasoning submission (`ReviewStudyPage.tsx`).
-- `/student/cases/:caseId/review-study/:submissionId/feedback` — **Review Study Feedback & Reflection**: Inspection of lecturer feedback and post-feedback student reflection (`ReviewFeedbackPage.tsx`).
+### 5.2. Lecturer Portal (`LecturerLayout` — shared collapsible sidebar)
+- `/lecturer/dashboard` — Lecturer dashboard [07.1] (D-05 → in MVP).
+- `/lecturer/courses` — Course catalog with detail panel, create and delete dialogs [02.1–02.3] (`CoursesPage.tsx`).
+- `/lecturer/courses/:courseId/materials` — Material upload and indexing status [02.4–02.6] (`MaterialsPage.tsx`).
+- `/lecturer/courses/:courseId/materials/:materialId/rag` — Indexed excerpts of a document [02.7] (`RagSourceInspectorPage.tsx`).
+- `/lecturer/cases`, `/lecturer/courses/:courseId/cases` — Case library, filter by status and learning mode [03.1–03.3] (`CasesPage.tsx`).
+- `/lecturer/ai-studio` — 3-step AI case generation wizard [07.6 → 07.5 → 07.7] (OPD-006 → wizard) (`AiStudioPage.tsx`).
+- `/lecturer/cases/:caseId/review` — Case editor (decision tree for `BRANCHING_STUDY`, context/problem form for `REVIEW_STUDY`), review bar and publish dialog [03.4–03.7] (`CaseReviewPage.tsx`).
+- `/lecturer/feedback`, `/lecturer/feedback/:submissionId` — Review queue and submission detail with qualitative feedback [04.1, 04.2, 04.2b].
+- `/lecturer/statistics` — Learning-flow statistics [04.3] (`StatisticsPage.tsx`).
+- `/lecturer/cases/:caseId/rubric` — Research rubric for case quality [07.8] (OPD-011 → A).
+- `/lecturer/profile` — Account profile [09.1].
+
+### 5.3. Student Portal (`StudentLayout` — same shared sidebar shell)
+- `/student/desk` — Student desk [07.2] (OPD-001 → A).
+- `/student/courses` — My courses, join a class by invite code (dialog) [07.3, 07.4].
+- `/student/cases/:caseId/branching-play` — **Branching Case Player (Phase 1: Experience)** [05.1–05.3]: Situation → Select Option → Immediate Advance (no reasoning form or consequence card mid-flow) → end of journey (`BranchingCasePlayerPage.tsx`).
+- `/student/cases/:caseId/attempt/:attemptId/review` — **Journey Review (Phase 2)** [05.4]: full chronological path, revealed consequences, retrospective reasoning (`BranchingReviewPage.tsx`).
+- `/student/cases/:caseId/challenge/:sessionId` — **AI Challenge Support** [05.5, 05.6]: 1–2 Socratic rounds, zero grading. Figma shows a dialog over Journey Review; modal vs. full page is still **OPD-005 (HOLD)** (`ChallengeSupportPage.tsx`).
+- `/student/cases/:caseId/attempt/:attemptId/reflect` — **Reflection & Retry (Phase 3)** [05.7, 05.8] (`ReflectionPage.tsx`).
+- `/student/history`, `/student/cases/:caseId/history` — Attempt history and new-attempt dialog [05.9, 05.10] (`StudentAttemptsHistoryPage.tsx`).
+- `/student/cases/:caseId/review-study` — **Review Study Workspace** [06.1] (`ReviewStudyPage.tsx`).
+- `/student/cases/:caseId/review-study/:submissionId/feedback` — **Review Study submitted / feedback & reflection** [06.2, 06.3] (`ReviewFeedbackPage.tsx`).
+- `/student/profile` — Account profile without scores [09.2].
+
+### 5.4. Admin Portal (`AdminLayout`, OPD-015 → B)
+- `/admin/login` [10.1] · `/admin/dashboard` [10.2] · `/admin/users` [10.3, 10.4] · `/admin/courses` [10.5] · `/admin/cases` [10.6] · `/admin/ai-service` (view only, OPD-013) [10.7] · `/admin/rubric` [10.8] · `/admin/logs` [10.9] · `/admin/settings` [10.10].
+
+### 5.5. Shared states
+- Loading, empty, load error, no search results inside the page [01.1–01.3, 01.8]; full-page 403 / 404 / 500 without shell [01.4, 01.5, 01.7]; session-expired dialog [01.6]. Forgot / reset password screens exist in Figma section 08 but are **Phase 2**.
 
 ---
 
@@ -113,8 +132,8 @@ Student submits reasoning (in Branching Study REVIEW phase or Review Study) → 
 
 All screen-level specifications are maintained in `docs/design/screens/`:
 
-- **P0 — Global Foundation** ([`P0-FOUNDATION.md`](file:///C:/Users/OS/.gemini/antigravity/worktrees/EduBranch-AI/standardize_ui_docs_rules/docs/design/screens/P0-FOUNDATION.md)): App shells (`LecturerLayout`, `StudentLayout`, `PublicLayout`), authentication screens (`/login`, `/register`), status/mode badges, and shared primitive components.
-- **P1 — Core Lecturer Flow** ([`P1-LECTURER-CORE.md`](file:///C:/Users/OS/.gemini/antigravity/worktrees/EduBranch-AI/standardize_ui_docs_rules/docs/design/screens/P1-LECTURER-CORE.md)): Course catalog (`/lecturer/courses`), materials ingestion management (`/lecturer/courses/:courseId/materials`), case list (`/lecturer/courses/:courseId/cases`), and interactive Case Review with ReactFlow Decision Tree Editor (`/lecturer/cases/:caseId/review`).
-- **P2 — Core Student Flow** ([`P2-STUDENT-CORE.md`](file:///C:/Users/OS/.gemini/antigravity/worktrees/EduBranch-AI/standardize_ui_docs_rules/docs/design/screens/P2-STUDENT-CORE.md)): 3-Phase Branching Study screens (`/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/review`, `/student/cases/:caseId/attempt/:attemptId/reflect`) and cross-mode AI Reasoning / Challenge Support (`/student/cases/:caseId/challenge/:sessionId`).
-- **P3 — Support & Statistics** ([`P3-SUPPORT-AND-STATISTICS.md`](file:///C:/Users/OS/.gemini/antigravity/worktrees/EduBranch-AI/standardize_ui_docs_rules/docs/design/screens/P3-SUPPORT-AND-STATISTICS.md)): Basic Learning-Flow Statistics (`/lecturer/statistics`) and Lecturer Feedback workspace (`/lecturer/cases/:caseId/feedback`).
-- **P4 — Secondary Review Study** ([`P4-REVIEW-STUDY.md`](file:///C:/Users/OS/.gemini/antigravity/worktrees/EduBranch-AI/standardize_ui_docs_rules/docs/design/screens/P4-REVIEW-STUDY.md)): Review Study reading & solution formulation (`/student/cases/:caseId/review-study`) and student inspection of lecturer feedback (`/student/cases/:caseId/review-study/:submissionId/feedback`).
+- **P0 — Global Foundation** ([`P0-FOUNDATION.md`](screens/P0-FOUNDATION.md)): App shells (`LecturerLayout`, `StudentLayout`, `PublicLayout`), authentication screens (`/login`, `/register`), status/mode badges, and shared primitive components.
+- **P1 — Core Lecturer Flow** ([`P1-LECTURER-CORE.md`](screens/P1-LECTURER-CORE.md)): Course catalog (`/lecturer/courses`), materials ingestion management (`/lecturer/courses/:courseId/materials`), case list (`/lecturer/courses/:courseId/cases`), and interactive Case Review with ReactFlow Decision Tree Editor (`/lecturer/cases/:caseId/review`).
+- **P2 — Core Student Flow** ([`P2-STUDENT-CORE.md`](screens/P2-STUDENT-CORE.md)): 3-Phase Branching Study screens (`/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/review`, `/student/cases/:caseId/attempt/:attemptId/reflect`) and cross-mode AI Reasoning / Challenge Support (`/student/cases/:caseId/challenge/:sessionId`).
+- **P3 — Support & Statistics** ([`P3-SUPPORT-AND-STATISTICS.md`](screens/P3-SUPPORT-AND-STATISTICS.md)): Basic Learning-Flow Statistics (`/lecturer/statistics`) and Lecturer Feedback workspace (`/lecturer/cases/:caseId/feedback`).
+- **P4 — Secondary Review Study** ([`P4-REVIEW-STUDY.md`](screens/P4-REVIEW-STUDY.md)): Review Study reading & solution formulation (`/student/cases/:caseId/review-study`) and student inspection of lecturer feedback (`/student/cases/:caseId/review-study/:submissionId/feedback`).

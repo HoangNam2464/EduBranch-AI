@@ -16,7 +16,7 @@ trigger: always_on
 - **Target Domain**: Quá trình học tập tình huống thực nghiệm & rèn luyện tư duy phản biện bậc Đại học (University-Level Experiential Case-Based Learning Process)
 - **Primary Actors**:
   - **Lecturer** (`LECTURER` — Giảng viên / Người hướng dẫn): Creates courses, uploads teaching materials, triggers AI case generation, edits/approves/publishes cases, inspects student attempts/submissions, authors qualitative feedback, views cohort statistics.
-  - **Student** (`STUDENT` — Sinh viên / Người học): Accesses published cases via direct link, navigates Branching Study experiences, completes retrospective Journey Review, submits Review Study analyses, engages in optional Socratic AI Challenge Support (max 2 rounds), writes post-activity reflections.
+  - **Student** (`STUDENT` — Sinh viên / Người học): Accesses published cases from the student desk / my courses after joining a class by invite code, or via a direct link (OPD-001 → A, 2026-11-12); navigates Branching Study experiences, completes retrospective Journey Review, submits Review Study analyses, engages in optional Socratic AI Challenge Support (max 2 rounds), writes post-activity reflections.
   - **Admin** (`ADMIN` — Quản trị hệ thống): System-level account/role and operational health boundary per Proposal V1.2.
 - **Technology Stack**:
   - **Backend Gateway**: Node.js 20 LTS (NestJS 10 + TypeScript)

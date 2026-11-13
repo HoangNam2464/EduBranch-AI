@@ -40,7 +40,7 @@
 - [ ] No `console.log` / `System.out.println` left in production code
 
 ### Testing
-- [ ] Backend: `./mvnw test` passes
+- [ ] Backend: `npm run build`, `npm test` and `npm run test:e2e` pass
 - [ ] AI Service: `pytest` passes
 - [ ] Frontend: `npm run build` succeeds
 - [ ] CI workflows are green

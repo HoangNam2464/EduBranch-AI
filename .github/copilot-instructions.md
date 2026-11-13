@@ -13,8 +13,8 @@ Every AI agent working on EduBranch AI MUST strictly adhere to the following 12 
 2. **Read Applicable Feature Rules Before Changing a Feature**: Consult the corresponding rule in `.agents/rules/feature-*.md` and specification in `docs/features/FEATURE-*.md` before proposing or touching code in that feature area.
 3. **Follow the Proposal**: The authoritative product definition is the EduBranch AI Proposal (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`). Never invent features not grounded in this document.
 4. **Follow Applicable Markdown Rules**: Project governance is defined in Markdown rules. They are mandatory constraints, not optional suggestions.
-5. **Never Invent Scope**: Keep strictly to university branching case studies, Review Study, and AI Challenge Support. Exclude lesson planners, quiz generators, LMS integrations, social login, and unrelated features.
-6. **Never Copy AI Teacher Copilot Business Logic**: The reference repository (`ai-teacher-copilot`) is an engineering reference only. Do NOT copy its source code, K-12 domain models, or teacher workspace features.
+5. **Never Invent Scope**: Keep strictly to university branching case studies, Review Study, and AI Challenge Support. Exclude lesson planners, quiz generators, LMS integrations and unrelated features. Google and Microsoft sign-in on the public login/register pages are in MVP (PSD-09, 2026-11-12); campus SSO is not.
+6. **Never Copy Business Logic From Other Projects**: External repositories may only inform the architecture (service boundaries, folder organization, test workflow). Do NOT copy their source code, domain models or features, and do not name them in EduBranch documents.
 7. **Respect Service Boundaries**: The client tier communicates exclusively with the Backend Gateway. The FastAPI AI Service is **internal only** and must never be exposed to the public internet or called directly from the frontend.
 8. **Protect Secrets**: Never hardcode, commit, or expose API keys, JWT secrets, database credentials, or internal tokens. Always use environment variables loaded from `.env` (which is excluded from Git).
 9. **Validate Changes**: Validate syntax, types, and constraints before completing tasks. Never create dummy code or fake implementations to bypass tests.
@@ -26,7 +26,7 @@ Every AI agent working on EduBranch AI MUST strictly adhere to the following 12 
 
 ## 2. Project Identity & Purpose
 
-- **Name**: EduBranch AI (NOT "AI Teacher Copilot").
+- **Name**: EduBranch AI.
 - **Full Title**: EduBranch AI — AI Platform for Interactive Branching Case Studies and Open Review in University Teaching.
 - **Target Audience**: University lecturers and undergraduate/graduate students (NOT K-12).
 - **Core Loop**: Teaching Material → RAG Processing → AI-Generated Case → Lecturer Review/Edit → Lecturer Approval & Publication → published-only Student access → uninterrupted Branching Study Experience → Journey Review with consequences and retrospective reasoning → independent Review Study → AI Challenge Support (1–2 counter-question rounds maximum, never grading or approving) → Lecturer feedback/statistics.
