@@ -1,0 +1,122 @@
+# Feature Record: Courses & Materials Screens Rework to Figma 02.1–02.7 [FE-026]
+
+> **Canonical Record**: Maintained per `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` §3, §4 Stage 0, and §6.  
+> **Pilot Feature**: FE-026 (Jira EBA-89, Sprint 3) — Spec Kit Figma-to-code pilot workflow.  
+> **Active Directory**: `specs/001-fe026-courses-materials`  
+> **Workspace Path**: `D:\CAPSTONE_2026\EduBranch-AI-speckit`  
+> **Created**: 2026-11-15  
+> **Last Updated**: 2026-11-15 (Stage 6 Analyze Completed & Gate Log Established)
+
+---
+
+## 1. Discover (Workflow §4 Stage 0)
+
+### 1.1. Workspace & Git Context
+- **Workspace**: `D:\CAPSTONE_2026\EduBranch-AI-speckit`
+- **Active Git Branch**: `docs/spec-kit-workflow`
+- **HEAD Commit SHA**: `273f1fc7d2f11c2f3df120a2999bedea5ada0633` (= `origin/develop`)
+- **Pre-execution MD5 Integrity Verification (exit code 0)**:
+  - `AGENTS.md`: `42b6255072f1a6f2938f1c0eabcfc4bc` (MATCH)
+  - `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`: `ce8399bc41c1c188a879cdbbffce5b78` (MATCH)
+  - `.specify/memory/constitution.md`: `54321da28efadf643cc40c9cb8f59cb4` (MATCH)
+- **UI Rules Source Note (`[DỮ-KIỆN]`)**:
+  - PO authoritative UI rules in `D:\CAPSTONE_2026\EduBranch-AI\.agents\rules\01-ui-design-standards.md` (`cae99071a4d68e9f4553aeb424eac347`) adopt the Eduva Navy (`#2A4E7F`) / Sky (`#00A5F5`) design tokens. Used as reference for all UI specifications.
+
+### 1.2. Parent Task & Traceability
+- **Jira Task**: `EBA-89` (Sprint 3, To Do) — `[FE-026] Rework Courses & Materials Screens to Figma 02.1–02.7`
+- **Master Tasks (docs/01_MASTER-TASKS.md)**:
+  - `EBA-101`: Course & Class Management (Sprint 1)
+  - `EBA-102`: Teaching Materials Upload & MinIO Storage (Sprint 1)
+  - `EBA-201` – `EBA-207`: RAG Pipeline, Ingestion, and Status Polling (Sprint 2)
+  - `EBA-217`: Lecturer Materials Table & Polling UI (Sprint 2)
+  - `EBA-218`: Lecturer RAG Source Chunks Inspector (Sprint 2)
+- **Sprint Tasks Breakdown (docs/02_SPRINT-TASKS.md)**: `FE-001` … `FE-006` (verified baseline behaviors), `FE-023` (Frontend Restructure, prerequisite dependency), `FE-026` (Figma Rework).
+- **QA Tasks (docs/06_QA.md)**: `QA-003` (Course Management & Access Control), `QA-004` (Material Ingestion & Validation).
+
+### 1.3. Canonical Sources & Governance Documents
+- **Foundation**: `docs/00-project-foundation.md` (§1 Pedagogy & Terminology, §3 Architecture Boundaries, §4 Publication Gate, §6 AI Safety & Zero Fake Data, §7 Git Workflow).
+- **Feature Rules**: `.agents/rules/feature-course.md`, `.agents/rules/feature-material.md`, `.agents/rules/feature-rag.md`.
+- **UI System**: `.agents/rules/01-ui-design-standards.md`, `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+- **Figma Reference**: `docs/05_FIGMA.md` (§0.1 DES → frame map), `docs/design/screens/P1-LECTURER-CORE.md`, `docs/features/FEATURE-COURSE-AND-MATERIALS.md`.
+
+### 1.4. Figma Canvas & Frames Inventory
+- **Figma File Key**: `6CtSgJPKo4jCIbB7WwCaWw`
+- **Canonical Page**: `08 · EduBranch – Bản hoàn chỉnh` (Node ID: `483:9634`)
+- **Section**: `02 · Giảng viên · Khóa học & Tài liệu` (Node ID: `483:9636`)
+- **Extracted Frames (verified via Figma MCP `get_metadata`)**:
+  - `02.1`: `483:9637` (1440 × 1413) — `02.1 · Giảng viên · Quản lý khóa học`
+  - `02.2`: `483:9866` (1440 × 1413) — `02.2 · Giảng viên · Hộp thoại khởi tạo khóa học`
+  - `02.3`: `483:10111` (1440 × 1413, Dialog `483:10341`) — `02.3 · Giảng viên · Hộp thoại xác nhận xóa khóa học` (Soft Archive per OPD-014)
+  - `02.4`: `483:10342` (1440 × 1123) — `02.4 · Giảng viên · Chi tiết khóa học — Tài liệu môn học`
+  - `02.5`: `483:10598` (1440 × 1123) — `02.5 · Giảng viên · Hộp thoại tải tài liệu môn học`
+  - `02.6`: `483:10890` (1440 × 1123) — `02.6 · Giảng viên · Hộp thoại xác nhận xóa tài liệu`
+  - `02.7`: `483:11148` (1440 × 1329) — `02.7 · Giảng viên · RAG Source Inspector (DES-005)`
+- **Ready for Dev Status**: Provisional per GDS §0.2 and AGENTS.md Rule 9 pending formal token approval.
+- **Intended Deviation from Figma**: Frame 02.4 / Node `586:8570` FAILED action button renamed from "Thử lại" to "Tải lên lại" (or "Chọn tệp tải lại") per PO Decision Q3 (2026-11-15 [PO-ĐÃ-XÁC-NHẬN]).
+
+### 1.5. Current Routes, Files & Known Gaps (`[DỮ-KIỆN]`)
+- **Current Routes**:
+  - `/lecturer/courses` → `frontend/src/pages/lecturer/CoursesPage.tsx`
+  - `/lecturer/courses/:courseId/materials` → `frontend/src/pages/lecturer/MaterialsPage.tsx`
+  - `/lecturer/courses/:courseId/materials/:materialId/rag` → `frontend/src/pages/lecturer/RagSourceInspectorPage.tsx`
+- **Known Code Gaps Identified**:
+  1. `frontend/src/pages/lecturer/MaterialsPage.tsx:55–75`: Upload modal queue starts with 3 hard-coded fake files.
+  2. `frontend/src/pages/lecturer/MaterialsPage.tsx:132–135`: Upload errors are swallowed without proper user notification.
+  3. `frontend/src/pages/lecturer/MaterialsPage.tsx:789`: Calls `DELETE /courses/:courseId/materials/:id`, whereas the backend controller provides `DELETE /materials/:id` (`backend/src/modules/material/material.controller.ts:80`).
+  4. Nút "Thử lại" trên dòng FAILED chỉ reload lại danh sách do backend chưa có API re-ingest.
+  5. `frontend/src/pages/lecturer/RagSourceInspectorPage.tsx:18,53`: Uses `MOCK_CHUNKS` and `OTHER_DOCUMENTS` (backend has no chunks endpoint).
+  6. Xóa khóa học có tài liệu trả về lỗi HTTP 500 (backend foreign key cascade constraint).
+  7. FE-023 target structure (`src/components/ds/`, `src/routes/paths.ts`, locale files) is uncommitted on `refactor/frontend-structure` and not yet on `develop`.
+
+---
+
+## 2. Gate Log (G0–G6 outputs ready for PO review)
+
+> **Gate status note (Claude, 2026-11-15)**: The PO asked for this pilot on 2026-11-15 (`[PO-ĐÃ-XÁC-NHẬN]`: *"chứng minh bằng một feature mẫu thuộc giai đoạn Figma-to-code"*). That request is not an approval of the G0–G6 outputs: they are presented to the PO at the closing gate and pass only when the PO approves them. Earlier wording "batched by the PO" came from Claude's package and was wrong.  
+> **G7 Implementation Gate**: `[CHƯA-CẤP]` (Not Given). No product code implementation (`/speckit-implement`) is authorized.
+
+| Gate | Stage | Skill | Status | Date | Evidence / Outputs |
+|:---:|---|---|:---:|:---:|---|
+| **G0** | Discover | Manual / Discovery Tools | **READY — awaiting PO review** | 2026-11-15 | Change boundary confirmed; branch, HEAD, Figma frames, and gaps recorded in `FE-026.md` and `record.md`. |
+| **G1** | Specify | `/speckit-specify` | **READY — awaiting PO review** | 2026-11-15 | `specs/001-fe026-courses-materials/spec.md` (47,491 bytes) covering 13 Functional Requirements (`FR-001`–`FR-013`), 5 Success Criteria (`SC-001`–`SC-005`), and 3 User Stories. |
+| **G2** | Clarify | `/speckit-clarify` | **READY — awaiting PO review** | 2026-11-15 | 5 PO Decisions Q1–Q5 recorded verbatim with date 2026-11-15 under `[PO-ĐÃ-XÁC-NHẬN]`; review items R1-1, R1-2, R1-3 resolved. Zero unresolved blocking questions. |
+| **G3** | Plan | `/speckit-plan` | **READY — awaiting PO review** | 2026-11-15 | Implementation plan and design artifacts produced: `plan.md` (12,986 bytes), `research.md` (10,059 bytes), `data-model.md` (7,050 bytes), `contracts/courses-api.md` (7,990 bytes), `contracts/materials-api.md` (7,649 bytes), `contracts/ui-contracts.md` (4,111 bytes), `quickstart.md` (5,531 bytes). R2-1..R2-4 and R3-1 review fixes applied. Constitution Check: PASS. |
+| **G4** | Checklist | `/speckit-checklist` | **READY — awaiting PO review** | 2026-11-15 | UX Requirements Quality Checklist generated in `checklists/ux.md` (9,576 bytes, 41 checklist items `CHK001`–`CHK041`, all unchecked `[ ]` awaiting reviewer sign-off). |
+| **G5** | Tasks | `/speckit-tasks` | **READY — awaiting PO review** | 2026-11-15 | Dependency-ordered tasks generated in `tasks.md` (37,684 bytes, 24 tasks `T001`–`T024` mapped to user stories and phases) including Acceptance Test Matrix for Q3, Q4, Q5 (9 scenarios `ATM-Q3-01..03`, `ATM-Q4-01..03`, `ATM-Q5-01..03`). |
+| **G6** | Analyze | `/speckit-analyze` | **READY — awaiting PO review** | 2026-11-15 | Cross-artifact consistency analysis completed with 0 Critical findings, 0 Constitution violations, 0 unmapped tasks, and 100% requirements coverage. |
+| **G7** | Approval | — | **PENDING** (`[CHƯA-CẤP]`) | — | Implementation scope pending PO formal sign-off post-FE-023 merge into `develop`. `/speckit-implement` is BLOCKED. |
+
+---
+
+## 3. Product Owner Clarification Record (`[PO-ĐÃ-XÁC-NHẬN]`)
+
+All decisions recorded verbatim from PO chat on 2026-11-15:
+
+1. **Q1: Frontend Architectural Target & Restructure**:
+   > *"Chọn B – chờ FE-023 merge vào develop. Đúng theo thứ tự triển khai đã được PO xác lập ngày 13/11: hoàn thành tái cấu trúc frontend trước, sau đó mới triển khai lại các màn hình trên cấu trúc mới. Yêu cầu: - FE-026 phải kế thừa cấu trúc FE-023 sau khi được tích hợp vào develop. - Không triển khai code FE-026 trên cấu trúc cũ. - Không tự lấy hoặc đưa các thay đổi uncommitted từ refactor/frontend-structure vào nhánh hiện tại. - Trong thời gian chờ, có thể hoàn thiện spec, plan, tasks và Acceptance Criteria dựa trên định hướng FE-023, nhưng phải xác minh lại cấu trúc thực tế sau khi merge. - Trước khi implement, kiểm tra commit SHA mới nhất của develop và xác nhận các dependency của FE-023 đã thực sự có mặt. - Không tự merge FE-023 hoặc thay đổi trạng thái task khi chưa đủ quyền và điều kiện nghiệm thu."*
+
+2. **Q2: RAG Source Inspector & Chunks API Gap**:
+   > *"Chọn B – bổ sung task BE để cung cấp API lấy danh sách chunks thực tế của tài liệu. Lý do: Màn hình 02.7 RAG Source Inspector cần thể hiện dữ liệu chunks thật, không được sử dụng MOCK_CHUNKS hoặc dữ liệu giả để tạo cảm giác chức năng đã hoàn thành. Yêu cầu: - Đề xuất API GET `/materials/:id/chunks` với response contract phù hợp. - Xác định pagination, metadata, thứ tự chunks và trạng thái dữ liệu. - Bảo đảm authentication, authorization và course ownership. - Kiểm tra API chỉ trả về chunks thuộc tài liệu mà người dùng có quyền truy cập. - Bổ sung integration test với dữ liệu thực. - FE-026 phải phụ thuộc vào API BE này nếu chức năng xem chunks nằm trong phạm vi được duyệt. Chỉ tạo đề xuất task BE và ghi nhận dependency trong Spec Kit. Không tự đưa task vào Sprint, thay đổi Jira hoặc mở rộng scope khi chưa có PO duyệt. Trong thời gian API chưa sẵn sàng, không dùng mock để thay thế dữ liệu thật và không tuyên bố màn hình đã hoàn thành chức năng."*
+
+3. **Q3: Failed Material Re-upload Semantics ("Tải lên lại")**:
+   > *"Chọn A – mở modal để người dùng chọn lại và tải lên tài liệu. Nhưng cần điều chỉnh semantics cho chính xác: - Không gọi đây là retry/re-ingest vì backend chưa có API xử lý lại ingestion của material hiện hữu. - Đổi nhãn nút từ "Thử lại" thành "Tải lên lại" hoặc "Chọn tệp tải lại". - Khi nhấn, mở upload modal và yêu cầu người dùng chọn lại file gốc. - Hiển thị lý do tài liệu trước đó FAILED để người dùng hiểu nguyên nhân. - Upload lại phải tạo một lượt xử lý mới thông qua API upload hiện có. - Không tự động xóa bản ghi FAILED cũ trước khi upload mới thành công. - Thông báo rõ nếu việc tải lên lại có thể tạo bản ghi tài liệu mới để tránh người dùng hiểu nhầm. - Chỉ cập nhật trạng thái theo kết quả API thực tế, không báo thành công giả. - Kiểm tra đầy đủ loading, error, success và trường hợp upload thất bại. Không tạo API re-ingest mới trong phạm vi FE-026. Nếu sau này muốn retry trực tiếp ingestion của tài liệu hiện có thì đó là một yêu cầu BE riêng cần PO duyệt. Hãy ghi rõ quyết định này trong spec, Acceptance Criteria và test scenarios."*
+
+4. **Q4: Course Deletion Policy & OPD-014 Soft Archive**:
+   > *"Chọn C – Lưu trữ khóa học thay vì xóa cứng. Đây là quyết định đã được PO xác lập trong OPD-014: khóa học và Case sử dụng cơ chế soft archive. Yêu cầu: - Kế thừa đúng quyết định OPD-014, không coi đây là nghiệp vụ mới cần PO quyết định lại. - Thay thao tác xóa cứng bằng lưu trữ mềm. - Không xóa các tài liệu, chunks hoặc object trên MinIO khi lưu trữ khóa học. - Dữ liệu liên quan phải được bảo toàn. - Giao diện sử dụng nhãn và trạng thái phù hợp với nghiệp vụ lưu trữ. - Kiểm tra lại danh sách khóa học, trạng thái khóa học và các API liên quan để bảo đảm khóa học đã lưu trữ không bị hiển thị hoặc sử dụng như khóa học đang hoạt động trái với quy định. - Xem xét khả năng khôi phục chỉ theo đúng phạm vi OPD-014 đã duyệt; không tự tạo thêm nghiệp vụ khôi phục nếu chưa có căn cứ. - Xác định cách điều chỉnh API và database dựa trên kiến trúc hiện tại, không tự ý tạo một cơ chế song song. - Bổ sung integration test kiểm tra dữ liệu khóa học, tài liệu, chunks và MinIO vẫn được bảo toàn sau khi lưu trữ. Ghi rõ quyết định OPD-014 trong spec, plan, tasks và Acceptance Test Matrix. Lỗi HTTP 500 hiện tại phải được xử lý bằng cách triển khai đúng nghiệp vụ lưu trữ mềm, không phải bằng cách thêm cascade xóa dữ liệu."*
+
+5. **Q5: Material Delete Route Alignment (`DELETE /materials/:id`)**:
+   > *"Chọn A – sửa trong FE-026. Yêu cầu: - Sử dụng đúng endpoint DELETE mà backend hiện đang cung cấp. - Kiểm tra global prefix, API baseURL và route thực tế trước khi xác định URL cuối cùng. Không tự ý thêm `/api/v1` hai lần. - Không tạo alias backend chỉ để tương thích với endpoint frontend sai. - Giữ nguyên API contract và kiến trúc backend hiện tại. - Ghi nhận đây là lỗi tồn đọng từ FE-005, liên kết nguồn phát hiện để bảo đảm truy vết. - Bổ sung regression test xác nhận frontend gọi đúng endpoint và xử lý chính xác các kết quả 200/204, 403, 404 và lỗi server. - Kiểm tra dữ liệu danh sách được cập nhật sau khi xóa thành công; không xóa hàng trên UI trước khi API xác nhận thành công. - Kiểm tra cả trường hợp lỗi mạng và quyền truy cập. - Chạy kiểm thử trên phiên bản tích hợp sau khi merge vào develop. Đưa nội dung sửa lỗi vào spec, tasks và Acceptance Test Matrix của FE-026. Không đánh dấu hoàn thành nếu mới chỉ sửa URL mà chưa kiểm chứng thao tác xóa thực tế."*
+
+---
+
+## 4. Planned Quality Gates & Verification Readiness
+
+| Quality Gate | Description | Verification Method & Target | Status |
+|:---:|---|---|:---:|
+| **QG1** | Unit & Integration Tests | `npx tsx --test frontend/src/**/*.spec.ts` covering mappers, services, pages, and the 9 ATM scenarios. | Planned (`T003`–`T007`, `T013`, `T018`, `T022`) |
+| **QG2** | Production Build & Lint | `npm run build` (`tsc -b && vite build`) with zero warnings and zero TypeScript errors. | Planned (`T023`) |
+| **QG3** | Browser Visual QA vs Figma | Side-by-side browser inspection at 1440px viewport against Page 08 frames 02.1–02.7 per `CLAUDE.md`. | Planned (`T024`) |
+| **QG4** | Quality Evidence Report | QA verification report compiled in `docs/qa/` covering all acceptance criteria. | Downstream |
+| **QG5** | Pre-Push Local CI | Local CI execution of `frontend-ci.yml` before branch push. | Downstream |
+| **QG6** | PR Creation & Automation | Pull Request opened against `develop` with Figma comparison screenshots attached. | Downstream |
+| **QG7** | Merge & Jira Done | Code Owner approval, green CI checks, merge to `develop`, Jira `EBA-89` moved to Done. | Downstream |
