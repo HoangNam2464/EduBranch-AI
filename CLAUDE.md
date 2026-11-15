@@ -62,7 +62,7 @@ Project subagents (`.claude/agents/`) are used only for work that is really inde
 Frontend rules for UI work:
 - Reuse `src/components/ds` (Design System primitives and page patterns) and `src/components/feedback` (states); do not create parallel versions in page folders.
 - Tokens come from `src/index.css` `@theme` (mirrors the Figma variables). No raw hex in pages when a token exists.
-- UI text goes through i18next: Vietnamese only for the MVP; no hard-coded UI strings in components. Feature locale files `src/locales/<feature>.vi.json` hold one top-level key and are merged automatically by `src/lib/i18n.ts` (after FE-023). No `.en.json` and no English key parity until the product reaches about 75% and the PO approves English localization (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval.").
+- UI text goes through i18next; Vietnamese default, English pair with the same keys; feature files `src/locales/<feature>.vi.json` / `.en.json`, one top-level key, merged by `src/lib/i18n.ts`; no hard-coded UI strings; English copy translates the approved Vietnamese copy and uses the project's established English domain terms, never invented ones.
 - Paths come from `src/routes/paths.ts` (`PATHS`, `buildPath`); never hard-code route strings.
 - No fake data to make a screen look done. When Figma shows content the API does not provide, report the gap.
 

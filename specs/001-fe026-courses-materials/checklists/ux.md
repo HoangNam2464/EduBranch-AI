@@ -40,7 +40,7 @@
 
 ## 4. Localization (i18n) & Academic Terminology Standards
 
-- [ ] CHK020 Is 100% Vietnamese UI chrome mandated across all headings, button labels, table columns, form helpers, and dialogs? [Completeness, Spec §3.3, Spec §FR-012, Jira AC 3]
+- [ ] CHK020 Does every heading, label, column, helper and dialog render fully in the selected language (Vietnamese default, English via the switch), no mixed language? [Completeness, Spec §3.3, Spec §FR-012, Jira AC 3]
 - [ ] CHK021 Are canonical higher-education domain terms (`Khóa học`, `Tài liệu môn học`, `Giảng viên`, `Lập chỉ mục`, `Lưu trữ`) enforced in place of forbidden K-12 terms? [Consistency, Spec §1.2, Spec §FR-012, FND §1.2]
 - [ ] CHK022 Are language-mixing prohibitions (e.g. English button labels or placeholder copy on Vietnamese screens) explicitly specified? [Clarity, Spec §3.3, R01 §1 Rule 6]
 - [ ] CHK023 Are upload validation failure messages (unsupported file type, oversized file, 0-byte file) documented with exact Vietnamese copy? [Clarity, Spec §6 User Story 2, Data-Model §3]

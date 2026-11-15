@@ -106,12 +106,12 @@ A parsed and embedded text segment stored in database table `document_chunks` (p
 
 ## 3. Client-Side Validation Rules
 
-| Entity / Action | Input Field | Validation Rule | Error Message (Vietnamese) |
-|---|---|---|---|
-| Course Create/Edit | `name` | `string`, `trim().length >= 2 && <= 200` per `CreateCourseDto` | "Tên khóa học phải có từ 2 đến 200 ký tự" |
-| Course Create/Edit | `courseCode` | Optional, `length <= 20`, alphanumeric & dashes | "Mã khóa học tối đa 20 ký tự" |
-| Course Create/Edit | `description` | Optional, `length <= 1000` | "Mô tả khóa học tối đa 1000 ký tự" |
-| Material Upload | `file` (format) | Extension must be `.pdf` or `.docx` | "Hệ thống chỉ hỗ trợ định dạng PDF hoặc DOCX" |
-| Material Upload | `file` (size) | `sizeBytes <= 50 * 1024 * 1024` (50MB) | "Dung lượng tệp vượt quá giới hạn tối đa 50MB" |
-| Material Upload | `file` (empty) | `sizeBytes > 0` | "Tệp không có nội dung (0 bytes)" |
-| Material Delete | Confirmation | Explicit user confirmation click in dialog (02.6) | "Hành động này sẽ xóa vĩnh viễn tài liệu và các đoạn trích dẫn liên quan" |
+| Entity / Action | Input Field | Validation Rule | Error message key / Vietnamese copy | English copy `[ĐỀ-XUẤT]` (PO review) |
+|---|---|---|---|---|
+| Course Create/Edit | `name` | `string`, `trim().length >= 2 && <= 200` per `CreateCourseDto` | `courses.validation.nameLength` / "Tên khóa học phải có từ 2 đến 200 ký tự" | "Course name must be between 2 and 200 characters" |
+| Course Create/Edit | `courseCode` | Optional, `length <= 20`, alphanumeric & dashes | `courses.validation.codeLength` / "Mã khóa học tối đa 20 ký tự" | "Course code must not exceed 20 characters" |
+| Course Create/Edit | `description` | Optional, `length <= 1000` | `courses.validation.descriptionLength` / "Mô tả khóa học tối đa 1000 ký tự" | "Course description must not exceed 1000 characters" |
+| Material Upload | `file` (format) | Extension must be `.pdf` or `.docx` | `materials.validation.format` / "Hệ thống chỉ hỗ trợ định dạng PDF hoặc DOCX" | "Only PDF or DOCX file formats are supported" |
+| Material Upload | `file` (size) | `sizeBytes <= 50 * 1024 * 1024` (50MB) | `materials.validation.size` / "Dung lượng tệp vượt quá giới hạn tối đa 50MB" | "File size exceeds maximum limit of 50MB" |
+| Material Upload | `file` (empty) | `sizeBytes > 0` | `materials.validation.empty` / "Tệp không có nội dung (0 bytes)" | "File contains no content (0 bytes)" |
+| Material Delete | Confirmation | Explicit user confirmation click in dialog (02.6) | `materials.deleteModal.warning` / "Hành động này sẽ xóa vĩnh viễn tài liệu và các đoạn trích dẫn liên quan" | "This action will permanently delete the course material and associated excerpts" |

@@ -5,7 +5,7 @@
 > **Active Directory**: `specs/001-fe026-courses-materials`  
 > **Workspace**: repository root  
 > **Created**: 2026-11-15  
-> **Last Updated**: 2026-11-15 (Stage 6 Analyze Completed & Gate Log Established)
+> **Last Updated**: 2026-11-16 (Stage 6 Analyze Completed & Gate Log Established)
 
 ---
 
@@ -106,6 +106,19 @@ All decisions recorded verbatim from PO chat on 2026-11-15:
 
 5. **Q5: Material Delete Route Alignment (`DELETE /materials/:id`)**:
    > *"Chọn A – sửa trong FE-026. Yêu cầu: - Sử dụng đúng endpoint DELETE mà backend hiện đang cung cấp. - Kiểm tra global prefix, API baseURL và route thực tế trước khi xác định URL cuối cùng. Không tự ý thêm `/api/v1` hai lần. - Không tạo alias backend chỉ để tương thích với endpoint frontend sai. - Giữ nguyên API contract và kiến trúc backend hiện tại. - Ghi nhận đây là lỗi tồn đọng từ FE-005, liên kết nguồn phát hiện để bảo đảm truy vết. - Bổ sung regression test xác nhận frontend gọi đúng endpoint và xử lý chính xác các kết quả 200/204, 403, 404 và lỗi server. - Kiểm tra dữ liệu danh sách được cập nhật sau khi xóa thành công; không xóa hàng trên UI trước khi API xác nhận thành công. - Kiểm tra cả trường hợp lỗi mạng và quyền truy cập. - Chạy kiểm thử trên phiên bản tích hợp sau khi merge vào develop. Đưa nội dung sửa lỗi vào spec, tasks và Acceptance Test Matrix của FE-026. Không đánh dấu hoàn thành nếu mới chỉ sửa URL mà chưa kiểm chứng thao tác xóa thực tế."*
+
+6. **Q6: Phạm vi Bản địa hóa & Nút chuyển ngôn ngữ VI/EN trên Header (Localization Scope & Header Language Switch)**:
+   - **Superseded decision (2026-11-16, PO chat)**:
+     `SUPERSEDED (2026-11-16, PO chat): replaced by the PO directive that the approved Figma page 08, including the VI/EN switch, is the UI source`:
+     > *"MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."*
+   - **PO Directive mới `[PO-ĐÃ-XÁC-NHẬN]` (2026-11-16, chat, verbatim)**:
+     > *"Figma page 08 đã được PO chốt. Nút chuyển ngôn ngữ VN / ENG là thành phần tôi chủ động bổ sung và đã hoàn thiện trên Figma. Thiết kế này thuộc giao diện sản phẩm đã được duyệt."*
+     - **Nguyên tắc**: (1) Figma đã duyệt là nguồn duy nhất cho thiết kế UI; (2) Các tài liệu kỹ thuật, ghi chú UX, Kế hoạch dự án và Spec Kit chưa được PO duyệt phải được cập nhật để khớp với Figma; (3) Tuyệt đối không dùng tài liệu cũ hoặc tài liệu Draft để loại bỏ, từ chối hay hoãn thành phần giao diện đã được duyệt.
+     - **Yêu cầu thực thi**:
+       - Giữ nguyên nút chuyển đổi VI/EN trên shared header đúng như trên Figma page 08 (khung `Language` node `544:5800`, component `EB/Header Actions` `540:347`). Bản thân header thuộc phạm vi vỏ ứng dụng FE-025 (shell); các màn hình và component dùng chung của FE-026 phải chuyển đổi đồng bộ theo trạng thái ngôn ngữ được chọn.
+       - Hệ thống bản địa hóa hỗ trợ song ngữ Tiếng Việt và Tiếng Anh trong phạm vi giao diện được duyệt; khôi phục cặp tệp locale `.vi.json` / `.en.json` theo cơ chế i18n thực tế của FE-023 (`SUPPORTED_LANGUAGES = ["vi", "en"]`, `DEFAULT_LANGUAGE = "vi"`, `fallbackLng: "vi"`, lưu lựa chọn trong `localStorage` key `edubranch-lang`).
+       - Tiêu chí nghiệm thu (AC) và kiểm thử phải kiểm chứng hành vi chuyển đổi ngôn ngữ thực tế trên trình duyệt, không chỉ kiểm tra riêng nút bấm.
+       - Màn hình và component dùng chung hiển thị trọn vẹn theo một ngôn ngữ tại một thời điểm (không trộn lẫn ngôn ngữ); dữ liệu động từ API (tên khóa học, tên file, nội dung chunk) hiển thị đúng theo dữ liệu gốc được lưu trữ, không tự ý dịch; không tự ý dịch tự do thuật ngữ nghiệp vụ; các chuỗi tiếng Anh được đánh dấu `[ĐỀ-XUẤT]` cho đến khi PO duyệt.
 
 ---
 

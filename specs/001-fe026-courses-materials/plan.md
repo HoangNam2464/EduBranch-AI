@@ -17,7 +17,12 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 4. **Soft Archive via OPD-014 (PO Q4 & Review R2-3)**: Frame 02.3 replaces destructive deletion with soft archive, eliminating the HTTP 500 error on courses with materials. Schema evaluation confirms that reusing the existing `is_active` column on the `courses` table (`courses.is_active = FALSE` per `backend/migrations/V1__init_schema.sql:39`) fulfills all OPD-014 requirements without creating parallel columns or mechanisms.
 5. **Route Alignment (PO Q5 & Review R2-1)**: Fix `DELETE /materials/:id` directly in frontend `materialService.ts` relative to `/api/v1` base URL.
 6. **API Response Envelope & Model Mapping (Review R3-1)**: All existing backend endpoints return `{ "status": "SUCCESS", "data": ... }` with snake_case fields (`course_code`, `lecturer_id`, `is_active`, `original_filename`, `stored_object_key`, `mime_type`, `size_bytes`, `processing_status`, `chunk_count`, `processing_error`, `uploaded_at`). Clean mapping to frontend camelCase models is encapsulated in `frontend/src/services/mappers/course.ts` and `material.ts`. All proposed endpoints (`PATCH /courses/:id/archive`, `GET /materials/:id/chunks`) adopt the identical envelope.
-7. **Localization Scope & Future English Localization (`[PO-ĐÃ-XÁC-NHẬN]`)**: Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."). The shared header Language VI|EN toggle (`544:5800`) is out of MVP scope; FE-026 implements no language switching and no English strings; the header itself is FE-025 shell scope. Feature locale files follow FE-023: `frontend/src/locales/courses.vi.json` and `materials.vi.json` (one top-level key each, merged by `src/lib/i18n.ts`). No `.en.json` files are created.
+7. **Localization Architecture & VI/EN Language Switch (`[PO-ĐÃ-XÁC-NHẬN]`)**:
+   - `SUPERSEDED (2026-11-16, PO chat): replaced by the PO directive that the approved Figma page 08, including the VI/EN switch, is the UI source`:
+     > "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."
+   - **PO Directive mới (2026-11-16, verbatim)**: "Figma page 08 đã được PO chốt. Nút chuyển ngôn ngữ VN / ENG là thành phần tôi chủ động bổ sung và đã hoàn thiện trên Figma. Thiết kế này thuộc giao diện sản phẩm đã được duyệt."
+   - **Cơ chế i18n theo chuẩn FE-023**: `src/lib/i18n.ts` định nghĩa `SUPPORTED_LANGUAGES = ["vi", "en"]`, `DEFAULT_LANGUAGE = "vi"`, `fallbackLng: "vi"`; ngôn ngữ được lưu trong `localStorage` key `edubranch-lang` (thứ tự phát hiện chỉ đọc localStorage; không đọc ngôn ngữ trình duyệt, lần đầu truy cập luôn mở tiếng Việt). File cơ sở `src/locales/vi.json` + `en.json` cùng bộ key, cộng các file tính năng `src/locales/<feature>.vi.json` / `<feature>.en.json` (mỗi file một top-level key: `courses`, `materials`) được gộp tự động qua `import.meta.glob`. Do `fallbackLng` là `vi`, bất kỳ key nào thiếu trong `.en.json` sẽ hiển thị tiếng Việt trên màn hình tiếng Anh gây trộn lẫn ngôn ngữ; vì vậy yêu cầu bắt buộc bảo đảm key parity (tập key giống hệt nhau giữa hai file).
+   - **Shared Header Switch**: Shell FE-025 (`frontend/src/layouts/shell/HeaderActions.tsx`) hiển thị nút chuyển ngôn ngữ với `aria-pressed`, `lang`, label `lang.toUpperCase()`, gọi `i18n.changeLanguage(lang)`. Các màn hình FE-026 và component dùng chung chuyển đổi đầy đủ theo ngôn ngữ được chọn. Bản dịch tiếng Anh được gắn nhãn `[ĐỀ-XUẤT]` chờ PO duyệt.
 
 ---
 
@@ -46,8 +51,8 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
   - Maximum upload size: `50 * 1024 * 1024` bytes (50MB) per `backend/src/modules/material/material.service.ts:19`.
   - Allowed file formats: PDF (`application/pdf`) and DOCX (`application/vnd.openxmlformats-officedocument.wordprocessingml.document`).
   - Colors: Locked Eduva Navy (`#2A4E7F`) and Sky (`#00A5F5`) design tokens.
-  - Strict Anti-AI-slop: Zero Unicode emojis, zero raw ASCII symbols as buttons, 100% academic Vietnamese UI chrome.
-  - Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval.").
+  - Strict Anti-AI-slop: Zero Unicode emojis, zero raw ASCII symbols as buttons, UI chrome fully in the selected language (Vietnamese default; English via the switch), no mixing.
+  - Localization: Vietnamese default, English pair supported via i18next and header VI/EN switch; choice persisted in `localStorage` (`edubranch-lang`); feature files `courses.vi.json` / `.en.json` and `materials.vi.json` / `.en.json` with full key parity; no mixed language; English strings `[ĐỀ-XUẤT]` pending PO review.
 - **Scale/Scope**: 3 primary views, 4 modal/dialog flows, 7 Figma frames (`02.1`–`02.7`).
 
 ---
@@ -155,8 +160,11 @@ frontend/src/
 │       └── material.ts          # Maps Material API responses & status enums
 └── locales/
     ├── courses.vi.json          # Courses feature translations (one top-level key)
+    ├── courses.en.json          # Courses English feature translations (key parity)
     ├── materials.vi.json        # Materials feature translations (one top-level key)
-    └── states.vi.json           # Shared state copy
+    ├── materials.en.json        # Materials English feature translations (key parity)
+    ├── states.vi.json           # Shared state copy (Vietnamese)
+    └── states.en.json           # Shared state copy (English)
 ```
 
 ---

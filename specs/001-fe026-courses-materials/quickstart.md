@@ -95,7 +95,39 @@
 
 ---
 
-## 5. Build & Automated Quality Gate Check
+## 5. Scenario 4 – Language Switch (ATM-L10N-01..05)
+1. **First Visit (Default Vietnamese - ATM-L10N-01)**:
+   - Clear `localStorage` (ensure `edubranch-lang` is absent) or open an incognito session.
+   - Navigate to `/lecturer/courses`.
+   - **Verification**:
+     - `document.documentElement.lang` is `"vi"`.
+     - In the shared header `EB/Header Actions`, `Language` switch (`544:5800`) shows `Option · VI` (`544:5801`) active (`action/primary` `#2A4E7F` fill, `text/inverse` `#FFFFFF`, `aria-pressed="true"`) and `Option · EN` (`544:5803`) inactive (no fill, `text/secondary` `#696A70`, `aria-pressed="false"`).
+     - All headings, button labels, table columns, form helpers, and dialogs render in Vietnamese (`"Khóa học"`, `"Tạo khóa học mới"`, `"Tài liệu môn học"`).
+2. **Switch to English (ATM-L10N-02)**:
+   - Click `Option · EN` on the header language toggle.
+   - **Verification**:
+     - `localStorage.getItem('edubranch-lang')` equals `"en"`.
+     - Toggle styles swap: `Option · EN` active (Navy fill, white text, `aria-pressed="true"`); `Option · VI` inactive (no fill, secondary text, `aria-pressed="false"`).
+     - Every visible UI text element across courses, materials, RAG inspector, and all dialogs/modals switches to English (`"Courses"`, `"Create Course"`, `"Course Materials"`, `"Upload Materials"`, `"Archive Course"`).
+     - Zero Vietnamese strings remain in the UI chrome.
+     - API data values (course names, filenames, chunk texts) remain unchanged as stored.
+3. **Persistence on Reload (ATM-L10N-03)**:
+   - Reload the browser page (`F5` or `Ctrl+R`).
+   - **Verification**:
+     - Application mounts directly in English; toggle displays `Option · EN` active immediately without a visual flash of Vietnamese.
+4. **Switch Back to Vietnamese (ATM-L10N-04)**:
+   - Click `Option · VI`.
+   - **Verification**:
+     - Toggle styles swap back; UI chrome reverts completely to academic Vietnamese; `localStorage` stores `"vi"`.
+5. **Dynamic Feedback States Localization (ATM-L10N-05)**:
+   - Trigger an empty state (e.g. 0 courses) or error state (e.g. simulated upload failure or 404).
+   - Toggle language between VI and EN.
+   - **Verification**:
+     - State titles, descriptions, and action buttons dynamically translate between Vietnamese and English without page reload or loss of state context.
+
+---
+
+## 6. Build & Automated Quality Gate Check
 Run the frontend production build:
 ```powershell
 cd frontend

@@ -2,7 +2,7 @@
 
 **Feature Branch**: `docs/spec-kit-workflow` (Worktree: `specs/001-fe026-courses-materials`)  
 **Created**: 2026-11-15  
-**Updated**: 2026-11-15 (Clarifications & PO Decisions Integrated)  
+**Updated**: 2026-11-16 (Clarifications & PO Decisions Integrated)  
 **Status**: Draft (Clarified)  
 **Parent Task**: Jira `EBA-89` (Sprint 3) · Master Tasks `EBA-101`, `EBA-102`, `EBA-201`, `EBA-202`, `EBA-203`, `EBA-204`, `EBA-205`, `EBA-206`, `EBA-207`, `EBA-217`, `EBA-218`  
 **Input**: Jira description (verbatim):
@@ -61,11 +61,18 @@
 
 ### Session 2026-11-16
 
-- **Q6: Phạm vi Bản địa hóa & Nút chuyển ngôn ngữ VI|EN trên Header (Localization Scope & Header Language Toggle)**
-  - **Question**: Bản thiết kế Figma thể hiện nút chuyển đổi ngôn ngữ VI|EN trên shared header (`EB/Header Actions`, frame `Language` node `544:5800`). Phạm vi bản địa hóa cho FE-026 và MVP được xác định như thế nào?
-  - **Answer**: `[PO-ĐÃ-XÁC-NHẬN]` (2026-11-16, chat, verbatim):
+- **Q6: Phạm vi Bản địa hóa & Nút chuyển ngôn ngữ VI/EN trên Header (Localization Scope & Header Language Switch)**
+  - **Question**: Bản thiết kế Figma thể hiện nút chuyển đổi ngôn ngữ VI/EN trên shared header (`EB/Header Actions`, frame `Language` node `544:5800`). Phạm vi bản địa hóa cho FE-026 và MVP được xác định như thế nào?
+  - **Answer**: `SUPERSEDED (2026-11-16, PO chat): replaced by the PO directive that the approved Figma page 08, including the VI/EN switch, is the UI source`:
     > "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."
-  - **Ghi nhận đối với Figma (Intended Deviation from Figma by PO decision)**: Thành phần `Language` VI|EN toggle (`544:5800`) trong shared header `EB/Header Actions` (`540:347`) là ngoài phạm vi MVP (out of MVP scope). FE-026 không triển khai tính năng chuyển đổi ngôn ngữ và không triển khai chuỗi tiếng Anh; bản thân khung header dùng chung thuộc phạm vi vỏ ứng dụng FE-025 (app shell scope). Đây là sai khác có chủ đích so với Figma theo quyết định của PO. Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval.
+  - **PO Directive mới `[PO-ĐÃ-XÁC-NHẬN]` (2026-11-16, chat, verbatim)**:
+    > "Figma page 08 đã được PO chốt. Nút chuyển ngôn ngữ VN / ENG là thành phần tôi chủ động bổ sung và đã hoàn thiện trên Figma. Thiết kế này thuộc giao diện sản phẩm đã được duyệt."
+    - **Nguyên tắc**: (1) Figma đã duyệt là nguồn duy nhất cho thiết kế UI; (2) Các tài liệu kỹ thuật, ghi chú UX, Kế hoạch dự án và Spec Kit chưa được PO duyệt phải được cập nhật để khớp với Figma; (3) Tuyệt đối không dùng tài liệu cũ hoặc tài liệu Draft để loại bỏ, từ chối hay hoãn thành phần giao diện đã được duyệt.
+    - **Yêu cầu thực thi**:
+      - Giữ nguyên nút chuyển đổi VI/EN trên shared header đúng như trên Figma page 08 (khung `Language` node `544:5800`, component `EB/Header Actions` `540:347`). Bản thân header thuộc phạm vi vỏ ứng dụng FE-025 (shell); các màn hình và component dùng chung của FE-026 phải chuyển đổi đồng bộ theo trạng thái ngôn ngữ được chọn.
+      - Hệ thống bản địa hóa hỗ trợ song ngữ Tiếng Việt và Tiếng Anh trong phạm vi giao diện được duyệt; khôi phục cặp tệp locale `.vi.json` / `.en.json` theo cơ chế i18n thực tế của FE-023 (`SUPPORTED_LANGUAGES = ["vi", "en"]`, `DEFAULT_LANGUAGE = "vi"`, `fallbackLng: "vi"`, lưu lựa chọn trong `localStorage` key `edubranch-lang`).
+      - Tiêu chí nghiệm thu (AC) và kiểm thử phải kiểm chứng hành vi chuyển đổi ngôn ngữ thực tế trên trình duyệt, không chỉ kiểm tra riêng nút bấm.
+      - Màn hình và component dùng chung hiển thị trọn vẹn theo một ngôn ngữ tại một thời điểm (không trộn lẫn ngôn ngữ); dữ liệu động từ API (tên khóa học, tên file, nội dung chunk) hiển thị đúng theo dữ liệu gốc được lưu trữ, không tự ý dịch; không tự ý dịch tự do thuật ngữ nghiệp vụ; các chuỗi tiếng Anh được đánh dấu `[ĐỀ-XUẤT]` cho đến khi PO duyệt.
 
 ---
 
@@ -92,7 +99,13 @@
 
 ### 3.2.1. Ghi chú sai khác có chủ đích so với Figma (Intended Deviation from Figma)
 - **Nhãn nút thao tác trên dòng FAILED (Frame 02.4 / Node `586:8570`)**: Trên Figma frame 02.4/02.6, nút hành động gắn nhãn "Thử lại". Theo quyết định chính thức của PO (Q3, 2026-11-15 [PO-ĐÃ-XÁC-NHẬN]), nhãn nút được đổi thành **"Tải lên lại"** (hoặc "Chọn tệp tải lại"). Khi bấm nút, hệ thống mở Modal Tải tài liệu (02.5) kèm ngữ cảnh lỗi của tệp trước đó và yêu cầu người dùng chọn lại file gốc để tạo lượt xử lý mới qua API upload hiện có `POST /courses/:courseId/materials`. Quyết định này phản ánh chính xác bản chất nghiệp vụ do backend chưa có API re-ingest tài liệu hiện hữu.
-- **Nút chuyển đổi ngôn ngữ VI|EN trên Shared Header (Node `544:5800`)**: Trên Figma shared header component `EB/Header Actions` (`540:347`) có frame `Language` (`544:5800`) gồm hai tùy chọn `VI` (`544:5801`) và `EN` (`544:5803`). Theo quyết định của PO (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16: *"MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."*), thành phần chuyển ngôn ngữ VI|EN là ngoài phạm vi MVP (out of MVP scope). FE-026 không triển khai chuyển đổi ngôn ngữ và không sử dụng chuỗi tiếng Anh; khung header dùng chung thuộc phạm vi vỏ ứng dụng của FE-025. Đây là sai khác có chủ đích so với Figma theo quyết định của PO. Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval.
+
+### 3.2.2. Nút chuyển đổi ngôn ngữ VI/EN trên Shared Header (Figma Language Switch)
+- Nút chuyển đổi ngôn ngữ `Language` (Node `544:5800`) thuộc component dùng chung `EB/Header Actions` (Node `540:347`, COMPONENT; mô tả "... đổi ngôn ngữ VI/EN ..."; 76 instances trên Page 08 `483:9634`). Kích thước 78×40, fill `bg/surface-muted` (`#EEF2F9`), viền `border-default`, bo góc radius 10.
+  - `Option · VI` (Node `544:5801`): 34×32, radius 8, fill `action/primary` (`#2A4E7F`), chữ "VI" (`544:5802`) Roboto Medium 12 `text/inverse` (`#FFFFFF`) — thể hiện trạng thái hoạt động (active state mặc định).
+  - `Option · EN` (Node `544:5803`): không fill, chữ "EN" (`544:5804`) Roboto Medium 12 `text/secondary` (`#696A70`) — thể hiện trạng thái không hoạt động (inactive state). Nhãn trên Figma chính xác là "VI" và "EN".
+  - Trạng thái EN-active chưa được vẽ riêng trên Figma prototype; khi EN được chọn, style hai tùy chọn được hoán đổi (EN nhận fill `action/primary` + `text/inverse`, VI chuyển sang no fill + `text/secondary`).
+  - Bản thân header thuộc phạm vi vỏ ứng dụng FE-025 (shell scope); các màn hình và component dùng chung của FE-026 phải chuyển đổi ngôn ngữ đồng bộ theo trạng thái lựa chọn từ nút này.
 
 ### 3.3. Quy chuẩn Design System Tokens & Typography (Tuân thủ R01 & Eduva)
 - **Hệ màu chuẩn (Locked Hex Tokens)** `[DỮ-KIỆN]`:
@@ -114,7 +127,7 @@
   - CẤM 100% emoji Unicode (`🌿`, `📚`, `📄`, `✅`, `❌`, `⚠️`, `🔍`, v.v.) trong code và giao diện; thay bằng Lucide vector SVG (`BookOpen`, `FileText`, `CheckCircle2`, `AlertCircle`, `UploadCloud`, `Trash2`, `RotateCcw`).
   - CẤM các ký tự text thay icon (`->`, `&rarr;`, `✕`, `✓`).
   - CẤM màu tím, gradient lòe loẹt, viền neon.
-  - CẤM trộn lẫn tiếng Anh và tiếng Việt; toàn bộ chrome giao diện hiển thị 100% tiếng Việt chuẩn học thuật.
+  - CẤM trộn lẫn tiếng Anh và tiếng Việt trên cùng một màn hình; màn hình và component dùng chung hiển thị trọn vẹn theo một ngôn ngữ được chọn tại một thời điểm (mặc định tiếng Việt, chuyển sang tiếng Anh thông qua nút chuyển đổi VI/EN).
 
 ---
 
@@ -159,7 +172,7 @@ Mỗi màn hình trong 3 màn hình chính phải triển khai đầy đủ 6 tr
 | **403 Forbidden** | Chặn hiển thị nếu user không phải LECTURER hoặc không sở hữu khóa học; chuyển hướng `/403`. | Chặn truy cập nếu khóa học không thuộc quyền sở hữu của giảng viên đang đăng nhập. | Chặn truy cập nếu tài liệu không thuộc khóa học của giảng viên. |
 | **Success** | Modal đóng sau khi tạo/sửa thành công; Toast xanh xác nhận; danh sách tự động cập nhật. | File upload thành công xuất hiện trong bảng ở trạng thái `PENDING`/`PROCESSING`; Toast xanh. Xóa thành công cập nhật bảng. | (Xem dữ liệu - read-only). |
 
-*Ghi chú về bản địa hóa các trạng thái (States Localization)*: Toàn bộ thông điệp và nội dung trạng thái (loading, empty, error, 403, success) sử dụng 100% tiếng Việt từ `frontend/src/locales/states.vi.json` và các file locale chức năng `courses.vi.json`, `materials.vi.json`. Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval.").
+*Ghi chú về bản địa hóa các trạng thái (States Localization)*: Toàn bộ thông điệp và nội dung trạng thái (loading, empty, error, 403, success) được bản địa hóa đầy đủ qua cặp tệp locale `states.vi.json` / `states.en.json` và các file locale chức năng `courses.vi.json` / `courses.en.json`, `materials.vi.json` / `materials.en.json`. Trạng thái hiển thị đồng bộ theo ngôn ngữ được chọn; mặc định tiếng Việt, chuyển sang tiếng Anh khi người dùng chọn EN trên header; không trộn lẫn ngôn ngữ.
 
 ---
 
@@ -230,7 +243,7 @@ Giảng viên muốn kiểm tra các đoạn trích dẫn (chunks) của một t
 - **FR-009**: Hệ thống PHẢI tái cấu trúc giao diện trang RAG Source Inspector (`/lecturer/courses/:courseId/materials/:materialId/rag`, Figma frame `02.7` / Node `483:11148`) hiển thị 3 card chỉ số metadata; loại bỏ 100% dữ liệu tĩnh giả lập (`MOCK_CHUNKS`, `OTHER_DOCUMENTS`); kết nối với API chunks thực tế qua đề xuất backend `BE-PROP-1` `GET /materials/:id/chunks` (`specs/001-fe026-courses-materials/be-dependencies.md`); hiển thị trạng thái lỗi / chưa khả dụng (`ErrorState`) với lý do thực tế khi API chưa sẵn sàng hoặc trả về lỗi (404, 403, 5xx); chỉ hiển thị `EmptyState` khi API trả về 200 OK với danh sách rỗng; tuyệt đối không dùng fallback mảng rỗng `[]` khi thiếu API hay gặp lỗi. (Phục vụ Jira AC 1, 4, Frame 02.7, PO Q2)
 - **FR-010**: Kế hoạch triển khai và kiến trúc component của FE-026 PHẢI kế thừa cấu trúc FE-023 (`src/components/ds/`, `src/routes/paths.ts`, locale i18n riêng) sau khi FE-023 được merge vào `develop`; không triển khai mã nguồn trên cấu trúc cũ và không tự ý đưa thay đổi uncommitted vào branch. (Phục vụ PO Q1, Kiến trúc)
 - **FR-011**: Toàn bộ giao diện PHẢI tuân thủ nghiêm ngặt bảng token màu sắc Eduva Navy `#2A4E7F` / Sky `#00A5F5` (R01 §2); áp dụng quy tắc phẳng hóa không viền không bóng card trên nền canvas `#F3F6FC`; cấm 100% emoji Unicode, cấm icon text thô, cấm màu tím / gradient lòe loẹt theo quy tắc chống AI-slop (R01 §1). (Phục vụ Jira AC 1, R01 §1)
-- **FR-012**: 100% nội dung hiển thị trên giao diện PHẢI được bản địa hóa sang tiếng Việt học thuật chuẩn thông qua hệ thống i18n; đồng nhất các thuật ngữ theo FND §1.2 (`Giảng viên`, `Khóa học`, `Tài liệu môn học`, `Lập chỉ mục`, `Lưu trữ`). Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."). (Phục vụ Jira AC 3, FND §1.2)
+- **FR-012**: Toàn bộ nội dung hiển thị trên giao diện các màn hình FE-026 và các component dùng chung PHẢI được bản địa hóa đầy đủ theo ngôn ngữ được chọn thông qua hệ thống i18n (hỗ trợ Tiếng Việt và Tiếng Anh); mặc định tiếng Việt, chuyển sang tiếng Anh thông qua nút chuyển đổi VI/EN trên shared header; lựa chọn được lưu trong `localStorage` (`edubranch-lang`); tuyệt đối không trộn lẫn ngôn ngữ trên cùng một màn hình; dữ liệu động từ API (tên khóa học, tên file, nội dung đoạn trích chunks) hiển thị nguyên vẹn như được lưu trữ, không tự ý dịch; đồng nhất các thuật ngữ theo FND §1.2 (`Khóa học` / `Courses`, `Tài liệu môn học` / `Course Materials`, `Lập chỉ mục` / `Indexing`, `Lưu trữ` / `Archive`), không tự ý dịch tự do; các chuỗi tiếng Anh được gắn nhãn `[ĐỀ-XUẤT]` cho đến khi PO phê duyệt. (Phục vụ Jira AC 3, FND §1.2, PO Directive 2026-11-16 [PO-ĐÃ-XÁC-NHẬN])
 - **FR-013**: Hệ thống PHẢI đảm bảo kiểm soát truy cập và ranh giới sở hữu: chỉ tài khoản đăng nhập có role `LECTURER` và là chủ sở hữu của khóa học (`lecturerId = currentUser.id`) mới được phép truy cập và thao tác trên 3 route này; mọi truy cập trái phép bị chặn ở mức guard `403`. (Phục vụ FND §3, Bảo mật)
 
 ### 7.2. Key Entities (Thực thể chính)
@@ -269,7 +282,7 @@ Giảng viên muốn kiểm tra các đoạn trích dẫn (chunks) của một t
   2. Màu sắc nút và badge: Nút chính màu Navy `#2A4E7F`, không còn nút màu xanh lam cũ `#2563EB`, không có màu tím hay gradient.
   3. Badge trạng thái: Đúng màu nền, màu chữ và chấm tròn `6px` theo bảng token §3.3.
   4. Icon: Toàn bộ là Lucide SVG monochrome, không có emoji hay ký tự thô.
-  5. Ngôn ngữ: 100% tiếng Việt, các thuật ngữ học thuật đồng nhất theo FND §1.2.
+  5. Ngôn ngữ: Mặc định tiếng Việt, chuyển sang tiếng Anh khi bật nút chuyển đổi VI/EN; không trộn lẫn ngôn ngữ; các thuật ngữ học thuật đồng nhất theo FND §1.2.
 
 ---
 

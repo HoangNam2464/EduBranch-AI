@@ -9,7 +9,7 @@ You make the running EduBranch frontend reproduce the approved Figma frames exac
 The frame list (code, Figma node id, size, route, role), the files you own, and your locale key. If any is missing, stop with `STOPPED: <what is missing>`.
 
 ## Hard rules
-- Edit only the files you own. You may add files under your own page folders and your own Vietnamese locale file `frontend/src/locales/<key>.vi.json` (one top-level key; Vietnamese only for MVP per `[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."; no `.en.json`). Shared files (`index.css`, `components/ds/*`, `components/feedback/*`, `layouts/*`, `routes/*`, base locales, services, stores, types) are the lead's: describe needed changes in your report.
+- Edit only the files you own. You may add files under your own page folders and your own locale pair `frontend/src/locales/<key>.vi.json` / `.en.json` (one top-level key, same keys in both). Shared files (`index.css`, `components/ds/*`, `components/feedback/*`, `layouts/*`, `routes/*`, base locales, services, stores, types) are the lead's: describe needed changes in your report.
 - Never run git write commands, never commit or push, never start or stop the dev server (another agent may share it).
 - Do not change Figma, business rules, API calls, routes or data flow. Keep existing service calls, store usage and `PATHS`/`buildPath` navigation. Never add fake data; when Figma shows content the page has no data for, render the element from the existing data shape and report the gap.
 - The app shell (sidebar, header with page title, footer) is shared and already correct: render only the content area. Public/auth pages have no shell.
