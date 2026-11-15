@@ -14,7 +14,7 @@
 - **Sidebar thu gọn**: nút "Thu gọn" nằm trên khu tài khoản. Bản thu gọn rộng 72px, chỉ hiện icon, ẩn nhãn; avatar và nút đăng xuất căn giữa. Mục đang chọn tô nền navy, không có vạch trắng bên cạnh. Mỗi sidebar luôn có đúng một mục đang chọn. Ví dụ: 03.4b, 05.2b, 10.2b.
 - **Header dùng chung** `EB/Header Actions` cho cả 3 vai trò: ô tìm kiếm có phím tắt Ctrl K, chuyển ngôn ngữ VI | EN (nút chuyển VI/EN là thành phần thuộc shared header đã duyệt trên Figma page 08, mặc định tiếng Việt, hỗ trợ tiếng Anh), nút sáng/tối, thông báo (chấm đỏ khi có tin chưa đọc), cài đặt, tài khoản. Không tạo bản riêng theo vai trò. Giao diện tối **chưa thiết kế**, nút chỉ là chỗ đặt.
 - **Footer dùng chung** `EB/App Footer` luôn nằm ở đáy nội dung. Màn có ít nội dung (trạng thái trống, lỗi) dùng khung 900px để khối nội dung kéo dài và footer chạm đáy, không để khoảng trống lớn bên dưới.
-- Ngôn ngữ giao diện tiếng Việt. Màu chính navy `#2A4E7F`, nhấn sky `#00A5F5`. Không dùng xanh lá làm màu thương hiệu; xanh lá chỉ dành cho trạng thái thành công.
+- Ngôn ngữ giao diện: mặc định tiếng Việt; tiếng Anh qua nút VI/EN đã duyệt trên Figma; mỗi màn một ngôn ngữ, không trộn (PO 2026-11-16). Màu chính navy `#2A4E7F`, nhấn sky `#00A5F5`. Không dùng xanh lá làm màu thương hiệu; xanh lá chỉ dành cho trạng thái thành công.
 
 ### 1.2 Quy tắc chỉn chu (đã rút ra khi PO duyệt)
 - Nút quay lại chỉ là mũi tên, không bọc ô vuông.

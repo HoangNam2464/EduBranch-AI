@@ -31,7 +31,7 @@ Verification levels (01_MASTER-TASKS §5): **T** acceptance criteria · **I** im
 
 ## 3. Change record = Spec Kit feature directory
 
-Each run keeps one feature directory `specs/NNN-<short-name>/` (created by `/speckit-specify`, sequential numbering). Content is written in Vietnamese (D5); headings from the Spec Kit templates may stay in English.
+Each run keeps one feature directory `specs/NNN-<short-name>/` (created by `/speckit-specify`, sequential numbering). Content is written in Vietnamese (D5) (artefact language; UI language: AGENTS.md rule 12); headings from the Spec Kit templates may stay in English.
 
 | File | Written by | Holds (former change-record section) |
 |---|---|---|
@@ -81,7 +81,7 @@ List what is ambiguous or missing, at most 5 questions per round. Match each to 
 Plan within current decisions: FND §3, `docs/architecture/`, the approved stack and the real source tree. Per tier (FE, API, BE, DB, AI), list the files to touch, the screens, Figma frames and reused or new components for FE (`src/components/ds`, `src/components/feedback` where they exist), API contract changes, DB changes (new migration in `backend/migrations/`), AI-service changes, the tests and risks. A new technology or boundary change needs an ADR and PO approval: stop and ask.
 
 ### 4. Checklist — `/speckit-checklist`
-Check the quality of the requirements, not the code: complete, unambiguous, testable, traced to a source, consistent with FND, GDS and banners, and covering roles, ownership, states (default, loading, empty, error, 403, success), focus and labels, responsive scope, R01 §1 bans and Vietnamese UI copy. The agent proposes each answer; only the PO or a named reviewer marks an item `[x]`. A checked item never means the work is implemented.
+Check the quality of the requirements, not the code: complete, unambiguous, testable, traced to a source, consistent with FND, GDS and banners, and covering roles, ownership, states (default, loading, empty, error, 403, success), focus and labels, responsive scope, R01 §1 bans and UI copy fully in the selected language (Vietnamese default, English through the approved VI/EN switch, AGENTS.md rule 12), no mixing. The agent proposes each answer; only the PO or a named reviewer marks an item `[x]`. A checked item never means the work is implemented.
 
 ### 5. Tasks — `/speckit-tasks`
 Break the plan into dependency-ordered tasks traced as parent task → subfeature → FE / API / BE / DB / AI / QA. Each task names its files, the AC it serves and the test that will prove it. Changes to `03_TASK-DETAILS.md` or `06_QA.md` are proposed as a diff, never applied silently.
@@ -111,6 +111,8 @@ A gate passes only with recorded evidence (command, exit code, SHA, result) in `
 | QG5 PR checks | after push | every GitHub Actions run on the PR is green (where triggered by path), plus a manual test of the PR head | Claude | GitHub Actions (path-filtered; no required status checks in develop ruleset today) |
 | QG6 Merge | after QG5 | valid Code Owner/PO approval; merge by the approved method; no bypass | PO approves, Claude merges | `develop` ruleset: PR + 1 Code Owner approval |
 | QG7 Post-merge | after merge | QG1 + QG3 re-run on `develop` at the merge SHA | Claude | — |
+
+Translation approval is a content gate separate from the technical language-switch tests; English copy is PROPOSED until the PO approves it in the feature's copy review file; QG4 fails while any English string in the release scope is PROPOSED; only the PO changes PROPOSED to APPROVED.
 
 After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR into `develop` without asking for each operation (PO decision 2026-11-15). Never: commit to `develop` or `main`, force push, include out-of-scope changes, bypass branch protection, change architecture or business rules. Jira (project EBA workflow: To Do → In Progress → review → Done) moves to `review` when the PR opens and to `Done` only after QG7 passes.
 

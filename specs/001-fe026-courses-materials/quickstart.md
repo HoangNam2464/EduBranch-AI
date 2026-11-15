@@ -2,7 +2,7 @@
 
 **Feature Directory**: `specs/001-fe026-courses-materials`  
 **Reference Design**: Figma Page `08 · EduBranch – Bản hoàn chỉnh` (frames `02.1` – `02.7`)  
-**Date**: 2026-11-15  
+**Date**: 2026-11-16  
 **Audience**: Implementers, Reviewers, and QA Engineers
 
 ---
@@ -95,9 +95,9 @@
 
 ---
 
-## 5. Scenario 4 – Language Switch (ATM-L10N-01..05)
+## 5. Scenario 4 – Language Switch (ATM-L10N-01..05) [FE-023 target (expected; not on develop `273f1fc`; verified by T028)]
 1. **First Visit (Default Vietnamese - ATM-L10N-01)**:
-   - Clear `localStorage` (ensure `edubranch-lang` is absent) or open an incognito session.
+   - Clear `localStorage` (ensure `LANGUAGE_STORAGE_KEY = "edubranch-lang"` is absent) or open an incognito session.
    - Navigate to `/lecturer/courses`.
    - **Verification**:
      - `document.documentElement.lang` is `"vi"`.

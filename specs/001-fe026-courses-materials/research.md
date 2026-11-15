@@ -12,7 +12,7 @@
 ### Decision 1: Target Frontend Architecture & Component Migration (PO Q1)
 - **Problem**: The current branch `docs/spec-kit-workflow` contains the legacy frontend structure (`frontend/src/pages/lecturer/CoursesPage.tsx`, `MaterialsPage.tsx`, `RagSourceInspectorPage.tsx`, `components/ui/`). Concurrently, the frontend architectural restructure FE-023 (`src/components/ds/`, `src/routes/paths.ts`, `src/locales/`, modular page layout `src/pages/courses/`, `src/pages/materials/`) was developed on `refactor/frontend-structure`. Should FE-026 plan against the legacy structure or target FE-023?
 - **Decision**: **Plan FE-026 strictly against the FE-023 target structure as an upstream dependency** (PO Q1, 2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`).  
-  *Note*: FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (uncommitted on 2026-11-15); every path from it is an expectation verified by T028 after merge.
+  *Note*: FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (FE-023 target (expected; not on develop `273f1fc`; verified by T028)); every path from it is an expectation verified by T028 after merge.
   - Page targets:
     - `frontend/src/pages/courses/CoursesPage.tsx` (Figma 02.1, 02.2, 02.3)
     - `frontend/src/pages/materials/MaterialsPage.tsx` (Figma 02.4, 02.5, 02.6)

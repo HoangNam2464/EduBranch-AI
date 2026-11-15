@@ -1,6 +1,6 @@
 # UI Component Contracts: FE-023 Target Mapping [FE-026]
 
-**Reference**: FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (uncommitted on 2026-11-15); every path from it is an expectation verified by T028 after merge.  
+**Reference**: FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (FE-023 target (expected; not on develop `273f1fc`; verified by T028)); every path from it is an expectation verified by T028 after merge.  
 **Design System Root**: `frontend/src/components/ds/`  
 **Feedback Components Root**: `frontend/src/components/feedback/`  
 **Page Components**:

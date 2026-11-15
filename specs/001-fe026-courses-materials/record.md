@@ -82,7 +82,7 @@
 | **G2** | Clarify | `/speckit-clarify` | **READY — awaiting PO review** | 2026-11-15 | 5 PO Decisions Q1–Q5 recorded verbatim with date 2026-11-15 under `[PO-ĐÃ-XÁC-NHẬN]`; review items R1-1, R1-2, R1-3 resolved. Zero unresolved blocking questions. |
 | **G3** | Plan | `/speckit-plan` | **READY — awaiting PO review** | 2026-11-15 | Implementation plan and design artifacts produced: `plan.md`, `research.md`, `data-model.md`, `be-dependencies.md`, `contracts/courses-api.md`, `contracts/materials-api.md`, `contracts/ui-contracts.md`, `quickstart.md`. R2-1..R2-4 and R3-1 review fixes applied. Constitution Check: PASS. |
 | **G4** | Checklist | `/speckit-checklist` | **READY — awaiting PO review** | 2026-11-15 | UX Requirements Quality Checklist generated in `checklists/ux.md` (9,576 bytes, 41 checklist items `CHK001`–`CHK041`, all unchecked `[ ]` awaiting reviewer sign-off). |
-| **G5** | Tasks | `/speckit-tasks` | **READY — awaiting PO review** | 2026-11-15 | Dependency-ordered tasks generated in `tasks.md` (37,684 bytes, 24 tasks `T001`–`T024` mapped to user stories and phases) including Acceptance Test Matrix for Q3, Q4, Q5 (9 scenarios `ATM-Q3-01..03`, `ATM-Q4-01..03`, `ATM-Q5-01..03`). |
+| **G5** | Tasks | `/speckit-tasks` | **READY — awaiting PO review** | 2026-11-15 | 24 tasks T001–T024 from `/speckit-tasks` (2026-11-15) + 15 tasks T025–T039 from `/speckit-converge` (2026-11-15/16) + T040 PO copy review of the English strings (added by the PR #38 F8 fix, 2026-11-16) = 40. |
 | **G6** | Analyze | `/speckit-analyze` | **READY — awaiting PO review** | 2026-11-15 | Cross-artifact consistency analysis completed with 0 Critical findings, 0 Constitution violations, 0 unmapped tasks, and 100% requirements coverage. |
 | **G7** | Approval | — | **PENDING** (`[CHƯA-CẤP]`) | — | Implementation scope pending PO formal sign-off post-FE-023 merge into `develop`. `/speckit-implement` is BLOCKED. |
 
@@ -126,10 +126,10 @@ All decisions recorded verbatim from PO chat on 2026-11-15:
 
 | Quality Gate | Description | Verification Method & Target | Status |
 |:---:|---|---|:---:|
-| **QG1** | Unit & Integration Tests | `npx tsx --test frontend/src/**/*.spec.ts` covering mappers, services, pages, and the 9 ATM scenarios. | Planned (`T003`–`T007`, `T013`, `T018`, `T022`) |
-| **QG2** | Production Build & Lint | `npm run build` (`tsc -b && vite build`) with zero warnings and zero TypeScript errors. | Planned (`T023`) |
-| **QG3** | Browser Visual QA vs Figma | Side-by-side browser inspection at 1440px viewport against Page 08 frames 02.1–02.7 per `CLAUDE.md`. | Planned (`T024`) |
-| **QG4** | Quality Evidence Report | QA verification report compiled in `docs/qa/` covering all acceptance criteria. | Downstream |
-| **QG5** | Pre-Push Local CI | Local CI execution of `frontend-ci.yml` before branch push. | Downstream |
-| **QG6** | PR Creation & Automation | Pull Request opened against `develop` with Figma comparison screenshots attached. | Downstream |
-| **QG7** | Merge & Jira Done | Code Owner approval, green CI checks, merge to `develop`, Jira `EBA-89` moved to Done. | Downstream |
+| **QG1** | Developer tests | `npx tsx --test frontend/src/**/*.spec.ts` covering mappers, services, pages, and the ATM scenarios. | Planned (`T003`–`T007`, `T013`, `T018`, `T022`, `T032`) |
+| **QG2** | Independent review | Diff only touches planned files; trace spec → tasks → code → tests; `/speckit-analyze` clean; QG1 re-run by reviewer. | Planned |
+| **QG3** | Browser check | Side-by-side browser inspection at 1440px viewport against Page 08 frames 02.1–02.7 per `CLAUDE.md`. | Planned (`T024`, `T035`) |
+| **QG4** | No open FAIL/BLOCKED incl. no PROPOSED copy in release | Every mandatory AC PASS; any BLOCKED item reported to the PO; all English strings in release scope marked APPROVED by the PO in `l10n-copy-review.md`. | Planned (`T038`, `T040`) |
+| **QG5** | PR checks | Every GitHub Actions run on the PR is green, plus manual test of the PR head. | Downstream |
+| **QG6** | Merge | Valid Code Owner/PO approval; merge by approved method; no bypass. | Downstream |
+| **QG7** | Post-merge | QG1 + QG3 re-run on `develop` at the merge SHA. | Downstream |

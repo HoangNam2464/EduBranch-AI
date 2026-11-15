@@ -4,7 +4,7 @@
 **Authentication**: Bearer JWT in `Authorization` header  
 **Role Required**: `LECTURER`  
 **Ownership Invariant**: All operations restricted to courses where `lecturer_id = currentUser.id`.  
-**Frontend Mapping Note**: The backend gateway returns response payloads in the envelope `{ "status": "SUCCESS", "data": ... }` with snake_case database fields. Mapping from snake_case to frontend camelCase domain models (and derivation of client counts like `materialCount`, `caseCount`) is handled cleanly in `frontend/src/services/mappers/course.ts` (FE-023 target structure).
+**Frontend Mapping Note**: The backend gateway returns response payloads in the envelope `{ "status": "SUCCESS", "data": ... }` with snake_case database fields. Mapping from snake_case to frontend camelCase domain models (and derivation of client counts like `materialCount`, `caseCount`) is handled cleanly in `frontend/src/services/mappers/course.ts` (FE-023 target structure (expected; not on develop `273f1fc`; verified by T028)).
 
 ---
 
