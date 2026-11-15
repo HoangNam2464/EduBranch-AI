@@ -63,6 +63,7 @@ export const router = createBrowserRouter([
       { path: "courses", element: <CoursesPage /> },
       { path: "courses/:courseId/materials", element: <MaterialsPage /> },
       { path: "courses/:courseId/cases", element: <CasesPage /> },
+      { path: "cases", element: <CasesPage /> },
       { path: "cases/:caseId/review", element: <CaseReviewPage /> },
       { path: "cases/:caseId/feedback", element: <LecturerFeedbackPage /> },
       { path: "statistics", element: <StatisticsPage /> },

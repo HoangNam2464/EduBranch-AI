@@ -63,12 +63,19 @@ export type ProcessingStatus = "PENDING" | "PROCESSING" | "COMPLETED" | "FAILED"
 export interface TeachingMaterial {
   id: string;
   originalFilename: string;
+  original_filename?: string;
   mimeType: string;
+  mime_type?: string;
   sizeBytes: number;
+  size_bytes?: number;
   courseId: string;
+  course_id?: string;
   processingStatus: ProcessingStatus;
+  processing_status?: ProcessingStatus;
   chunkCount?: number;
+  chunk_count?: number;
   uploadedAt: string;
+  uploaded_at?: string;
 }
 
 // ============================================================================
