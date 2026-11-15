@@ -147,9 +147,10 @@
 
 ## 2. Proposed Endpoints [ĐỀ-XUẤT]
 
-### 2.1. Get Material Chunks [ĐỀ-XUẤT] (PO Q2)
+### 2.1. Get Material Chunks [ĐỀ-XUẤT] (BE-PROP-1, PO Q2)
+- **Status**: PROPOSED — not created in Jira (see `specs/001-fe026-courses-materials/be-dependencies.md`, task `BE-PROP-1`). Requires PO approval.
 - **Method / Endpoint**: `GET /materials/:id/chunks` `[ĐỀ-XUẤT]`
-- **Description**: Proposed backend endpoint to retrieve parsed pgvector chunks for RAG Source Inspector (02.7). Eliminates `MOCK_CHUNKS` and `OTHER_DOCUMENTS`.
+- **Description**: Proposed backend endpoint to retrieve parsed pgvector chunks from `document_chunks` for RAG Source Inspector (02.7). Eliminates `MOCK_CHUNKS` and `OTHER_DOCUMENTS`. Blocks frontend tasks `T006`, `T018`, `T020`, `T021`.
 - **Envelope**: Standard backend envelope `{ "status": "SUCCESS", "data": ... }`
 - **Path Parameters**:
   - `id`: UUID of the material
@@ -187,4 +188,4 @@
   }
 }
 ```
-- **Empty / Pending Fallback in Frontend**: If endpoint returns 404 or pending status, UI renders authentic `EmptyState` explaining that chunk index inspection is awaiting backend integration (Zero Fake Data Policy).
+- **Error & Missing API State in Frontend (Missing API ≠ Empty Data)**: If endpoint returns 404 (endpoint not deployed or resource missing), 403, 5xx, or network failure, the frontend renders an `ErrorState` explaining the real reason with a retry action where sensible. The UI displays `EmptyState` ONLY on HTTP 200 OK with an empty chunks array (`items: []`, `total_chunks: 0`). Empty fallback arrays (`[]`) are strictly forbidden for error or missing endpoint responses.

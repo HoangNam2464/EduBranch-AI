@@ -15,7 +15,7 @@ The root container for teaching materials and case studies belonging to a lectur
 | Field | Type | Required | Constraints & Validation | Description |
 |---|---|:---:|---|---|
 | `id` | `UUID` | Yes | Primary key, UUID v4 | Unique identifier of the course |
-| `name` | `string` | Yes | `min(1)`, `max(255)`, trimmed | Official name of the course |
+| `name` | `string` | Yes | `min(2)`, `max(200)`, trimmed per `CreateCourseDto` | Official name of the course |
 | `courseCode` | `string` | No | `max(20)`, alphanumeric & dashes | Course catalog identifier (e.g. "CS101", "MKT302") |
 | `description` | `string` | No | `max(1000)` | Syllabus or overview summary |
 | `coverImageUrl` | `string` | No | Valid URL | Visual thumbnail / banner image |
@@ -38,7 +38,7 @@ An uploaded academic document (PDF or DOCX) ingested into MinIO and processed th
 |---|---|:---:|---|---|
 | `id` | `UUID` | Yes | Primary key, UUID v4 | Unique identifier of the material record |
 | `courseId` | `UUID` | Yes | Foreign key → `courses.id` | Associated course |
-| `originalFilename` | `string` | Yes | `min(1)`, `max(255)` | Original client filename |
+| `originalFilename` | `string` | Yes | `min(1)`, `max(500)` per `UpdateMaterialDto` | Original client filename |
 | `storageKey` | `string` | Yes | Unique path | Object key in MinIO storage bucket |
 | `mimeType` | `string` | Yes | `application/pdf`, `application/vnd.openxmlformats-officedocument.wordprocessingml.document` | Normalized MIME type |
 | `sizeBytes` | `number` | Yes | `min(1)`, `max(52428800)` (50MB) | File size in bytes (`MAX_SIZE_BYTES`) |
@@ -51,7 +51,7 @@ An uploaded academic document (PDF or DOCX) ingested into MinIO and processed th
 ---
 
 ### 1.3. Chunk (`Đoạn trích RAG`)
-A parsed and embedded text segment stored in `material_chunks` (pgvector) used for grounded case generation.
+A parsed and embedded text segment stored in database table `document_chunks` (pgvector) retrieved via proposed backend endpoint `BE-PROP-1` (`GET /materials/:id/chunks`, see `specs/001-fe026-courses-materials/be-dependencies.md`).
 
 | Field | Type | Required | Constraints & Validation | Description |
 |---|---|:---:|---|---|
@@ -108,7 +108,7 @@ A parsed and embedded text segment stored in `material_chunks` (pgvector) used f
 
 | Entity / Action | Input Field | Validation Rule | Error Message (Vietnamese) |
 |---|---|---|---|
-| Course Create/Edit | `name` | `string`, `trim().length >= 1 && <= 255` | "Tên khóa học không được để trống" |
+| Course Create/Edit | `name` | `string`, `trim().length >= 2 && <= 200` per `CreateCourseDto` | "Tên khóa học phải có từ 2 đến 200 ký tự" |
 | Course Create/Edit | `courseCode` | Optional, `length <= 20`, alphanumeric & dashes | "Mã khóa học tối đa 20 ký tự" |
 | Course Create/Edit | `description` | Optional, `length <= 1000` | "Mô tả khóa học tối đa 1000 ký tự" |
 | Material Upload | `file` (format) | Extension must be `.pdf` or `.docx` | "Hệ thống chỉ hỗ trợ định dạng PDF hoặc DOCX" |

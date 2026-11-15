@@ -12,7 +12,7 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 
 ### Core Architectural Decisions & Strategy:
 1. **Target Structure Dependency (PO Q1)**: Plan FE-026 against the FE-023 modular target structure (`frontend/src/pages/courses/CoursesPage.tsx`, `pages/materials/MaterialsPage.tsx`, `pages/materials/RagSourceInspectorPage.tsx`, `components/ds/`, `components/feedback/`, `routes/paths.ts`, `locales/`). Product code implementation will NOT occur on the legacy structure and will strictly await FE-023 being merged into `develop`.
-2. **Zero Fake Data Policy (PO Q2 & Jira AC 4)**: Completely excise `MOCK_CHUNKS`, `OTHER_DOCUMENTS`, and hard-coded fake upload items. Frame 02.7 connects to real chunks via a proposed backend task (`GET /materials/:id/chunks`); if the API is not yet ready, an honest `EmptyState`/`InfoState` is displayed.
+2. **Zero Fake Data Policy & Missing API ≠ Empty Data (PO Q2 & Jira AC 4)**: Completely excise `MOCK_CHUNKS`, `OTHER_DOCUMENTS`, and hard-coded fake upload items. Frame 02.7 connects to real chunks via proposed backend task `BE-PROP-1` (`GET /materials/:id/chunks`, see `specs/001-fe026-courses-materials/be-dependencies.md`). The UI shows `EmptyState` ONLY for a 200 OK response with an empty list (`items: []`); missing endpoints (404), 403, 5xx, and network errors display an authentic `ErrorState` with the real failure reason and a retry action where sensible, never an empty list, and never cached or mocked data.
 3. **Failed Material Semantics (PO Q3 & Review R2-4)**: The FAILED material action is renamed to "Tải lên lại" (Upload again) as an intended deviation from Figma node `586:8570`. Clicking opens the upload modal with the previous error context to upload a corrected file via existing `POST /courses/:courseId/materials`. No fake re-ingestion API is called.
 4. **Soft Archive via OPD-014 (PO Q4 & Review R2-3)**: Frame 02.3 replaces destructive deletion with soft archive, eliminating the HTTP 500 error on courses with materials. Schema evaluation confirms that reusing the existing `is_active` column on the `courses` table (`courses.is_active = FALSE` per `backend/migrations/V1__init_schema.sql:39`) fulfills all OPD-014 requirements without creating parallel columns or mechanisms.
 5. **Route Alignment (PO Q5 & Review R2-1)**: Fix `DELETE /materials/:id` directly in frontend `materialService.ts` relative to `/api/v1` base URL.
@@ -22,13 +22,22 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 
 ## 2. Technical Context
 
-- **Language/Version**: TypeScript 5.5+, React 19, Node.js 20 LTS
-- **Build Tooling & Styling**: Vite 5, TailwindCSS v4, PostCSS
-- **Primary Dependencies**: React 19, `@tanstack/react-query` / Zustand, `lucide-react`, `clsx`, `tailwind-merge`
+- **Language/Version**: `typescript ~6.0.2`, React 19 (`react ^19.2.8`, `react-dom ^19.2.8`), Node.js 20 LTS
+- **Build Tooling & Styling**: `vite ^8.3.0`, `@vitejs/plugin-react ^6.1.1`, `tailwindcss ^4.3.3`, `@tailwindcss/postcss ^4.3.3`, `postcss ^8.5.28`, `autoprefixer ^10.5.6`, `oxlint ^1.81.0`
+- **Present on develop** (`develop 273f1fc`, `frontend/package.json`):
+  - `dependencies`: `@tailwindcss/postcss ^4.3.3`, `axios ^1.20.0`, `react ^19.2.8`, `react-dom ^19.2.8`, `react-router-dom ^7.18.3`, `reactflow ^11.11.4`, `zustand ^5.0.15`
+  - `devDependencies`: `@types/node ^24.13.3`, `@types/react ^19.2.18`, `@types/react-dom ^19.2.7`, `@vitejs/plugin-react ^6.1.1`, `autoprefixer ^10.5.6`, `oxlint ^1.81.0`, `postcss ^8.5.28`, `tailwindcss ^4.3.3`, `typescript ~6.0.2`, `vite ^8.3.0`
+  - `scripts`: `build` = `tsc -b && vite build`; `lint` = `oxlint`; `test` = `npx tsx --test <explicit list of 7 spec files>` (Node test runner; `tsx` is not a dependency, `npx` downloads it)
+  - *Stack clarification*: There is NO Vitest, NO React Testing Library, NO Playwright, NO `@tanstack/react-query`, NO `lucide-react`, NO `clsx`, NO `tailwind-merge`, NO i18next on this branch.
+- **Expected from FE-023 (dependency, unverified)**:
+  - Target structure on branch `refactor/frontend-structure` (uncommitted on 2026-11-15, not reproducible from the repository; verified by T028 after merge; FE-026 does not add them):
+  - Dependencies: `i18next`, `react-i18next`, `i18next-browser-languagedetector`, `lucide-react`, `@fontsource/roboto`, `@fontsource/be-vietnam-pro`, `@playwright/test 1.64.1`, `pngjs`
+  - Script: `test:visual`
+- **Scope Limit**: Adding any other library is out of scope (requires ADR + PO approval).
 - **Storage**:
   - Client: `localStorage` for JWT access tokens.
   - Server: MinIO (Object Storage for PDF/DOCX files), PostgreSQL 16 + pgvector (metadata and 1536-dim embeddings).
-- **Testing**: Vitest for unit tests; React Testing Library for component state testing; Playwright for visual regression & browser verification (QG3).
+- **Testing**: Node test runner via `npx tsx --test` for logic and the FE-023 Playwright Visual QA once merged (Vitest and React Testing Library removed).
 - **Target Platform**: Desktop Web Browsers (Chrome, Edge, Firefox, Safari) optimized for `1440px` viewport.
 - **Project Type**: Web Application Frontend (SPA) interacting exclusively with the NestJS Backend Gateway REST API (`/api/v1/*`).
 - **Performance Goals**: Initial screen render `< 1.5s`; upload file validation `< 50ms`; material polling cycle every 3s without layout shifts or re-rendering stutter.
@@ -50,7 +59,7 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 | **Architecture Boundaries (FND §3)** | Frontend communicates exclusively with the Backend Gateway (`/api/v1/*`). It never accesses the FastAPI AI Service (`/internal/v1/*`) or database directly. | **PASS** |
 | **Case Lifecycle & Publication Gate (FND §4)** | Only published cases are accessible to students. FE-026 operates in the Lecturer domain and does not compromise this gate. | **PASS** |
 | **Decision Tree Integrity (FND §5)** | Decision tree structure is not modified by Courses & Materials screens. | **PASS** |
-| **AI Safety & Zero Fake Data (FND §6)** | Zero fake data policy strictly enforced. `MOCK_CHUNKS` and fake upload files are completely removed. Real chunks integration or honest empty state. | **PASS** |
+| **AI Safety & Zero Fake Data (FND §6)** | Zero fake data policy and Missing API ≠ Empty Data strictly enforced. `MOCK_CHUNKS` and fake upload files are completely removed. Real chunks integration; missing endpoint (404) or error states render `ErrorState` with real reason and retry, while `EmptyState` renders only on 200 OK with empty list. | **PASS** |
 | **Git Workflow & Branch Rules (FND §7)** | Active branch is `docs/spec-kit-workflow`. No product code commits or pushes in this stage. Branch naming and commit rules respected. | **PASS** |
 | **No Invented Routes or Fields (AGENTS.md rules 7 & 8)** | All routes cited from actual controllers: `POST /courses/:courseId/materials` (`material.controller.ts:33`), `DELETE /materials/:id` (`material.controller.ts:80`), `is_active` (`V1__init_schema.sql:39`). Unbuilt endpoints clearly tagged `[ĐỀ-XUẤT]`. | **PASS** |
 | **Provisional Design Tokens (AGENTS.md rule 9, GDS §0.2)** | Design tokens noted as provisional until official PO token approval. Frames are not falsely marked Ready for Dev. | **PASS** |
@@ -60,7 +69,7 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 
 ## 4. Proposed Upstream & Backend Tasks (Dependencies - Not in FE-026 Approved Scope)
 
-Per PO decisions Q1, Q2, and Q4, the following items are dependencies recorded as proposed tasks. They are NOT part of FE-026's approved frontend scope and must be scheduled/approved separately:
+Per PO decisions Q1, Q2, and Q4, the following items are dependencies recorded as proposed tasks (detailed in [`specs/001-fe026-courses-materials/be-dependencies.md`](./be-dependencies.md)). They are NOT part of FE-026's approved frontend scope and must be scheduled/approved separately:
 
 ### Proposed Task 1: Merge FE-023 Frontend Restructure (PO Q1)
 - **Scope**: Upstream Frontend Integration
@@ -68,18 +77,21 @@ Per PO decisions Q1, Q2, and Q4, the following items are dependencies recorded a
 - **Target Deliverables**: `frontend/src/components/ds/`, `src/components/feedback/`, `src/routes/paths.ts`, `src/locales/`, and modular page directories (`pages/courses/`, `pages/materials/`).
 - **Prerequisite for FE-026**: FE-026 implementation can only begin once FE-023 is merged into `develop` and its commit SHA is confirmed.
 
-### Proposed Task 2: Backend Chunks Retrieval API (PO Q2)
+### Proposed Task 2: Backend Chunks Retrieval API (`BE-PROP-1`, PO Q2)
 - **Scope**: Backend Gateway (`backend/src/modules/material/`)
+- **Status**: PROPOSED — not created in Jira (requires PO approval)
 - **Endpoint**: `GET /api/v1/materials/:id/chunks` `[ĐỀ-XUẤT]`
 - **Requirements**:
-  - Query `material_chunks` table in PostgreSQL for chunks belonging to `materialId`.
+  - Query `document_chunks` table in PostgreSQL for chunks belonging to `materialId`.
   - Validate course ownership (`WHERE lecturerId = currentUser.id`).
   - Pagination parameters: `page` (default: 1), `limit` (default: 20).
   - Return metadata (`totalChunks`, `pageCount`, `sizeBytes`) and chunk items (`id`, `chunkIndex`, `pageNumber`, `content`, `tokenCount`).
   - Integration tests verifying ownership boundaries and pagination.
+  - UI rule (Missing API ≠ empty data): If endpoint is missing (404) or fails, UI renders `ErrorState` with real reason and retry; `EmptyState` is rendered only on 200 OK with `totalChunks = 0`.
 
-### Proposed Task 3: Backend Course Soft Archive API per OPD-014 (PO Q4)
+### Proposed Task 3: Backend Course Soft Archive API per OPD-014 (`BE-PROP-2`, PO Q4)
 - **Scope**: Backend Gateway (`backend/src/modules/course/`) & Database
+- **Status**: PROPOSED — not created in Jira (requires PO approval)
 - **Endpoint**: `PATCH /api/v1/courses/:id/archive` `[ĐỀ-XUẤT]`
 - **Requirements**:
   - Reuses existing column `courses.is_active` (`is_active = FALSE`).
@@ -99,6 +111,8 @@ specs/001-fe026-courses-materials/
 ├── plan.md              # This Implementation Plan
 ├── research.md          # Architectural Decisions & Analysis (PO Q1–Q5)
 ├── data-model.md        # Entities, Lifecycles, and Validation Rules
+├── be-dependencies.md   # Proposed Backend Dependencies (BE-PROP-1 & BE-PROP-2)
+├── record.md            # Feature Record and Quality Gate Log
 ├── quickstart.md        # End-to-End Verification Scenarios & Run Guide
 ├── contracts/           # Interface & API Specifications
 │   ├── courses-api.md   # Courses REST Contracts

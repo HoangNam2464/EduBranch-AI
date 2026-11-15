@@ -1,6 +1,7 @@
 # EduBranch-AI — Feature Delivery Workflow
 
-> **Status**: Draft · **Role**: Normative once Approved · **Owner**: not assigned · **Approver**: PO · **Version**: 0.4
+> **Status**: Proposed — pending PO approval (PR #38) · **Role**: Normative once the PO approves it · **Owner**: not assigned · **Approver**: PO · **Version**: 0.5
+> **Activation**: binding only after the PO approves this document (the PO changes this Status line; agents never do) and PR #38 is merged into develop. Until then it applies only to runs the PO starts explicitly, such as the FE-026 pilot.
 > **Runs on**: GitHub Spec Kit **v1.4.0** (Specify CLI, installed in this repository): integrations `agy` (Antigravity, default) and `claude` (Claude Code), extension `bug`. PO decisions of 2026-11-15 (chat) applied: Spec Kit adopted, delegated commit/push/PR under Quality Gates, Antigravity handoff, local CI before push, retest on `develop` before Jira Done.
 > **Read by**: the `edubranch-feature-workflow` skill (Claude Code and Antigravity). This file is the only copy of the procedure; Spec Kit skills carry the mechanics, this file carries the project rules.
 
@@ -107,7 +108,7 @@ A gate passes only with recorded evidence (command, exit code, SHA, result) in `
 | QG2 Independent review | before commit | diff only touches planned files; trace spec → tasks → code → tests; `/speckit-analyze` clean; QG1 re-run by the reviewer on the same SHA | Claude (never the implementer) | Spec Kit analyze/converge (agent-run) |
 | QG3 Browser check (FE) | before commit | running app on the real backend and seed data: each frame against the Figma frame read in Discover (CLAUDE.md "Visual QA gate"), all states, no console errors, no fake data | Claude | `npm run test:visual` where the branch has it; rest manual |
 | QG4 No open FAIL/BLOCKED | before commit | every mandatory AC PASS; any BLOCKED item reported to the PO | Claude | — |
-| QG5 PR checks | after push | every GitHub Actions run on the PR is green, plus a manual test of the PR head | Claude | GitHub Actions (path-filtered) |
+| QG5 PR checks | after push | every GitHub Actions run on the PR is green (where triggered by path), plus a manual test of the PR head | Claude | GitHub Actions (path-filtered; no required status checks in develop ruleset today) |
 | QG6 Merge | after QG5 | valid Code Owner/PO approval; merge by the approved method; no bypass | PO approves, Claude merges | `develop` ruleset: PR + 1 Code Owner approval |
 | QG7 Post-merge | after merge | QG1 + QG3 re-run on `develop` at the merge SHA | Claude | — |
 
@@ -120,7 +121,36 @@ After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR
 - Added checks that no workflow runs yet: frontend `npm test` and `npm run lint`.
 - Live tests need the docker stack (`docker compose up -d postgres redis minio ai-service backend`). Run backend e2e against a clean database, as CI does.
 
-**Known limits.** The `develop` ruleset has no required status checks, and the service workflows run only when their paths change: QG5 is enforced by this procedure, not by GitHub. `ci.yml` runs only for `main`.
+### CI coverage and proposals
+
+#### 1. Definitions
+- **Required checks**: Status checks that the GitHub branch protection ruleset explicitly blocks on before merging (none configured today in the `develop` ruleset).
+- **GitHub checks**: Workflows triggered by GitHub Actions that ran on the PR (path-filtered by service).
+- **Manual verification**: Quality gates verified independently by Claude with recorded evidence (`QG2` review, `QG3` browser/visual inspection, `QG7` post-merge retest).
+- **Code Owner approval**: Quality gate `QG6` approval by a `.github/CODEOWNERS` member other than the PR author.
+
+#### 2. Current CI Coverage Matrix
+
+| Check | Where it runs today | Gap / Risk |
+|---|---|---|
+| Backend build & unit/e2e tests | Non-required GitHub check (`backend-ci.yml` on `backend/**`) | Integration tests (`migration.integration.e2e-spec.ts`) skip because CI has no Postgres/MinIO `services:`. Ruleset does not require check. |
+| AI service pytest & coverage | Non-required GitHub check (`ai-service-ci.yml` on `ai-service/**`) | Live tests (`test_live_flow1.py`, `test_*_live.py`) skip because CI lacks live database/MinIO services. Ruleset does not require check. |
+| Frontend build (`npm run build`) | Non-required GitHub check (`frontend-ci.yml` on `frontend/**`) | `npm test` and `npm run lint` (`oxlint`) have NEVER run in CI. Ruleset does not require check. |
+| Frontend tests & lint | Local only (`npm test`, `npm run lint`) | Not automated on PRs; relies entirely on local execution in QG1. |
+| Integration CI Gate | Main branch only (`ci.yml` on push/PR to `main`) | Does not run on PRs to `develop`; runs after features have already merged. |
+| Documentation & Specs validation | Local only / manual | Branches `docs/**` and paths `docs/**`, `specs/**`, `.specify/**`, `AGENTS.md` trigger zero workflows; PRs are check-less (`gh pr checks 38` reports no checks). |
+| Code Owner approval gate | Manual / GitHub PR review | `CODEOWNERS` specifies `* @HoangNam2464` (single owner). When a PR is opened from that same account, GitHub cannot count self-approval; requires a second code owner or a recorded PO merge procedure. |
+
+#### 3. Proposed CI Changes `[ĐỀ-XUẤT]`
+Each proposed change requires PO approval; modifying repository rulesets, workflows, or CODEOWNERS is strictly a PO action:
+
+| Proposal ID | Proposed Action | Objective & Rationale | Action Owner |
+|---|---|---|---|
+| `CI-PROP-1` | Add `npm run lint` and `npm test` to `frontend-ci.yml` | Ensure frontend unit tests and oxlint run on every frontend PR, preventing test regressions. | PO approval / PO action |
+| `CI-PROP-2` | Add Postgres 16 + pgvector (and MinIO where needed) `services:` container blocks to `backend-ci.yml` and `ai-service-ci.yml` | Allow backend migration integration tests and AI service live retrieval tests to execute in CI instead of silently skipping. | PO approval / PO action |
+| `CI-PROP-3` | Add a docs/specs verification workflow for `AGENTS.md`, `CLAUDE.md`, `docs/**`, `specs/**`, `.specify/**` | Automatically validate that no machine paths exist, cited repository paths exist (`git ls-files`), and `specify integration status` passes, ensuring docs PRs are not check-less. | PO approval / PO action |
+| `CI-PROP-4` | Configure workflow job names as Required checks in the `develop` branch protection ruleset | Prevent merging PRs when CI workflows fail or are bypassed. | PO action |
+| `CI-PROP-5` | Add a second Code Owner to `.github/CODEOWNERS` or formalize the PO merge procedure | Enable legitimate Code Owner approvals when PRs are opened by the primary account holder. | PO approval / PO action |
 
 ## 6. Roles and Antigravity handoff
 
@@ -130,7 +160,7 @@ After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR
 | Claude (main session) | Discover, writes the task package, QG2–QG7, commit/push/PR/merge per §5, Jira transitions | edits files in Antigravity's scope while it runs; claims Antigravity ran without a real run (a Result counts only with its run evidence: conversation ID or CLI log, times, commands and exit codes) |
 | Antigravity | runs `/speckit-*` stages it is given, codes, runs QG1, writes its result into the handoff file | approves anything, commits, pushes, edits files outside the package |
 
-**Handoff file**: `D:\CAPSTONE_2026\EduBranch-AI\.agent-handoff\<TASK-ID>.md` (main checkout; excluded through `.git/info/exclude`, never committed, project `.gitignore` unchanged). Sections, in order:
+**Handoff file**: `.agent-handoff/<TASK-ID>.md` at the root of the main checkout (PO decision 2026-11-15) (main checkout; excluded through `.git/info/exclude`, never committed, project `.gitignore` unchanged). Sections, in order:
 1. **Package** (Claude): task, Jira key, gates already passed, workspace path, branch, HEAD SHA, files in scope, Spec Kit commands to run in order, stop conditions, required evidence.
 2. **Result** (Antigravity): per round, start and end time, the commands it ran with exit codes, files changed, open questions, `STOPPED: <reason>` if it stopped.
 3. **Review** (Claude): per round, findings with file:line and the fix requests for the next round.

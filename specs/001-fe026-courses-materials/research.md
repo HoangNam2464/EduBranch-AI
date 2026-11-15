@@ -11,7 +11,8 @@
 
 ### Decision 1: Target Frontend Architecture & Component Migration (PO Q1)
 - **Problem**: The current branch `docs/spec-kit-workflow` contains the legacy frontend structure (`frontend/src/pages/lecturer/CoursesPage.tsx`, `MaterialsPage.tsx`, `RagSourceInspectorPage.tsx`, `components/ui/`). Concurrently, the frontend architectural restructure FE-023 (`src/components/ds/`, `src/routes/paths.ts`, `src/locales/`, modular page layout `src/pages/courses/`, `src/pages/materials/`) was developed on `refactor/frontend-structure`. Should FE-026 plan against the legacy structure or target FE-023?
-- **Decision**: **Plan FE-026 strictly against the FE-023 target structure as an upstream dependency** (PO Q1, 2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`). 
+- **Decision**: **Plan FE-026 strictly against the FE-023 target structure as an upstream dependency** (PO Q1, 2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`).  
+  *Note*: FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (uncommitted on 2026-11-15); every path from it is an expectation verified by T028 after merge.
   - Page targets:
     - `frontend/src/pages/courses/CoursesPage.tsx` (Figma 02.1, 02.2, 02.3)
     - `frontend/src/pages/materials/MaterialsPage.tsx` (Figma 02.4, 02.5, 02.6)
@@ -31,7 +32,7 @@
 - **Problem**: `RagSourceInspectorPage.tsx` previously used `MOCK_CHUNKS` and `OTHER_DOCUMENTS` because the backend lacked an endpoint returning parsed chunks from pgvector. Jira AC 4 and Constitution prohibit fake data. How should frame 02.7 be handled?
 - **Decision**: **Propose a Backend task (BE) to provide `GET /api/v1/materials/:id/chunks` with pagination, metadata, and ownership checks** (PO Q2, 2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`).
   - FE-026 removes 100% of `MOCK_CHUNKS` and `OTHER_DOCUMENTS`.
-  - In FE-026 UI, if the endpoint is deployed, it binds to real chunks. If the endpoint is pending, the screen displays an honest `EmptyState` / `InfoState` indicating that the chunk index browser is awaiting backend synchronization.
+  - In FE-026 UI, if the endpoint is deployed, it binds to real chunks. If the endpoint is absent (404), 403, 5xx, or network failure occurs, the UI displays an authentic error or unavailable state (`ErrorState`) with the real reason and a retry action where sensible (per Missing API ≠ empty data rule). `EmptyState` is rendered ONLY on HTTP 200 OK with an empty chunks list (`items: []`, `total_chunks: 0`). Empty fallback arrays (`[]`) and fake data are strictly forbidden.
   - Record `GET /api/v1/materials/:id/chunks` as a proposed backend task dependency, not approved FE-026 scope.
 - **Rationale**: Complies with the Zero Fake Data policy. Preserves pedagogical and academic credibility.
 - **Alternatives Considered**:

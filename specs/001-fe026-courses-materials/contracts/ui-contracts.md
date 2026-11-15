@@ -1,6 +1,6 @@
 # UI Component Contracts: FE-023 Target Mapping [FE-026]
 
-**Reference**: `FE-023-structure-snapshot.md` (read-only snapshot from `refactor/frontend-structure`)  
+**Reference**: FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (uncommitted on 2026-11-15); every path from it is an expectation verified by T028 after merge.  
 **Design System Root**: `frontend/src/components/ds/`  
 **Feedback Components Root**: `frontend/src/components/feedback/`  
 **Page Components**:
@@ -101,7 +101,7 @@ export interface MetricCardProps {
 ## 2. Feedback States Primitives (`src/components/feedback/`)
 
 ### 2.1. `EmptyState` (`src/components/feedback/EmptyState.tsx`)
-Rendered when courses list is empty or materials list is empty.
+Rendered **ONLY** when an API returns HTTP 200 OK with an empty dataset (e.g. 0 courses, 0 materials, or 0 chunks). Never rendered for errors or missing endpoints (Missing API ≠ empty data).
 ```typescript
 export interface EmptyStateProps {
   icon?: React.ComponentType<{ className?: string }>;
@@ -113,7 +113,7 @@ export interface EmptyStateProps {
 ```
 
 ### 2.2. `ErrorState` (`src/components/feedback/ErrorState.tsx`)
-Rendered when API fetch fails.
+Rendered when an API request fails, an endpoint is missing (HTTP 404), unauthorized/forbidden (HTTP 403), server error (HTTP 5xx), or network drops. Displays the real failure reason with a retry action where sensible.
 ```typescript
 export interface ErrorStateProps {
   title?: string;

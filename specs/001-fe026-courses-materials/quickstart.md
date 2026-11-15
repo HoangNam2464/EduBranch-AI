@@ -11,7 +11,7 @@
 
 1. **Prerequisite Branch Merge**:
    - Verify that upstream task FE-023 (`refactor/frontend-structure`) has been merged into `develop`.
-   - Confirm target files exist in workspace:
+   - Confirm target files exist in workspace (*Note*: FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (uncommitted on 2026-11-15); every path from it is an expectation verified by T028 after merge):
      - `frontend/src/pages/courses/CoursesPage.tsx`
      - `frontend/src/pages/materials/MaterialsPage.tsx`
      - `frontend/src/pages/materials/RagSourceInspectorPage.tsx`
@@ -90,8 +90,8 @@
      - Layout matches Figma 02.7 (`483:11148`).
      - 3 metric cards at top (Đoạn trích, Số trang, Dung lượng).
      - Zero instances of `MOCK_CHUNKS` or `OTHER_DOCUMENTS` in DOM or network log.
-     - If `GET /materials/:id/chunks` [ĐỀ-XUẤT] is available, real chunks render with page numbers.
-     - If endpoint is not yet deployed by backend, renders honest `EmptyState` explaining chunks sync status.
+     - If `GET /materials/:id/chunks` [ĐỀ-XUẤT] (`BE-PROP-1`) is available, real chunks render with page numbers.
+     - If endpoint is not yet deployed by backend (404) or fails, renders authentic `ErrorState` explaining chunks sync status with a retry option; `EmptyState` is rendered only on 200 OK with empty items.
 
 ---
 

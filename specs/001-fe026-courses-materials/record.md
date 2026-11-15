@@ -3,7 +3,7 @@
 > **Canonical Record**: Maintained per `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` §3, §4 Stage 0, and §6.  
 > **Pilot Feature**: FE-026 (Jira EBA-89, Sprint 3) — Spec Kit Figma-to-code pilot workflow.  
 > **Active Directory**: `specs/001-fe026-courses-materials`  
-> **Workspace Path**: `D:\CAPSTONE_2026\EduBranch-AI-speckit`  
+> **Workspace**: repository root  
 > **Created**: 2026-11-15  
 > **Last Updated**: 2026-11-15 (Stage 6 Analyze Completed & Gate Log Established)
 
@@ -12,15 +12,15 @@
 ## 1. Discover (Workflow §4 Stage 0)
 
 ### 1.1. Workspace & Git Context
-- **Workspace**: `D:\CAPSTONE_2026\EduBranch-AI-speckit`
+- **Workspace**: repository root
 - **Active Git Branch**: `docs/spec-kit-workflow`
 - **HEAD Commit SHA**: `273f1fc7d2f11c2f3df120a2999bedea5ada0633` (= `origin/develop`)
 - **Pre-execution MD5 Integrity Verification (exit code 0)**:
   - `AGENTS.md`: `42b6255072f1a6f2938f1c0eabcfc4bc` (MATCH)
   - `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`: `ce8399bc41c1c188a879cdbbffce5b78` (MATCH)
   - `.specify/memory/constitution.md`: `54321da28efadf643cc40c9cb8f59cb4` (MATCH)
-- **UI Rules Source Note (`[DỮ-KIỆN]`)**:
-  - PO authoritative UI rules in `D:\CAPSTONE_2026\EduBranch-AI\.agents\rules\01-ui-design-standards.md` (`cae99071a4d68e9f4553aeb424eac347`) adopt the Eduva Navy (`#2A4E7F`) / Sky (`#00A5F5`) design tokens. Used as reference for all UI specifications.
+- **UI Rules Version (`[DỮ-KIỆN]`)**:
+  - The version used is `.agents/rules/01-ui-design-standards.md` on this branch (develop `273f1fc`, git blob `b7c4c10e8134b1e687179dfee121d46b8e16aec5`, see `git rev-parse 273f1fc:.agents/rules/01-ui-design-standards.md`). The PO has a newer local version of this file and of 8 `feature-*.md` rules that is not committed to any branch: it is NOT integrated, is a separate scope of work, and FE-026 must re-check the committed UI rules once the PO commits them (verified by T028 preflight).
 
 ### 1.2. Parent Task & Traceability
 - **Jira Task**: `EBA-89` (Sprint 3, To Do) — `[FE-026] Rework Courses & Materials Screens to Figma 02.1–02.7`
@@ -34,7 +34,7 @@
 - **QA Tasks (docs/06_QA.md)**: `QA-003` (Course Management & Access Control), `QA-004` (Material Ingestion & Validation).
 
 ### 1.3. Canonical Sources & Governance Documents
-- **Foundation**: `docs/00-project-foundation.md` (§1 Pedagogy & Terminology, §3 Architecture Boundaries, §4 Publication Gate, §6 AI Safety & Zero Fake Data, §7 Git Workflow).
+- **Foundation**: `.agents/rules/00-project-foundation.md` (§1 Pedagogy & Terminology, §3 Architecture Boundaries, §4 Publication Gate, §6 AI Safety & Zero Fake Data, §7 Git Workflow).
 - **Feature Rules**: `.agents/rules/feature-course.md`, `.agents/rules/feature-material.md`, `.agents/rules/feature-rag.md`.
 - **UI System**: `.agents/rules/01-ui-design-standards.md`, `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
 - **Figma Reference**: `docs/05_FIGMA.md` (§0.1 DES → frame map), `docs/design/screens/P1-LECTURER-CORE.md`, `docs/features/FEATURE-COURSE-AND-MATERIALS.md`.
@@ -66,7 +66,7 @@
   4. Nút "Thử lại" trên dòng FAILED chỉ reload lại danh sách do backend chưa có API re-ingest.
   5. `frontend/src/pages/lecturer/RagSourceInspectorPage.tsx:18,53`: Uses `MOCK_CHUNKS` and `OTHER_DOCUMENTS` (backend has no chunks endpoint).
   6. Xóa khóa học có tài liệu trả về lỗi HTTP 500 (backend foreign key cascade constraint).
-  7. FE-023 target structure (`src/components/ds/`, `src/routes/paths.ts`, locale files) is uncommitted on `refactor/frontend-structure` and not yet on `develop`.
+  7. FE-023 (EBA-86) target structure on branch `refactor/frontend-structure` (uncommitted on 2026-11-15); every path from it is an expectation verified by T028 after merge.
 
 ---
 
@@ -77,10 +77,10 @@
 
 | Gate | Stage | Skill | Status | Date | Evidence / Outputs |
 |:---:|---|---|:---:|:---:|---|
-| **G0** | Discover | Manual / Discovery Tools | **READY — awaiting PO review** | 2026-11-15 | Change boundary confirmed; branch, HEAD, Figma frames, and gaps recorded in `FE-026.md` and `record.md`. |
+| **G0** | Discover | Manual / Discovery Tools | **READY — awaiting PO review** | 2026-11-15 | Change boundary confirmed; branch, HEAD, Figma frames, and gaps recorded in `record.md`. |
 | **G1** | Specify | `/speckit-specify` | **READY — awaiting PO review** | 2026-11-15 | `specs/001-fe026-courses-materials/spec.md` (47,491 bytes) covering 13 Functional Requirements (`FR-001`–`FR-013`), 5 Success Criteria (`SC-001`–`SC-005`), and 3 User Stories. |
 | **G2** | Clarify | `/speckit-clarify` | **READY — awaiting PO review** | 2026-11-15 | 5 PO Decisions Q1–Q5 recorded verbatim with date 2026-11-15 under `[PO-ĐÃ-XÁC-NHẬN]`; review items R1-1, R1-2, R1-3 resolved. Zero unresolved blocking questions. |
-| **G3** | Plan | `/speckit-plan` | **READY — awaiting PO review** | 2026-11-15 | Implementation plan and design artifacts produced: `plan.md` (12,986 bytes), `research.md` (10,059 bytes), `data-model.md` (7,050 bytes), `contracts/courses-api.md` (7,990 bytes), `contracts/materials-api.md` (7,649 bytes), `contracts/ui-contracts.md` (4,111 bytes), `quickstart.md` (5,531 bytes). R2-1..R2-4 and R3-1 review fixes applied. Constitution Check: PASS. |
+| **G3** | Plan | `/speckit-plan` | **READY — awaiting PO review** | 2026-11-15 | Implementation plan and design artifacts produced: `plan.md`, `research.md`, `data-model.md`, `be-dependencies.md`, `contracts/courses-api.md`, `contracts/materials-api.md`, `contracts/ui-contracts.md`, `quickstart.md`. R2-1..R2-4 and R3-1 review fixes applied. Constitution Check: PASS. |
 | **G4** | Checklist | `/speckit-checklist` | **READY — awaiting PO review** | 2026-11-15 | UX Requirements Quality Checklist generated in `checklists/ux.md` (9,576 bytes, 41 checklist items `CHK001`–`CHK041`, all unchecked `[ ]` awaiting reviewer sign-off). |
 | **G5** | Tasks | `/speckit-tasks` | **READY — awaiting PO review** | 2026-11-15 | Dependency-ordered tasks generated in `tasks.md` (37,684 bytes, 24 tasks `T001`–`T024` mapped to user stories and phases) including Acceptance Test Matrix for Q3, Q4, Q5 (9 scenarios `ATM-Q3-01..03`, `ATM-Q4-01..03`, `ATM-Q5-01..03`). |
 | **G6** | Analyze | `/speckit-analyze` | **READY — awaiting PO review** | 2026-11-15 | Cross-artifact consistency analysis completed with 0 Critical findings, 0 Constitution violations, 0 unmapped tasks, and 100% requirements coverage. |

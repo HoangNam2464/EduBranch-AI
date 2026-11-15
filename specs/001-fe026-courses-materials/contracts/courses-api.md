@@ -168,9 +168,10 @@
 
 ## 2. Proposed Endpoints [ĐỀ-XUẤT]
 
-### 2.1. Archive Course [ĐỀ-XUẤT] (PO Q4 & OPD-014)
+### 2.1. Archive Course [ĐỀ-XUẤT] (BE-PROP-2, PO Q4 & OPD-014)
+- **Status**: PROPOSED — not created in Jira (see `specs/001-fe026-courses-materials/be-dependencies.md`, task `BE-PROP-2`). Requires PO approval.
 - **Method / Endpoint**: `PATCH /courses/:courseId/archive` `[ĐỀ-XUẤT]`
-- **Description**: Soft-archives a course by updating the existing database column `is_active = FALSE` (`backend/migrations/V1__init_schema.sql:39`). Retains all child materials in `teaching_materials`, vector chunks in pgvector, and raw objects in MinIO storage without foreign key cascade failures.
+- **Description**: Soft-archives a course by updating the existing database column `is_active = FALSE` (`backend/migrations/V1__init_schema.sql:39`). Retains all child materials in `teaching_materials`, vector chunks in pgvector, and raw objects in MinIO storage without foreign key cascade failures. Active course queries filter `WHERE is_active = TRUE`. Blocks frontend tasks `T005`, `T011`, `T029`.
 - **Envelope**: Standard backend envelope `{ "status": "SUCCESS", "data": ... }`
 - **Success Response (200 OK)**:
 ```json
