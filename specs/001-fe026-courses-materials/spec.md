@@ -59,6 +59,14 @@
   - **Answer**: `[PO-ĐÃ-XÁC-NHẬN]` (2026-11-15, chat, verbatim):
     > "Chọn A – sửa trong FE-026. Yêu cầu: - Sử dụng đúng endpoint DELETE mà backend hiện đang cung cấp. - Kiểm tra global prefix, API baseURL và route thực tế trước khi xác định URL cuối cùng. Không tự ý thêm `/api/v1` hai lần. - Không tạo alias backend chỉ để tương thích với endpoint frontend sai. - Giữ nguyên API contract và kiến trúc backend hiện tại. - Ghi nhận đây là lỗi tồn đọng từ FE-005, liên kết nguồn phát hiện để bảo đảm truy vết. - Bổ sung regression test xác nhận frontend gọi đúng endpoint và xử lý chính xác các kết quả 200/204, 403, 404 và lỗi server. - Kiểm tra dữ liệu danh sách được cập nhật sau khi xóa thành công; không xóa hàng trên UI trước khi API xác nhận thành công. - Kiểm tra cả trường hợp lỗi mạng và quyền truy cập. - Chạy kiểm thử trên phiên bản tích hợp sau khi merge vào develop. Đưa nội dung sửa lỗi vào spec, tasks và Acceptance Test Matrix của FE-026. Không đánh dấu hoàn thành nếu mới chỉ sửa URL mà chưa kiểm chứng thao tác xóa thực tế."
 
+### Session 2026-11-16
+
+- **Q6: Phạm vi Bản địa hóa & Nút chuyển ngôn ngữ VI|EN trên Header (Localization Scope & Header Language Toggle)**
+  - **Question**: Bản thiết kế Figma thể hiện nút chuyển đổi ngôn ngữ VI|EN trên shared header (`EB/Header Actions`, frame `Language` node `544:5800`). Phạm vi bản địa hóa cho FE-026 và MVP được xác định như thế nào?
+  - **Answer**: `[PO-ĐÃ-XÁC-NHẬN]` (2026-11-16, chat, verbatim):
+    > "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."
+  - **Ghi nhận đối với Figma (Intended Deviation from Figma by PO decision)**: Thành phần `Language` VI|EN toggle (`544:5800`) trong shared header `EB/Header Actions` (`540:347`) là ngoài phạm vi MVP (out of MVP scope). FE-026 không triển khai tính năng chuyển đổi ngôn ngữ và không triển khai chuỗi tiếng Anh; bản thân khung header dùng chung thuộc phạm vi vỏ ứng dụng FE-025 (app shell scope). Đây là sai khác có chủ đích so với Figma theo quyết định của PO. Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval.
+
 ---
 
 ## 3. Thiết kế giao diện theo Figma (UI Specification: Figma Frames 02.1–02.7)
@@ -84,6 +92,7 @@
 
 ### 3.2.1. Ghi chú sai khác có chủ đích so với Figma (Intended Deviation from Figma)
 - **Nhãn nút thao tác trên dòng FAILED (Frame 02.4 / Node `586:8570`)**: Trên Figma frame 02.4/02.6, nút hành động gắn nhãn "Thử lại". Theo quyết định chính thức của PO (Q3, 2026-11-15 [PO-ĐÃ-XÁC-NHẬN]), nhãn nút được đổi thành **"Tải lên lại"** (hoặc "Chọn tệp tải lại"). Khi bấm nút, hệ thống mở Modal Tải tài liệu (02.5) kèm ngữ cảnh lỗi của tệp trước đó và yêu cầu người dùng chọn lại file gốc để tạo lượt xử lý mới qua API upload hiện có `POST /courses/:courseId/materials`. Quyết định này phản ánh chính xác bản chất nghiệp vụ do backend chưa có API re-ingest tài liệu hiện hữu.
+- **Nút chuyển đổi ngôn ngữ VI|EN trên Shared Header (Node `544:5800`)**: Trên Figma shared header component `EB/Header Actions` (`540:347`) có frame `Language` (`544:5800`) gồm hai tùy chọn `VI` (`544:5801`) và `EN` (`544:5803`). Theo quyết định của PO (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16: *"MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."*), thành phần chuyển ngôn ngữ VI|EN là ngoài phạm vi MVP (out of MVP scope). FE-026 không triển khai chuyển đổi ngôn ngữ và không sử dụng chuỗi tiếng Anh; khung header dùng chung thuộc phạm vi vỏ ứng dụng của FE-025. Đây là sai khác có chủ đích so với Figma theo quyết định của PO. Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval.
 
 ### 3.3. Quy chuẩn Design System Tokens & Typography (Tuân thủ R01 & Eduva)
 - **Hệ màu chuẩn (Locked Hex Tokens)** `[DỮ-KIỆN]`:
@@ -149,6 +158,8 @@ Mỗi màn hình trong 3 màn hình chính phải triển khai đầy đủ 6 tr
 | **Error** | Khối ErrorState hoặc Toast thông báo lỗi từ API, nút "Tải lại trang". Không mock dữ liệu. | Alert banner hoặc Toast thông báo lỗi tải danh sách tài liệu. Lỗi upload hiển thị rõ (413: quá 50MB, 415: sai định dạng). | Khối ErrorState khi endpoint chưa khả dụng (404), lỗi 403, 5xx hoặc mất mạng; hiển thị rõ lý do và nút thử lại, không dùng mảng rỗng làm fallback. |
 | **403 Forbidden** | Chặn hiển thị nếu user không phải LECTURER hoặc không sở hữu khóa học; chuyển hướng `/403`. | Chặn truy cập nếu khóa học không thuộc quyền sở hữu của giảng viên đang đăng nhập. | Chặn truy cập nếu tài liệu không thuộc khóa học của giảng viên. |
 | **Success** | Modal đóng sau khi tạo/sửa thành công; Toast xanh xác nhận; danh sách tự động cập nhật. | File upload thành công xuất hiện trong bảng ở trạng thái `PENDING`/`PROCESSING`; Toast xanh. Xóa thành công cập nhật bảng. | (Xem dữ liệu - read-only). |
+
+*Ghi chú về bản địa hóa các trạng thái (States Localization)*: Toàn bộ thông điệp và nội dung trạng thái (loading, empty, error, 403, success) sử dụng 100% tiếng Việt từ `frontend/src/locales/states.vi.json` và các file locale chức năng `courses.vi.json`, `materials.vi.json`. Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval.").
 
 ---
 
@@ -219,7 +230,7 @@ Giảng viên muốn kiểm tra các đoạn trích dẫn (chunks) của một t
 - **FR-009**: Hệ thống PHẢI tái cấu trúc giao diện trang RAG Source Inspector (`/lecturer/courses/:courseId/materials/:materialId/rag`, Figma frame `02.7` / Node `483:11148`) hiển thị 3 card chỉ số metadata; loại bỏ 100% dữ liệu tĩnh giả lập (`MOCK_CHUNKS`, `OTHER_DOCUMENTS`); kết nối với API chunks thực tế qua đề xuất backend `BE-PROP-1` `GET /materials/:id/chunks` (`specs/001-fe026-courses-materials/be-dependencies.md`); hiển thị trạng thái lỗi / chưa khả dụng (`ErrorState`) với lý do thực tế khi API chưa sẵn sàng hoặc trả về lỗi (404, 403, 5xx); chỉ hiển thị `EmptyState` khi API trả về 200 OK với danh sách rỗng; tuyệt đối không dùng fallback mảng rỗng `[]` khi thiếu API hay gặp lỗi. (Phục vụ Jira AC 1, 4, Frame 02.7, PO Q2)
 - **FR-010**: Kế hoạch triển khai và kiến trúc component của FE-026 PHẢI kế thừa cấu trúc FE-023 (`src/components/ds/`, `src/routes/paths.ts`, locale i18n riêng) sau khi FE-023 được merge vào `develop`; không triển khai mã nguồn trên cấu trúc cũ và không tự ý đưa thay đổi uncommitted vào branch. (Phục vụ PO Q1, Kiến trúc)
 - **FR-011**: Toàn bộ giao diện PHẢI tuân thủ nghiêm ngặt bảng token màu sắc Eduva Navy `#2A4E7F` / Sky `#00A5F5` (R01 §2); áp dụng quy tắc phẳng hóa không viền không bóng card trên nền canvas `#F3F6FC`; cấm 100% emoji Unicode, cấm icon text thô, cấm màu tím / gradient lòe loẹt theo quy tắc chống AI-slop (R01 §1). (Phục vụ Jira AC 1, R01 §1)
-- **FR-012**: 100% nội dung hiển thị trên giao diện PHẢI được bản địa hóa sang tiếng Việt học thuật chuẩn thông qua hệ thống i18n; đồng nhất các thuật ngữ theo FND §1.2 (`Giảng viên`, `Khóa học`, `Tài liệu môn học`, `Lập chỉ mục`, `Lưu trữ`). (Phục vụ Jira AC 3, FND §1.2)
+- **FR-012**: 100% nội dung hiển thị trên giao diện PHẢI được bản địa hóa sang tiếng Việt học thuật chuẩn thông qua hệ thống i18n; đồng nhất các thuật ngữ theo FND §1.2 (`Giảng viên`, `Khóa học`, `Tài liệu môn học`, `Lập chỉ mục`, `Lưu trữ`). Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."). (Phục vụ Jira AC 3, FND §1.2)
 - **FR-013**: Hệ thống PHẢI đảm bảo kiểm soát truy cập và ranh giới sở hữu: chỉ tài khoản đăng nhập có role `LECTURER` và là chủ sở hữu của khóa học (`lecturerId = currentUser.id`) mới được phép truy cập và thao tác trên 3 route này; mọi truy cập trái phép bị chặn ở mức guard `403`. (Phục vụ FND §3, Bảo mật)
 
 ### 7.2. Key Entities (Thực thể chính)

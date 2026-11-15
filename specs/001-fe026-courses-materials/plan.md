@@ -17,6 +17,7 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 4. **Soft Archive via OPD-014 (PO Q4 & Review R2-3)**: Frame 02.3 replaces destructive deletion with soft archive, eliminating the HTTP 500 error on courses with materials. Schema evaluation confirms that reusing the existing `is_active` column on the `courses` table (`courses.is_active = FALSE` per `backend/migrations/V1__init_schema.sql:39`) fulfills all OPD-014 requirements without creating parallel columns or mechanisms.
 5. **Route Alignment (PO Q5 & Review R2-1)**: Fix `DELETE /materials/:id` directly in frontend `materialService.ts` relative to `/api/v1` base URL.
 6. **API Response Envelope & Model Mapping (Review R3-1)**: All existing backend endpoints return `{ "status": "SUCCESS", "data": ... }` with snake_case fields (`course_code`, `lecturer_id`, `is_active`, `original_filename`, `stored_object_key`, `mime_type`, `size_bytes`, `processing_status`, `chunk_count`, `processing_error`, `uploaded_at`). Clean mapping to frontend camelCase models is encapsulated in `frontend/src/services/mappers/course.ts` and `material.ts`. All proposed endpoints (`PATCH /courses/:id/archive`, `GET /materials/:id/chunks`) adopt the identical envelope.
+7. **Localization Scope & Future English Localization (`[PO-ĐÃ-XÁC-NHẬN]`)**: Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."). The shared header Language VI|EN toggle (`544:5800`) is out of MVP scope; FE-026 implements no language switching and no English strings; the header itself is FE-025 shell scope. Feature locale files follow FE-023: `frontend/src/locales/courses.vi.json` and `materials.vi.json` (one top-level key each, merged by `src/lib/i18n.ts`). No `.en.json` files are created.
 
 ---
 
@@ -46,6 +47,7 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
   - Allowed file formats: PDF (`application/pdf`) and DOCX (`application/vnd.openxmlformats-officedocument.wordprocessingml.document`).
   - Colors: Locked Eduva Navy (`#2A4E7F`) and Sky (`#00A5F5`) design tokens.
   - Strict Anti-AI-slop: Zero Unicode emojis, zero raw ASCII symbols as buttons, 100% academic Vietnamese UI chrome.
+  - Localization scope: Vietnamese only (MVP). English localization is future scope, after ~75% product completion and PO approval (`[PO-ĐÃ-XÁC-NHẬN]` 2026-11-16, chat, verbatim: "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval.").
 - **Scale/Scope**: 3 primary views, 4 modal/dialog flows, 7 Figma frames (`02.1`–`02.7`).
 
 ---
@@ -152,7 +154,8 @@ frontend/src/
 │       ├── course.ts            # Maps Course API responses & computes counts
 │       └── material.ts          # Maps Material API responses & status enums
 └── locales/
-    ├── vi.json                  # Vietnamese translations
+    ├── courses.vi.json          # Courses feature translations (one top-level key)
+    ├── materials.vi.json        # Materials feature translations (one top-level key)
     └── states.vi.json           # Shared state copy
 ```
 

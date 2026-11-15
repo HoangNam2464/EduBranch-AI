@@ -44,7 +44,7 @@ Ngoài 15 task DES, page 08 còn các màn MVP đã chốt nhưng chưa có task
 | Màu chính `#2563EB`, `bg-canvas #F9FAFB`, viền `#E5E7EB` | Navy `#2A4E7F` (`action/primary`), sky `#00A5F5` (`action/accent`), token `EduBranch · Color` |
 | Sinh viên: Top Bar 56px + cột đọc 768px, không sidebar | Sinh viên dùng cùng khung sidebar thu gọn được như giảng viên; vùng đọc/viết giữ độ rộng 65–75 ký tự |
 | Sidebar giảng viên 240px có vạch active 3px | Sidebar dùng chung (`Navigation/Sidebar`), mục đang chọn nền navy, không vạch; bản thu gọn 72px |
-| Chữ giao diện tiếng Anh ("Approve Case", "Publish to Students"…) | Tiếng Việt; có nút chuyển VI/EN |
+| Chữ giao diện tiếng Anh ("Approve Case", "Publish to Students"…) | Tiếng Việt (MVP chỉ tiếng Việt; nút chuyển VI/EN và bản tiếng Anh là phạm vi sau MVP, chờ mốc ~75% và PO duyệt — PO 2026-11-16) |
 | DES-006 dạng modal | Wizard 3 bước ở `/lecturer/ai-studio` |
 | DES-009 hiện link chia sẻ sau khi xuất bản | Trạng thái Đã xuất bản chỉ còn nút "Sao chép đường dẫn" (03.6) |
 | Đăng nhập Google là Phase 2 | Google + Microsoft thuộc MVP (PSD-09), không có ở đăng nhập quản trị |
