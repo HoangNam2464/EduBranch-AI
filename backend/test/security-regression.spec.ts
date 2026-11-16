@@ -122,11 +122,11 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
         updated_at: new Date().toISOString(),
       };
     }),
-    deleteCourse: jest.fn().mockImplementation(async (courseId: string, lecturerId: string) => {
+    archiveCourse: jest.fn().mockImplementation(async (courseId: string, lecturerId: string) => {
       if (lecturerId !== "lecturer-owner-a") {
-        throw new ForbiddenException("You can only delete your own courses");
+        throw new ForbiddenException("You can only archive your own courses");
       }
-      return { success: true, deletedCourseId: courseId };
+      return { id: courseId, lecturer_id: "lecturer-owner-a", is_active: false, active: false };
     }),
   };
 
@@ -542,13 +542,13 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
         expect(res.body.message).toBe("You can only edit your own courses");
       });
 
-      it("[SEC-OWN-02] Lecturer B deleting Lecturer A's course receives 403 Forbidden", async () => {
+      it("[SEC-OWN-02] Lecturer B archiving Lecturer A's course receives 403 Forbidden", async () => {
         const res = await request(app.getHttpServer())
-          .delete("/api/v1/courses/course-of-lecturer-a")
+          .patch("/api/v1/courses/course-of-lecturer-a/archive")
           .set("Authorization", `Bearer ${intruderLecturerToken}`)
           .expect(403);
 
-        expect(res.body.message).toBe("You can only delete your own courses");
+        expect(res.body.message).toBe("You can only archive your own courses");
       });
 
       it("[SEC-OWN-03] Lecturer B generating case in Lecturer A's course receives 403 Forbidden", async () => {
@@ -591,9 +591,9 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
           .expect(403);
       });
 
-      it("[SEC-OWN-07] Student attempting to DELETE course receives 403 Forbidden", async () => {
+      it("[SEC-OWN-07] Student attempting to archive course receives 403 Forbidden", async () => {
         await request(app.getHttpServer())
-          .delete("/api/v1/courses/course-of-lecturer-a")
+          .patch("/api/v1/courses/course-of-lecturer-a/archive")
           .set("Authorization", `Bearer ${ownerStudentToken}`)
           .expect(403);
       });

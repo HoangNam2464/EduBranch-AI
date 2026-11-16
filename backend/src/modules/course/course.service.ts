@@ -31,7 +31,7 @@ export class CourseService {
     const result = await this.db.query(
       `SELECT id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at
        FROM courses
-       WHERE lecturer_id = $1
+       WHERE lecturer_id = $1 AND is_active = TRUE
        ORDER BY created_at DESC`,
       [lecturerId],
     );
@@ -79,15 +79,30 @@ export class CourseService {
     return result.rows[0];
   }
 
-  async deleteCourse(courseId: string, lecturerId: string) {
+  /**
+   * Soft-archive a course (C1-B, PO decision 2026-11-16; OPD-014 / PO Q4).
+   * Sets is_active = FALSE and keeps every child record: teaching materials,
+   * pgvector chunks, MinIO objects and cases are not touched. Archived courses
+   * leave the lecturer's active list and reject new uploads and case generation.
+   * Archiving an already archived course is a no-op that returns the course.
+   */
+  async archiveCourse(courseId: string, lecturerId: string) {
     const course = await this.getCourseById(courseId);
 
     if (course.lecturer_id !== lecturerId) {
-      throw new ForbiddenException("You can only delete your own courses");
+      throw new ForbiddenException("You can only archive your own courses");
     }
 
-    await this.db.query("DELETE FROM courses WHERE id = $1", [courseId]);
-    this.logger.log(`Course deleted: ${courseId} by lecturer ${lecturerId}`);
-    return { message: "Course deleted successfully" };
+    if (course.is_active === false) {
+      return course;
+    }
+
+    const result = await this.db.query(
+      `UPDATE courses SET is_active = FALSE, updated_at = NOW() WHERE id = $1
+       RETURNING id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at`,
+      [courseId],
+    );
+    this.logger.log(`Course archived: ${courseId} by lecturer ${lecturerId}`);
+    return result.rows[0];
   }
 }

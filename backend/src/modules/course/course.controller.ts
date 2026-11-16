@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Put,
-  Delete,
+  Patch,
   Param,
   Body,
   HttpCode,
@@ -24,7 +24,9 @@ import { Roles } from "../auth/decorators/roles.decorator";
  * GET    /api/v1/courses               — List my courses (as lecturer)
  * GET    /api/v1/courses/:courseId     — Get course details
  * PUT    /api/v1/courses/:courseId     — Update course
- * DELETE /api/v1/courses/:courseId     — Delete course
+ * PATCH  /api/v1/courses/:courseId/archive — Archive course (soft, C1-B / OPD-014)
+ *
+ * There is no DELETE route: courses are archived, never hard-deleted (PO 2026-11-16).
  */
 @Controller("courses")
 export class CourseController {
@@ -69,13 +71,13 @@ export class CourseController {
   }
 
   @Roles("LECTURER")
-  @Delete(":courseId")
+  @Patch(":courseId/archive")
   @HttpCode(HttpStatus.OK)
-  async deleteCourse(
+  async archiveCourse(
     @Param("courseId") courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
-    const result = await this.courseService.deleteCourse(courseId, user.id);
-    return { status: "SUCCESS", data: result };
+    const course = await this.courseService.archiveCourse(courseId, user.id);
+    return { status: "SUCCESS", data: course };
   }
 }

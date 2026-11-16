@@ -127,11 +127,11 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
         updated_at: new Date().toISOString(),
       };
     }),
-    deleteCourse: jest.fn().mockImplementation(async (courseId: string, lecturerId: string) => {
+    archiveCourse: jest.fn().mockImplementation(async (courseId: string, lecturerId: string) => {
       if (lecturerId !== "lecturer-owner-a") {
-        throw new ForbiddenException("You can only delete your own courses");
+        throw new ForbiddenException("You can only archive your own courses");
       }
-      return { success: true, deletedCourseId: courseId };
+      return { id: courseId, lecturer_id: "lecturer-owner-a", is_active: false, active: false };
     }),
   };
 
@@ -564,29 +564,39 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
         expect(res.body.message).toBe("You can only edit your own courses");
       });
 
-      it("[OWN-05] Lecturer Owner can delete their own course -> 200 OK", async () => {
+      it("[OWN-05] Lecturer Owner can archive their own course -> 200 OK (C1-B)", async () => {
         const res = await request(app.getHttpServer())
-          .delete("/api/v1/courses/course-of-lecturer-a")
+          .patch("/api/v1/courses/course-of-lecturer-a/archive")
           .set("Authorization", `Bearer ${ownerToken}`)
           .expect(200);
 
         expect(res.body.status).toBe("SUCCESS");
-        expect(mockCourseService.deleteCourse).toHaveBeenCalledWith(
+        expect(res.body.data.is_active).toBe(false);
+        expect(mockCourseService.archiveCourse).toHaveBeenCalledWith(
           "course-of-lecturer-a",
           "lecturer-owner-a",
         );
       });
 
-      it("[OWN-06] Non-owner Lecturer B deleting Course A receives 403 Forbidden", async () => {
+      it("[OWN-06] Non-owner Lecturer B archiving Course A receives 403 Forbidden", async () => {
         const res = await request(app.getHttpServer())
-          .delete("/api/v1/courses/course-of-lecturer-a")
+          .patch("/api/v1/courses/course-of-lecturer-a/archive")
           .set("Authorization", `Bearer ${intruderToken}`)
           .expect(403);
 
-        expect(res.body.message).toBe("You can only delete your own courses");
+        expect(res.body.message).toBe("You can only archive your own courses");
       });
 
-      it("[OWN-07] Student attempting to update or delete course receives 403 Forbidden", async () => {
+      it("[OWN-06b] DELETE /courses/:courseId no longer exists (C1-B) -> 404, nothing called", async () => {
+        await request(app.getHttpServer())
+          .delete("/api/v1/courses/course-of-lecturer-a")
+          .set("Authorization", `Bearer ${ownerToken}`)
+          .expect(404);
+
+        expect(mockCourseService.archiveCourse).not.toHaveBeenCalled();
+      });
+
+      it("[OWN-07] Student attempting to update or archive course receives 403 Forbidden", async () => {
         await request(app.getHttpServer())
           .put("/api/v1/courses/course-of-lecturer-a")
           .set("Authorization", `Bearer ${studentToken}`)
@@ -594,7 +604,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
           .expect(403);
 
         await request(app.getHttpServer())
-          .delete("/api/v1/courses/course-of-lecturer-a")
+          .patch("/api/v1/courses/course-of-lecturer-a/archive")
           .set("Authorization", `Bearer ${studentToken}`)
           .expect(403);
       });

@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   NotFoundException,
   BadRequestException,
+  ConflictException,
   Logger,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
@@ -34,11 +35,15 @@ export class CaseService {
 
     // Verify course exists and belongs to this lecturer
     const courseRes = await this.db.query(
-      "SELECT id FROM courses WHERE id = $1 AND lecturer_id = $2",
+      "SELECT id, is_active FROM courses WHERE id = $1 AND lecturer_id = $2",
       [courseId, lecturerId],
     );
     if (courseRes.rows.length === 0) {
       throw new NotFoundException(`Course ${courseId} not found or access denied`);
+    }
+    // C1-B / OPD-014: no new cases in an archived course
+    if (courseRes.rows[0].is_active === false) {
+      throw new ConflictException("Course is archived");
     }
 
     // 2. Call AI Service to generate case draft
@@ -52,6 +57,16 @@ export class CaseService {
     const client = await this.db.getClient();
     try {
       await client.query("BEGIN");
+
+      // C1-B: the AI call above can take long; re-check under a share lock so a course
+      // archived meanwhile gets no new case (the lock holds off a concurrent archive)
+      const lockRes = await client.query(
+        "SELECT is_active FROM courses WHERE id = $1 FOR SHARE",
+        [courseId],
+      );
+      if (lockRes.rows[0]?.is_active !== true) {
+        throw new ConflictException("Course is archived");
+      }
 
       const caseId = randomUUID();
       const title = aiResponse.title || "University Case Study";

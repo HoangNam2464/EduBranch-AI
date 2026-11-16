@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CaseService } from './case.service';
 import { DatabaseService } from '../../common/database/database.service';
 import { AiClientService } from '../../common/ai-client/ai-client.service';
-import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 
 describe('CaseService', () => {
   let service: CaseService;
@@ -62,14 +62,51 @@ describe('CaseService', () => {
         .mockResolvedValueOnce({ rows: [{ id: 'node-1', node_index: 0 }] }) // getCaseById nodesRes
         .mockResolvedValueOnce({ rows: [{ id: 'opt-1', node_id: 'node-1' }] }); // getCaseById optionsRes
 
+      mockDbClient.query
+        .mockResolvedValueOnce(undefined) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ is_active: true }] }); // FOR SHARE re-check
+
       const result = await service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] });
 
       expect(mockDbClient.query).toHaveBeenCalledWith('BEGIN');
+      expect(mockDbClient.query).toHaveBeenCalledWith(
+        'SELECT is_active FROM courses WHERE id = $1 FOR SHARE',
+        ['course-1'],
+      );
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO cases'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_nodes'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET root_node_id'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_options'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+    });
+    it('rejects generation in an archived course with 409 before calling the AI service (C1-B)', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] }) // user check
+        .mockResolvedValueOnce({ rows: [{ id: 'course-1', is_active: false }] }); // course check
+
+      await expect(
+        service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }),
+      ).rejects.toThrow(new ConflictException('Course is archived'));
+      expect(mockDbService.query.mock.calls[1][0]).toContain('is_active');
+      expect(mockAiClientService.generateCase).not.toHaveBeenCalled();
+      expect(mockDbService.getClient).not.toHaveBeenCalled();
+    });
+
+    it('rolls back without inserting when the course is archived during AI generation (C1-B)', async () => {
+      mockAiClientService.generateCase.mockResolvedValue({ title: 'T', root_node_index: 0, nodes: [] });
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] }) // user check
+        .mockResolvedValueOnce({ rows: [{ id: 'course-1', is_active: true }] }); // course check (active)
+      mockDbClient.query
+        .mockResolvedValueOnce(undefined) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ is_active: false }] }); // archived meanwhile
+
+      await expect(
+        service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }),
+      ).rejects.toThrow(new ConflictException('Course is archived'));
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO cases'), expect.anything());
+      expect(mockDbClient.release).toHaveBeenCalled();
     });
   });
 
