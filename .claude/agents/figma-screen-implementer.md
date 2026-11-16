@@ -25,4 +25,4 @@ The frame list (code, Figma node id, size, route, role), the files you own, and 
 5. Keep `npx tsc -p tsconfig.json --noEmit` and `npx oxlint <your files>` clean.
 
 ## Report (≤ 600 words)
-Per frame: mismatch before → after, PASS / NOT PASS, remaining differences with reasons. Files changed or added, i18n keys added, shared changes needed from the lead, business/data gaps. Never claim PASS without the comparison image and measurements.
+Per frame: mismatch before → after, PASS / PASS WITH CONDITIONS / failed (policy §8), remaining differences with reasons. Files changed or added, i18n keys added, shared changes needed from the lead, business/data gaps. Never claim PASS without the comparison image and measurements.
