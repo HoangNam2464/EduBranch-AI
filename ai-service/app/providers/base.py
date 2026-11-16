@@ -46,7 +46,7 @@ class BaseLLMProvider(ABC):
         """
         Return the vector embedding dimension for this provider.
 
-        Default is 768 (standard for text-embedding-004). Subclasses may override.
+        Default is 768 (document_chunks.embedding is vector(768)). Subclasses may override.
         """
         return 768
 
