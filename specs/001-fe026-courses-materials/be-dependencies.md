@@ -1,7 +1,7 @@
 # Proposed Backend Dependencies [FE-026]
 
-> **Status**: PROPOSED — not created in Jira · Requires Product Owner (PO) approval.  
-> **Context**: Upstream backend service dependencies identified during FE-026 (Jira EBA-89, Sprint 3) planning per PO Decisions Q2 and Q4 (2026-11-15). These tasks are NOT part of any Sprint backlog or active Jira sprint, and do not modify backend code in this change.
+> **Status**: `BE-PROP-1` PROPOSED — not created in Jira · Requires Product Owner (PO) approval. `BE-PROP-2` implemented on branch `feature/course-soft-archive`, pending merge into `develop` (not in Jira; scope approved by the PO on 2026-11-16, see `BE-PROP-2` below).  
+> **Context**: Upstream backend service dependencies identified during FE-026 (Jira EBA-89, Sprint 3) planning per PO Decisions Q2 and Q4 (2026-11-15) and the PO decision on C1 (2026-11-16). `BE-PROP-1` is NOT part of any Sprint backlog or active Jira sprint, and this change does not modify backend code.
 
 ---
 
@@ -33,25 +33,19 @@ The user interface MUST handle data states honestly:
 
 ---
 
-### BE-PROP-2: Course Soft Archive API (`PATCH /courses/:id/archive`) (C1-B only; BLOCKED-ON-C1)
-- **Status**: PROPOSED — not created in Jira (requires PO approval; C1-B only; `BLOCKED-ON-C1 — pending PO` for C1-A delete vs C1-B soft archive resolution)
-- **Source**: PO Decision Q4 / OPD-014 (2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`)
-- **Contract Reference**: `specs/001-fe026-courses-materials/contracts/courses-api.md` §2.1
+### BE-PROP-2: Course Soft Archive API (`PATCH /courses/:courseId/archive`) — implemented on branch `feature/course-soft-archive`, pending merge
+- **Status**: Implemented on branch `feature/course-soft-archive`, pending merge into `develop` `[DỮ-KIỆN]`. Not in Jira (no Jira key is claimed). Scope approved by the PO on 2026-11-16 `[PO-ĐÃ-XÁC-NHẬN 2026-11-16]`: *"Duyệt, không đổi sinh viên"*. This is the former proposed `BE-PROP-2`; it is no longer PROPOSED / BLOCKED.
+- **Source**: PO Decision Q4 / OPD-014 (2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`); C1 decided C1-B on 2026-11-16 `[PO-ĐÃ-XÁC-NHẬN 2026-11-16]`: *"chọn C1-B và update tài liệu luôn giúp tôi, cứ theo figma, tại liệu mà lệch thì sủa lại giúp tôi"*; legacy route decision: *"Gỡ DELETE"*; scope approval: *"Duyệt, không đổi sinh viên"*.
+- **Contract Reference**: `specs/001-fe026-courses-materials/contracts/courses-api.md` §2.1 (and §1.5, removed)
 - **Target Module**: Backend Gateway (`backend/src/modules/course/`) & Database
-- **Blocked Frontend Tasks**: `T005` (`removeCourse`), `T011` (`CourseRemovalDialog`), `T029` (course removal resolution)
-- **Requirements**:
-  1. **Route & Envelope**: `PATCH /api/v1/courses/:id/archive` returning standard backend envelope `{ "status": "SUCCESS", "data": { "id", "name", "course_code", "is_active": false, ... } }`.
-  2. **Schema Evaluation**: Reuse existing database column `courses.is_active` (`BOOLEAN NOT NULL DEFAULT TRUE` per `backend/migrations/V1__init_schema.sql:39`). Set `is_active = FALSE`. Do NOT introduce redundant columns (e.g. `is_archived`, `archived_at`) or parallel mechanisms.
-  3. **Data Preservation Invariant**: Archiving a course must **NEVER** delete or cascade-delete records in `teaching_materials`, `document_chunks`, or objects stored in MinIO. Historical case references and student attempt links remain 100% intact.
-  4. **Active Course Filtering**:
-     - Update `getCoursesByLecturer` (`course.service.ts:30`) and `getCourseById` (`course.service.ts:43`) to filter `WHERE is_active = TRUE` for active course listings.
-     - Consumers that must be audited and aligned to exclude or reject archived courses:
-       - `case.service.ts:37` (prevent creating cases for archived courses)
-       - `material.service.ts:52` (prevent uploading materials to archived courses)
-       - Student desk and admin course listing queries
-  5. **Authentication & Ownership**: Enforce `lecturer_id = currentUser.id`. Return `403 Forbidden` if a lecturer attempts to archive a course owned by another lecturer.
-  6. **Integration Tests**: Automated tests proving that:
-     - Archived courses are omitted from active listings.
-     - All linked materials, chunks, and MinIO objects are completely preserved.
-     - HTTP 500 foreign key constraint errors are eliminated.
-     - Unauthorized archival attempts return 403 Forbidden.
+- **Dependent Frontend Tasks**: `T005` (`archiveCourse`), `T011` (`CourseRemovalDialog`), `T029` (course archive wiring). They stay `BLOCKED-ON-BE` only until the branch is merged into `develop` (they may be built against the contract, but are not reported done before the merge).
+- **Implemented behaviour** `[DỮ-KIỆN]` (branch `feature/course-soft-archive`, not merged yet):
+  1. **Route & Envelope**: `PATCH /api/v1/courses/:courseId/archive`, role `LECTURER`, owner only. Returns `{ "status": "SUCCESS", "data": <course with is_active = false, active = false> }`.
+  2. **Errors & idempotency**: `404` for an unknown course, `403` for a non-owner. Archiving an already archived course returns `200` with the course (idempotent).
+  3. **Schema**: Reuses existing column `courses.is_active` (`BOOLEAN NOT NULL DEFAULT TRUE`, `backend/migrations/V1__init_schema.sql:39`), set to `FALSE`. No redundant column or parallel mechanism.
+  4. **Data Preservation Invariant**: Materials (`teaching_materials`), pgvector chunks (`document_chunks`), MinIO objects and cases are kept. Historical case references and student attempt links remain intact.
+  5. **Lecturer list**: `GET /courses` returns only `is_active = TRUE` courses. `GET /courses/:courseId` still returns an archived course (`is_active = false`).
+  6. **Archived course rejects new work**: uploading a material to an archived course, or generating a case in it, returns HTTP `409` with message "Course is archived" (`403` still wins for a non-owner).
+  7. **`DELETE /courses/:courseId` no longer exists** (returns `404`). There is no restore / unarchive operation.
+  8. **Students**: behaviour unchanged (PO: *"Duyệt, không đổi sinh viên"*).
+- **Still to confirm at merge** (not verified by this FE spec): backend integration tests proving that archived courses are omitted from the lecturer list, that materials, chunks and MinIO objects survive, that unauthorized archival returns 403 and that the former HTTP 500 foreign-key error cannot occur.

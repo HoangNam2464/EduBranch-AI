@@ -13,7 +13,7 @@
 ### 1.1. List Lecturer Courses
 - **Method / Endpoint**: `GET /courses`
 - **Controller Source**: `backend/src/modules/course/course.controller.ts:44` (`CourseController.getMyCourses`)
-- **Query Parameters**: None. The backend endpoint returns all active/created courses for the authenticated lecturer ordered by `created_at DESC`. Search and filtering on the Courses Page (02.1) are executed client-side over this dataset.
+- **Query Parameters**: None. The backend endpoint returns the authenticated lecturer's courses ordered by `created_at DESC`. After the merge of branch `feature/course-soft-archive` (`[DỮ-KIỆN]`, not merged yet) it returns only courses with `is_active = TRUE`; archived courses are no longer listed. Search and filtering on the Courses Page (02.1) are executed client-side over this dataset.
 - **Success Response (200 OK)**:
 ```json
 {
@@ -101,6 +101,7 @@
 ```
 - **Error Responses**:
   - `404 Not Found`: Course ID not found in database.
+- **Note** `[DỮ-KIỆN]` (branch `feature/course-soft-archive`, not merged yet): this endpoint still returns an archived course (`is_active = false`, `active = false`).
 
 ---
 
@@ -145,33 +146,20 @@
 
 ---
 
-### 1.5. Delete Course (Legacy Endpoint) (C1-A only; BLOCKED-ON-C1)
-- **Method / Endpoint**: `DELETE /courses/:courseId`
-- **Controller Source**: `backend/src/modules/course/course.controller.ts:71` (`CourseController.deleteCourse`)
-- **Path Parameters**:
-  - `courseId`: UUID of the course
-- **Success Response (200 OK)**:
-```json
-{
-  "status": "SUCCESS",
-  "data": {
-    "message": "Course deleted successfully"
-  }
-}
-```
-- **Error Responses**:
-  - `403 Forbidden`: Course belongs to another lecturer.
-  - `404 Not Found`: Course ID does not exist.
-  - `500 Internal Server Error`: Thrown when course contains materials/cases due to foreign key cascade restrictions. (Conflict C1: C1-A Figma 02.3 hard delete with safe cascade [C1-A only] vs C1-B PO Q4 soft archive [C1-B only]; `BLOCKED-ON-C1 — pending PO`).
+### 1.5. Delete Course — REMOVED (C1-B, 2026-11-16)
+- **Status**: Removed. `[PO-ĐÃ-XÁC-NHẬN 2026-11-16]` PO decision on the legacy route: *"Gỡ DELETE"*. On branch `feature/course-soft-archive` (not merged yet) `DELETE /courses/:courseId` no longer exists and returns `404` `[DỮ-KIỆN]`.
+- **History**: `DELETE /courses/:courseId` (`CourseController.deleteCourse`) used to return HTTP 500 when the course had materials/cases (foreign key restrictions). C1-A (hard delete) was not chosen, PO 2026-11-16.
+- **Frontend rule**: FE-026 must not call `DELETE /courses/:courseId`. Course removal uses `PATCH /courses/:courseId/archive` (§2.1).
 
 ---
 
-## 2. Proposed Endpoints [ĐỀ-XUẤT]
+## 2. New and Proposed Endpoints
 
-### 2.1. Archive Course [ĐỀ-XUẤT] (BE-PROP-2, PO Q4 & OPD-014, C1-B only; BLOCKED-ON-C1)
-- **Status**: PROPOSED — not created in Jira (see `specs/001-fe026-courses-materials/be-dependencies.md`, task `BE-PROP-2`). Requires PO approval (C1-B only; `BLOCKED-ON-C1 — pending PO`).
-- **Method / Endpoint**: `PATCH /courses/:courseId/archive` `[ĐỀ-XUẤT]`
-- **Description**: Soft-archives a course by updating the existing database column `is_active = FALSE` (`backend/migrations/V1__init_schema.sql:39`). Retains all child materials in `teaching_materials`, vector chunks in pgvector, and raw objects in MinIO storage without foreign key cascade failures. Active course queries filter `WHERE is_active = TRUE`. Blocks frontend tasks `T005`, `T011`, `T029` under C1-B.
+### 2.1. Archive Course (BE-PROP-2, PO Q4 & OPD-014, C1-B decided 2026-11-16)
+- **Status**: Implemented on branch `feature/course-soft-archive`, pending merge into `develop` `[DỮ-KIỆN]`; not in Jira (see `specs/001-fe026-courses-materials/be-dependencies.md`, task `BE-PROP-2`). Scope approved `[PO-ĐÃ-XÁC-NHẬN 2026-11-16]`: *"Duyệt, không đổi sinh viên"*. Frontend tasks `T005`, `T011`, `T029` stay `BLOCKED-ON-BE` until the merge.
+- **Method / Endpoint**: `PATCH /courses/:courseId/archive` (full path `/api/v1/courses/:courseId/archive`), role `LECTURER`, owner only.
+- **Description**: Soft-archives a course by setting the existing column `courses.is_active = FALSE` (`backend/migrations/V1__init_schema.sql:39`). Materials (`teaching_materials`), pgvector chunks, MinIO objects and cases are kept. Idempotent: archiving an already archived course returns `200` with the course. There is no restore / unarchive operation.
+- **Side effects on other endpoints** `[DỮ-KIỆN]`: `GET /courses` returns only `is_active = TRUE` courses; `GET /courses/:courseId` still returns an archived course; uploading a material to an archived course or generating a case in it returns `409` "Course is archived" (`403` still wins for a non-owner); `DELETE /courses/:courseId` no longer exists (`404`). Student behaviour is unchanged.
 - **Envelope**: Standard backend envelope `{ "status": "SUCCESS", "data": ... }`
 - **Success Response (200 OK)**:
 ```json
@@ -191,7 +179,8 @@
 }
 ```
 - **Error Responses**:
-  - `403 Forbidden`: Caller does not own the course (`lecturer_id !== currentUser.id`).
+  - `401 Unauthorized`: Missing or invalid JWT token.
+  - `403 Forbidden`: Caller does not own the course (`lecturer_id !== currentUser.id`) or lacks the `LECTURER` role.
   - `404 Not Found`: Course ID does not exist.
 
 ---

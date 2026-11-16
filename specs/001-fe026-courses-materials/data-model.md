@@ -19,7 +19,7 @@ The root container for teaching materials and case studies belonging to a lectur
 | `courseCode` | `string` | [DỮ-KIỆN] Optional in DTO; UI required-ness BLOCKED-ON-C3 — pending PO (C3-A required vs C3-B optional) | `max(20)` per `CreateCourseDto` | Course catalog identifier (e.g. "CS101", "MKT302") |
 | `description` | `string` | No | `max(1000)` | Syllabus or overview summary |
 | `coverImageUrl` | `string` | No | Valid URL | Visual thumbnail / banner image |
-| `is_active` | `boolean` | Yes | Default: `true` | Active status; under C1-B only: set to `false` if soft-archived per OPD-014 (`BLOCKED-ON-C1 — pending PO`) |
+| `is_active` | `boolean` | Yes | Default: `true` | Active status; set to `false` when the course is archived (soft archive, OPD-014, C1-B decided 2026-11-16; `PATCH /courses/:courseId/archive`, no restore operation) |
 | `lecturerId` | `UUID` | Yes | Foreign key → `users.id` | Owner of the course (`LECTURER` role) |
 | `createdAt` | `timestamp` | Yes | ISO 8601 | Record creation timestamp |
 | `updatedAt` | `timestamp` | Yes | ISO 8601 | Last modification timestamp |
@@ -93,16 +93,16 @@ A parsed and embedded text segment stored in database table `document_chunks` (p
 - **COMPLETED**: Pipeline succeeded. `chunkCount > 0`. Material is ready for case generation and inspection in RAG Source Inspector (02.7).
 - **FAILED**: Pipeline encountered an error (e.g. unreadable scanned PDF, corruption). Error message stored in `processingError`. The action button displays "Thử lại" (C2-A) or "Tải lên lại" (C2-B) (`BLOCKED-ON-C2 — pending PO`; behaviour identical under C2-A and C2-B: opens upload modal with previous error context; in-place re-ingest is out of FE-026 scope), opening the upload dialog with the error context.
 
-### 2.2. Course Removal Lifecycle (BLOCKED-ON-C1: removal (C1-A delete / C1-B archive))
+### 2.2. Course Archive Lifecycle (C1-B, decided 2026-11-16)
 ```
 [Course Drafted] ──► ACTIVE (`is_active = TRUE`)
                           │
-                          │ Lecturer confirms removal (Dialog 02.3, BLOCKED-ON-C1: C1-A vs C1-B)
+                          │ Lecturer confirms archive (Dialog 02.3, `PATCH /courses/:courseId/archive`)
                           ▼
-                     ARCHIVED (`is_active = FALSE`, C1-B only) / DELETED (C1-A only) (BLOCKED-ON-C1)
+                     ARCHIVED (`is_active = FALSE`)
 ```
 - When `is_active = TRUE`, course appears in active lists and navigation.
-- Under C1-B only (if soft archive is chosen; `BLOCKED-ON-C1 — pending PO`): when `is_active = FALSE`, course is hidden from active courses view, while all child materials, chunks, and MinIO objects are completely preserved. Under C1-A only (if hard delete is chosen; `BLOCKED-ON-C1 — pending PO`), course and linked records are removed safely with backend cascade.
+- When `is_active = FALSE` (`[DỮ-KIỆN]`, branch `feature/course-soft-archive`, pending merge): the course is hidden from the lecturer course list (`GET /courses`), while all child materials, chunks, MinIO objects and cases are preserved. `GET /courses/:courseId` still returns it. An archived course rejects new material uploads and new case generation with HTTP 409 "Course is archived". There is no restore / unarchive operation, and no hard delete (`DELETE /courses/:courseId` was removed). Student behaviour is unchanged.
 
 ---
 

@@ -56,15 +56,19 @@ Order convention: A = keep the approved Figma as drawn; B = follow the earlier P
 
 ---
 
-### Decision 4: Course Removal (C1, pending PO; option C1-B = PO Q4 answer & Review R2-3, BLOCKED-ON-C1)
-- **Problem**: Attempting to delete a course with associated materials returned HTTP 500 due to PostgreSQL foreign key constraints. In addition, PO Q4 (2026-11-15) cites OPD-014 for soft archive (option C1-B), which conflicts with Figma 02.3 hard delete (option C1-A); `BLOCKED-ON-C1 — pending PO`.
-- **Context & Conflict**:
-  - Facts: Figma 02.3 dialog `I483:10341;228:301` "Xóa khóa học này?", body `…228:302` (courses, materials and case studies are deleted, irreversible), confirm `…228:310;225:254` "Xóa khóa học". PO Q4 (2026-11-15) + OPD-014: soft archive, keep course, materials, chunks, MinIO objects. Backend today: `DELETE /courses/:courseId` returns HTTP 500 when the course has materials (FK, no cascade); `courses.is_active` exists.
-- **Options (C1 Option Analysis)**:
-  - **C1-A (keep Figma):** hard delete with the Figma copy. Needs: the PO to change the Q4/OPD-014 decision; a backend change that deletes the course's materials, chunks, MinIO objects and related cases safely (today it fails with 500). Not BE-PROP-2.
-  - **C1-B (follow PO Q4 / OPD-014):** soft archive. Needs: the PO to change the Figma 02.3 copy (archive wording); BE-PROP-2 (`PATCH /courses/:courseId/archive`, `is_active = false`, active lists exclude archived courses).
-- **Non-conflict schema fact**: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`). Reusing `is_active` (`is_active = FALSE`) fulfills the soft-archive requirement under C1-B without introducing redundant columns or parallel mechanisms if soft archive is confirmed.
-- **Decision**: `BLOCKED-ON-C1 — pending PO`. No interim option recommended.
+### Decision 4: Course Removal = Soft Archive (C1-B, decided by the PO on 2026-11-16; PO Q4 answer & Review R2-3)
+- **Problem**: Attempting to delete a course with associated materials returned HTTP 500 due to PostgreSQL foreign key constraints. PO Q4 (2026-11-15) cites OPD-014 for soft archive, which conflicted with the earlier Figma 02.3 hard delete copy (conflict C1).
+- **Context & Conflict (history)**:
+  - Facts at the time: Figma 02.3 dialog `I483:10341;228:301` "Xóa khóa học này?", body `…228:302` (courses, materials and case studies are deleted, irreversible), confirm `…228:310;225:254` "Xóa khóa học". PO Q4 (2026-11-15) + OPD-014: soft archive, keep course, materials, chunks, MinIO objects. Backend before the change: `DELETE /courses/:courseId` returned HTTP 500 when the course had materials (FK, no cascade); `courses.is_active` exists.
+- **PO decision** `[PO-ĐÃ-XÁC-NHẬN 2026-11-16]` (chat, verbatim, date 2026-11-16):
+  - C1 question → *"chọn C1-B và update tài liệu luôn giúp tôi, cứ theo figma, tại liệu mà lệch thì sủa lại giúp tôi"*
+  - May Claude change Figma 02.3 copy to archive wording? → *"Sửa Figma theo lưu trữ"*
+  - What to do with `DELETE /courses/:id`? → *"Gỡ DELETE"*
+  - Scope approval (backend archive API, remove DELETE, lecturer list hides archived, archived course rejects upload and case generation with 409, students unchanged) → *"Duyệt, không đổi sinh viên"*
+- **History line**: C1-A (hard delete) was not chosen, PO 2026-11-16.
+- **Non-conflict schema fact**: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`). Soft archive reuses `is_active` (`is_active = FALSE`) without redundant columns or parallel mechanisms.
+- **Facts now true** `[DỮ-KIỆN]`: Backend branch `feature/course-soft-archive` (not merged yet) implements `PATCH /api/v1/courses/:courseId/archive` (see `be-dependencies.md` `BE-PROP-2`, `contracts/courses-api.md` §2.1) and removes `DELETE /courses/:courseId`. Figma page 08 frame 02.3 (node `483:10111`, renamed "02.3 · Giảng viên · Hộp thoại xác nhận lưu trữ khóa học"), dialog instance `483:10341` (variant Type=Destructive, unchanged): title `I483:10341;228:301` = "Lưu trữ khóa học này?"; message `I483:10341;228:302` = "Khóa học sẽ ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên." + line 2 "CS402 · An ninh mạng & Ứng cứu sự cố · 4 tài liệu · 6 case"; confirm `I483:10341;228:310;225:254` = "Lưu trữ khóa học"; cancel "Hủy bỏ" unchanged.
+- **Decision**: Soft archive (C1-B). The frontend calls `courseService.archiveCourse(courseId)` → `PATCH /courses/:courseId/archive`; no hard delete. Open follow-up `[CHƯA-QUYẾT]`: whether the archive confirm button should keep the Destructive (red) variant shown in Figma or use a non-destructive variant (PO question C1-F1, spec.md); no interim choice is made here.
 
 ---
 
@@ -108,7 +112,7 @@ Order convention: A = keep the approved Figma as drawn; B = follow the earlier P
 |---|---|---|---|
 | **02.1 Courses** (`483:9637`) | `pages/courses/CoursesPage.tsx` | `CourseCard`, `CourseOverview`, `Button`, `SearchField`, `FilterControl`, `Pagination`, `ResultCount` | `CourseListSkeleton`, `CourseCardSkeleton`, `EmptyState`, `ErrorState`, `NoResultsState` |
 | **02.2 Create/Edit Course** (`483:9866`) | Modal in `CoursesPage.tsx` | `Dialog`, `Field` (input, textarea), `Button` | N/A (inline form errors) |
-| **02.3 Course Removal (C1)** (`483:10111`) | Dialog in `CoursesPage.tsx` | `Dialog`, `Button` (tonal/danger) | N/A |
+| **02.3 Course Archive Confirmation** (`483:10111`) | Dialog in `CoursesPage.tsx` (`CourseRemovalDialog`) | `Dialog`, `Button` (Destructive variant per Figma; open question C1-F1) | N/A |
 | **02.4 Materials Table** (`483:10342`) | `pages/materials/MaterialsPage.tsx` | `Breadcrumb`, `Button`, `ProcessingBadge`, `StatusPill`, `SearchField`, `Pagination` | `EmptyState`, `ErrorState`, `Skeleton` |
 | **02.5 Upload Modal** (`483:10598`) | Modal in `MaterialsPage.tsx` | `Dialog`, `Button`, `Field` | N/A (file queue state) |
 | **02.6 Delete Material** (`483:10890`) | Dialog in `MaterialsPage.tsx` | `Dialog`, `Button` (danger) | N/A |

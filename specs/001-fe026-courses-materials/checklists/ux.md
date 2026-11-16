@@ -28,12 +28,12 @@
 - [ ] CHK011 Are visual token specifications defined for all four material processing states (`PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`) including background, text, and icon tokens? [Completeness, Spec §3.3, Spec §FR-005]
 - [ ] CHK012 Is the background polling feedback requirement (3-second cadence, non-blocking refresh, no layout shift) clearly quantified? [Clarity, Spec §4.2, Spec §FR-005]
 - [ ] CHK013 Are in-flight submission states (disabled controls, button loading indicator) documented for course creation/edit and material upload modals? [Completeness, Spec §5, Frame 02.2, Frame 02.5]
-- [ ] CHK014 Are success feedback requirements (toast confirmation, auto-closing dialogs, list re-synchronization) specified for create, edit, course removal (BLOCKED-ON-C1: C1-A vs C1-B), and material delete flows? [Completeness, Spec §5]
+- [ ] CHK014 Are success feedback requirements (toast confirmation, auto-closing dialogs, list re-synchronization) specified for create, edit, course archive (C1-B, decided 2026-11-16), and material delete flows? [Completeness, Spec §5]
 
 ## 3. Roles, Permissions & Ownership Boundaries
 
 - [ ] CHK015 Is the user role boundary (`LECTURER` role mandatory) explicitly specified for all course and material management routes? [Completeness, Spec §1.2, Spec §FR-013]
-- [ ] CHK016 Is the course ownership invariant (`currentUser.id === lecturer_id`) documented for all course inspection, modification, and removal (BLOCKED-ON-C1: C1-A vs C1-B) actions? [Consistency, Spec §1.3, Spec §FR-013]
+- [ ] CHK016 Is the course ownership invariant (`currentUser.id === lecturer_id`) documented for all course inspection, modification, and archive (C1-B, decided 2026-11-16) actions? [Consistency, Spec §1.3, Spec §FR-013]
 - [ ] CHK017 Are interface requirements specified for handling HTTP 403 Forbidden responses when a lecturer attempts to access an unowned course or material? [Coverage, Spec §1.2, Spec §5]
 - [ ] CHK018 Is the student isolation requirement (immediate redirection to student desk or 403 page upon attempting to navigate to lecturer routes) documented? [Coverage, Spec §1.2]
 - [ ] CHK019 Are architectural boundaries documented to prohibit direct browser communication with the internal FastAPI AI Service (`/internal/v1/*`)? [Boundary, Spec §1.3, FND §3]
@@ -44,7 +44,7 @@
 - [ ] CHK021 Are canonical higher-education domain terms (`Khóa học`, `Tài liệu môn học`, `Giảng viên`, `Lập chỉ mục`, `Lưu trữ`) enforced in place of forbidden K-12 terms? [Consistency, Spec §1.2, Spec §FR-012, FND §1.2]
 - [ ] CHK022 Are language-mixing prohibitions (e.g. English button labels or placeholder copy on Vietnamese screens) explicitly specified? [Clarity, Spec §3.3, R01 §1 Rule 6]
 - [ ] CHK023 Are upload validation failure messages (unsupported file type, oversized file, 0-byte file) documented with exact Vietnamese copy? [Clarity, Spec §6 User Story 2, Data-Model §3]
-- [ ] CHK024 Are confirmation dialog texts for course removal (BLOCKED-ON-C1 — pending PO: C1-B soft archiving vs C1-A hard delete) and material deletion specified with explicit Vietnamese warnings explaining data preservation vs. removal? [Clarity, Spec §3.2, Spec §FR-003, Spec §FR-008]
+- [ ] CHK024 Are confirmation dialog texts for course archive (C1-B soft archive, decided 2026-11-16; Figma 02.3 archive copy) and material deletion specified with explicit Vietnamese warnings explaining data preservation vs. removal? [Clarity, Spec §3.2, Spec §FR-003, Spec §FR-008]
 
 ## 5. Anti-AI-Slop & Design System Compliance (R01 §1 & §2)
 
@@ -62,7 +62,7 @@
 - [ ] CHK033 Is error handling and user messaging specified for 0-byte empty files dropped into the upload area? [Edge Case, Spec §6 Edge Cases]
 - [ ] CHK034 Are requirements defined for network interruption during multipart upload (retaining file in queue, displaying reconnect retry)? [Recovery, Spec §6 Edge Cases]
 - [ ] CHK035 Are requirements specified for handling ingestion timeouts when a material remains in `PROCESSING` status beyond 5 minutes? [Edge Case, Spec §6 Edge Cases]
-- [ ] CHK036 Are requirements specified for course removal (BLOCKED-ON-C1 — pending PO: C1-B soft-archiving vs C1-A hard delete) when courses contain active materials and case studies (safeguarding child records without HTTP 500)? [Coverage, Spec §FR-003, PO Q4]
+- [ ] CHK036 Are requirements specified for course archive (C1-B soft archive, decided 2026-11-16) when courses contain active materials and case studies (safeguarding child records without HTTP 500)? [Coverage, Spec §FR-003, PO Q4]
 - [ ] CHK037 Is the behavior specified for attempting to delete a material while it is actively in `PROCESSING` status? [Edge Case, Spec §6 Edge Cases]
 
 ## 7. Measurability & Acceptance Criteria Quality

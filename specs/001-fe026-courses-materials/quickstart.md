@@ -34,7 +34,7 @@
 
 ## 2. End-to-End Verification Scenarios
 
-### Scenario 1: Courses Management & Course Removal (Figma 02.1 – 02.3, BLOCKED-ON-C1: C1-A vs C1-B)
+### Scenario 1: Courses Management & Course Archive (Figma 02.1 – 02.3, C1-B decided 2026-11-16)
 1. **Navigate to Courses Page**:
    - Click navigation item "Khóa học" or navigate to `/lecturer/courses`.
    - **Verification**:
@@ -48,11 +48,11 @@
    - Fill "Tên khóa học" (e.g., "Kinh tế lượng ứng dụng"), "Mã khóa học" ("EC301"; [DỮ-KIỆN] Figma 02.2 ghi "Mã môn học *" bắt buộc, backend DTO ghi `@IsOptional()`; tính bắt buộc/tùy chọn: `BLOCKED-ON-C3 — pending PO` (C3-A required vs C3-B optional)), description.
    - Click submit button "Tạo khóa học" (`I483:10110;225:146`, 02.2).
    - **Expected Outcome**: `POST /courses` succeeds (201 Created). Modal closes, new course appears in list and is selected in overview panel.
-3. **Course Removal Action (Figma 02.3 vs PO Q4 / OPD-014 → C1: C1-A vs C1-B)**:
-   - Click course removal action in overview panel.
-   - **Verification**: Dialog opens matching Figma 02.3 (`483:10111`) (`CourseRemovalDialog`). Dialog copy and behavior is `BLOCKED-ON-C1 — pending PO` ([DỮ-KIỆN] under C1-A specifies destructive delete "Xóa khóa học này?" per Figma 02.3; [PO-ĐÃ-XÁC-NHẬN] under C1-B specifies soft archive "Lưu trữ khóa học" preserving materials and chunks per PO Q4 / OPD-014).
+3. **Course Archive Action (Figma 02.3, C1-B decided 2026-11-16, PO Q4 / OPD-014)**:
+   - Click the course archive action in overview panel.
+   - **Verification**: Dialog opens matching Figma 02.3 (`483:10111`, Dialog `483:10341`) (`CourseRemovalDialog`) with title "Lưu trữ khóa học này?", message "Khóa học sẽ ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên." plus the summary line (e.g. "CS402 · An ninh mạng & Ứng cứu sự cố · 4 tài liệu · 6 case"), confirm button "Lưu trữ khóa học" and cancel "Hủy bỏ" `[DỮ-KIỆN]` (Figma, 2026-11-16). The dialog keeps the Destructive (red) button variant; whether archive should use a non-destructive variant is an open PO question `[CHƯA-QUYẾT]` (spec.md, C1-F1).
    - Click confirm button.
-   - **Expected Outcome**: Dependent on C1 resolution: under C1-B only (if soft archive is chosen), calls `PATCH /courses/:courseId/archive` [ĐỀ-XUẤT] setting `is_active` to false without HTTP 500 error; under C1-A only (if hard delete is chosen), calls `DELETE /courses/:courseId` safely.
+   - **Expected Outcome**: Calls `courseService.archiveCourse(courseId)` → `PATCH /courses/:courseId/archive` (backend on branch `feature/course-soft-archive`, pending merge), setting `is_active` to false without HTTP 500 error; the course leaves the active list; materials, chunks, MinIO objects and cases are preserved. `DELETE /courses/:courseId` is never called.
 
 ---
 
@@ -107,7 +107,7 @@
    - **Verification**:
      - `localStorage.getItem('edubranch-lang')` equals `"en"`.
      - Toggle styles swap: `Option · EN` active (Navy fill, white text, `aria-pressed="true"`); `Option · VI` inactive (no fill, secondary text, `aria-pressed="false"`).
-     - Every visible UI text element across courses, materials, RAG inspector, and all dialogs/modals switches to English (`"Course Management"`, `"Create New Course"`, `"Course Materials"`, `"Upload New Materials"`, and course removal dialog title `BLOCKED-ON-C1 — pending PO` (C1-A vs C1-B)).
+     - Every visible UI text element across courses, materials, RAG inspector, and all dialogs/modals switches to English (`"Course Management"`, `"Create New Course"`, `"Course Materials"`, `"Upload New Materials"`, and the course archive dialog title "Archive this course?" `[ĐỀ-XUẤT]` (English copy to be re-proposed in `l10n-copy-review.md` against the Figma archive copy)).
      - Zero Vietnamese strings remain in the UI chrome.
      - API data values (course names, filenames, chunk texts) remain unchanged as stored.
 3. **Persistence on Reload (ATM-L10N-03)**:
