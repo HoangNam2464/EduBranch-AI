@@ -4,11 +4,12 @@ This constitution does not define new principles. EduBranch-AI already has them;
 
 ## Sources of principles (read in full for every Constitution Check)
 
-1. `AGENTS.md`: shared agent rules 1–11 (source map, banners, open decisions, no invented routes/values, existing code is not a requirement, provisional tokens, DONE needs verified evidence).
+1. `AGENTS.md`: shared agent rules 1–13 (source map, banners, open decisions, no invented routes/values, existing code is not a requirement, provisional tokens, DONE needs verified evidence, workflow, UI language, agent operating policy).
 2. FND `.agents/rules/00-project-foundation.md`: §3 architecture boundaries, §4 case lifecycle, §5 decision-tree integrity, §6 AI governance, §7 Git workflow, branch naming and commits.
 3. Feature rules `.agents/rules/feature-*.md` and `.agents/rules/01-ui-design-standards.md` for the area being changed.
 4. `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`: stages, gates, Quality Gates QG1–QG7, roles and handoff.
 5. `CLAUDE.md` (commands, Visual QA gate, code map) and approved PO decisions cited by ID.
+6. `.agents/rules/02-agent-operating-policy.md`: task ownership, PO decision boundary, roles, limits of autonomy, evidence-based handoff (how agents work; it adds no product principle).
 
 ## Constitution Check (used by `/speckit-plan` and `/speckit-analyze`)
 

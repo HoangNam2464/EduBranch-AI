@@ -3,10 +3,11 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 @AGENTS.md
+@.agents/rules/02-agent-operating-policy.md
 
 ## Rules Claude does not load by itself
 
-`.agents/rules/` is loaded by Antigravity, not by Claude Code. Before changing an area, read the matching section of `.agents/rules/00-project-foundation.md` (FND): §3 architecture boundaries, §4 case lifecycle, §5 decision-tree integrity, §6 AI governance, §7 Git and commits. Feature rules: `.agents/rules/feature-*.md`. Claude path-scoped rules: `.claude/rules/`.
+`.agents/rules/` is loaded by Antigravity, not by Claude Code; the one exception is the agent operating policy imported above (task ownership, batch-first execution, PO decision boundary, roles, evidence-based handoff). Before changing an area, read the matching section of `.agents/rules/00-project-foundation.md` (FND): §3 architecture boundaries, §4 case lifecycle, §5 decision-tree integrity, §6 AI governance, §7 Git and commits. Feature rules: `.agents/rules/feature-*.md`. Claude path-scoped rules: `.claude/rules/`.
 
 ## Working with the PO
 

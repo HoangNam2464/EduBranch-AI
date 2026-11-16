@@ -62,7 +62,7 @@ Every statement carries a source ID or one of the tags `[PO-ĐÃ-XÁC-NHẬN]` `
 | 8 Implement | `/speckit-implement` | code, tests | G8: Quality Gates QG1–QG4 (§5) | Claude, delegated by the PO |
 | 9 Converge | `/speckit-converge` | `tasks.md` | G9: no open converge gap, QG5–QG7 | Claude reports; PO via Code Owner approval |
 
-Every PO gate ends a stage: present the output, stop, and wait; start the next stage only after the PO says so. `record.md` is created only after the PO approves starting the run (G0); until then, present Discover in chat. Asking for a run is not approval of its outputs.
+Every PO gate ends a stage: present the output, stop, and wait; start the next stage only after the PO says so. `record.md` is created only after the PO approves starting the run (G0); until then, present Discover in chat. Asking for a run is not approval of its outputs. Inside an authorized stage or batch (and for any task the PO assigns outside this workflow), the agent works autonomously per `.agents/rules/02-agent-operating-policy.md`: no stopping between ordinary technical steps; stop only at these gates, PO decisions and authorization boundaries (policy §5, §7).
 
 The PO may batch consecutive gates from G1 to G6 in one approval, normally when handing a task package to Antigravity (§6). Record the batch in `record.md` and present every batched output at the closing gate. A batch stops early at any open decision, blocking question or Critical/High finding: present the outputs so far and wait. G0 and G7 are never batched. To resume in a new session, take the last passed gate from `record.md` or from the PO.
 
@@ -162,6 +162,8 @@ Each proposed change requires PO approval; modifying repository rulesets, workfl
 | `CI-PROP-5` | Add a second Code Owner to `.github/CODEOWNERS` or formalize the PO merge procedure | Enable legitimate Code Owner approvals when PRs are opened by the primary account holder. | PO approval / PO action |
 
 ## 6. Roles and Antigravity handoff
+
+General responsibilities of the PO, Claude and Antigravity are defined once in `.agents/rules/02-agent-operating-policy.md` §6; the table below lists only their duties in this workflow and the handoff.
 
 | Role | Does | Never |
 |---|---|---|
