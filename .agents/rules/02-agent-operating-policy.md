@@ -82,10 +82,10 @@ A task is complete only when its acceptance criteria are met and supported by ev
 
 Never equate: a test file existing with the test passing; a local pass with GitHub CI passing; a successful command with a correct implementation; a proposed decision with an approved one; a finished code change with a passed product acceptance gate. Status labels (PO decision 2026-11-17), used exactly for every AC, check, gate and task:
 - **PASS**: executed, every criterion met, evidence attached.
-- **PASS WITH CONDITIONS**: executed and the criteria are met, with named remaining conditions (e.g. a known deviation, a follow-up, an accepted data difference), each listed. Proposed (pending PO confirmation): each condition names its owner, and it satisfies a Quality Gate only when the PO accepts the listed conditions.
-- **BLOCKED**: cannot be completed or executed because of a named blocker (missing key, environment, permission, open decision; proposed: a defect outside the scope).
+- **PASS WITH CONDITIONS**: executed and the criteria are met, with named remaining conditions (e.g. a known deviation, a follow-up, an accepted data difference), each listed with its owner. It satisfies a Quality Gate only when the PO accepts the listed conditions (PO confirmed 2026-11-17).
+- **BLOCKED**: cannot be completed or executed because of a named blocker (missing key, environment, permission, open decision, or a defect outside the scope (PO confirmed 2026-11-17)).
 - **NOT VERIFIED**: not executed, or executed without usable evidence.
-The four labels have no failure label. Proposed (pending PO confirmation): a check that ran and did not meet its criteria is reported as "failed" with its evidence (a result, not a status); the item has no PASS label until it is fixed and re-run (§3), or it becomes BLOCKED with a named blocker. Only PASS (or PASS WITH CONDITIONS accepted by the PO) satisfies a Quality Gate (workflow §5).
+The four labels have no failure label. A check that ran and did not meet its criteria is reported as "failed" with its evidence (a result, not a status); the item has no PASS label until it is fixed and re-run (§3), or it becomes BLOCKED with a named blocker (PO confirmed 2026-11-17). Only PASS (or PASS WITH CONDITIONS accepted by the PO) satisfies a Quality Gate (workflow §5).
 
 ## 9. Standard handoff
 
@@ -110,7 +110,7 @@ For each task report: objective and authorized scope; root causes and findings; 
 | GitHub PR reviews and comments | Always | Comment and request changes when reviewing; approve never (author = sole Code Owner) |
 | Jira | Always | Comments with evidence; status transitions only at the gates the workflow names (review on PR open, Done after QG7; workflow §5) |
 | Figma | Read-only by default | Edit only with explicit PO approval for that change |
-| Local Docker stack and dev servers | Always | Start/stop/rebuild services needed for tests (proposed: never delete volumes or data) |
+| Local Docker stack and dev servers | Always | Start/stop/rebuild services needed for tests ; never delete volumes or data (PO confirmed 2026-11-17) |
 | Claude memory | Always | Save new PO directives immediately; remove them once reflected in repo rule files (§12) |
 | Settings, permissions, CODEOWNERS, branch protection, CI workflows | Always | Never, unless the PO orders that specific change |
 

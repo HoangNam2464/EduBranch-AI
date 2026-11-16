@@ -253,7 +253,7 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
 
 ### 5.0. UI vs UX source (PO 2026-11-16: "tôi vẫn theo giao diện figma, nhưng UX thì bạn học theo file .zip đó"; boundary set by PO decision 5, 2026-11-17)
 - **UI** = Figma page 08: colours, data fields and business behaviour, plus the frame's structure (cards, order, labels). Never restructure a frame's layout.
-- **UX learned from the reference** (decision 5): content capped at `max-w-7xl`, thin borders and soft shadows on cards (§4.3, also applied in Figma), animation (implementation proposed: framer-motion, respecting `prefers-reduced-motion`; code not yet on develop), and the behaviour below. Tokens `shadow-eb-card` / `shadow-eb-hover` also land with the frontend PR.
+- **UX learned from the reference** (decision 5): content capped at `max-w-7xl`, thin borders and soft shadows on cards (§4.3, also applied in Figma), animation (framer-motion, respecting `prefers-reduced-motion`; PO confirmed 2026-11-17; code not yet on develop), and the behaviour below. Tokens `shadow-eb-card` / `shadow-eb-hover` also land with the frontend PR.
 - **UX behaviour** also follows the PO's reference frontend (`frontend.zip`; never copy its files into the repo; take visual traits from it only those listed above, and only after Figma shows them; never name that project in EduBranch docs or code):
   - Real data only; Skeleton shaped like the Figma content while loading; `ErrorState` + retry inside the same region on failure; `EmptyState` inside the same card when empty.
   - A value the API does not provide keeps its Figma slot and shows "—" or an in-slot empty state with a short reason; never invent values, never hide or restructure the slot.
