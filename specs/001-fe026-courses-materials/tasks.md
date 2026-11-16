@@ -422,6 +422,6 @@ This Acceptance Test Matrix operationalizes the explicit directives provided by 
   *Owner*: Product Owner (agents prepare only).  
   *AC*: SC-006, ATM-L10N-COPY-01. *Test*: Run `node scripts/l10n-approval-check.mjs --release` and assert exit code 0 (zero keys have status `PROPOSED` or `CHANGES_REQUESTED`).
 
-- [ ] T041 MEDIUM: Wire `scripts/l10n-approval-check.mjs` into the frontend test flow (dev mode in `npm test`; `--release` in QG4/release) and add a test case proving an unregistered key fails  
-  *Details*: Integrate `scripts/l10n-approval-check.mjs` into frontend testing execution: wire dev mode into `npm test` and require `--release` mode exit 0 in QG4 release gate. Add automated test coverage asserting that an unregistered locale key triggers exit code 1 with `UNREGISTERED` error. Proposed CI hook stays under `CI-PROP-1` / `CI-PROP-3`.  
-  *AC*: SC-006, ATM-L10N-COPY-01. *Test*: `node scripts/l10n-approval-check.mjs` exits 0 on valid locales; test fixture with unregistered key exits 1.
+- [ ] T041 MEDIUM: Wire `scripts/l10n-approval-check.mjs` and regression test suite into the frontend/CI flow (proposal only; dev mode in `npm test`; `--release` in QG4/release)  
+  *Details*: Integrate `scripts/l10n-approval-check.mjs` and its regression test suite `node --test scripts/l10n-approval-check.test.mjs` into frontend testing execution: wire dev mode into `npm test` and require `--release` mode exit 0 in QG4 release gate. Automated test coverage covers all 16 regression scenarios (unregistered key, bad status, missing/placeholder approver fields, invalid dates, empty locales directory, and changed copy). Proposed CI hook stays under `CI-PROP-1` / `CI-PROP-3`.  
+  *AC*: SC-006, ATM-L10N-COPY-01. *Test*: `node --test scripts/l10n-approval-check.test.mjs` exits 0 (16/16 pass); `node scripts/l10n-approval-check.mjs` exits 0 on valid locales.

@@ -2,10 +2,10 @@
 
 > **Governance Notice**:
 > - **Total Keys Registered**: 30 keys (all PROPOSED; awaiting PO review and approval).
-> - **Registry Schema**: Schema A (`| key | vi | en | status | approved_by | approved_on | source |`).
+> - **Registry Schema**: Schema A (`| key | vi | en | status | approved_by | approved_on | source |`). A row with status `APPROVED` strictly requires a non-empty, non-placeholder `approved_by` and a valid calendar date `approved_on` in `YYYY-MM-DD` format (rejected otherwise with `APPROVAL_INCOMPLETE`).
 > - **Array Key Notation**: For array values (e.g. i18next `returnObjects`), keys descend into arrays using numeric index segments (e.g. `g1.landing.how.steps.0`, `g1.landing.how.steps.0.title`); leaf nodes must be strings (numbers, booleans and null are flagged as errors).
 > - **Status Authority**: ONLY the Product Owner (PO) changes status from `PROPOSED` to `APPROVED` and fills `approved_by` and `approved_on`. Implementers and agents draft copy only and MUST NEVER set status to APPROVED themselves.
-> - **Release Rule**: English strings remain `PROPOSED` until the PO approves them in this review file. Quality Gate QG4 runs `node scripts/l10n-approval-check.mjs --release` (exit 0 required) and fails while any English string in the release scope is `PROPOSED`, unregistered, or modified without re-approval. Unapproved English copy is not released. PO approval of all English copy (`l10n-copy-review.md` all APPROVED) is strictly required before FE-026 is Done or released.
+> - **Release Rule**: English strings remain `PROPOSED` until the PO approves them in this review file. Quality Gate QG4 runs `node scripts/l10n-approval-check.mjs --release` (exit 0 required) and fails while any English string in the release scope is `PROPOSED`, unregistered, or modified without re-approval, or if no English locale files are found (`NO_EN_LOCALES`). Unapproved English copy is not released. PO approval of all English copy (`l10n-copy-review.md` all APPROVED) is strictly required before FE-026 is Done or released. Regression test suite: `node --test scripts/l10n-approval-check.test.mjs`.
 > - **Language Architecture**: Governed by AGENTS.md rule 12, CLAUDE.md frontend rules, and PO Directive 2026-11-16 (`[PO-ĐÃ-XÁC-NHẬN]`). Established domain terms are preserved.
 
 ---

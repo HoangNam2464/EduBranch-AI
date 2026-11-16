@@ -7,6 +7,30 @@ const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(scriptDir, '..');
 
 const ALLOWED_STATUSES = new Set(['PROPOSED', 'APPROVED', 'CHANGES_REQUESTED']);
+const PLACEHOLDER_APPROVER_VALUES = new Set(['—', '-', '–', '--', 'n/a', 'tbd']);
+
+function isPlaceholderOrEmpty(val) {
+  const s = (val || '').trim();
+  if (!s) return true;
+  return PLACEHOLDER_APPROVER_VALUES.has(s.toLowerCase());
+}
+
+function isValidCalendarDate(str) {
+  const s = (str || '').trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!m) return false;
+  const year = parseInt(m[1], 10);
+  const month = parseInt(m[2], 10);
+  const day = parseInt(m[3], 10);
+  if (month < 1 || month > 12) return false;
+  if (day < 1 || day > 31) return false;
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return (
+    d.getUTCFullYear() === year &&
+    d.getUTCMonth() + 1 === month &&
+    d.getUTCDate() === day
+  );
+}
 
 function normalizeWs(s) {
   return (s || '').trim().replace(/\s+/g, ' ');
@@ -35,18 +59,6 @@ for (let i = 0; i < args.length; i++) {
       registryArgs.push(args[++i]);
     }
   }
-}
-
-// Determine locales dir
-const localesDir = localesArg
-  ? (path.isAbsolute(localesArg) ? localesArg : path.resolve(process.cwd(), localesArg))
-  : path.resolve(repoRoot, 'frontend/src/locales');
-
-// Check locales directory
-if (!fs.existsSync(localesDir) || !fs.statSync(localesDir).isDirectory()) {
-  const displayLocalesDir = localesArg || toRelative(localesDir);
-  console.log(`NO_LOCALES: ${displayLocalesDir}`);
-  process.exit(isRelease ? 1 : 0);
 }
 
 // Determine registries
@@ -165,6 +177,36 @@ for (const regFile of registryFiles) {
       });
     }
 
+    // Approval checks
+    if (status === 'APPROVED') {
+      const missing = [];
+      if (isPlaceholderOrEmpty(approvedBy)) {
+        missing.push('approved_by');
+      }
+      if (!isValidCalendarDate(approvedOn)) {
+        missing.push('approved_on');
+      }
+      if (missing.length > 0) {
+        findings.push({
+          code: 'APPROVAL_INCOMPLETE',
+          key,
+          target: `${displayTarget} (${missing.join(', ')})`,
+          isError: true
+        });
+      }
+    } else {
+      const hasFilledBy = !isPlaceholderOrEmpty(approvedBy);
+      const hasFilledOn = !isPlaceholderOrEmpty(approvedOn);
+      if (hasFilledBy || hasFilledOn) {
+        findings.push({
+          code: 'APPROVAL_FIELDS_WITHOUT_APPROVED',
+          key,
+          target: displayTarget,
+          isError: false
+        });
+      }
+    }
+
     registryMap.set(key, {
       viCopy,
       enCopy,
@@ -177,124 +219,153 @@ for (const regFile of registryFiles) {
   }
 }
 
-// Read and flatten locale files
-const localeEntries = fs.readdirSync(localesDir, { withFileTypes: true });
-const enFiles = localeEntries
-  .filter(e => e.isFile() && (e.name === 'en.json' || e.name.endsWith('.en.json')))
-  .map(e => path.resolve(localesDir, e.name))
-  .sort();
+// Determine locales dir
+const localesDir = localesArg
+  ? (path.isAbsolute(localesArg) ? localesArg : path.resolve(process.cwd(), localesArg))
+  : path.resolve(repoRoot, 'frontend/src/locales');
+const displayLocalesDir = localesArg || toRelative(localesDir);
 
 const enKeys = new Map(); // key -> { value, file }
 
-function flattenObj(obj, prefix, relFile) {
-  if (obj !== null && typeof obj === 'object') {
-    if (Array.isArray(obj)) {
-      for (let i = 0; i < obj.length; i++) {
-        const itemKey = prefix ? `${prefix}.${i}` : String(i);
-        flattenObj(obj[i], itemKey, relFile);
-      }
-    } else {
-      for (const [k, v] of Object.entries(obj)) {
-        const fullKey = prefix ? `${prefix}.${k}` : k;
-        flattenObj(v, fullKey, relFile);
-      }
-    }
-  } else if (typeof obj === 'string') {
-    if (!enKeys.has(prefix)) {
-      enKeys.set(prefix, { value: obj, file: relFile });
-    }
-  } else {
-    findings.push({
-      code: 'NON_STRING_LEAF',
-      key: prefix,
-      target: relFile,
-      isError: true
-    });
-  }
-}
+if (!fs.existsSync(localesDir) || !fs.statSync(localesDir).isDirectory()) {
+  findings.push({
+    code: 'NO_LOCALES:',
+    key: displayLocalesDir,
+    target: '',
+    isError: isRelease
+  });
+} else {
+  // Read and flatten locale files
+  const localeEntries = fs.readdirSync(localesDir, { withFileTypes: true });
+  const enFiles = localeEntries
+    .filter(e => e.isFile() && (e.name === 'en.json' || e.name.endsWith('.en.json')))
+    .map(e => path.resolve(localesDir, e.name))
+    .sort();
 
-for (const enFile of enFiles) {
-  let content;
-  const relFile = toRelative(enFile);
-  try {
-    content = fs.readFileSync(enFile, 'utf8');
-  } catch (err) {
-    console.error(`UNREADABLE_FILE: ${relFile}: ${err.message}`);
-    process.exit(2);
-  }
-  let json;
-  try {
-    json = JSON.parse(content);
-  } catch (err) {
-    console.error(`INVALID_JSON: ${relFile}: ${err.message}`);
-    process.exit(2);
-  }
-  flattenObj(json, '', relFile);
-}
-
-// Compare enKeys against registry
-for (const [key, data] of enKeys) {
-  if (!registryMap.has(key)) {
+  if (enFiles.length === 0) {
     findings.push({
-      code: 'UNREGISTERED',
-      key,
-      target: data.file,
-      isError: true
+      code: 'NO_EN_LOCALES',
+      key: displayLocalesDir,
+      target: '',
+      isError: isRelease
     });
   } else {
-    const reg = registryMap.get(key);
-    if (isRelease) {
-      if (reg.status !== 'APPROVED') {
+    function flattenObj(obj, prefix, relFile) {
+      if (obj !== null && typeof obj === 'object') {
+        if (Array.isArray(obj)) {
+          for (let i = 0; i < obj.length; i++) {
+            const itemKey = prefix ? `${prefix}.${i}` : String(i);
+            flattenObj(obj[i], itemKey, relFile);
+          }
+        } else {
+          for (const [k, v] of Object.entries(obj)) {
+            const fullKey = prefix ? `${prefix}.${k}` : k;
+            flattenObj(v, fullKey, relFile);
+          }
+        }
+      } else if (typeof obj === 'string') {
+        if (!enKeys.has(prefix)) {
+          enKeys.set(prefix, { value: obj, file: relFile });
+        }
+      } else {
         findings.push({
-          code: 'NOT_APPROVED',
-          key,
-          target: reg.file,
+          code: 'NON_STRING_LEAF',
+          key: prefix,
+          target: relFile,
           isError: true
         });
       }
-      if (normalizeWs(data.value) !== normalizeWs(reg.enCopy)) {
+    }
+
+    for (const enFile of enFiles) {
+      let content;
+      const relFile = toRelative(enFile);
+      try {
+        content = fs.readFileSync(enFile, 'utf8');
+      } catch (err) {
+        console.error(`UNREADABLE_FILE: ${relFile}: ${err.message}`);
+        process.exit(2);
+      }
+      let json;
+      try {
+        json = JSON.parse(content);
+      } catch (err) {
+        console.error(`INVALID_JSON: ${relFile}: ${err.message}`);
+        console.log(`INVALID_JSON: ${relFile}: ${err.message}`);
+        process.exit(2);
+      }
+      flattenObj(json, '', relFile);
+    }
+
+    // Compare enKeys against registry
+    for (const [key, data] of enKeys) {
+      if (!registryMap.has(key)) {
         findings.push({
-          code: 'CHANGED',
+          code: 'UNREGISTERED',
           key,
           target: data.file,
           isError: true
         });
+      } else {
+        const reg = registryMap.get(key);
+        if (isRelease) {
+          if (reg.status !== 'APPROVED') {
+            findings.push({
+              code: 'NOT_APPROVED',
+              key,
+              target: reg.file,
+              isError: true
+            });
+          }
+          if (normalizeWs(data.value) !== normalizeWs(reg.enCopy)) {
+            findings.push({
+              code: 'CHANGED',
+              key,
+              target: data.file,
+              isError: true
+            });
+          }
+        } else {
+          if (reg.status === 'PROPOSED') {
+            findings.push({
+              code: 'PROPOSED',
+              key,
+              target: reg.file,
+              isError: false
+            });
+          } else if (reg.status === 'CHANGES_REQUESTED') {
+            findings.push({
+              code: 'CHANGES_REQUESTED',
+              key,
+              target: reg.file,
+              isError: false
+            });
+          }
+        }
       }
-    } else {
-      if (reg.status === 'PROPOSED') {
+    }
+
+    // Stale registry keys (in registry but not in any en file)
+    for (const [key, reg] of registryMap) {
+      if (!enKeys.has(key)) {
         findings.push({
-          code: 'PROPOSED',
-          key,
-          target: reg.file,
-          isError: false
-        });
-      } else if (reg.status === 'CHANGES_REQUESTED') {
-        findings.push({
-          code: 'CHANGES_REQUESTED',
+          code: 'STALE',
           key,
           target: reg.file,
           isError: false
         });
       }
     }
-  }
-}
-
-// Stale registry keys (in registry but not in any en file)
-for (const [key, reg] of registryMap) {
-  if (!enKeys.has(key)) {
-    findings.push({
-      code: 'STALE',
-      key,
-      target: reg.file,
-      isError: false
-    });
   }
 }
 
 // Print findings
 for (const f of findings) {
-  console.log(`${f.code} ${f.key} ${f.target}`);
+  if (f.target) {
+    console.log(`${f.code} ${f.key} ${f.target}`);
+  } else {
+    console.log(`${f.code} ${f.key}`);
+  }
 }
 
 const totalEnKeys = enKeys.size;
