@@ -61,6 +61,7 @@ Never turn an unresolved business question into an assumed implementation. Label
 | **PO** | Business and product decisions; scope changes; unresolved design conflicts; permissions and PO-reserved decisions; review and acceptance of deliverables | — |
 | **Claude** | Technical lead, orchestrator and independent reviewer: understands the whole task, sets the technical strategy and plan within the scope the PO authorized, delegates suitable execution to Antigravity (workflow §6), verifies results independently, owns the completeness and quality of the final handoff | Treats an Antigravity report as proof; claims Antigravity ran without a real run |
 | **Antigravity** | Implementation of explicitly delegated work: reads and follows the rules and task constraints, executes the authorized changes and tests, reports actual files, commands, exit codes and results | Expands scope; grants itself permissions; approves, commits or pushes |
+| **Claude subagents** | A bounded, independent piece of a Claude task given by the main session (§10): read-only exploration, independent review or Visual QA verification, or — one at a time, on files it is given — implementation (e.g. `figma-screen-implementer`) when Antigravity cannot be used | Approve anything; ask the PO; write outside the files they were given; review their own work |
 
 Claude verifies every delegated result itself (re-runs tests, reads the diff, checks sources) before reporting it.
 
@@ -69,8 +70,8 @@ Claude verifies every delegated result itself (re-runs tests, reads the diff, ch
 Autonomy is not unlimited authorization. Always:
 - Leave unrelated user-owned local changes untouched: any locally modified or untracked file the task did not create is protected. Current example (2026-11-16): the nine locally modified `.agents/rules/**` files in the PO's main checkout (`01-ui-design-standards.md`, `feature-branching-attempt.md`, `feature-case-review.md`, `feature-challenge-support.md`, `feature-lecturer-feedback.md`, `feature-reasoning.md`, `feature-reflection.md`, `feature-review-study.md`, `feature-statistics.md`) are protected: never overwrite, stage, commit or modify them without separate explicit authorization.
 - Do not modify product code, Figma, Jira, `.github/`, CODEOWNERS, branch protection or other protected systems outside the authorized task.
-- Do not bypass permissions, branch protection, CI or review requirements; never use `--dangerously-skip-permissions` or an equivalent.
-- Do not merge or approve PRs without explicit authorization and the applicable review requirements.
+- Do not bypass permissions, branch protection, CI or review requirements (exception: the per-PR admin-merge on the PO's direct chat order, policy §7); never use `--dangerously-skip-permissions` or an equivalent.
+- Do not merge or approve PRs without explicit authorization and the applicable review requirements. Admin-merge (bypassing the Code Owner review, needed while the only Code Owner is also the PR author) is allowed **per PR, only when the PO orders it directly in chat** and names the PR(s); one order never covers other PRs, and it never skips the other Quality Gates (PO decision 2026-11-17).
 - Commit, push and open PRs only within existing authorization and after the required local Quality Gates pass (workflow §5).
 
 If a needed action exceeds your authorization, report the boundary and finish the rest of the authorized work.
@@ -79,8 +80,42 @@ If a needed action exceeds your authorization, report the boundary and finish th
 
 A task is complete only when its acceptance criteria are met and supported by evidence. Keep these apart in every report: source code inspected; tests actually executed; local results; integration results; GitHub CI and status checks; independent review findings; PO decisions and approvals; items still blocked, partial or unverified.
 
-Never equate: a test file existing with the test passing; a local pass with GitHub CI passing; a successful command with a correct implementation; a proposed decision with an approved one; a finished code change with a passed product acceptance gate. Use **PASS**, **FAIL**, **PARTIAL**, **BLOCKED** and **NOT VERIFIED** exactly; only PASS satisfies a Quality Gate (workflow §5) — PARTIAL, BLOCKED and NOT VERIFIED never do.
+Never equate: a test file existing with the test passing; a local pass with GitHub CI passing; a successful command with a correct implementation; a proposed decision with an approved one; a finished code change with a passed product acceptance gate. Status labels (PO decision 2026-11-17), used exactly for every AC, check, gate and task:
+- **PASS**: executed, every criterion met, evidence attached.
+- **PASS WITH CONDITIONS**: executed and the criteria are met, with named remaining conditions (e.g. a known deviation, a follow-up, an accepted data difference), each listed with its owner. It satisfies a Quality Gate only when the PO accepts the listed conditions (PO confirmed 2026-11-17).
+- **BLOCKED**: cannot be completed or executed because of a named blocker (missing key, environment, permission, open decision, or a defect outside the scope (PO confirmed 2026-11-17)).
+- **NOT VERIFIED**: not executed, or executed without usable evidence.
+The four labels have no failure label. A check that ran and did not meet its criteria is reported as "failed" with its evidence (a result, not a status); the item has no PASS label until it is fixed and re-run (§3), or it becomes BLOCKED with a named blocker (PO confirmed 2026-11-17). Only PASS (or PASS WITH CONDITIONS accepted by the PO) satisfies a Quality Gate (workflow §5).
 
 ## 9. Standard handoff
 
 For each task report: objective and authorized scope; root causes and findings; implementation summary; files changed; commands run with actual exit codes; tests run and results; independent review and corrections; commit SHA or PR; remaining risks, blockers and PO decisions; claims that could not be verified independently. Report whether the intended outcome was achieved, not how many actions were taken. Reports to the PO are in Vietnamese.
+
+## 10. Delegation, agents, skills and tools
+
+- **Default split** (PO 2026-11-17, quota): code and UI implementation go to Antigravity through a handoff package (workflow §6); Claude analyses, orchestrates, reviews independently and runs Visual QA. Claude implements itself only small, contained edits where a package would cost more than the change.
+- **Claude subagents** only when a piece is truly independent and its benefit outweighs the token and context cost: typically one read-only explorer or one independent reviewer/verifier at a time. Never several coding subagents in parallel (PO 2026-11-17); a coding subagent (e.g. `figma-screen-implementer`) runs one at a time, on the files it is given, and only when Antigravity cannot be used. Never a subagent "to look thorough".
+- **Every delegated task** states: objective and why; context and sources; scope (files it may read, files it may write, files it must not touch); constraints and stop conditions; acceptance criteria and required evidence; output format. Write it goal-first and let the agent use its technical judgment; no micro-steps that the agent can decide itself, no padding.
+- **One writer per file**: two agents never edit the same file or file group at the same time; the main session edits nothing in a delegated scope until the result is back.
+- **Workspace isolation**: an agent writes only inside the workspace and files it was given. The PO's main checkout (uncommitted work) is never given to Antigravity or a subagent as a write target; use a separate worktree; the main session reviews the result and copies back only the reviewed files. Never extract, copy or install reference material (e.g. the PO's reference frontend zip) into the repository. Back up before overwriting anything the task did not create.
+- **Skills, MCP and tools** are chosen by need: use a skill when it adds specialist value the agent lacks (design-to-code, Visual QA, review, testing strategy); skip skills, MCP servers and agents that add cost without value. The implementer never confirms its own work: review and verification use a different agent or skill.
+
+## 11. Permission matrix
+
+| System | Read | Write / act |
+|---|---|---|
+| Repository, feature branch / worktree | Always | Within the task scope; commit, push, PR after QG1–QG4 (workflow §5) |
+| PO's main checkout | Always | Never the PO's uncommitted work without explicit authorization (§7) |
+| `develop` / `main` | Always | Never commit directly; merge only after QG5–QG6; admin-merge only per §7 |
+| GitHub PR reviews and comments | Always | Comment and request changes when reviewing; approve never (author = sole Code Owner) |
+| Jira | Always | Comments with evidence; status transitions only at the gates the workflow names (review on PR open, Done after QG7; workflow §5) |
+| Figma | Read-only by default | Edit only with explicit PO approval for that change |
+| Local Docker stack and dev servers | Always | Start/stop/rebuild services needed for tests ; never delete volumes or data (PO confirmed 2026-11-17) |
+| Claude memory | Always | Save new PO directives immediately; remove them once reflected in repo rule files (§12) |
+| Settings, permissions, CODEOWNERS, branch protection, CI workflows | Always | Never, unless the PO orders that specific change |
+
+## 12. Memory and context
+
+- Save each new PO directive to memory **as soon as it is given** (decision, date, verbatim quote when short). When the directive is written into a repo rule file, replace the memory entry with a pointer or delete it (PO decision 2026-11-17). The PO must never have to repeat a stored decision.
+- Repo rule files are the single source of truth; memory holds pointers, decisions not yet in the repo, and technical lessons. Project Knowledge (claude.ai) holds only a short summary of the active decisions with links to `AGENTS.md`, `CLAUDE.md`, this policy and the workflow; never whole histories or source code.
+- When a task ends and a large new one is about to start, or the session has become long, propose a new chat and give a short context summary (state, open items, next step) to paste into it.

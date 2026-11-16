@@ -1,7 +1,7 @@
 # EduBranch-AI — Feature Delivery Workflow
 
-> **Status**: Proposed — pending PO approval (PR #38) · **Role**: Normative once the PO approves it · **Owner**: not assigned · **Approver**: PO · **Version**: 0.5
-> **Activation**: binding only after the PO approves this document (the PO changes this Status line; agents never do) and PR #38 is merged into develop. Until then it applies only to runs the PO starts explicitly, such as the FE-026 pilot.
+> **Status**: Approved (PO, chat 2026-11-17) · **Role**: Normative · **Owner**: not assigned · **Approver**: PO · **Version**: 0.5
+> **Activation**: binding since 2026-11-17 (PO approval in chat; PR #38 merged into develop). Changes to this document need PO approval.
 > **Runs on**: GitHub Spec Kit **v1.4.0** (Specify CLI, installed in this repository): integrations `agy` (Antigravity, default) and `claude` (Claude Code), extension `bug`. PO decisions of 2026-11-15 (chat) applied: Spec Kit adopted, delegated commit/push/PR under Quality Gates, Antigravity handoff, local CI before push, retest on `develop` before Jira Done.
 > **Read by**: the `edubranch-feature-workflow` skill (Claude Code and Antigravity). This file is the only copy of the procedure; Spec Kit skills carry the mechanics, this file carries the project rules.
 
@@ -100,16 +100,16 @@ Compare requirement → plan → tasks → code → tests, and for UI each scree
 
 ## 5. Quality Gates
 
-A gate passes only with recorded evidence (command, exit code, SHA, result) in `record.md`. **BLOCKED** (missing provider, API key or environment) is never PASS: name what is missing.
+A gate passes only with recorded evidence (command, exit code, SHA, result) in `record.md`. Status labels follow policy §8 (PASS, PASS WITH CONDITIONS, BLOCKED, NOT VERIFIED; PO decision 2026-11-17). **BLOCKED** (missing provider, API key or environment) is never PASS: name what is missing. PASS WITH CONDITIONS passes a gate only when the PO accepts the listed conditions.
 
 | Gate | When | Check | Who | Automated by |
 |---|---|---|---|---|
 | QG1 Developer tests | before handing back | the CI commands below for every touched service, plus the integration/E2E tests in the plan, and dev-mode `node scripts/l10n-approval-check.mjs` | implementer (Antigravity) | — (run locally) |
 | QG2 Independent review | before commit | diff only touches planned files; trace spec → tasks → code → tests; `/speckit-analyze` clean; QG1 re-run by the reviewer on the same SHA | Claude (never the implementer) | Spec Kit analyze/converge (agent-run) |
 | QG3 Browser check (FE) | before commit | running app on the real backend and seed data: each frame against the Figma frame read in Discover (CLAUDE.md "Visual QA gate"), all states, no console errors, no fake data | Claude | `npm run test:visual` where the branch has it; rest manual |
-| QG4 No open FAIL/BLOCKED | before commit | every mandatory AC PASS; any BLOCKED item reported to the PO; `node scripts/l10n-approval-check.mjs --release` exits 0 (all English keys in release scope APPROVED) | Claude | — |
+| QG4 No open failure/BLOCKED | before commit | every mandatory AC PASS (or PASS WITH CONDITIONS accepted by the PO); any BLOCKED item reported to the PO; `node scripts/l10n-approval-check.mjs --release` exits 0 (all English keys in release scope APPROVED) | Claude | — |
 | QG5 PR checks | after push | every GitHub Actions run on the PR is green (where triggered by path), plus a manual test of the PR head | Claude | GitHub Actions (path-filtered; no required status checks in develop ruleset today) |
-| QG6 Merge | after QG5 | valid Code Owner/PO approval; merge by the approved method; no bypass | PO approves, Claude merges | `develop` ruleset: PR + 1 Code Owner approval |
+| QG6 Merge | after QG5 | valid Code Owner/PO approval; merge by the approved method; admin-merge only per PR on the PO's direct order in chat (policy §7, PO decision 2026-11-17), never otherwise | PO approves, Claude merges | `develop` ruleset: PR + 1 Code Owner approval |
 | QG7 Post-merge | after merge | QG1 + QG3 re-run on `develop` at the merge SHA | Claude | — |
 
 Translation approval is a content gate separate from the technical language-switch tests. All English copy in the release scope (every key across all `frontend/src/locales/*.en.json`, including base `en.json`, at release time) must be registered in a copy review registry: `specs/*/l10n-copy-review.md` for feature copy, or `docs/l10n/shared-copy-review.md` for shared namespaces (base `en.json`, `states.*`, `shell.*`). All registries follow Schema A: `| `<key>` | <vi> | <en> | <status> | <approved_by> | <approved_on> | <source> |` (`status` ∈ `PROPOSED`, `APPROVED`, `CHANGES_REQUESTED`). Escaped pipes `\|` inside a cell are treated as literal text, not column separators. A row with status `APPROVED` strictly requires a non-empty, non-placeholder `approved_by` and a valid calendar date `approved_on` in `YYYY-MM-DD` format (violations report `APPROVAL_INCOMPLETE` error) and a non-empty `en` translation (`EMPTY_TRANSLATION`). For array values (e.g. i18next `returnObjects`), keys descend into arrays using numeric index segments (e.g. `g1.landing.how.steps.0`, `g1.landing.how.steps.0.title`); leaf nodes must be strings (numbers, booleans and null are flagged as errors via `NON_STRING_LEAF`). Implementers and agents draft copy only (status `PROPOSED`, approval cells `—`) and MUST NEVER mark copy APPROVED. English copy remains PROPOSED until the PO approves it in the registry; only the PO changes PROPOSED to APPROVED. Quality Gate QG1 includes running dev-mode `node scripts/l10n-approval-check.mjs`. Quality Gate QG4 runs `node scripts/l10n-approval-check.mjs --release` (exit code 0 strictly required) and fails while any English string in the release scope is PROPOSED, unregistered, or modified without re-approval, or if no English locale files exist in the scanned directory (`NO_EN_LOCALES`); until the check is wired into `npm test`/CI it is run locally and its output recorded in `record.md`. Regression test suite: `node --test scripts/l10n-approval-check.test.mjs`.
@@ -121,7 +121,7 @@ Full checker findings code set:
 - Locale errors (dev & release error, exit code 1): `NON_STRING_LEAF` (non-string leaf node in JSON), `DUPLICATE_LOCALE_KEY` (same key produced by multiple `*.en.json` files), `EMPTY_TRANSLATION` (empty or whitespace string in locale file), `UNREGISTERED` (locale key missing from registry).
 - Mode-dependent findings: `NO_LOCALES` (locales directory missing: warning in dev, error in release), `NO_EN_LOCALES` (no `*.en.json` files: warning in dev, error in release), `NO_EN_KEYS` (English files exist but yield zero string keys: warning in dev, error in release), `PROPOSED` (warning in dev), `CHANGES_REQUESTED` (warning in dev), `NOT_APPROVED` (non-`APPROVED` key: error in release), `CHANGED` (locale string differs from approved registry copy: error in release).
 
-After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR into `develop` without asking for each operation (PO decision 2026-11-15). Never: commit to `develop` or `main`, force push, include out-of-scope changes, bypass branch protection, change architecture or business rules. Jira (project EBA workflow: To Do → In Progress → review → Done) moves to `review` when the PR opens and to `Done` only after QG7 passes.
+After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR into `develop` without asking for each operation (PO decision 2026-11-15). Never: commit to `develop` or `main`, force push, include out-of-scope changes, bypass branch protection (exception: the per-PR admin-merge on the PO's direct chat order, policy §7), change architecture or business rules. Jira (project EBA workflow: To Do → In Progress → review → Done) moves to `review` when the PR opens and to `Done` only after QG7 passes.
 
 **CI commands (from `.github/workflows/`, run locally before push):**
 - backend (`backend-ci.yml`): `npm ci && npm run build && npm test -- --runInBand && npm run test:e2e -- --runInBand` (Node 20)
@@ -148,7 +148,7 @@ After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR
 | Frontend tests & lint | Local only (`npm test`, `npm run lint`) | Not automated on PRs; relies entirely on local execution in QG1. |
 | Integration CI Gate | Main branch only (`ci.yml` on push/PR to `main`) | Does not run on PRs to `develop`; runs after features have already merged. |
 | Documentation & Specs validation | Local only / manual | Branches `docs/**` and paths `docs/**`, `specs/**`, `.specify/**`, `AGENTS.md` trigger zero workflows; PRs are check-less (`gh pr checks 38` reports no checks). |
-| Code Owner approval gate | Manual / GitHub PR review | `CODEOWNERS` specifies `* @HoangNam2464` (single owner). When a PR is opened from that same account, GitHub cannot count self-approval; requires a second code owner or a recorded PO merge procedure. |
+| Code Owner approval gate | Manual / GitHub PR review | `CODEOWNERS` specifies `* @HoangNam2464` (single owner). When a PR is opened from that same account, GitHub cannot count self-approval; requires a second code owner or a recorded PO merge procedure. Recorded procedure (PO decision 2026-11-17): admin-merge per PR on the PO's direct order in chat (policy §7). |
 
 #### 3. Proposed CI Changes `[ĐỀ-XUẤT]`
 Each proposed change requires PO approval; modifying repository rulesets, workflows, or CODEOWNERS is strictly a PO action:
@@ -159,7 +159,7 @@ Each proposed change requires PO approval; modifying repository rulesets, workfl
 | `CI-PROP-2` | Add Postgres 16 + pgvector (and MinIO where needed) `services:` container blocks to `backend-ci.yml` and `ai-service-ci.yml` | Allow backend migration integration tests and AI service live retrieval tests to execute in CI instead of silently skipping. | PO approval / PO action |
 | `CI-PROP-3` | Add a docs/specs verification workflow for `AGENTS.md`, `CLAUDE.md`, `docs/**`, `specs/**`, `.specify/**` | Automatically validate that no machine paths exist, cited repository paths exist (`git ls-files`), and `specify integration status` passes, ensuring docs PRs are not check-less. | PO approval / PO action |
 | `CI-PROP-4` | Configure workflow job names as Required checks in the `develop` branch protection ruleset | Prevent merging PRs when CI workflows fail or are bypassed. | PO action |
-| `CI-PROP-5` | Add a second Code Owner to `.github/CODEOWNERS` or formalize the PO merge procedure | Enable legitimate Code Owner approvals when PRs are opened by the primary account holder. | PO approval / PO action |
+| `CI-PROP-5` | Add a second Code Owner to `.github/CODEOWNERS` or formalize the PO merge procedure | Enable legitimate Code Owner approvals when PRs are opened by the primary account holder. Merge procedure formalized 2026-11-17 (QG6); a second Code Owner remains open. | PO approval / PO action |
 
 ## 6. Roles and Antigravity handoff
 
@@ -188,7 +188,7 @@ Both agents work in the same workspace, branch and SHA named in the Package. Onl
 
 ## 7. Sub-agents
 
-The main session orchestrates and owns every gate. It may hand a stage's work to sub-agents: explorer (Discover, Analyze; read-only), implementer (Implement; approved files only), verifier (re-runs tests for Converge; never the implementer). Each brief names the stage, the input paths, the allowed tools and files, the expected output and the stop conditions. Two agents never edit the same file. A sub-agent never approves anything or asks the PO: it stops with `STOPPED: <reason>`. The main session checks each result before presenting it at a gate.
+The main session orchestrates and owns every gate. It may hand a stage's work to sub-agents: explorer (Discover, Analyze; read-only), implementer (Implement; approved files only; one at a time and only when Antigravity cannot be used, policy §10), verifier (re-runs tests for Converge; never the implementer). Each brief names the stage, the input paths, the allowed tools and files, the expected output and the stop conditions. Two agents never edit the same file. A sub-agent never approves anything or asks the PO: it stops with `STOPPED: <reason>`. The main session checks each result before presenting it at a gate.
 
 ## 8. Bug path
 

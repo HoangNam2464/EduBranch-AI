@@ -37,7 +37,7 @@ To eliminate the amateurish "AI-generated template" look, every screen and compo
    - **Required**: Maximum **1** contextual alert banner per screen (used only for active errors, warnings, or status transitions). Routine helper guidance belongs in a single concise `12px` `text-secondary` (`#696A70`) caption line.
 5. **ZERO Uncontrolled Nesting (STRICT BAN)**:
    - **Forbidden**: A bordered card inside another bordered card; more than 3 surface levels; a colored tinted box inside a colored tinted box.
-   - **Required**: Fixed surface ladder (§4.3): **page shell** (`bg-page` white) → **canvas panel** (`bg-canvas` `#F3F6FC`, radius 18) → **card** (`bg-surface` white, radius 12, **no border, no shadow**) → at most **one inset block** (`bg-surface-muted` `#EEF2F9`, radius 8, no border). Inside a card, separate sections with whitespace (16–24px) or a 1px `border-default` divider.
+   - **Required**: Fixed surface ladder (§4.3): **page shell** (`bg-page` white) → **canvas panel** (`bg-canvas` `#F3F6FC`, radius 18) → **card** (`bg-surface` white, radius 12, card elevation per §4.3 — PO 2026-11-17) → at most **one inset block** (`bg-surface-muted` `#EEF2F9`, radius 8, no border). Inside a card, separate sections with whitespace (16–24px) or a 1px `border-default` divider.
 6. **ZERO Language Mixing on the Same Screen (STRICT BAN)**:
    - **Forbidden**: Mixing English headings/buttons (`Create an account`, `My Courses`, `Node 1 Editor`) with Vietnamese labels on the same screen; leftover template copy (`Add Student`, `Total`, `$`, sample names) in any frame.
    - **Required**: 100% Vietnamese UI chrome with consistent academic terminology (see §7). Fixed product terms `Branching Study`, `Review Study`, `Case Study`, `AI Draft`, `AI-assisted` stay as proper names.
@@ -77,7 +77,7 @@ To eliminate the amateurish "AI-generated template" look, every screen and compo
 
 | Token Name | Hex | Usage |
 |---|:---:|---|
-| `border-default` | `#E1E8F5` | Input borders, table row dividers, in-card section dividers. **Not used around cards.** |
+| `border-default` | `#E1E8F5` | Input borders, table row dividers, in-card section dividers. Around cards only as the 80% card edge of §4.3 (PO 2026-11-17). |
 | `border-strong` | `#D1D9E8` | Hover border on inputs, outlined mode tags, secondary buttons |
 | `border-focus` | `#2A4E7F` | 2px focus ring (plus 3px `#00A5F5` at 30% halo) and selected option border |
 
@@ -231,9 +231,10 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
   - `radius-lg` (`12px`): Cards.
   - `radius-xl` (`18px`): Canvas panel, modals, auth brand panel.
   - `radius-full` (`9999px`): **Only** status badges, AI tag, avatars and count chips. Buttons and mode tags are never pill-shaped.
-- **Elevation (Flat-First)**:
-  - Cards at rest: **no border, no shadow** — the `#F3F6FC` canvas does the separation work.
-  - Clickable cards on hover: background stays white, `0 2px 8px rgba(32,33,36,0.06)`.
+- **Elevation** (PO decision 2026-11-17, "Sửa Figma rồi code"; replaces the former "no border, no shadow" rule):
+  - Cards at rest on the canvas: 1px `border/default` at 80% (inside, not part of layout) + Figma effect style `EduBranch/Elevation/Card` = code token `shadow-eb-card` (`inset 0 0 0 1px rgb(225 232 245/.8), 0 1px 2px rgb(32 33 36/.05), 0 1px 3px rgb(32 33 36/.06)`). Nested white blocks, dialogs, toasts and menus do not get it; a selected card keeps its accent border instead.
+  - Clickable cards on hover: background stays white, `shadow-eb-hover` (= `EduBranch/Elevation/Hover`, `0 2px 8px rgba(32,33,36,0.06)`). No translate/scale on hover.
+  - Figma auto-layout cards must have "Include stroke in layout" OFF, so the border never moves content.
   - Popovers/dropdowns: `0 4px 16px rgba(32,33,36,0.08)`.
   - Modals/dialogs: `0 12px 32px rgba(32,33,36,0.16)` over a `rgba(32,33,36,0.40)` scrim that covers the **full** viewport (no blur).
 
@@ -248,6 +249,17 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
   - **Canvas Panel (`flex-1`, `bg-canvas`, radius 18, margin 12px, padding 24px)**: top bar (page title `text-h1`, optional breadcrumb, search, notifications, user chip) followed by the page's cards.
   - Footer line inside the canvas: copyright + policy links in `text-caption` `text-secondary`. No social-link placeholders.
 - **Full-viewport workspace** (`CaseReviewPage`): same shell; the canvas holds the lifecycle action bar + split editor.
+- **Wide screens** (PO decision 5, 2026-11-17): the canvas content (header, main, footer) is capped at `max-w-7xl` (1280px) and centred (`AppShell.tsx`; the code lands in the frontend PR, not yet on develop), so 1920/2K screens do not stretch cards. At 1440 with the expanded sidebar nothing changes; with the collapsed sidebar the content is 1280 wide and centred.
+
+### 5.0. UI vs UX source (PO 2026-11-16: "tôi vẫn theo giao diện figma, nhưng UX thì bạn học theo file .zip đó"; boundary set by PO decision 5, 2026-11-17)
+- **UI** = Figma page 08: colours, data fields and business behaviour, plus the frame's structure (cards, order, labels). Never restructure a frame's layout.
+- **UX learned from the reference** (decision 5): content capped at `max-w-7xl`, thin borders and soft shadows on cards (§4.3, also applied in Figma), animation (framer-motion, respecting `prefers-reduced-motion`; PO confirmed 2026-11-17; code not yet on develop), and the behaviour below. Tokens `shadow-eb-card` / `shadow-eb-hover` also land with the frontend PR.
+- **UX behaviour** also follows the PO's reference frontend (`frontend.zip`; never copy its files into the repo; take visual traits from it only those listed above, and only after Figma shows them; never name that project in EduBranch docs or code):
+  - Real data only; Skeleton shaped like the Figma content while loading; `ErrorState` + retry inside the same region on failure; `EmptyState` inside the same card when empty.
+  - A value the API does not provide keeps its Figma slot and shows "—" or an in-slot empty state with a short reason; never invent values, never hide or restructure the slot.
+  - Mutations: disable the trigger + pending label while running; success → `ds/Toast` + UI from the server response; failure → keep the previous state, i18n message mapped from the HTTP status (backend English text only as detail). Never report success from a `catch`; no `setTimeout`-simulated results.
+  - Destructive actions use `ds/Dialog`; it closes only after success and shows errors inside (`role="alert"`). One toast region per page; ignore stale responses after route params change.
+
 
 ### 5.2. Student Portal Shell (`StudentLayout.tsx`)
 - **Pedagogical Context**: OPD-001 was decided as option A (PO 2026-11-12). Students reach published cases from `Bàn học` (desk), `Khóa học của tôi` and `Tham gia lớp học` (join a class by invite code); a direct case link from the lecturer still works. Students only ever see `PUBLISHED` cases.
@@ -300,7 +312,7 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
 2. **ReactFlow Decision Tree Canvas & Nodes (`CaseReviewPage` — Lecturer Only)**:
    - **Canvas Background**: `#F3F6FC` with subtle dot pattern (`#D1D9E8`).
    - **Edges**: Smoothstep directed edges in `#94A7C0` (`strokeWidth: 1.75`), turning `#2A4E7F` when selected. Edge label in `11px` `#696A70` on a white pill. **Never use indigo edges.**
-   - **Decision Node Card**: `w-64 bg-white rounded-lg p-3.5 text-left border border-[#E1E8F5]` (nodes are the one place a card keeps a border, because they sit on a dotted canvas).
+   - **Decision Node Card**: `w-64 bg-white rounded-lg p-3.5 text-left border border-[#E1E8F5]` (nodes keep a full-strength border because they sit on a dotted canvas; other cards use the §4.3 card edge).
      - Selected state: `border-[#2A4E7F] ring-[3px] ring-[#00A5F5]/30`.
      - Root node badge: `Bắt đầu` (`bg-[#DFEDF9] text-[#2A4E7F] text-[11px] font-medium px-2 py-0.5 rounded`).
      - Terminal node badge: `Kết cục` (`bg-[#EEF2F9] text-[#696A70] text-[11px] font-medium px-2 py-0.5 rounded` with `12px` `Flag` SVG icon).
