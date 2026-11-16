@@ -33,8 +33,8 @@ The user interface MUST handle data states honestly:
 
 ---
 
-### BE-PROP-2: Course Soft Archive API (`PATCH /courses/:id/archive`) (BLOCKED-ON-C1)
-- **Status**: PROPOSED — not created in Jira (requires PO approval; `BLOCKED-ON-C1 — pending PO` for delete vs soft archive resolution)
+### BE-PROP-2: Course Soft Archive API (`PATCH /courses/:id/archive`) (BLOCKED-ON-C1: C1-B)
+- **Status**: PROPOSED — not created in Jira (requires PO approval; `BLOCKED-ON-C1 — pending PO` for C1-A delete vs C1-B soft archive resolution)
 - **Source**: PO Decision Q4 / OPD-014 (2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`)
 - **Contract Reference**: `specs/001-fe026-courses-materials/contracts/courses-api.md` §2.1
 - **Target Module**: Backend Gateway (`backend/src/modules/course/`) & Database

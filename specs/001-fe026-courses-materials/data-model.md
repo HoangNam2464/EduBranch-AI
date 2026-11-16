@@ -16,10 +16,10 @@ The root container for teaching materials and case studies belonging to a lectur
 |---|---|:---:|---|---|
 | `id` | `UUID` | Yes | Primary key, UUID v4 | Unique identifier of the course |
 | `name` | `string` | Yes | `min(2)`, `max(200)`, trimmed per `CreateCourseDto` | Official name of the course |
-| `courseCode` | `string` | [DỮ-KIỆN] Optional in DTO; UI required-ness BLOCKED-ON-C3 — pending PO | `max(20)` per `CreateCourseDto` | Course catalog identifier (e.g. "CS101", "MKT302") |
+| `courseCode` | `string` | [DỮ-KIỆN] Optional in DTO; UI required-ness BLOCKED-ON-C3 — pending PO (C3-A required vs C3-B optional) | `max(20)` per `CreateCourseDto` | Course catalog identifier (e.g. "CS101", "MKT302") |
 | `description` | `string` | No | `max(1000)` | Syllabus or overview summary |
 | `coverImageUrl` | `string` | No | Valid URL | Visual thumbnail / banner image |
-| `is_active` | `boolean` | Yes | Default: `true` | Active status; set to `false` if soft-archived per OPD-014 (BLOCKED-ON-C1 — pending PO) |
+| `is_active` | `boolean` | Yes | Default: `true` | Active status; set to `false` if soft-archived per OPD-014 (BLOCKED-ON-C1 — pending PO: C1-B) |
 | `lecturerId` | `UUID` | Yes | Foreign key → `users.id` | Owner of the course (`LECTURER` role) |
 | `createdAt` | `timestamp` | Yes | ISO 8601 | Record creation timestamp |
 | `updatedAt` | `timestamp` | Yes | ISO 8601 | Last modification timestamp |
@@ -81,8 +81,8 @@ A parsed and embedded text segment stored in database table `document_chunks` (p
                  (✓ chunkCount)             (processingError displayed)
                          │                             │
                          │                             │ User clicks action button
-                         │                             │ (BLOCKED-ON-C2: "Thử lại"
-                         │                             │  vs "Tải lên lại")
+                         │                             │ (BLOCKED-ON-C2: C2-A "Thử lại"
+                         │                             │  vs C2-B "Tải lên lại")
                          ▼                             ▼
                  RAG Inspector (02.7)          Upload Modal (02.5)
                  Active Knowledge Base         (new upload record initiated)
@@ -91,18 +91,18 @@ A parsed and embedded text segment stored in database table `document_chunks` (p
 - **PENDING**: Initial state upon successful upload to MinIO and database record creation.
 - **PROCESSING**: AI service is actively normalizing, chunking, and embedding document vectors into pgvector. Frontend polls every 3 seconds.
 - **COMPLETED**: Pipeline succeeded. `chunkCount > 0`. Material is ready for case generation and inspection in RAG Source Inspector (02.7).
-- **FAILED**: Pipeline encountered an error (e.g. unreadable scanned PDF, corruption). Error message stored in `processingError`. The action button displays "Thử lại" or "Tải lên lại" (`BLOCKED-ON-C2 — pending PO`), opening the upload dialog with the error context.
+- **FAILED**: Pipeline encountered an error (e.g. unreadable scanned PDF, corruption). Error message stored in `processingError`. The action button displays "Thử lại" (C2-A) or "Tải lên lại" (C2-B) (`BLOCKED-ON-C2 — pending PO`; behaviour identical under C2-A and C2-B: opens upload modal with previous error context; in-place re-ingest is out of FE-026 scope), opening the upload dialog with the error context.
 
-### 2.2. Course Removal Lifecycle (BLOCKED-ON-C1: Hard Delete vs Soft Archive OPD-014)
+### 2.2. Course Removal Lifecycle (BLOCKED-ON-C1: C1-A Hard Delete vs C1-B Soft Archive OPD-014)
 ```
 [Course Drafted] ──► ACTIVE (`is_active = TRUE`)
                           │
-                          │ Lecturer confirms removal (Dialog 02.3, BLOCKED-ON-C1)
+                          │ Lecturer confirms removal (Dialog 02.3, BLOCKED-ON-C1: C1-A vs C1-B)
                           ▼
-                     ARCHIVED (`is_active = FALSE`) / DELETED (BLOCKED-ON-C1)
+                     ARCHIVED (`is_active = FALSE`, C1-B) / DELETED (C1-A) (BLOCKED-ON-C1)
 ```
 - When `is_active = TRUE`, course appears in active lists and navigation.
-- If soft archive is chosen (`BLOCKED-ON-C1`): when `is_active = FALSE`, course is hidden from active courses view, while all child materials, chunks, and MinIO objects are completely preserved. If hard delete is chosen, course and linked records are removed.
+- If C1-B soft archive is chosen (`BLOCKED-ON-C1`): when `is_active = FALSE`, course is hidden from active courses view, while all child materials, chunks, and MinIO objects are completely preserved. If C1-A hard delete is chosen, course and linked records are removed.
 
 ---
 
@@ -112,7 +112,7 @@ A parsed and embedded text segment stored in database table `document_chunks` (p
 |---|---|---|---|---|
 | Course Create/Edit | `name` | `string`, required, `trim().length > 0` per `CreateCourseDto` | `courses.validation.nameRequired` / "Tên khóa học không được để trống" | "Course name is required" |
 | Course Create/Edit | `name` | `string`, `trim().length >= 2 && <= 200` per `CreateCourseDto` | `courses.validation.nameLength` / "Tên khóa học phải có từ 2 đến 200 ký tự" | "Course name must be between 2 and 200 characters" |
-| Course Create/Edit | `courseCode` | [DỮ-KIỆN] Optional in DTO; UI required-ness BLOCKED-ON-C3 — pending PO (Figma 02.2 "Mã môn học *"), `length <= 20` per `CreateCourseDto` | `courses.validation.codeLength` / "Mã khóa học tối đa 20 ký tự" | "Course code must not exceed 20 characters" |
+| Course Create/Edit | `courseCode` | [DỮ-KIỆN] Optional in DTO; UI required-ness BLOCKED-ON-C3 — pending PO (C3-A required per Figma 02.2 "Mã môn học *" vs C3-B optional), `length <= 20` per `CreateCourseDto` | `courses.validation.codeLength` / "Mã khóa học tối đa 20 ký tự" | "Course code must not exceed 20 characters" |
 | Course Create/Edit | `description` | Optional, `length <= 1000` | `courses.validation.descriptionLength` / "Mô tả khóa học tối đa 1000 ký tự" | "Course description must not exceed 1000 characters" |
 | Material Upload | `file` (format) | Extension must be `.pdf` or `.docx` per `backend/src/modules/material/material.service.ts` (`ALLOWED_MIME_TYPES`) | `materials.validation.format` / "Chỉ hỗ trợ tệp PDF và DOCX." (Figma 02.5 `483:10878`) | "Only PDF and DOCX files are supported." |
 | Material Upload | `file` (size) | `sizeBytes <= 50 * 1024 * 1024` (50MB) per `backend/src/modules/material/material.service.ts` (`MAX_SIZE_BYTES`) | `materials.validation.size` / "Tệp vượt quá giới hạn 50 MB." (Figma 02.5 `483:10885`) | "File exceeds 50 MB limit." |

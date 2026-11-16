@@ -34,7 +34,7 @@
 
 ## 2. End-to-End Verification Scenarios
 
-### Scenario 1: Courses Management & Course Removal (Figma 02.1 – 02.3, BLOCKED-ON-C1)
+### Scenario 1: Courses Management & Course Removal (Figma 02.1 – 02.3, BLOCKED-ON-C1: C1-A vs C1-B)
 1. **Navigate to Courses Page**:
    - Click navigation item "Khóa học" or navigate to `/lecturer/courses`.
    - **Verification**:
@@ -45,14 +45,14 @@
 2. **Create New Course**:
    - Click page button "Tạo khóa học mới" (`I483:9668;225:164`, 02.1).
    - **Verification**: Modal opens with title "Khởi tạo khóa học mới" matching Figma 02.2 (`483:10099`).
-   - Fill "Tên khóa học" (e.g., "Kinh tế lượng ứng dụng"), "Mã khóa học" ("EC301"; [DỮ-KIỆN] Figma 02.2 ghi "Mã môn học *" bắt buộc, backend DTO ghi `@IsOptional()`; tính bắt buộc/tùy chọn: `BLOCKED-ON-C3 — pending PO`), description.
+   - Fill "Tên khóa học" (e.g., "Kinh tế lượng ứng dụng"), "Mã khóa học" ("EC301"; [DỮ-KIỆN] Figma 02.2 ghi "Mã môn học *" bắt buộc, backend DTO ghi `@IsOptional()`; tính bắt buộc/tùy chọn: `BLOCKED-ON-C3 — pending PO` (C3-A required vs C3-B optional)), description.
    - Click submit button "Tạo khóa học" (`I483:10110;225:146`, 02.2).
    - **Expected Outcome**: `POST /courses` succeeds (201 Created). Modal closes, new course appears in list and is selected in overview panel.
-3. **Course Removal Action (Figma 02.3 vs PO Q4 / OPD-014 → C1)**:
+3. **Course Removal Action (Figma 02.3 vs PO Q4 / OPD-014 → C1: C1-A vs C1-B)**:
    - Click course removal action in overview panel.
-   - **Verification**: Dialog opens matching Figma 02.3 (`483:10111`). Dialog copy and behavior is `BLOCKED-ON-C1 — pending PO` ([DỮ-KIỆN] Figma 02.3 specifies destructive delete "Xóa khóa học này?"; [PO-ĐÃ-XÁC-NHẬN] PO Q4 / OPD-014 specify soft archive "Lưu trữ khóa học" preserving materials and chunks).
+   - **Verification**: Dialog opens matching Figma 02.3 (`483:10111`). Dialog copy and behavior is `BLOCKED-ON-C1 — pending PO` ([DỮ-KIỆN] C1-A specifies destructive delete "Xóa khóa học này?" per Figma 02.3; [PO-ĐÃ-XÁC-NHẬN] C1-B specifies soft archive "Lưu trữ khóa học" preserving materials and chunks per PO Q4 / OPD-014).
    - Click confirm button.
-   - **Expected Outcome**: Dependent on C1 resolution: if soft archive, calls `PATCH /courses/:courseId/archive` [ĐỀ-XUẤT] setting `is_active` to false without HTTP 500 error; if hard delete, calls `DELETE /courses/:courseId`.
+   - **Expected Outcome**: Dependent on C1 resolution: if C1-B soft archive, calls `PATCH /courses/:courseId/archive` [ĐỀ-XUẤT] setting `is_active` to false without HTTP 500 error; if C1-A hard delete, calls `DELETE /courses/:courseId`.
 
 ---
 
@@ -70,10 +70,10 @@
    - **Expected Outcome**: Multipart request `POST /courses/:courseId/materials` sent. Upload succeeds (201 Created). New row appears with `PENDING` badge.
 3. **Polling & Completion**:
    - Observe table polling every 3s. Badge transitions to `PROCESSING (%)` and finally to `COMPLETED (✓)` with chunk count.
-4. **Failed Material & Action Button (BLOCKED-ON-C2)**:
+4. **Failed Material & Action Button (BLOCKED-ON-C2: C2-A vs C2-B)**:
    - If an uploaded document is corrupt, badge shows `FAILED` with error text.
-   - **Verification**: Action button label is `BLOCKED-ON-C2 — pending PO` ([DỮ-KIỆN] Figma node `586:8570` labels "Thử lại", [PO-ĐÃ-XÁC-NHẬN] PO Q3 requested "Tải lên lại").
-   - Click action button: Opens upload modal displaying previous error reason so user can select an updated file via existing `POST /courses/:courseId/materials`.
+   - **Verification**: Action button label is `BLOCKED-ON-C2 — pending PO` ([DỮ-KIỆN] C2-A labels "Thử lại" per Figma node `586:8570`; [PO-ĐÃ-XÁC-NHẬN] C2-B requested "Tải lên lại" per PO Q3).
+   - Click action button: Opens upload modal displaying previous error reason so user can select an updated file via existing `POST /courses/:courseId/materials` (behaviour is identical under C2-A and C2-B; in-place re-ingest is out of FE-026 scope).
 5. **Delete Material**:
    - Hover row and click "Xóa".
    - **Verification**: Dialog opens matching Figma 02.6 (`483:10890`, dialog `I483:11147;228:301`). Displays dialog title "Xóa tài liệu này?", body warning "Tệp và các đoạn trích đã lập chỉ mục sẽ bị xóa vĩnh viễn. AI sẽ không dùng tài liệu này khi sinh case mới. Thao tác này không thể hoàn tác." (`I483:11147;228:302`), and confirm button "Xóa vĩnh viễn" (`I483:11147;228:310;225:254`).
@@ -107,7 +107,7 @@
    - **Verification**:
      - `localStorage.getItem('edubranch-lang')` equals `"en"`.
      - Toggle styles swap: `Option · EN` active (Navy fill, white text, `aria-pressed="true"`); `Option · VI` inactive (no fill, secondary text, `aria-pressed="false"`).
-     - Every visible UI text element across courses, materials, RAG inspector, and all dialogs/modals switches to English (`"Course Management"`, `"Create New Course"`, `"Course Materials"`, `"Upload New Materials"`, and course removal dialog title `BLOCKED-ON-C1 — pending PO`).
+     - Every visible UI text element across courses, materials, RAG inspector, and all dialogs/modals switches to English (`"Course Management"`, `"Create New Course"`, `"Course Materials"`, `"Upload New Materials"`, and course removal dialog title `BLOCKED-ON-C1 — pending PO` (C1-A vs C1-B)).
      - Zero Vietnamese strings remain in the UI chrome.
      - API data values (course names, filenames, chunk texts) remain unchanged as stored.
 3. **Persistence on Reload (ATM-L10N-03)**:

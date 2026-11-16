@@ -46,13 +46,13 @@
 - **Extracted Frames (verified via Figma MCP `get_metadata`)**:
   - `02.1`: `483:9637` (1440 × 1413) — `02.1 · Giảng viên · Quản lý khóa học`
   - `02.2`: `483:9866` (1440 × 1413) — `02.2 · Giảng viên · Hộp thoại khởi tạo khóa học`
-  - `02.3`: `483:10111` (1440 × 1413, Dialog `483:10341`) — `02.3 · Giảng viên · Hộp thoại xác nhận xóa khóa học` (Xóa cứng vs Lưu trữ mềm: `BLOCKED-ON-C1 — pending PO`)
+  - `02.3`: `483:10111` (1440 × 1413, Dialog `483:10341`) — `02.3 · Giảng viên · Hộp thoại xác nhận xóa khóa học` (Xóa cứng vs Lưu trữ mềm: `BLOCKED-ON-C1 — pending PO`: C1-A vs C1-B)
   - `02.4`: `483:10342` (1440 × 1123) — `02.4 · Giảng viên · Chi tiết khóa học — Tài liệu môn học`
   - `02.5`: `483:10598` (1440 × 1123) — `02.5 · Giảng viên · Hộp thoại tải tài liệu môn học`
   - `02.6`: `483:10890` (1440 × 1123) — `02.6 · Giảng viên · Hộp thoại xác nhận xóa tài liệu`
   - `02.7`: `483:11148` (1440 × 1329) — `02.7 · Giảng viên · RAG Source Inspector (DES-005)`
 - **Ready for Dev Status**: Provisional per GDS §0.2 and AGENTS.md Rule 9 pending formal token approval.
-- **Xung đột nhãn nút FAILED (C2)**: Frame 02.4 / Node `586:8570`: [DỮ-KIỆN] Figma ghi "Thử lại", [PO-ĐÃ-XÁC-NHẬN] PO Q3 (2026-11-15) yêu cầu "Tải lên lại" (hoặc "Chọn tệp tải lại"); nhãn nút: `BLOCKED-ON-C2 — pending PO`.
+- **Xung đột nhãn nút FAILED (C2)**: Frame 02.4 / Node `586:8570`: [DỮ-KIỆN] Figma ghi "Thử lại", [PO-ĐÃ-XÁC-NHẬN] PO Q3 (2026-11-15) yêu cầu "Tải lên lại" (hoặc "Chọn tệp tải lại"); nhãn nút: `BLOCKED-ON-C2 — pending PO` (C2-A vs C2-B).
 
 ### 1.5. Current Routes, Files & Known Gaps (`[DỮ-KIỆN]`)
 - **Current Routes**:
@@ -79,7 +79,7 @@
 |:---:|---|---|:---:|:---:|---|
 | **G0** | Discover | Manual / Discovery Tools | **READY — awaiting PO review** | 2026-11-15 | Change boundary confirmed; branch, HEAD, Figma frames, and gaps recorded in `record.md`. |
 | **G1** | Specify | `/speckit-specify` | **READY — awaiting PO review** | 2026-11-15 | `specs/001-fe026-courses-materials/spec.md` (47,491 bytes) covering 13 Functional Requirements (`FR-001`–`FR-013`), 6 Success Criteria (`SC-001`–`SC-006`), and 3 User Stories. |
-| **G2** | Clarify | `/speckit-clarify` | **READY — awaiting PO review** | 2026-11-15 | 5 PO Decisions Q1–Q5 recorded verbatim with date 2026-11-15 under `[PO-ĐÃ-XÁC-NHẬN]`; review items R1-1, R1-2, R1-3 resolved. Zero unresolved blocking questions. |
+| **G2** | Clarify | `/speckit-clarify` | **READY — awaiting PO review** | 2026-11-15 | 5 PO Decisions Q1–Q5 recorded verbatim with date 2026-11-15 under `[PO-ĐÃ-XÁC-NHẬN]`; review items R1-1, R1-2, R1-3 resolved. As of 2026-11-15 (G2 batch): no blocking question open. On 2026-11-16 the conflicts C1–C3 were opened and are pending the PO (see spec.md Clarifications). |
 | **G3** | Plan | `/speckit-plan` | **READY — awaiting PO review** | 2026-11-15 | Implementation plan and design artifacts produced: `plan.md`, `research.md`, `data-model.md`, `be-dependencies.md`, `contracts/courses-api.md`, `contracts/materials-api.md`, `contracts/ui-contracts.md`, `quickstart.md`. R2-1..R2-4 and R3-1 review fixes applied. Constitution Check: PASS. |
 | **G4** | Checklist | `/speckit-checklist` | **READY — awaiting PO review** | 2026-11-15 | UX Requirements Quality Checklist generated in `checklists/ux.md` (9,576 bytes, 41 checklist items `CHK001`–`CHK041`, all unchecked `[ ]` awaiting reviewer sign-off). |
 | **G5** | Tasks | `/speckit-tasks` | **READY — awaiting PO review** | 2026-11-15 | 24 tasks T001–T024 from `/speckit-tasks` (2026-11-15) + 15 tasks T025–T039 from `/speckit-converge` (2026-11-15/16) + T040 PO copy review of the English strings (added by PR #38 F8, 2026-11-16) + T041 wire l10n check into test flow (PR #38 F8b) = 41. |
@@ -124,14 +124,24 @@ All decisions recorded verbatim from PO chat on 2026-11-15:
 
 ## 3.1. Open Decisions Awaiting Product Owner Resolution (`[CHƯA-QUYẾT]`)
 
-- **C1: Xung đột nội dung Hộp thoại xóa/lưu trữ khóa học 02.3 — Figma (Xóa cứng) vs PO Q4 / OPD-014 (Lưu trữ mềm)** `[CHƯA-QUYẾT]`
-  - Facts: `[DỮ-KIỆN]` Figma frame 02.3 (`483:10111`, dialog `483:10341`) shows destructive delete dialog ("Xóa khóa học này?", warning copy, button "Xóa khóa học"). `[PO-ĐÃ-XÁC-NHẬN]` PO Q4 (2026-11-15) and OPD-014 specify soft archive (dialog "Lưu trữ khóa học", preserving data, button "Xác nhận lưu trữ").
+Order convention: A = keep the approved Figma as drawn; B = follow the earlier PO decision / current backend DTO. The letters are labels only, not a preference. All three stay `[CHƯA-QUYẾT]`.
+
+- **C1 — Course removal on 02.3** `[CHƯA-QUYẾT]`
+  - Facts: Figma 02.3 dialog `I483:10341;228:301` "Xóa khóa học này?", body `…228:302` (courses, materials and case studies are deleted, irreversible), confirm `…228:310;225:254` "Xóa khóa học". PO Q4 (2026-11-15) + OPD-014: soft archive, keep course, materials, chunks, MinIO objects. Backend today: `DELETE /courses/:courseId` returns HTTP 500 when the course has materials (FK, no cascade); `courses.is_active` exists.
+  - **C1-A (keep Figma):** hard delete with the Figma copy. Needs: the PO to change the Q4/OPD-014 decision; a backend change that deletes the course's materials, chunks, MinIO objects and related cases safely (today it fails with 500). Not BE-PROP-2.
+  - **C1-B (follow PO Q4 / OPD-014):** soft archive. Needs: the PO to change the Figma 02.3 copy (archive wording); BE-PROP-2 (`PATCH /courses/:courseId/archive`, `is_active = false`, active lists exclude archived courses).
   - Status: `BLOCKED-ON-C1 — pending PO`. No interim option recommended.
-- **C2: Xung đột nhãn nút hành động trên dòng tài liệu FAILED — Figma ("Thử lại") vs PO Q3 ("Tải lên lại")** `[CHƯA-QUYẾT]`
-  - Facts: `[DỮ-KIỆN]` Figma frame 02.4 (`483:10342`, node `586:8570`) labels action button "Thử lại". `[PO-ĐÃ-XÁC-NHẬN]` PO Q3 (2026-11-15) requested "Tải lên lại" (or "Chọn tệp tải lại") opening upload modal with previous error context.
-  - Status: `BLOCKED-ON-C2 — pending PO`. No interim option recommended. Re-upload flow stays identical under both options.
-- **C3: Xung đột tính bắt buộc của trường Mã môn học — Figma 02.2 (Bắt buộc "*") vs CreateCourseDto (Tùy chọn)** `[CHƯA-QUYẾT]`
-  - Facts: `[DỮ-KIỆN]` Figma frame 02.2 (`483:9866`, node `I483:10105;226:146`) labels field "Mã môn học *" with red asterisk indicating required. `[DỮ-KIỆN]` Backend `backend/src/modules/course/dto/create-course.dto.ts:9-12` defines `courseCode` with `@IsOptional()`.
+- **C2 — Label of the FAILED-row action (02.4/02.6, `586:8534`, `586:8570`)** `[CHƯA-QUYẾT]`
+  - Facts: Figma label "Thử lại". PO Q3 (2026-11-15): label "Tải lên lại" (or "Chọn tệp tải lại"); the action opens the upload modal (02.5), shows the previous failure reason, the user re-selects the file, a new upload goes through the existing `POST /courses/:courseId/materials`, the old FAILED record is not deleted before the new upload succeeds; "Không tạo API re-ingest mới trong phạm vi FE-026".
+  - **Behaviour is the same under C2-A and C2-B** (the PO Q3 flow above, existing upload API, no new API). Only the label differs.
+  - **C2-A (keep Figma):** label "Thử lại".
+  - **C2-B (follow PO Q3):** label "Tải lên lại" / "Chọn tệp tải lại"; needs the PO to change the Figma text.
+  - **Out of FE-026 (not an option here):** a "Thử lại" that re-ingests the existing material in place would need a new backend API and is a business/scope change requiring separate PO approval (PO Q3). Mention it only as this note.
+  - Status: `BLOCKED-ON-C2 — pending PO`. No interim option recommended.
+- **C3 — Course code required-ness on 02.2** `[CHƯA-QUYẾT]`
+  - Facts: Figma 02.2 label "Mã môn học *" (`I483:10105;226:146`, asterisk = required). `CreateCourseDto.courseCode`: `@IsOptional()`, `@IsString()`, `@MaxLength(20)` (`backend/src/modules/course/dto/create-course.dto.ts:14-17`).
+  - **C3-A (keep Figma):** required; needs a backend DTO change (and a rule for existing courses without a code).
+  - **C3-B (follow the DTO):** optional; needs the PO to remove the asterisk on Figma.
   - Status: `BLOCKED-ON-C3 — pending PO`. No interim option recommended.
 
 ---

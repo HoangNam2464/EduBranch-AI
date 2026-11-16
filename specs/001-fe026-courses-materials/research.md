@@ -41,45 +41,30 @@
 
 ---
 
+Order convention: A = keep the approved Figma as drawn; B = follow the earlier PO decision / current backend DTO. The letters are labels only, not a preference.
+
 ### Decision 3: Failed Material Action Semantics & Flow (PO Q3, Review R2-4 → C2, BLOCKED-ON-C2)
 - **Problem**: Figma frames 02.4 and 02.6 label the action on a `FAILED` material row as "Thử lại" (Retry / node `586:8570`). However, the backend does not possess a re-ingestion endpoint for existing material records. In legacy code, clicking "Thử lại" merely reloaded the list without doing anything.
 - **Context & Conflict**:
-  - [DỮ-KIỆN] Figma node `586:8570` labels the action button "Thử lại".
-  - [PO-ĐÃ-XÁC-NHẬN] PO Q3 (2026-11-15) requested renaming action label to "Tải lên lại" (or "Chọn tệp tải lại").
-  - **Action Button Label**: `BLOCKED-ON-C2 — pending PO`.
-  - **Common Behavior (settled)**: Under both label options, clicking the button opens the Upload Modal (02.5) displaying the previous error context (`processingError`), prompting the user to re-select the original file to initiate a new upload via existing `POST /courses/:courseId/materials`, without calling a fake re-ingest API.
-- **Alternatives Considered (C2 Option Analysis)**:
-  - *Option 1 — Retain "Thử lại" label per Figma (Node `586:8570`)*:
-    - Copy: Action button labeled "Thử lại" (Retry).
-    - Behaviour: Clicking button opens Upload Modal (02.5) displaying previous error context (`processingError`), prompting user to re-select original file to upload.
-    - Backend/data impact: Uses existing upload endpoint `POST /courses/:courseId/materials`; requires zero backend changes.
-  - *Option 2 — Rename to "Tải lên lại" / "Chọn tệp tải lại" per PO Q3 (2026-11-15)*:
-    - Copy: Action button labeled "Tải lên lại" (Re-upload) or "Chọn tệp tải lại".
-    - Behaviour: Identical to Option 1 (opens Upload Modal 02.5 with previous error context to re-select file).
-    - Backend/data impact: Uses existing upload endpoint `POST /courses/:courseId/materials`; requires zero backend changes.
-  - *Non-conflict technical scope fact*: Backend in-place re-ingestion endpoint (e.g. `POST /materials/:id/reingest` without re-selecting file) is out of scope for FE-026 per PO Q3; would require ingestion pipeline architecture changes and PO approval. (Legacy frontend behavior of reloading the list with no action does not trigger re-processing).
-  - *Decision*: `BLOCKED-ON-C2 — pending PO`.
+  - Facts: Figma label "Thử lại". PO Q3 (2026-11-15): label "Tải lên lại" (or "Chọn tệp tải lại"); the action opens the upload modal (02.5), shows the previous failure reason, the user re-selects the file, a new upload goes through the existing `POST /courses/:courseId/materials`, the old FAILED record is not deleted before the new upload succeeds; "Không tạo API re-ingest mới trong phạm vi FE-026".
+  - **Behaviour is the same under C2-A and C2-B** (the PO Q3 flow above, existing upload API, no new API). Only the label differs.
+- **Options (C2 Option Analysis)**:
+  - **C2-A (keep Figma):** label "Thử lại".
+  - **C2-B (follow PO Q3):** label "Tải lên lại" / "Chọn tệp tải lại"; needs the PO to change the Figma text.
+- **Out of FE-026 (not an option here):** a "Thử lại" that re-ingests the existing material in place would need a new backend API and is a business/scope change requiring separate PO approval (PO Q3). Mention it only as this note.
+- **Decision**: `BLOCKED-ON-C2 — pending PO`. No interim option recommended.
 
 ---
 
 ### Decision 4: Course Deletion vs Soft Archive Policy (PO Q4 & OPD-014, Review R2-3 → C1, BLOCKED-ON-C1)
 - **Problem**: Attempting to delete a course with associated materials returned HTTP 500 due to PostgreSQL foreign key constraints. In addition, OPD-014 established that courses and cases use a soft-archive mechanism rather than destructive deletion.
 - **Context & Conflict**:
-  - [DỮ-KIỆN] Figma frame 02.3 specifies a destructive deletion dialog ("Xóa khóa học này?").
-  - [PO-ĐÃ-XÁC-NHẬN] PO Q4 (2026-11-15) and OPD-014 specify soft archive for courses (`courses.is_active = FALSE`), preserving materials, chunks, and cases.
-  - **Dialog Copy & Backend API**: `BLOCKED-ON-C1 — pending PO`.
-  - **Schema Evaluation for Soft Archive**: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`). Reusing `is_active` (`is_active = FALSE`) fulfills the soft-archive requirement without introducing redundant columns or parallel mechanisms if soft archive is confirmed.
-- **Alternatives Considered (C1 Option Analysis)**:
-  - *Option 1 — Hard delete per Figma frame 02.3 (`483:10111` / `483:10341`)*:
-    - Copy: Destructive deletion confirmation dialog titled "Xóa khóa học này?" with warning text.
-    - Behaviour: Irreversible removal of course record from database.
-    - Backend/data impact: Calls existing `DELETE /courses/:courseId`. In PostgreSQL, foreign key constraints from child materials or cases result in HTTP 500 unless ON DELETE CASCADE is configured on the backend; permanently removes associated case studies and materials.
-  - *Option 2 — Soft archive per PO Q4 (2026-11-15) & OPD-014*:
-    - Copy: Archive confirmation dialog (e.g. "Lưu trữ khóa học này?").
-    - Behaviour: Deactivates course from active view while preserving course materials, chunks, and case studies.
-    - Backend/data impact: Requires proposed backend endpoint `PATCH /courses/:courseId/archive` (BE-PROP-2) to set `courses.is_active = FALSE`. Schema fact: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`), so reusing `is_active` requires no schema migrations or new columns.
-  - *Non-conflict schema fact*: Introducing a separate `is_archived` column is not required if soft archive is confirmed, because `courses.is_active` already exists in the baseline schema.
-  - *Decision*: `BLOCKED-ON-C1 — pending PO`.
+  - Facts: Figma 02.3 dialog `I483:10341;228:301` "Xóa khóa học này?", body `…228:302` (courses, materials and case studies are deleted, irreversible), confirm `…228:310;225:254` "Xóa khóa học". PO Q4 (2026-11-15) + OPD-014: soft archive, keep course, materials, chunks, MinIO objects. Backend today: `DELETE /courses/:courseId` returns HTTP 500 when the course has materials (FK, no cascade); `courses.is_active` exists.
+- **Options (C1 Option Analysis)**:
+  - **C1-A (keep Figma):** hard delete with the Figma copy. Needs: the PO to change the Q4/OPD-014 decision; a backend change that deletes the course's materials, chunks, MinIO objects and related cases safely (today it fails with 500). Not BE-PROP-2.
+  - **C1-B (follow PO Q4 / OPD-014):** soft archive. Needs: the PO to change the Figma 02.3 copy (archive wording); BE-PROP-2 (`PATCH /courses/:courseId/archive`, `is_active = false`, active lists exclude archived courses).
+- **Non-conflict schema fact**: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`). Reusing `is_active` (`is_active = FALSE`) fulfills the soft-archive requirement under C1-B without introducing redundant columns or parallel mechanisms if soft archive is confirmed.
+- **Decision**: `BLOCKED-ON-C1 — pending PO`. No interim option recommended.
 
 ---
 
@@ -109,9 +94,11 @@
 
 ### Decision 7: Course Code Required-ness (C3, BLOCKED-ON-C3)
 - **Context & Conflict**:
-  - [DỮ-KIỆN] Figma frame 02.2 (`483:9866`) marks "Mã môn học *" as a required field with an asterisk.
-  - [DỮ-KIỆN] Backend DTO `CreateCourseDto` (`backend/src/modules/course/dto/create-course.dto.ts:9`) defines `@IsOptional() courseCode?: string`.
-  - **UI Required-ness**: `BLOCKED-ON-C3 — pending PO`. Facts documented neutrally; awaiting PO decision on whether courseCode is required in the UI form or optional per DTO.
+  - Facts: Figma 02.2 label "Mã môn học *" (`I483:10105;226:146`, asterisk = required). `CreateCourseDto.courseCode`: `@IsOptional()`, `@IsString()`, `@MaxLength(20)` (`backend/src/modules/course/dto/create-course.dto.ts:14-17`).
+- **Options (C3 Option Analysis)**:
+  - **C3-A (keep Figma):** required; needs a backend DTO change (and a rule for existing courses without a code).
+  - **C3-B (follow the DTO):** optional; needs the PO to remove the asterisk on Figma.
+- **Decision**: `BLOCKED-ON-C3 — pending PO`. Facts documented neutrally; awaiting PO decision on whether courseCode is required in the UI form or optional per DTO. No interim option recommended.
 
 ---
 
