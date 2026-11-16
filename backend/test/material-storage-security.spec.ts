@@ -4,10 +4,14 @@
  * Acceptance Criteria (from docs/03_TASK-DETAILS.md §[28] and docs/06_QA.md):
  *   - QA-004 AC-1: Kiểm thử Lecturer B không thể đọc, tải hoặc xóa tài liệu của Lecturer A.
  *   - QA-004 AC-2: Kiểm thử không thể đoán được URL/key tài liệu trên MinIO.
- *   - QA-004 AC-3: Kiểm thử tính toàn vẹn khi xóa khóa học thì tài liệu liên quan bị xóa an toàn.
+ *   - QA-004 AC-3: Kiểm thử tính toàn vẹn khi lưu trữ khóa học (C1-B / OPD-014): khóa học rời danh sách
+ *     đang hoạt động, tài liệu, chunks pgvector, object MinIO và case được bảo toàn, không nhận tài liệu
+ *     hoặc case mới, và không còn API xóa cứng. (AC-3 cũ "xóa khóa học thì tài liệu bị xóa" được PO thay
+ *     ngày 2026-11-16 khi chọn C1-B.)
  *
  * Review Findings & Architecture Notes:
- *   - H-a: The course-deletion defect is pinned in a standalone test (DELETE returns 500, row and object still exist) with an it.todo for the eventual cascade deletion fix (BLOCKED-ON-C1).
+ *   - AC-3 needs the course archive API (PATCH /courses/:id/archive, branch feature/course-soft-archive).
+ *     Against a backend without it the AC-3 test fails at the archive call (404), by design.
  *   - M2: objectExists rethrows unexpected errors and returns false only on NoSuchKey/NotFound.
  *   - M3: Users are registered once and reused across tests using getOrCreateTestUser.
  *   - M4: Shared fixtures (users A, B, S; course A; fixture PDF material) created in beforeAll;
@@ -249,51 +253,104 @@ describe("QA-004 Security & Authorization Tests for Material Storage & Tenant Is
   });
 
   // ---------------------------------------------------------------------------
-  // QA-004 AC-3: Kiểm thử tính toàn vẹn khi xóa khóa học thì tài liệu liên quan bị xóa an toàn
+  // QA-004 AC-3 (C1-B / OPD-014, PO 2026-11-16): archiving a course keeps all related data safe
   // ---------------------------------------------------------------------------
   t(
-    "QA-004 AC-3: recorded defect: deleting a course with materials returns 500 and leaves course, materials and MinIO objects intact",
+    "QA-004 AC-3: archiving a course keeps course, materials, chunks, MinIO objects and cases; the course leaves the active list and accepts no new work",
     async () => {
-      // H-a: Setup entities created inside the test; asserts both ids defined
+      // Setup inside the test: course + material + case owned by Lecturer A
       const cRes = await call("POST", "/courses", userA.token, {
-        name: `QA-004 Cascade Test Course ${Date.now()}`,
+        name: `QA-004 Archive Test Course ${Date.now()}`,
       });
       expect(cRes.status).toBe(201);
-      const cascadeCourseId = cRes.body.data.id;
-      expect(cascadeCourseId).toBeDefined();
-      createdCourseIds.push(cascadeCourseId);
+      const archCourseId: string = cRes.body.data.id;
+      expect(archCourseId).toBeDefined();
+      createdCourseIds.push(archCourseId);
 
       const fileBytes = fs.readFileSync(path.join(FIXTURES, "sample.pdf"));
-      const upRes = await call(
-        "POST",
-        `/courses/${cascadeCourseId}/materials`,
-        userA.token,
-        form("cascade.pdf", fileBytes, PDF)
-      );
+      const upRes = await call("POST", `/courses/${archCourseId}/materials`, userA.token, form("archive.pdf", fileBytes, PDF));
       expect(upRes.status).toBe(201);
-      const cascadeMaterial = upRes.body.data;
-      expect(cascadeMaterial.id).toBeDefined();
-      createdMaterialIds.push(cascadeMaterial.id);
+      const archMaterial = upRes.body.data;
+      expect(archMaterial.id).toBeDefined();
+      createdMaterialIds.push(archMaterial.id);
 
-      // Pin the current recorded defect: DELETE returns 500 due to FK constraint on teaching_materials
-      const delRes = await call("DELETE", `/courses/${cascadeCourseId}`, userA.token);
-      expect(delRes.status).toBe(500);
+      // A case row in the course (inserted directly: generation needs an LLM key, not under test here)
+      const caseIns = await pool.query(
+        "INSERT INTO cases (title, course_id, created_by) VALUES ($1, $2, $3) RETURNING id",
+        ["QA-004 archive case", archCourseId, userA.id],
+      );
+      const archCaseId: string = caseIns.rows[0].id;
 
-      // Course row still exists directly in PostgreSQL (L3)
-      const courseCheck = await pool.query("SELECT 1 FROM courses WHERE id = $1", [cascadeCourseId]);
-      expect(courseCheck.rows.length).toBe(1);
+      // One chunk row inserted directly, so "chunks are kept" is checked against a non-zero count even
+      // when no embedding key is configured (real ingestion then ends FAILED with 0 chunks)
+      await pool.query(
+        `INSERT INTO document_chunks (material_id, course_id, chunk_index, chunk_text, embedding)
+         VALUES ($1, $2, 9999, 'QA-004 AC-3 archive probe', array_fill(0::real, ARRAY[768])::vector)`,
+        [archMaterial.id, archCourseId],
+      );
+      const chunksBefore = Number(
+        (await pool.query("SELECT COUNT(*) AS n FROM document_chunks WHERE material_id = $1", [archMaterial.id])).rows[0].n,
+      );
 
-      // Material row still exists
-      const matCheck = await call("GET", `/materials/${cascadeMaterial.id}`, userA.token);
-      expect(matCheck.status).toBe(200);
+      expect(chunksBefore).toBeGreaterThanOrEqual(1);
 
-      // MinIO object still exists
-      const exists = await objectExists(cascadeMaterial.stored_object_key);
-      expect(exists).toBe(true);
+      // Non-owner lecturer and student cannot archive
+      expect((await call("PATCH", `/courses/${archCourseId}/archive`, userB.token)).status).toBe(403);
+      expect((await call("PATCH", `/courses/${archCourseId}/archive`, userS.token)).status).toBe(403);
+
+      // Owner archives
+      const archRes = await call("PATCH", `/courses/${archCourseId}/archive`, userA.token);
+      expect(archRes.status).toBe(200);
+      expect(archRes.body.data.id).toBe(archCourseId);
+      expect(archRes.body.data.is_active).toBe(false);
+
+      // Archiving again is a no-op that still answers 200
+      const again = await call("PATCH", `/courses/${archCourseId}/archive`, userA.token);
+      expect(again.status).toBe(200);
+      expect(again.body.data.is_active).toBe(false);
+
+      // The course leaves the lecturer's active list but stays readable
+      const list = await call("GET", "/courses", userA.token);
+      expect(list.status).toBe(200);
+      expect(list.body.data.map((c: { id: string }) => c.id)).not.toContain(archCourseId);
+      expect(list.body.data.map((c: { id: string }) => c.id)).toContain(courseA);
+      const one = await call("GET", `/courses/${archCourseId}`, userA.token);
+      expect(one.status).toBe(200);
+      expect(one.body.data.is_active).toBe(false);
+
+      // Everything related is preserved
+      const courseRow = await pool.query("SELECT is_active FROM courses WHERE id = $1", [archCourseId]);
+      expect(courseRow.rows).toEqual([{ is_active: false }]);
+      const mats = await call("GET", `/courses/${archCourseId}/materials`, userA.token);
+      expect(mats.status).toBe(200);
+      expect(mats.body.data.map((m: { id: string }) => m.id)).toContain(archMaterial.id);
+      expect(await objectExists(archMaterial.stored_object_key)).toBe(true);
+      const chunksAfter = Number(
+        (await pool.query("SELECT COUNT(*) AS n FROM document_chunks WHERE material_id = $1", [archMaterial.id])).rows[0].n,
+      );
+      expect(chunksAfter).toBe(chunksBefore);
+      const caseRow = await pool.query("SELECT 1 FROM cases WHERE id = $1", [archCaseId]);
+      expect(caseRow.rows.length).toBe(1);
+
+      // An archived course accepts no new material and no new case (409), and stores nothing
+      const prefix = `materials/${archCourseId}/`;
+      const objectsBefore = await listMinioObjects(prefix);
+      const up2 = await call("POST", `/courses/${archCourseId}/materials`, userA.token, form("late.pdf", fileBytes, PDF));
+      expect(up2.status).toBe(409);
+      expect(await listMinioObjects(prefix)).toEqual(objectsBefore);
+      const matCount = await pool.query("SELECT COUNT(*) AS n FROM teaching_materials WHERE course_id = $1", [archCourseId]);
+      expect(Number(matCount.rows[0].n)).toBe(1);
+      const gen = await call("POST", "/cases/generate", userA.token, { courseId: archCourseId, materialIds: [archMaterial.id] });
+      expect(gen.status).toBe(409);
+
+      // There is no hard delete any more
+      const del = await call("DELETE", `/courses/${archCourseId}`, userA.token);
+      expect(del.status).toBe(404);
+      expect((await pool.query("SELECT 1 FROM courses WHERE id = $1", [archCourseId])).rows.length).toBe(1);
+
+      // Cleanup of the case row this test inserted. Courses, materials and chunks are cleaned in afterAll
+      // (materials through DELETE /materials/:id, which stays allowed in an archived course, then pg)
+      await pool.query("DELETE FROM cases WHERE id = $1", [archCaseId]);
     }
-  );
-
-  it.todo(
-    "QA-004 AC-3: deleting a course with materials succeeds and removes materials and objects (BLOCKED-ON-C1: delete vs archive pending PO)"
   );
 });

@@ -313,6 +313,8 @@ export async function cleanupDatabaseEntities(courseIds: string[], userIds: stri
     if (courseIds.length > 0) {
       await pool.query("DELETE FROM document_chunks WHERE course_id = ANY($1::uuid[])", [courseIds]);
       await pool.query("DELETE FROM teaching_materials WHERE course_id = ANY($1::uuid[])", [courseIds]);
+      // QA-004 AC-3 inserts a bare case row (no nodes) into its archived course
+      await pool.query("DELETE FROM cases WHERE course_id = ANY($1::uuid[]) AND root_node_id IS NULL", [courseIds]);
       await pool.query("DELETE FROM courses WHERE id = ANY($1::uuid[])", [courseIds]);
     }
     // Documented (Review run 3 item 6): with QA_RUN_ID, users are kept in the local test DB
