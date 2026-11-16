@@ -24,7 +24,7 @@ Mapping đầy đủ Frame → Feature → Task → FE/BE/DB/QA nằm ở `FEATU
 | 00 | 1:6113 | 00.3 Sign In (có biến thể lỗi) | DES-001 Frame 00.3 | `/login` | CONFIRMED | CANDIDATE |
 | 00 | 1:6144 | 00.4 Register (1 form + role) | DES-001 Frame 00.3/00.4 | `/register` | CONFIRMED | CANDIDATE (chờ OPD-008 cho phần thông báo GV) |
 | 00 | 1:6187 | 00.5 Courses & Lecturer Shell | DES-001 Frame 00.5 | `/lecturer/courses` | CONFIRMED | CANDIDATE |
-| 00 | 1:6291 | 00.6 Course Create / Delete Modal | DES-001 Frame 00.5 | modal | CONFIRMED (create); HOLD copy xóa (OPD-014) | CANDIDATE + REFERENCE (OPD-014) |
+| 00 | 1:6291 | 00.6 Course Create / Delete Modal | DES-001 Frame 00.5 | modal | CONFIRMED (create); copy xóa → lưu trữ (OPD-014 ĐÃ QUYẾT ĐỊNH 2026-11-16: lưu trữ mềm) | CANDIDATE + REFERENCE (OPD-014) |
 | 00 | 1:6341 | 00.7 Student Shell & Direct Entry | DES-001 Frame 00.6 | `/student/cases/:id/...` | IMPLIED | CANDIDATE |
 | 01 | 1:6387 | 01.1 Tokens, Components & States | DES-002 Set 01.1 | — | CONFIRMED | CANDIDATE |
 | 01 | 1:6701 | 01.2 Loading Skeleton | DES-002 Frame 01.2 | — | CONFIRMED | CANDIDATE |

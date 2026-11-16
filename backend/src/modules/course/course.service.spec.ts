@@ -118,7 +118,7 @@ describe("CourseService (EBA-107 / BE-003)", () => {
       const result = await service.getCoursesByLecturer("lecturer-1");
 
       expect(mockDbService.query).toHaveBeenCalledWith(
-        expect.stringContaining("WHERE lecturer_id = $1"),
+        expect.stringContaining("WHERE lecturer_id = $1 AND is_active = TRUE"),
         ["lecturer-1"],
       );
       expect(result).toEqual(mockCourses);
@@ -229,46 +229,56 @@ describe("CourseService (EBA-107 / BE-003)", () => {
     });
   });
 
-  describe("deleteCourse (AC 1 & AC 3: Ownership Gate enforcement)", () => {
-    it("should allow course owner to delete their own course", async () => {
-      const existingCourse = {
-        id: "c-1",
-        name: "Course to Delete",
-        lecturer_id: "lecturer-owner",
-      };
+  describe("archiveCourse (C1-B soft archive, OPD-014: ownership gate, data kept)", () => {
+    it("sets is_active = FALSE for the owner and touches no child table", async () => {
+      const existingCourse = { id: "c-1", name: "Course", lecturer_id: "lecturer-owner", is_active: true };
+      const archived = { ...existingCourse, is_active: false, active: false };
 
       mockDbService.query
         .mockResolvedValueOnce({ rows: [existingCourse] }) // getCourseById
-        .mockResolvedValueOnce({ rows: [] }); // DELETE query
+        .mockResolvedValueOnce({ rows: [archived] }); // UPDATE
 
-      const result = await service.deleteCourse("c-1", "lecturer-owner");
+      const result = await service.archiveCourse("c-1", "lecturer-owner");
 
-      expect(mockDbService.query).toHaveBeenNthCalledWith(
-        2,
-        "DELETE FROM courses WHERE id = $1",
-        ["c-1"],
-      );
-      expect(result).toEqual({ message: "Course deleted successfully" });
+      expect(mockDbService.query).toHaveBeenCalledTimes(2);
+      const [sql, params] = mockDbService.query.mock.calls[1];
+      expect(sql).toContain("UPDATE courses SET is_active = FALSE, updated_at = NOW() WHERE id = $1");
+      expect(params).toEqual(["c-1"]);
+      for (const [q] of mockDbService.query.mock.calls) {
+        expect(q).not.toMatch(/DELETE|teaching_materials|document_chunks|cases/i);
+      }
+      expect(result).toEqual(archived);
     });
 
-    it("should throw ForbiddenException when another lecturer attempts to delete the course", async () => {
-      const existingCourse = {
-        id: "c-1",
-        name: "Protected Course",
-        lecturer_id: "lecturer-owner-A",
-      };
+    it("returns an already archived course without a second UPDATE", async () => {
+      const archived = { id: "c-1", lecturer_id: "lecturer-owner", is_active: false };
+      mockDbService.query.mockResolvedValueOnce({ rows: [archived] });
 
-      mockDbService.query.mockResolvedValueOnce({ rows: [existingCourse] });
+      const result = await service.archiveCourse("c-1", "lecturer-owner");
 
-      await expect(
-        service.deleteCourse("c-1", "lecturer-attacker-B"),
-      ).rejects.toThrow(new ForbiddenException("You can only delete your own courses"));
+      expect(result).toEqual(archived);
+      expect(mockDbService.query).toHaveBeenCalledTimes(1);
+    });
 
-      // Verify DELETE query was never called
-      expect(mockDbService.query).not.toHaveBeenCalledWith(
-        expect.stringContaining("DELETE FROM courses"),
-        expect.anything(),
+    it("throws ForbiddenException for another lecturer and never updates", async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ id: "c-1", lecturer_id: "lecturer-owner-A", is_active: true }],
+      });
+
+      await expect(service.archiveCourse("c-1", "lecturer-attacker-B")).rejects.toThrow(
+        new ForbiddenException("You can only archive your own courses"),
       );
+      expect(mockDbService.query).toHaveBeenCalledTimes(1);
+    });
+
+    it("throws NotFoundException for an unknown course", async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [] });
+
+      await expect(service.archiveCourse("missing", "lecturer-owner")).rejects.toThrow(NotFoundException);
+    });
+
+    it("has no hard-delete method any more (C1-B: archive replaces delete)", () => {
+      expect((service as unknown as Record<string, unknown>).deleteCourse).toBeUndefined();
     });
   });
 });

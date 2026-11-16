@@ -72,7 +72,7 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 |---|---|---|---|---|
 | `1:2431` | 02.1 · Quản lý khóa học | MVP | ¶130; BE-003; route `/api/v1/courses` CRUD có trong code | "Mã tham gia" trên thẻ (OPD-001 đã chốt A, 2026-11-12) |
 | `1:1465` | 02.2 · Hộp thoại khởi tạo khóa học | MVP | BE-003; FR-MAT-01 | Có 4 trường; cần xác minh trường nào là mã lớp (OPD-001) — chưa xem ảnh trong phiên này |
-| `86:2682` | 02.3 · Xác nhận xóa khóa học | MVP | BE-003 (`DELETE /courses/:courseId` có trong code) | **H(OPD-014)**: nội dung hộp thoại (xóa cứng hay lưu trữ) |
+| `86:2682` | 02.3 · Xác nhận lưu trữ khóa học | MVP | `PATCH /courses/:courseId/archive` (`DELETE /courses/:courseId` đã gỡ 2026-11-16) | OPD-014 **ĐÃ QUYẾT ĐỊNH 2026-11-16 (PO): lưu trữ mềm**; hộp thoại đổi sang nội dung lưu trữ |
 | `1:2258` | 02.4 · Chi tiết khóa học — Tài liệu | MVP | ¶130; DES-003, DES-004, FE-004, BE-005 | Nút "Mã mời: SEC7A2" (OPD-001 đã chốt A, 2026-11-12) |
 | `87:2306` | 02.5 · Hộp thoại tải tài liệu | MVP | DES-003, FE-003, QA-003 | — |
 | `29:1106` | 02.6 · Xác nhận xóa tài liệu | MVP | FE-005 | — |
@@ -139,7 +139,7 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 | `1:3715` | Admin · Bảng điều khiển → `10.2` | **MVP** (PO 2026-11-12) | idem | Chỉ số toàn hệ thống; không giám sát chi phí AI |
 | `1:4025` | Admin · Quản lý người dùng → `10.3` | **MVP** (PO 2026-11-12) | Context Diagram *"Manage accounts & roles"* | **H(OPD-008)**: chưa có tab chờ duyệt giảng viên; khóa/mở khóa dựa trên `users.is_active` |
 | `30:1864` | Admin · Khóa người dùng → `10.4` | **MVP** (PO 2026-11-12) | idem | — |
-| `1:4795` | Admin · Quản lý khóa học → `10.5` | **MVP** (PO 2026-11-12) | Context Diagram *"courses"* | Chỉ xem; **H(OPD-014)** nếu thêm thao tác xóa/lưu trữ |
+| `1:4795` | Admin · Quản lý khóa học → `10.5` | **MVP** (PO 2026-11-12) | Context Diagram *"courses"* | Chỉ xem; OPD-014 đã quyết định lưu trữ mềm (2026-11-16), thao tác lưu trữ của Admin chưa có task |
 | `1:5043` | Admin · Quản lý Case Study → `10.6` | **MVP** (PO 2026-11-12) | idem | Chỉ có thao tác Xem |
 | `1:5543` | Admin · Dịch vụ AI (chỉ xem) → `10.7` | **MVP** (PO 2026-11-12) | Context Diagram *"API & system logs"*; OPD-013 | Không có thao tác đổi provider/mô hình (provider cố định trong `.env`) |
 | `1:4511` | Admin · Nghiên cứu và Rubric → `10.8` | **MVP** (PO 2026-11-12, OPD-011 → A) | Proposal ¶140 Evaluation module | Cùng nhóm task với Rubric giảng viên (07.8) |

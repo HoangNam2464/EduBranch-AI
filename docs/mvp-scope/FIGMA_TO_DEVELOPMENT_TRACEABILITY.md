@@ -11,7 +11,7 @@
 | Mã | Module | Vai trò | Yêu cầu (Proposal V1.2) | Task & SP | FE | BE / API (route trong code) | DB | QA |
 |---|---|---|---|---|---|---|---|---|
 | M1 | Xác thực & vai trò | Giảng viên, Sinh viên | ¶129 Account and role management (Lecturer / Student) | DES-001 (3), DES-002 (5), FE-001 (5), FE-002 (3), BE-001 (5), BE-002 (5), QA-001 (3), QA-002 (5) | Form đăng nhập/đăng ký, chọn vai trò, validation; route guard; trang 403/404; hết phiên quay về `/login` | `POST /auth/register`, `POST /auth/login`, `GET /auth/me`, `GET /users/me` | `users` (`role`, `is_active`) | QA-001, QA-002 |
-| M2 | Khóa học | Giảng viên | ¶130 | BE-003 (5); FE-002 (3, dùng chung) | Danh sách thẻ, tạo, xóa; trạng thái trống/lỗi/đang tải | `POST/GET /courses`, `GET/PUT/DELETE /courses/:courseId` | `courses` | QA-001 |
+| M2 | Khóa học | Giảng viên | ¶130 | BE-003 (5); FE-002 (3, dùng chung) | Danh sách thẻ, tạo, lưu trữ (OPD-014, 2026-11-16); trạng thái trống/lỗi/đang tải | `POST/GET /courses`, `GET/PUT /courses/:courseId`, `PATCH /courses/:courseId/archive` | `courses` | QA-001 |
 | M3 | Tài liệu & xử lý | Giảng viên | ¶130, ¶131 | DES-003 (3), DES-004 (3), FE-003 (3), FE-004 (5), FE-005 (3), BE-005 (3), OPS-002 (3), BE-013 (2), QA-003 (3), QA-004 (5) | Modal tải lên (PDF/DOCX, ≤50 MB), bảng có 4 trạng thái, xóa, thử lại; lọc phía client (`01_MASTER-TASKS §4.5`) | `POST /courses/:courseId/materials`, `GET /courses/:courseId/materials`, `GET /materials/:id`. **Xóa tài liệu và thử lại: CHƯA CÓ ROUTE** | `teaching_materials` | QA-003, QA-004 |
 | M4 | RAG & nguồn trích dẫn | Giảng viên | ¶131 | DES-005 (3), FE-006 (3), BE-007 (5), BE-008 (3), BE-009 (3), BE-010 (5), OPS-003 (5), BE-012 (5), QA-005 (5), QA-006 (5) | Drawer xem đoạn trích (không lộ vector, prompt) | **Đọc đoạn trích: CHƯA CÓ ROUTE** | `document_chunks` | QA-005, QA-006 |
 | M5 | Sinh case bằng AI | Giảng viên | ¶107, ¶131 | DES-006 (3), FE-007 (3), BE-014 (5), BE-015 (5), QA-007 (3) | Cấu hình sinh case (**wizard 3 bước**, OPD-006 chốt 2026-11-12), hộp thoại tiến trình, toast lỗi | `POST /cases/generate`, `GET /courses/:courseId/cases` | `cases`, `case_nodes`, `case_options` | QA-007 |
@@ -45,7 +45,7 @@ Page: `Page 1` cho tất cả. Trạng thái: MVP cho tất cả (chưa Ready fo
 | `86:2656` | 01.5 · 404 | M1 | Tất cả | DES-002 (5), FE-002 (3) | — |
 | `1:2431` | 02.1 · Quản lý khóa học | M2 | Giảng viên | BE-003 (5) | Mã tham gia (giữ, OPD-001 chốt A 2026-11-12) |
 | `1:1465` | 02.2 · Tạo khóa học | M2 | Giảng viên | BE-003 (5) | Cần xác minh trường mã lớp |
-| `86:2682` | 02.3 · Xóa khóa học | M2 | Giảng viên | BE-003 (5) | Nội dung xóa (OPD-014) |
+| `86:2682` | 02.3 · Lưu trữ khóa học | M2 | Giảng viên | BE-003 (5) | Nội dung lưu trữ (OPD-014 ĐÃ QUYẾT ĐỊNH 2026-11-16: lưu trữ mềm) |
 | `1:2258` | 02.4 · Tài liệu môn học | M3 | Giảng viên | DES-003 (3), DES-004 (3), FE-004 (5) | Nút Mã mời (giữ, OPD-001 chốt A 2026-11-12) |
 | `87:2306` | 02.5 · Tải tài liệu | M3 | Giảng viên | FE-003 (3) | — |
 | `29:1106` | 02.6 · Xóa tài liệu | M3 | Giảng viên | FE-005 (3) | Route xóa chưa có |

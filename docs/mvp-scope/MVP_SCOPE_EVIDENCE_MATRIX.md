@@ -65,7 +65,7 @@ Chú thích cột: **P** = Proposal V1.2 · **BL** = backlog task cha · **Spec*
 | Chức năng | P | BL | Spec | Fig1 | Fig2 | BE | DB | OPD | **Phân loại** |
 |---|---|---|---|---|---|---|---|---|---|
 | Giảng viên tạo/xem/sửa khóa học | §4 *"bound to a specific course"* | BE-003 (DONE), FE-002 AC-3 | FR-MAT-01/02; P1 §1 | 1:2431, 1:1465 | 00.5, 00.6 | ✅ CRUD | ✅ | — | **CONFIRMED MVP** |
-| Xóa khóa học | — | BE-003 (CRUD) | BR-MAT-03 "cascades deletion **or** archiving" | menu | 00.6 (Delete confirm) | ⚠️ hard `DELETE FROM courses` | — | **OPD-014** | **IMPLIED** (thao tác); **HOLD** (ngữ nghĩa xóa) |
+| Lưu trữ khóa học (thay xóa) | — | BE-003 (CRUD) | BR-MAT-03 (lưu trữ mềm, PO 2026-11-16) | menu | 00.6 / 02.3 (Archive confirm) | ✅ `PATCH /courses/:courseId/archive` (`is_active = false`); `DELETE` đã gỡ | — | **OPD-014 ĐÃ QUYẾT ĐỊNH 2026-11-16: lưu trữ mềm** | **CONFIRMED MVP** |
 | Sinh viên vào case qua link trực tiếp | Context Diagram *"Deliver case situations"* | DES-009 AC-3 (Copy Student Link) | PROJECT_OVERVIEW: *"Student access is always via a direct link"*; P2 §1 | 1:1444 | 03.6, 00.7 | — | — | — | **CONFIRMED MVP** |
 | **Mã mời tham gia lớp** | Không đề cập | Không có | Không có FR; FEATURE-COURSE §3 không có enrollment | 1:2431, 1:2258, 1:1465, 1:1084 | — | ❌ | ❌ không có `course_enrollments` | **OPD-001** | **HOLD**. Tài liệu hiện hành không hỗ trợ; chỉ có thể vào MVP nếu PO duyệt OPD-001 Option A. **→ MVP (PO 2026-11-12, OPD-001 → A)** |
 | **Dashboard sinh viên ("Bàn học")** | Không đề cập | Không có | **P0 §1: *"No dashboard/list screen exists in the approved sitemap — do not invent one."*** | 1:1305 | — | ❌ | ❌ | OPD-001 | **HOLD**. Spec hiện hành loại trừ rõ; chỉ mở lại nếu duyệt OPD-001. **→ MVP (PO 2026-11-12, OPD-001 → A)** |
@@ -141,7 +141,7 @@ Chú thích cột: **P** = Proposal V1.2 · **BL** = backlog task cha · **Spec*
 | Phân loại | Số dòng trong ma trận (xấp xỉ, một dòng có thể tách 2 phân loại) | Ví dụ |
 |---|:-:|---|
 | CONFIRMED MVP | 24 | Login, Register, Course CRUD, Materials 4 trạng thái, RAG inspector, ReactFlow editor, Lifecycle, Player, Journey Review, Reflection/Retry, Review Study, Challenge Support, Feedback, Statistics |
-| IMPLIED UNDER MVP FEATURE | 6 | Logout, Landing `/`, Case intro, Resume attempt, Course delete action, Student view of Branching feedback |
+| IMPLIED UNDER MVP FEATURE | 6 | Logout, Landing `/`, Case intro, Resume attempt, Course archive action (thay xóa, OPD-014 2026-11-16), Student view of Branching feedback |
 | PROPOSED | 6 | Email kích hoạt, Dashboard GV, Admin dashboard, Admin login riêng, Admin case mgmt, Admin settings |
 | HOLD | 20 | Mã mời, Dashboard SV, Khóa học của tôi, Rubric, CSV, Admin user/course/log/AI config, Wizard, Versioning, AI hint, Deadline, Pivotal-required, Challenge container… **2026-11-12:** mã mời, Dashboard SV, Khóa học của tôi, Rubric, CSV, Admin, Wizard đã chuyển MVP theo quyết định PO. |
 | PHASE 2 | 4 | Quên/đặt lại mật khẩu, Đổi mật khẩu, Gửi nhắc hạn, Survey in-platform (Google Sign-In chuyển sang MVP theo quyết định PO 2026-11-12, kèm Microsoft) |

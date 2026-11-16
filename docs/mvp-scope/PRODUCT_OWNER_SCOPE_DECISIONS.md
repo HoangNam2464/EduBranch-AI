@@ -73,7 +73,7 @@ Vì vậy tài liệu dừng ở bước phân loại và chờ PO.
 | Phần tử | Frame | Quyết định |
 |---|---|---|
 | Thông báo kích hoạt giảng viên | `1:122` | OPD-008 |
-| Nội dung xóa khóa học | `86:2682` | OPD-014 |
+| Nội dung xóa khóa học | `86:2682` | OPD-014 — **ĐÃ QUYẾT ĐỊNH 2026-11-16: lưu trữ mềm** (hộp thoại lưu trữ) |
 | Sửa case sau xuất bản | `88:2343` | OPD-007 |
 | Tiếp tục lượt làm dở | `1:972` | OPD-003 |
 | Giới hạn số lượt | `86:2712` | OPD-004 |

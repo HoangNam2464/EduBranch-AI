@@ -66,7 +66,7 @@ Xem mục 1.3. Các màn 01.1–01.3 và 01.8 dựng trên màn Quản lý khóa
 - Panel chi tiết: ô số liệu 3 cột (Lượt làm bài / Tài liệu / Case Study, căn giữa), "Cần xử lý" (tệp lỗi có nút Thử lại, tệp đang chờ, bản nháp AI chờ rà soát), "Về khóa học", "Đi tới" Tài liệu môn học / Case Study.
 - Mã mời/mã tham gia lớp được giữ (OPD-001 → A).
 
-**02.2 Khởi tạo khóa học / 02.3 Xác nhận xóa khóa học** — hộp thoại trên 02.1. Nội dung xóa khóa học còn chờ **OPD-014** (xóa cứng hay lưu trữ).
+**02.2 Khởi tạo khóa học / 02.3 Xác nhận lưu trữ khóa học** — hộp thoại trên 02.1. **ĐÃ QUYẾT ĐỊNH 2026-11-16 (PO):** OPD-014 → **lưu trữ mềm** khóa học (C1-B). `PATCH /courses/:courseId/archive` đặt `courses.is_active = false`; tài liệu, chunks, object MinIO và case được giữ; khóa học đã lưu trữ rời danh sách đang hoạt động của giảng viên và không nhận tài liệu/case mới; `DELETE /courses/:courseId` đã gỡ. Sinh viên không đổi. Khôi phục: chưa có task (PO Q4 2026-11-15: không tự tạo nghiệp vụ khôi phục khi chưa có căn cứ). Frame 02.3 đổi nội dung sang lưu trữ (tiêu đề "Lưu trữ khóa học này?", nút "Lưu trữ khóa học").
 
 **02.4 Chi tiết khóa học — Tài liệu môn học**
 - Khối tải lên có quy trình xử lý 4 bước (Tải tệp lên → Tách thành đoạn trích → Tạo vector & lập chỉ mục → Sẵn sàng cho AI trích dẫn) và vùng kéo thả (PDF, DOCX, tối đa 50 MB).
@@ -158,7 +158,7 @@ Nhập email → Đã gửi hướng dẫn → Mật khẩu mới → Thành cô
   - *Annotation (nhãn cảnh báo)*: bấm để mở Nhật ký hệ thống (10.9) lọc theo lỗi sinh case. Khi không có lỗi: hiện "Không có lỗi" ở kiểu trung tính.
   - Biểu đồ dành riêng cho admin (vùng theo tuần, donut người dùng theo vai trò, thanh xếp chồng case theo khóa học), tình trạng hệ thống, nhật ký gần đây. Không dùng lại biểu đồ của giảng viên/sinh viên.
 - **10.3 Quản lý người dùng / 10.4 Khóa người dùng** — bảng người dùng; nút Khóa tài khoản / Mở khóa và nhãn trạng thái rộng bằng nhau. Khóa dựa trên `users.is_active`. Tab chờ duyệt giảng viên chưa có (**OPD-008**).
-- **10.5 Khóa học toàn hệ thống / 10.6 Case Study toàn hệ thống** — chỉ xem; thêm xóa/lưu trữ sẽ phụ thuộc **OPD-014**.
+- **10.5 Khóa học toàn hệ thống / 10.6 Case Study toàn hệ thống** — chỉ xem. OPD-014 đã quyết định lưu trữ mềm cho khóa học (2026-11-16); thao tác lưu trữ cho Admin và lưu trữ case chưa có task.
 - **10.7 Dịch vụ AI (chỉ xem)** — hai cột: trái 3 ô chỉ số, "Lần sinh case gần đây", "Trạng thái lập chỉ mục tài liệu" (hai danh sách cùng kiểu dòng 3 tầng + nhãn trạng thái); phải "Cấu hình hiện tại" và "Thay đổi cấu hình". Nhà cung cấp và mô hình AI cố định trong tệp môi trường (OPD-013), không có thao tác đổi.
 - **10.8 Nghiên cứu & Rubric** — cùng bố cục với 07.8 (OPD-011 → A).
 - **10.9 Nhật ký hệ thống** — bảng sự kiện, tìm "Tìm trong nhật ký", lọc loại sự kiện và thời gian, nhãn kết quả rộng bằng nhau.
@@ -189,6 +189,6 @@ Khi sửa một màn trong bảng: sao màn gốc, chèn vào đúng vị trí b
 | OPD-005 | Challenge Support dạng modal hay trang riêng (HOLD) | 05.5, 05.6 |
 | OPD-007 | Sửa case sau khi xuất bản | 03.6 (trạng thái Đã xuất bản) |
 | OPD-008 | Xác minh tài khoản giảng viên (HOLD email kích hoạt) | 00.5, 10.3 |
-| OPD-014 | Xóa cứng hay lưu trữ | 02.3, 10.5, 10.6 |
+| OPD-014 | Xóa cứng hay lưu trữ — **ĐÃ QUYẾT ĐỊNH 2026-11-16: lưu trữ mềm khóa học** | 02.3, 10.5, 10.6 |
 | D-07 | Tạo case thủ công | 07.6 |
 | PSD-08 | Bước xác nhận sau khi chọn phương án | 05.2 |

@@ -12,7 +12,7 @@ describe("CourseController", () => {
     getCoursesByLecturer: jest.fn(),
     getCourseById: jest.fn(),
     updateCourse: jest.fn(),
-    deleteCourse: jest.fn(),
+    archiveCourse: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -121,21 +121,25 @@ describe("CourseController", () => {
     });
   });
 
-  describe("DELETE /api/v1/courses/:courseId (deleteCourse)", () => {
-    it("should delegate delete to courseService with ownership check", async () => {
-      const mockResult = { message: "Course deleted successfully" };
-      mockCourseService.deleteCourse.mockResolvedValueOnce(mockResult);
+  describe("PATCH /api/v1/courses/:courseId/archive (archiveCourse)", () => {
+    it("should delegate archive to courseService with the authenticated lecturer id", async () => {
+      const mockArchived = { id: "c-1", is_active: false, active: false };
+      mockCourseService.archiveCourse.mockResolvedValueOnce(mockArchived);
 
-      const response = await controller.deleteCourse("c-1", {
+      const response = await controller.archiveCourse("c-1", {
         id: "lecturer-1",
         role: "LECTURER",
       });
 
-      expect(mockCourseService.deleteCourse).toHaveBeenCalledWith("c-1", "lecturer-1");
+      expect(mockCourseService.archiveCourse).toHaveBeenCalledWith("c-1", "lecturer-1");
       expect(response).toEqual({
         status: "SUCCESS",
-        data: mockResult,
+        data: mockArchived,
       });
+    });
+
+    it("exposes no delete handler (C1-B: no DELETE /courses/:courseId)", () => {
+      expect((controller as unknown as Record<string, unknown>).deleteCourse).toBeUndefined();
     });
   });
 });
