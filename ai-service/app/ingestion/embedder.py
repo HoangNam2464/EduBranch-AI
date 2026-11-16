@@ -2,7 +2,7 @@
 EduBranch AI — Document Embedder Service [BE-010].
 
 Generates vector embeddings for document chunks using the LLM Provider Abstraction:
-  - Supports Google Gemini text-embedding-004 (768-dim) and OpenAI text-embedding-3-small (1536-dim) (AC-1)
+  - Supports Google Gemini gemini-embedding-001 (requested at 768-dim) and OpenAI text-embedding-3-small (1536-dim) (AC-1)
   - Interacts exclusively through BaseLLMProvider / get_provider() (AC-2)
   - Handles batching to optimize generation latency and prevent rate limits (AC-3)
 
