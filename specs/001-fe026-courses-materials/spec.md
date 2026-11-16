@@ -75,6 +75,35 @@
       - Tiêu chí nghiệm thu (AC) và kiểm thử phải kiểm chứng hành vi chuyển đổi ngôn ngữ thực tế trên trình duyệt, không chỉ kiểm tra riêng nút bấm.
       - Màn hình và component dùng chung hiển thị trọn vẹn theo một ngôn ngữ tại một thời điểm (không trộn lẫn ngôn ngữ); dữ liệu động từ API (tên khóa học, tên file, nội dung chunk) hiển thị đúng theo dữ liệu gốc được lưu trữ, không tự ý dịch; không tự ý dịch tự do thuật ngữ nghiệp vụ; các chuỗi tiếng Anh được đánh dấu `[ĐỀ-XUẤT]` cho đến khi PO duyệt.
 
+### Session 2026-11-16 (Tiếp tục) — Câu hỏi mở chờ Product Owner quyết định (`[CHƯA-QUYẾT]`)
+
+- **C1: Xung đột nội dung Hộp thoại xóa/lưu trữ khóa học 02.3 — Figma (Xóa cứng) vs PO Q4 / OPD-014 (Lưu trữ mềm)** `[CHƯA-QUYẾT]`
+  - **Sources**:
+    - Figma frame 02.3 (`483:10111`, dialog `483:10341`): Tiêu đề "Xóa khóa học này?" (`I483:10341;228:301`), nội dung cảnh báo "Khóa học, tài liệu môn học và các case study thuộc khóa học sẽ bị xóa. Thao tác này không thể hoàn tác." (`I483:10341;228:302`), nút hủy "Hủy bỏ" (`I483:10341;228:304;225:182`), nút xác nhận "Xóa khóa học" (`I483:10341;228:310;225:254`).
+    - PO Q4 (2026-11-15, chat) & OPD-014: Quyết định lưu trữ mềm (soft archive) thay vì xóa cứng; kế thừa đúng quyết định OPD-014; không xóa tài liệu/chunks/MinIO; nhãn và thông điệp giao diện phải thể hiện nghiệp vụ lưu trữ, không dùng thông điệp xóa phá hủy.
+  - **Options**:
+    - *Lựa chọn 1*: Cập nhật giao diện Figma 02.3 sang Hộp thoại Lưu trữ khóa học (tiêu đề "Lưu trữ khóa học", thông báo bảo toàn dữ liệu, nút "Xác nhận lưu trữ") để khớp hoàn toàn với quyết định OPD-014 và PO Q4.
+    - *Lựa chọn 2*: Giữ nguyên giao diện và copy xóa cứng trên Figma 02.3; điều chỉnh lại quyết định OPD-014 và bổ sung cơ chế cascade delete trên backend.
+  - *Đề xuất tạm thời*: Không đề xuất lựa chọn tạm thời (tuân thủ nghiêm ngặt AGENTS.md Quy tắc 5). Kính đề nghị Product Owner xem xét và quyết định phương án giải quyết xung đột.
+
+- **C2: Xung đột nhãn nút hành động trên dòng tài liệu FAILED — Figma ("Thử lại") vs PO Q3 ("Tải lên lại")** `[CHƯA-QUYẾT]`
+  - **Sources**:
+    - Figma frame 02.4 (`483:10342`): Nút hành động trên dòng FAILED mang nhãn "Thử lại" (node `586:8534`, `586:8570`).
+    - PO Q3 (2026-11-15, chat): PO yêu cầu đổi nhãn nút từ "Thử lại" thành "Tải lên lại" (hoặc "Chọn tệp tải lại"), mở upload modal và yêu cầu người dùng chọn lại file gốc do backend chưa có API re-ingest tài liệu hiện hữu.
+  - **Options**:
+    - *Lựa chọn 1*: Cập nhật text trên Figma node `586:8534`/`586:8570` thành "Tải lên lại" để phản ánh chính xác nghiệp vụ mở modal tải lại file gốc per PO Q3.
+    - *Lựa chọn 2*: Giữ nhãn "Thử lại" trên Figma 02.4 và phát triển thêm endpoint backend Re-ingest (`POST /materials/:id/retry`) để thực sự thử lại tiến trình xử lý tài liệu mà không bắt người dùng chọn lại file.
+  - *Đề xuất tạm thời*: Không đề xuất lựa chọn tạm thời (tuân thủ nghiêm ngặt AGENTS.md Quy tắc 5). Kính đề nghị Product Owner xem xét và quyết định phương án giải quyết xung đột.
+
+- **C3: Xung đột tính bắt buộc của trường Mã môn học — Figma 02.2 (Bắt buộc "*") vs CreateCourseDto (Tùy chọn)** `[CHƯA-QUYẾT]`
+  - **Sources**:
+    - Figma frame 02.2 (`483:9866`): Nhãn trường là "Mã môn học *" (node `I483:10105;226:146`), có dấu sao đỏ `*` biểu thị trường bắt buộc nhập.
+    - Backend Gateway DTO: `backend/src/modules/course/dto/create-course.dto.ts:9-12`: trường `courseCode` được định nghĩa `@IsOptional()` và `@IsString()`, là trường không bắt buộc.
+  - **Options**:
+    - *Lựa chọn 1*: Giữ nguyên tính bắt buộc trên Figma 02.2 ("Mã môn học *"), cập nhật `CreateCourseDto` trên backend để `courseCode` trở thành trường bắt buộc (`@IsNotEmpty()`).
+    - *Lựa chọn 2*: Cập nhật Figma 02.2 bỏ dấu sao `*` thành "Mã môn học" (tùy chọn) để khớp với DTO backend hiện hành.
+  - *Đề xuất tạm thời*: Không đề xuất lựa chọn tạm thời (tuân thủ nghiêm ngặt AGENTS.md Quy tắc 5). Kính đề nghị Product Owner xem xét và quyết định phương án giải quyết xung đột.
+
 ---
 
 ## 3. Thiết kế giao diện theo Figma (UI Specification: Figma Frames 02.1–02.7)
@@ -138,7 +167,7 @@
 - **Dữ liệu hiển thị**: Danh sách các khóa học của giảng viên hiện tại. Mỗi item: `id`, `name`, `courseCode` (mã học phần per `backend/src/modules/course/dto/create-course.dto.ts`), `description`, `is_active` (`BOOLEAN NOT NULL DEFAULT TRUE` per `backend/migrations/V1__init_schema.sql:39`), `createdAt`, `updatedAt`, `materialCount`, `caseCount`.
 - **API tương ứng** (các route tương đối sau tiền tố `/api/v1`):
   - `GET /courses`: Lấy danh sách khóa học (`lecturerId = currentUser.id`).
-  - `POST /courses`: Tạo khóa học mới (`CreateCourseDto`: `name` required độ dài 2..200 ký tự, `courseCode` optional tối đa 20 ký tự, `description` optional tối đa 1000 ký tự).
+  - `POST /courses`: Tạo khóa học mới (`CreateCourseDto`: `name` required độ dài 2..200 ký tự, `courseCode` optional tối đa 20 ký tự, `description` optional tối đa 1000 ký tự) kích hoạt từ nút "Tạo khóa học mới" trên trang (02.1 `I483:9668;225:164`), mở hộp thoại tiêu đề "Khởi tạo khóa học mới" (02.2 `483:10099`) và submit bằng nút "Tạo khóa học" (02.2 `I483:10110;225:146`).
   - `PUT /courses/:courseId`: Cập nhật thông tin khóa học (`UpdateCourseDto`).
   - `PATCH /courses/:courseId/archive` `[ĐỀ-XUẤT]`: Lưu trữ mềm khóa học theo OPD-014 [PO-ĐÃ-XÁC-NHẬN]. Kế hoạch triển khai đánh giá tái sử dụng trường `is_active` sẵn có trên bảng `courses` (`is_active = FALSE`, không tạo cột mới song song). Lỗi HTTP 500 trước đây khi xóa khóa học có tài liệu được loại trừ hoàn toàn vì khóa học không bị xóa cascade phá hủy.
 
@@ -168,7 +197,7 @@ Mỗi màn hình trong 3 màn hình chính phải triển khai đầy đủ 6 tr
 |---|---|---|---|
 | **Default** | Hiển thị lưới/danh sách thẻ khóa học và panel chi tiết của khóa học đang chọn. | Hiển thị bảng tài liệu với badge trạng thái đồng bộ, thanh tiến độ xử lý và số lượng lập chỉ mục. | Hiển thị 3 card số liệu và danh sách đoạn trích kèm số trang từ API chunks thực tế. |
 | **Loading** | Skeleton cards mô phỏng thẻ khóa học và panel chi tiết. | Skeleton rows mô phỏng các dòng tài liệu trong bảng. | Skeleton cards mô phỏng 3 chỉ số và skeleton text cho các khối đoạn trích. |
-| **Empty** | Khối EmptyState với icon `BookOpen` (40px tile), tiêu đề "Chưa có khóa học nào", nút CTA "Tạo khóa học đầu tiên". | Khối EmptyState với icon `UploadCloud`, hướng dẫn kéo thả tài liệu bài giảng đầu tiên. | Khối EmptyState: chỉ hiển thị khi API trả về 200 OK với danh sách đoạn trích rỗng (`total_chunks = 0`, `items: []`). |
+| **Empty** | Khối EmptyState với icon `BookOpen` (40px tile), tiêu đề "Chưa có khóa học nào", nút CTA "Tạo khóa học đầu tiên" [ĐỀ-XUẤT]. | Khối EmptyState với icon `UploadCloud`, hướng dẫn kéo thả tài liệu bài giảng đầu tiên. | Khối EmptyState: chỉ hiển thị khi API trả về 200 OK với danh sách đoạn trích rỗng (`total_chunks = 0`, `items: []`). |
 | **Error** | Khối ErrorState hoặc Toast thông báo lỗi từ API, nút "Tải lại trang". Không mock dữ liệu. | Alert banner hoặc Toast thông báo lỗi tải danh sách tài liệu. Lỗi upload hiển thị rõ (413: quá 50MB, 415: sai định dạng). | Khối ErrorState khi endpoint chưa khả dụng (404), lỗi 403, 5xx hoặc mất mạng; hiển thị rõ lý do và nút thử lại, không dùng mảng rỗng làm fallback. |
 | **403 Forbidden** | Chặn hiển thị nếu user không phải LECTURER hoặc không sở hữu khóa học; chuyển hướng `/403`. | Chặn truy cập nếu khóa học không thuộc quyền sở hữu của giảng viên đang đăng nhập. | Chặn truy cập nếu tài liệu không thuộc khóa học của giảng viên. |
 | **Success** | Modal đóng sau khi tạo/sửa thành công; Toast xanh xác nhận; danh sách tự động cập nhật. | File upload thành công xuất hiện trong bảng ở trạng thái `PENDING`/`PROCESSING`; Toast xanh. Xóa thành công cập nhật bảng. | (Xem dữ liệu - read-only). |
@@ -186,8 +215,8 @@ Giảng viên muốn quản lý danh mục khóa học của mình với giao di
 - **Independent Test**: Giảng viên đăng nhập, vào `/lecturer/courses`, xem danh sách, tạo khóa học mới, thông tin hiển thị chính xác ở panel chi tiết.
 - **Acceptance Scenarios**:
   1. **Given** Giảng viên đã đăng nhập và có 3 khóa học, **When** truy cập `/lecturer/courses`, **Then** hiển thị danh sách thẻ khóa học bên trái (ảnh, mã, tên, số tài liệu sẵn sàng, số case) và panel chi tiết khóa học được chọn đầu tiên bên phải.
-  2. **Given** Giảng viên chưa tạo khóa học nào, **When** truy cập `/lecturer/courses`, **Then** hiển thị trạng thái Empty State chuẩn với nút CTA "Tạo khóa học đầu tiên", không có lỗi console.
-  3. **Given** Giảng viên bấm nút "Tạo khóa học mới", **When** điền Tên khóa học hợp lệ (độ dài 2..200 ký tự per `CreateCourseDto`) và submit, **Then** modal đóng lại, khóa học mới xuất hiện trong danh sách và panel chi tiết hiển thị khóa học này.
+  2. **Given** Giảng viên chưa tạo khóa học nào, **When** truy cập `/lecturer/courses`, **Then** hiển thị trạng thái Empty State chuẩn với nút CTA "Tạo khóa học đầu tiên" [ĐỀ-XUẤT], không có lỗi console.
+  3. **Given** Giảng viên bấm nút "Tạo khóa học mới" (02.1 `I483:9668;225:164`), **When** điền Tên khóa học hợp lệ (độ dài 2..200 ký tự per `CreateCourseDto`) trong hộp thoại "Khởi tạo khóa học mới" (02.2 `483:10099`) và bấm nút "Tạo khóa học" (02.2 `I483:10110;225:146`), **Then** modal đóng lại, khóa học mới xuất hiện trong danh sách và panel chi tiết hiển thị khóa học này.
   4. **Given** Giảng viên bấm "Lưu trữ khóa học" (02.3), **When** hộp thoại xác nhận xuất hiện và giảng viên xác nhận, **Then** khóa học được đánh dấu lưu trữ mềm theo OPD-014, dữ liệu tài liệu/chunks/MinIO được bảo toàn 100%, không xảy ra lỗi HTTP 500.
 
 ---
@@ -267,7 +296,7 @@ Giảng viên muốn kiểm tra các đoạn trích dẫn (chunks) của một t
 - **SC-003**: 100% các tệp sai định dạng (không phải PDF/DOCX) hoặc vượt quá `MAX_SIZE_BYTES` (50MB) bị từ chối ngay tại client với thông báo lỗi cụ thể, không phát sinh request tải lên lãng phí lên server.
 - **SC-004**: 100% request xóa tài liệu gửi đúng endpoint `DELETE /materials/:id` (tương đối theo baseURL `/api/v1`); bảng danh sách tài liệu không tự ý gỡ hàng khi API trả về lỗi (403, 404, 500 hoặc mất kết nối).
 - **SC-005**: Lệnh `npm run build` tại thư mục `frontend/` biên dịch thành công 100% không có cảnh báo hoặc lỗi TypeScript, TailwindCSS hay linting.
-- **SC-006**: PO approval of the English copy (`l10n-copy-review.md` all APPROVED) is required before FE-026 is Done or released.
+- **SC-006**: PO approval of the English copy (all keys in `l10n-copy-review.md` and `docs/l10n/shared-copy-review.md` marked APPROVED; `node scripts/l10n-approval-check.mjs --release` exits 0) is required before FE-026 is Done or released.
 
 ---
 

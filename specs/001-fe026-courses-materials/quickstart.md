@@ -43,10 +43,10 @@
      - Right column displays selected course details (`CourseOverview`).
      - Colors match Navy `#2A4E7F` / Sky `#00A5F5` / Canvas `#F3F6FC`. No emoji in UI.
 2. **Create New Course**:
-   - Click "Tạo khóa học mới".
-   - **Verification**: Modal opens matching Figma 02.2 (`483:9866`).
+   - Click page button "Tạo khóa học mới" (`I483:9668;225:164`, 02.1).
+   - **Verification**: Modal opens with title "Khởi tạo khóa học mới" matching Figma 02.2 (`483:10099`).
    - Fill "Tên khóa học" (e.g., "Kinh tế lượng ứng dụng"), "Mã khóa học" ("EC301"), description.
-   - Click "Tạo khóa học".
+   - Click submit button "Tạo khóa học" (`I483:10110;225:146`, 02.2).
    - **Expected Outcome**: `POST /courses` succeeds (201 Created). Modal closes, new course appears in list and is selected in overview panel.
 3. **Soft Archive Course (OPD-014)**:
    - Click "Lưu trữ khóa học" action in overview panel.
@@ -77,8 +77,8 @@
    - Click "Tải lên lại": Opens upload modal displaying previous error reason so user can select an updated file.
 5. **Delete Material**:
    - Hover row and click "Xóa".
-   - **Verification**: Dialog opens matching Figma 02.6 (`483:10890`). Displays filename and chunk loss notice.
-   - Click "Xác nhận xóa".
+   - **Verification**: Dialog opens matching Figma 02.6 (`483:10890`, dialog `I483:11147;228:301`). Displays dialog title "Xóa tài liệu này?", body warning "Tệp và các đoạn trích đã lập chỉ mục sẽ bị xóa vĩnh viễn. AI sẽ không dùng tài liệu này khi sinh case mới. Thao tác này không thể hoàn tác." (`I483:11147;228:302`), and confirm button "Xóa vĩnh viễn" (`I483:11147;228:310;225:254`).
+   - Click "Xóa vĩnh viễn".
    - **Expected Outcome**: Calls `DELETE /materials/:id` (canonical backend route, PO Q5). Row is removed after HTTP 200/204 response.
 
 ---
@@ -102,13 +102,13 @@
    - **Verification**:
      - `document.documentElement.lang` is `"vi"`.
      - In the shared header `EB/Header Actions`, `Language` switch (`544:5800`) shows `Option · VI` (`544:5801`) active (`action/primary` `#2A4E7F` fill, `text/inverse` `#FFFFFF`, `aria-pressed="true"`) and `Option · EN` (`544:5803`) inactive (no fill, `text/secondary` `#696A70`, `aria-pressed="false"`).
-     - All headings, button labels, table columns, form helpers, and dialogs render in Vietnamese (`"Khóa học"`, `"Tạo khóa học mới"`, `"Tài liệu môn học"`).
+     - All headings, button labels, table columns, form helpers, and dialogs render in Vietnamese (`"Quản lý khóa học"`, `"Tạo khóa học mới"`, `"Khởi tạo khóa học mới"`, `"Tạo khóa học"`, `"Tài liệu môn học"`, `"Tải tài liệu mới"`).
 2. **Switch to English (ATM-L10N-02)**:
    - Click `Option · EN` on the header language toggle.
    - **Verification**:
      - `localStorage.getItem('edubranch-lang')` equals `"en"`.
      - Toggle styles swap: `Option · EN` active (Navy fill, white text, `aria-pressed="true"`); `Option · VI` inactive (no fill, secondary text, `aria-pressed="false"`).
-     - Every visible UI text element across courses, materials, RAG inspector, and all dialogs/modals switches to English (`"Courses"`, `"Create Course"`, `"Course Materials"`, `"Upload Materials"`, `"Archive Course"`).
+     - Every visible UI text element across courses, materials, RAG inspector, and all dialogs/modals switches to English (`"Course Management"`, `"Create New Course"`, `"Course Materials"`, `"Upload New Materials"`, `"Archive Course"`).
      - Zero Vietnamese strings remain in the UI chrome.
      - API data values (course names, filenames, chunk texts) remain unchanged as stored.
 3. **Persistence on Reload (ATM-L10N-03)**:

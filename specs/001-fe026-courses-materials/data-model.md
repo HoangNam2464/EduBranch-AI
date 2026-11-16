@@ -108,10 +108,13 @@ A parsed and embedded text segment stored in database table `document_chunks` (p
 
 | Entity / Action | Input Field | Validation Rule | Error message key / Vietnamese copy | English copy `[ĐỀ-XUẤT]` (PO review) |
 |---|---|---|---|---|
+| Course Create/Edit | `name` | `string`, required, `trim().length > 0` per `CreateCourseDto` | `courses.validation.nameRequired` / "Tên khóa học không được để trống" | "Course name is required" |
 | Course Create/Edit | `name` | `string`, `trim().length >= 2 && <= 200` per `CreateCourseDto` | `courses.validation.nameLength` / "Tên khóa học phải có từ 2 đến 200 ký tự" | "Course name must be between 2 and 200 characters" |
 | Course Create/Edit | `courseCode` | Optional, `length <= 20`, alphanumeric & dashes | `courses.validation.codeLength` / "Mã khóa học tối đa 20 ký tự" | "Course code must not exceed 20 characters" |
 | Course Create/Edit | `description` | Optional, `length <= 1000` | `courses.validation.descriptionLength` / "Mô tả khóa học tối đa 1000 ký tự" | "Course description must not exceed 1000 characters" |
-| Material Upload | `file` (format) | Extension must be `.pdf` or `.docx` | `materials.validation.format` / "Hệ thống chỉ hỗ trợ định dạng PDF hoặc DOCX" | "Only PDF or DOCX file formats are supported" |
-| Material Upload | `file` (size) | `sizeBytes <= 50 * 1024 * 1024` (50MB) | `materials.validation.size` / "Dung lượng tệp vượt quá giới hạn tối đa 50MB" | "File size exceeds maximum limit of 50MB" |
-| Material Upload | `file` (empty) | `sizeBytes > 0` | `materials.validation.empty` / "Tệp không có nội dung (0 bytes)" | "File contains no content (0 bytes)" |
-| Material Delete | Confirmation | Explicit user confirmation click in dialog (02.6) | `materials.deleteModal.warning` / "Hành động này sẽ xóa vĩnh viễn tài liệu và các đoạn trích dẫn liên quan" | "This action will permanently delete the course material and associated excerpts" |
+| Material Upload | `file` (format) | Extension must be `.pdf` or `.docx` per `backend/src/modules/material/material.service.ts` (`ALLOWED_MIME_TYPES`) | `materials.validation.format` / "Chỉ hỗ trợ tệp PDF và DOCX." (Figma 02.5 `483:10878`) | "Only PDF and DOCX files are supported." |
+| Material Upload | `file` (size) | `sizeBytes <= 50 * 1024 * 1024` (50MB) per `backend/src/modules/material/material.service.ts` (`MAX_SIZE_BYTES`) | `materials.validation.size` / "Tệp vượt quá giới hạn 50 MB." (Figma 02.5 `483:10885`) | "File exceeds 50 MB limit." |
+| Material Upload | `file` (empty) | `sizeBytes > 0` | `materials.validation.empty` / "Tệp không có nội dung (0 bytes)" `[ĐỀ-XUẤT]` | "File contains no content (0 bytes)" |
+| Material Delete | Dialog Title | Dialog title in 02.6 | `materials.deleteModal.title` / "Xóa tài liệu này?" (Figma 02.6 `I483:11147;228:301`) | "Delete this material?" |
+| Material Delete | Confirmation Warning | Explicit warning copy in dialog (02.6) | `materials.deleteModal.warning` / "Tệp và các đoạn trích đã lập chỉ mục sẽ bị xóa vĩnh viễn. AI sẽ không dùng tài liệu này khi sinh case mới. Thao tác này không thể hoàn tác." (Figma 02.6 `I483:11147;228:302`) | "The file and indexed excerpts will be permanently deleted. AI will not use this material when generating new cases. This action cannot be undone." |
+| Material Delete | Confirm Action | Confirmation button in 02.6 | `materials.deleteModal.confirm` / "Xóa vĩnh viễn" (Figma 02.6 `I483:11147;228:310;225:254`) | "Permanently delete" |
