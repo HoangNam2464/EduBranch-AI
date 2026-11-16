@@ -10,7 +10,7 @@ trigger: always_on
 # EduBranch-AI — Agent Operating Policy (Task Ownership & Autonomous Execution)
 
 > **Source**: PO directive in chat, 2026-11-16 ("Task Ownership & Autonomous Execution — Establish Project Rules"). **Single source of truth**: this file. Loaded by Antigravity (`trigger: always_on`), imported by `CLAUDE.md`, referenced by `AGENTS.md` rule 13. Changes only with PO approval.
-> **Precedence**: the other `AGENTS.md` rules, FND (`00-project-foundation.md`), approved PO decisions and `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` (stages, gates, Quality Gates) still apply. This policy governs *how* an agent works inside them; it never widens an authorization.
+> **Precedence**: the other `AGENTS.md` rules, FND (`00-project-foundation.md`), approved PO decisions and `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` (stages, gates, Quality Gates) still apply. This policy governs *how* an agent works inside them; it never widens an authorization. Exception to this order: the **open-decision rule** (§5) is stated word for word in workflow §4 and binds both documents; no precedence statement, cross-reference or other rule overrides it.
 
 ## 1. Ownership
 
@@ -24,7 +24,7 @@ trigger: always_on
 2. Look for related defects and shared root causes in the authorized scope, not only the findings the PO listed. Fix those inside the scope; report defects outside it instead of fixing them (workflow §11: no added tasks or scope during Implement/Converge without PO approval).
 3. Group related work into one coherent batch; choose the technical approach and order yourself when it is within your authority.
 4. Complete the authorized scope before asking for another prompt. Do not stop after analysis, planning or each small step when the work is already authorized.
-5. Authorization covers only the stage or batch the PO named. Inside it, run without further prompting; at the next workflow gate (G0, G7 and any G1–G6 not batched) stop and present; a batch also stops early at an open decision or a Critical/High finding (workflow §4).
+5. Authorization covers only the stage or batch the PO named. Inside it, run without further prompting; at the next workflow gate (G0, G7 and any G1–G6 not batched) stop and present. An open decision or a Critical/High finding stops only the work that depends on it (open-decision rule, §5).
 
 ## 3. Quality and convergence loop
 
@@ -34,11 +34,11 @@ A passing happy-path test is not completion. Never claim a test, review, CI chec
 
 ## 4. Technical judgment
 
-Decide routine technical matters yourself, using the approved architecture and standards, specs and AC, the Proposal and PO decisions, the current repository and test evidence. Do not ask the PO to split a technical task, list edge cases, design ordinary regression tests, restate known constraints, pick between routine technical alternatives, or approve minor actions already in scope. When several technical approaches are valid, pick one, state the reason in one or two sentences, and proceed. Exception: a new technology, dependency or boundary change needs an ADR and PO approval (workflow §4 Plan, constitution check); stop and ask.
+Decide routine technical matters yourself, using the approved architecture and standards, specs and AC, the Proposal and PO decisions, the current repository and test evidence. Do not ask the PO to split a technical task, list edge cases, design ordinary regression tests, restate known constraints, pick between routine technical alternatives, or approve minor actions already in scope. When several technical approaches are valid, pick one, state the reason in one or two sentences, and proceed. Exception: a new technology, dependency or boundary change needs an ADR and PO approval (workflow §4 Plan, constitution check); ask the PO and stop the work that depends on it (open-decision rule, §5).
 
 ## 5. PO decision boundary
 
-Stop and ask the PO (one question, with sources and options, no interim choice — `AGENTS.md` rule 5) only when the issue involves:
+Ask the PO (one question, with sources and options, no interim choice — `AGENTS.md` rule 5; stop only the work that depends on it, per the open-decision rule below) only when the issue involves:
 - an unresolved or conflicting business requirement;
 - a conflict between the approved Figma and product specifications or earlier PO decisions;
 - product behaviour, scope or acceptance criteria not yet approved;
@@ -46,7 +46,13 @@ Stop and ask the PO (one question, with sources and options, no interim choice �
 - an action outside your authorization;
 - an ambiguity that authoritative project evidence cannot resolve.
 
-Never turn an unresolved business question into an assumed implementation. Label statements as technical decision, fact from a source, PO-owned open question, or external/permission blocker. While waiting, continue every piece of work that is still authorized and independent of the open question.
+Never turn an unresolved business question into an assumed implementation. Label statements as technical decision, fact from a source, PO-owned open question, or external/permission blocker.
+
+**Open-decision rule** (stated word for word in workflow §4): *At an open decision or a Critical/High finding: stop only the stages and tasks that depend on it, do not pass a gate whose output depends on it, present the question at once, and continue the independent authorized work.*
+- **Dependent work** → mark it `BLOCKED` (e.g. `BLOCKED-ON-C1`); do not pick an option, do not assume an answer, do not pass its gate. Example: while C1 is open, FE-026's course-removal dialog (T011) and its tests stay blocked and G7 is not given for them.
+- **Independent work** that is authorized and not affected → continue. Example: while C1–C3 are open, the l10n approval checker and the FE-026 parts that do not touch course removal, the FAILED-row label or the course-code field continue.
+- **A Critical/High finding that affects several parts** → continue only the parts that are shown to be independent and safe (no shared file, contract, data or test with the affected parts); when independence is not clear, treat the part as dependent.
+- Every PO gate, authorization limit (§7) and approved stop condition still applies (e.g. G0 and G7 are never batched; workflow stop conditions; handoff stop conditions).
 
 ## 6. Roles
 
