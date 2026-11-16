@@ -19,7 +19,7 @@ The root container for teaching materials and case studies belonging to a lectur
 | `courseCode` | `string` | [DỮ-KIỆN] Optional in DTO; UI required-ness BLOCKED-ON-C3 — pending PO (C3-A required vs C3-B optional) | `max(20)` per `CreateCourseDto` | Course catalog identifier (e.g. "CS101", "MKT302") |
 | `description` | `string` | No | `max(1000)` | Syllabus or overview summary |
 | `coverImageUrl` | `string` | No | Valid URL | Visual thumbnail / banner image |
-| `is_active` | `boolean` | Yes | Default: `true` | Active status; set to `false` if soft-archived per OPD-014 (BLOCKED-ON-C1 — pending PO: C1-B) |
+| `is_active` | `boolean` | Yes | Default: `true` | Active status; under C1-B only: set to `false` if soft-archived per OPD-014 (`BLOCKED-ON-C1 — pending PO`) |
 | `lecturerId` | `UUID` | Yes | Foreign key → `users.id` | Owner of the course (`LECTURER` role) |
 | `createdAt` | `timestamp` | Yes | ISO 8601 | Record creation timestamp |
 | `updatedAt` | `timestamp` | Yes | ISO 8601 | Last modification timestamp |
@@ -93,16 +93,16 @@ A parsed and embedded text segment stored in database table `document_chunks` (p
 - **COMPLETED**: Pipeline succeeded. `chunkCount > 0`. Material is ready for case generation and inspection in RAG Source Inspector (02.7).
 - **FAILED**: Pipeline encountered an error (e.g. unreadable scanned PDF, corruption). Error message stored in `processingError`. The action button displays "Thử lại" (C2-A) or "Tải lên lại" (C2-B) (`BLOCKED-ON-C2 — pending PO`; behaviour identical under C2-A and C2-B: opens upload modal with previous error context; in-place re-ingest is out of FE-026 scope), opening the upload dialog with the error context.
 
-### 2.2. Course Removal Lifecycle (BLOCKED-ON-C1: C1-A Hard Delete vs C1-B Soft Archive OPD-014)
+### 2.2. Course Removal Lifecycle (BLOCKED-ON-C1: removal (C1-A delete / C1-B archive))
 ```
 [Course Drafted] ──► ACTIVE (`is_active = TRUE`)
                           │
                           │ Lecturer confirms removal (Dialog 02.3, BLOCKED-ON-C1: C1-A vs C1-B)
                           ▼
-                     ARCHIVED (`is_active = FALSE`, C1-B) / DELETED (C1-A) (BLOCKED-ON-C1)
+                     ARCHIVED (`is_active = FALSE`, C1-B only) / DELETED (C1-A only) (BLOCKED-ON-C1)
 ```
 - When `is_active = TRUE`, course appears in active lists and navigation.
-- If C1-B soft archive is chosen (`BLOCKED-ON-C1`): when `is_active = FALSE`, course is hidden from active courses view, while all child materials, chunks, and MinIO objects are completely preserved. If C1-A hard delete is chosen, course and linked records are removed.
+- Under C1-B only (if soft archive is chosen; `BLOCKED-ON-C1 — pending PO`): when `is_active = FALSE`, course is hidden from active courses view, while all child materials, chunks, and MinIO objects are completely preserved. Under C1-A only (if hard delete is chosen; `BLOCKED-ON-C1 — pending PO`), course and linked records are removed safely with backend cascade.
 
 ---
 

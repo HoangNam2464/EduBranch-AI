@@ -56,8 +56,8 @@ Order convention: A = keep the approved Figma as drawn; B = follow the earlier P
 
 ---
 
-### Decision 4: Course Deletion vs Soft Archive Policy (PO Q4 & OPD-014, Review R2-3 → C1, BLOCKED-ON-C1)
-- **Problem**: Attempting to delete a course with associated materials returned HTTP 500 due to PostgreSQL foreign key constraints. In addition, OPD-014 established that courses and cases use a soft-archive mechanism rather than destructive deletion.
+### Decision 4: Course Removal (C1, pending PO; option C1-B = PO Q4 answer & Review R2-3, BLOCKED-ON-C1)
+- **Problem**: Attempting to delete a course with associated materials returned HTTP 500 due to PostgreSQL foreign key constraints. In addition, PO Q4 (2026-11-15) cites OPD-014 for soft archive (option C1-B), which conflicts with Figma 02.3 hard delete (option C1-A); `BLOCKED-ON-C1 — pending PO`.
 - **Context & Conflict**:
   - Facts: Figma 02.3 dialog `I483:10341;228:301` "Xóa khóa học này?", body `…228:302` (courses, materials and case studies are deleted, irreversible), confirm `…228:310;225:254` "Xóa khóa học". PO Q4 (2026-11-15) + OPD-014: soft archive, keep course, materials, chunks, MinIO objects. Backend today: `DELETE /courses/:courseId` returns HTTP 500 when the course has materials (FK, no cascade); `courses.is_active` exists.
 - **Options (C1 Option Analysis)**:

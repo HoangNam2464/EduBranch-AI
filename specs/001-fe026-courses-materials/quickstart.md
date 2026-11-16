@@ -50,9 +50,9 @@
    - **Expected Outcome**: `POST /courses` succeeds (201 Created). Modal closes, new course appears in list and is selected in overview panel.
 3. **Course Removal Action (Figma 02.3 vs PO Q4 / OPD-014 → C1: C1-A vs C1-B)**:
    - Click course removal action in overview panel.
-   - **Verification**: Dialog opens matching Figma 02.3 (`483:10111`). Dialog copy and behavior is `BLOCKED-ON-C1 — pending PO` ([DỮ-KIỆN] C1-A specifies destructive delete "Xóa khóa học này?" per Figma 02.3; [PO-ĐÃ-XÁC-NHẬN] C1-B specifies soft archive "Lưu trữ khóa học" preserving materials and chunks per PO Q4 / OPD-014).
+   - **Verification**: Dialog opens matching Figma 02.3 (`483:10111`) (`CourseRemovalDialog`). Dialog copy and behavior is `BLOCKED-ON-C1 — pending PO` ([DỮ-KIỆN] under C1-A specifies destructive delete "Xóa khóa học này?" per Figma 02.3; [PO-ĐÃ-XÁC-NHẬN] under C1-B specifies soft archive "Lưu trữ khóa học" preserving materials and chunks per PO Q4 / OPD-014).
    - Click confirm button.
-   - **Expected Outcome**: Dependent on C1 resolution: if C1-B soft archive, calls `PATCH /courses/:courseId/archive` [ĐỀ-XUẤT] setting `is_active` to false without HTTP 500 error; if C1-A hard delete, calls `DELETE /courses/:courseId`.
+   - **Expected Outcome**: Dependent on C1 resolution: under C1-B only (if soft archive is chosen), calls `PATCH /courses/:courseId/archive` [ĐỀ-XUẤT] setting `is_active` to false without HTTP 500 error; under C1-A only (if hard delete is chosen), calls `DELETE /courses/:courseId` safely.
 
 ---
 
