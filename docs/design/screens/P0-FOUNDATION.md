@@ -38,7 +38,7 @@ Provides the persistent frame (sidebar/nav + content area) that every authentica
 - **Lecturer** sees `LecturerLayout`: Khóa học, Case Study, Phản hồi sinh viên, Thống kê học tập; dashboard [07.1] and AI Studio [07.5–07.7] are reachable from it.
 - **Student** sees `StudentLayout`: Bàn học, Khóa học của tôi, Tham gia lớp học (OPD-001 → A, 2026-11-12). Case routes still carry the case id; a direct case link from the lecturer also works.
 - **Admin** sees `AdminLayout` with the 8 admin sections (OPD-015 → B).
-- The sidebar can collapse to a 72px icon rail (`Collapsed=True`); header actions include search (Ctrl K), VI/EN switch, light/dark toggle (dark theme not designed yet), notifications, settings and account.
+- The sidebar can collapse to a 72px icon rail (`Collapsed=True`); header actions include search (Ctrl K), VI/EN switch (part of approved shared header on page 08, default Vietnamese), light/dark toggle (dark theme not designed yet), notifications, settings and account.
 - **When used**: On every authenticated screen; this is the persistent frame, not a standalone route.
 
 ### Information Hierarchy & Layout

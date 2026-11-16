@@ -194,7 +194,7 @@ Rules:
 
 ### 3.3. Language & Microcopy Consistency
 
-- **Vietnamese UI** (PO decision 2026-11-02). Zero language mixing on the same screen; no leftover template copy.
+- **UI Language** (PO 2026-11-16; supersedes the Vietnamese-only UI decision of 2026-11-02): Vietnamese is the default UI language; English is supported through the VI/EN switch approved on Figma page 08 (`EB/Header Actions` `540:347`, `Language` `544:5800`); each screen renders fully in the selected language; zero language mixing on the same screen; established domain terms are kept (e.g. Branching Study, Review Study, Case Study, Challenge Support); no leftover template copy.
 - **No Preachy Instructional Callout Spam**: Do not place multi-sentence colored callout boxes explaining how the app works above every textarea or card. Use a single concise helper caption (`12px`, `text-secondary`) if needed.
 - Never show raw JSON, enum keys or internal IDs to users.
 
