@@ -15,6 +15,7 @@ from app.challenge_support.schemas.requests import ChallengeRequest, ChallengeRe
 from app.core.config import settings
 from app.core.logging import logger
 from app.providers.factory import get_provider
+from app.retrieval.retriever import sanitize_sources_boundary
 
 MAX_ROUNDS = 2
 
@@ -45,7 +46,8 @@ async def generate_challenge_question(req: ChallengeRequest) -> ChallengeRespons
     # Build user message content
     sources_block = ""
     if req.retrieved_context:
-        sources_block = f"\n\n<sources>\n{req.retrieved_context}\n</sources>"
+        sanitized_context = sanitize_sources_boundary(req.retrieved_context.strip())
+        sources_block = f"\n\n<sources>\n{sanitized_context}\n</sources>"
 
     # Build previous exchange context
     history_text = ""

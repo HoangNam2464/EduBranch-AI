@@ -12,6 +12,7 @@ Traceability:
   - Sprint: Sprint 2 (Material & RAG)
 """
 
+import re
 import uuid
 from dataclasses import dataclass
 from typing import Sequence
@@ -37,6 +38,29 @@ class RetrievedChunk:
     chunk_index: int
     course_id: str | None = None
     page_number: int | None = None
+
+
+_SOURCES_TAG_RE = re.compile(r"<(\s*/?\s*sources\b[^>]*)>", re.IGNORECASE)
+_UNCLOSED_SOURCES_RE = re.compile(r"<(\s*/?\s*sources\b)", re.IGNORECASE)
+
+
+def sanitize_sources_boundary(text: str) -> str:
+    """
+    Sanitize untrusted text to prevent prompt boundary breakout [BE-012].
+
+    Neutralizes any <sources> or </sources> tag sequence (case-insensitive,
+    with arbitrary whitespace, attributes, nesting, or unclosed brackets).
+    Replaces '<' with '&lt;' and matching '>' with '&gt;' so untrusted text
+    cannot prematurely close or reopen the <sources>...</sources> boundary block.
+    """
+    if not text:
+        return ""
+    prev = None
+    curr = text
+    while prev != curr:
+        prev = curr
+        curr = _SOURCES_TAG_RE.sub(r"&lt;\1&gt;", curr)
+    return _UNCLOSED_SOURCES_RE.sub(r"&lt;\1", curr)
 
 
 class VectorRetriever:
@@ -189,6 +213,8 @@ class VectorRetriever:
             if conn:
                 await conn.close()
 
+    sanitize_sources_boundary = staticmethod(sanitize_sources_boundary)
+
     @staticmethod
     def wrap_untrusted_sources(chunks: Sequence[RetrievedChunk]) -> str:
         """
@@ -205,7 +231,8 @@ class VectorRetriever:
                 f"[Source {idx} | material_id={chunk.material_id} | "
                 f"chunk={chunk.chunk_index}{page_info} | similarity={chunk.similarity:.4f}]"
             )
-            source_blocks.append(f"{header}\n{chunk.text.strip()}")
+            sanitized_text = sanitize_sources_boundary(chunk.text.strip())
+            source_blocks.append(f"{header}\n{sanitized_text}")
 
         joined_sources = "\n\n".join(source_blocks)
         return f"<sources>\n{joined_sources}\n</sources>"
