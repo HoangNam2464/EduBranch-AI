@@ -33,12 +33,12 @@ The user interface MUST handle data states honestly:
 
 ---
 
-### BE-PROP-2: Course Soft Archive API (`PATCH /courses/:id/archive`)
-- **Status**: PROPOSED — not created in Jira (requires PO approval)
+### BE-PROP-2: Course Soft Archive API (`PATCH /courses/:id/archive`) (BLOCKED-ON-C1)
+- **Status**: PROPOSED — not created in Jira (requires PO approval; `BLOCKED-ON-C1 — pending PO` for delete vs soft archive resolution)
 - **Source**: PO Decision Q4 / OPD-014 (2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`)
 - **Contract Reference**: `specs/001-fe026-courses-materials/contracts/courses-api.md` §2.1
 - **Target Module**: Backend Gateway (`backend/src/modules/course/`) & Database
-- **Blocked Frontend Tasks**: `T005` (`archiveCourse`), `T011` (`CourseArchiveDialog`), `T029` (stop hard delete)
+- **Blocked Frontend Tasks**: `T005` (`archiveCourse`), `T011` (`CourseArchiveDialog`), `T029` (course removal resolution)
 - **Requirements**:
   1. **Route & Envelope**: `PATCH /api/v1/courses/:id/archive` returning standard backend envelope `{ "status": "SUCCESS", "data": { "id", "name", "course_code", "is_active": false, ... } }`.
   2. **Schema Evaluation**: Reuse existing database column `courses.is_active` (`BOOLEAN NOT NULL DEFAULT TRUE` per `backend/migrations/V1__init_schema.sql:39`). Set `is_active = FALSE`. Do NOT introduce redundant columns (e.g. `is_archived`, `archived_at`) or parallel mechanisms.

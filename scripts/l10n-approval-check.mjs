@@ -127,12 +127,42 @@ for (const regFile of registryFiles) {
     process.exit(2);
   }
 
+  const displayTarget = toRelative(regFile);
   const lines = content.split(/\r?\n/);
-  for (const line of lines) {
+  for (let lineIdx = 0; lineIdx < lines.length; lineIdx++) {
+    const lineNum = lineIdx + 1;
+    const line = lines[lineIdx];
     const trimmed = line.trim();
-    if (!trimmed.startsWith('|') || !trimmed.endsWith('|')) continue;
-    const rawCells = trimmed.split('|');
-    const cells = rawCells.slice(1, -1).map(c => c.trim());
+    if (!trimmed.startsWith('|')) continue;
+    const isDataRow = /^\|\s*`/.test(trimmed);
+
+    if (!trimmed.endsWith('|') || trimmed.endsWith('\\|')) {
+      if (isDataRow) {
+        const rawCells = trimmed.split(/(?<!\\)\|/);
+        const cells = rawCells.slice(1).map(c => c.replace(/\\\|/g, '|').trim());
+        findings.push({
+          code: 'MALFORMED_REGISTRY_ROW',
+          key: `${displayTarget}:${lineNum}`,
+          target: `(${cells.length} cells)`,
+          isError: true
+        });
+      }
+      continue;
+    }
+
+    const rawCells = trimmed.split(/(?<!\\)\|/);
+    const cells = rawCells.slice(1, -1).map(c => c.replace(/\\\|/g, '|').trim());
+
+    if (isDataRow && cells.length !== 7) {
+      findings.push({
+        code: 'MALFORMED_REGISTRY_ROW',
+        key: `${displayTarget}:${lineNum}`,
+        target: `(${cells.length} cells)`,
+        isError: true
+      });
+      continue;
+    }
+
     if (cells.length < 7) continue;
 
     // Skip table header or separator rows
@@ -152,8 +182,6 @@ for (const regFile of registryFiles) {
     const approvedBy = cells[4];
     const approvedOn = cells[5];
     const source = cells[6];
-
-    const displayTarget = toRelative(regFile);
 
     // Duplicate check
     if (seenKeysInRegistry.has(key)) {
@@ -191,6 +219,14 @@ for (const regFile of registryFiles) {
           code: 'APPROVAL_INCOMPLETE',
           key,
           target: `${displayTarget} (${missing.join(', ')})`,
+          isError: true
+        });
+      }
+      if ((enCopy || '').trim() === '') {
+        findings.push({
+          code: 'EMPTY_TRANSLATION',
+          key,
+          target: displayTarget,
           isError: true
         });
       }
@@ -264,7 +300,23 @@ if (!fs.existsSync(localesDir) || !fs.statSync(localesDir).isDirectory()) {
           }
         }
       } else if (typeof obj === 'string') {
-        if (!enKeys.has(prefix)) {
+        if (obj.trim() === '') {
+          findings.push({
+            code: 'EMPTY_TRANSLATION',
+            key: prefix,
+            target: relFile,
+            isError: true
+          });
+        }
+        if (enKeys.has(prefix)) {
+          const existing = enKeys.get(prefix);
+          findings.push({
+            code: 'DUPLICATE_LOCALE_KEY',
+            key: prefix,
+            target: `${existing.file} ${relFile}`,
+            isError: true
+          });
+        } else {
           enKeys.set(prefix, { value: obj, file: relFile });
         }
       } else {
@@ -297,63 +349,72 @@ if (!fs.existsSync(localesDir) || !fs.statSync(localesDir).isDirectory()) {
       flattenObj(json, '', relFile);
     }
 
-    // Compare enKeys against registry
-    for (const [key, data] of enKeys) {
-      if (!registryMap.has(key)) {
-        findings.push({
-          code: 'UNREGISTERED',
-          key,
-          target: data.file,
-          isError: true
-        });
-      } else {
-        const reg = registryMap.get(key);
-        if (isRelease) {
-          if (reg.status !== 'APPROVED') {
-            findings.push({
-              code: 'NOT_APPROVED',
-              key,
-              target: reg.file,
-              isError: true
-            });
-          }
-          if (normalizeWs(data.value) !== normalizeWs(reg.enCopy)) {
-            findings.push({
-              code: 'CHANGED',
-              key,
-              target: data.file,
-              isError: true
-            });
-          }
+    if (enKeys.size === 0) {
+      findings.push({
+        code: 'NO_EN_KEYS',
+        key: displayLocalesDir,
+        target: '',
+        isError: isRelease
+      });
+    } else {
+      // Compare enKeys against registry
+      for (const [key, data] of enKeys) {
+        if (!registryMap.has(key)) {
+          findings.push({
+            code: 'UNREGISTERED',
+            key,
+            target: data.file,
+            isError: true
+          });
         } else {
-          if (reg.status === 'PROPOSED') {
-            findings.push({
-              code: 'PROPOSED',
-              key,
-              target: reg.file,
-              isError: false
-            });
-          } else if (reg.status === 'CHANGES_REQUESTED') {
-            findings.push({
-              code: 'CHANGES_REQUESTED',
-              key,
-              target: reg.file,
-              isError: false
-            });
+          const reg = registryMap.get(key);
+          if (isRelease) {
+            if (reg.status !== 'APPROVED') {
+              findings.push({
+                code: 'NOT_APPROVED',
+                key,
+                target: reg.file,
+                isError: true
+              });
+            }
+            if (normalizeWs(data.value) !== normalizeWs(reg.enCopy)) {
+              findings.push({
+                code: 'CHANGED',
+                key,
+                target: data.file,
+                isError: true
+              });
+            }
+          } else {
+            if (reg.status === 'PROPOSED') {
+              findings.push({
+                code: 'PROPOSED',
+                key,
+                target: reg.file,
+                isError: false
+              });
+            } else if (reg.status === 'CHANGES_REQUESTED') {
+              findings.push({
+                code: 'CHANGES_REQUESTED',
+                key,
+                target: reg.file,
+                isError: false
+              });
+            }
           }
         }
       }
-    }
 
-    // Stale registry keys (in registry but not in any en file)
-    for (const [key, reg] of registryMap) {
-      if (!enKeys.has(key)) {
-        findings.push({
-          code: 'STALE',
-          key,
-          target: reg.file,
-          isError: false
-        });
+      // Stale registry keys (in registry but not in any en file)
+      for (const [key, reg] of registryMap) {
+        if (!enKeys.has(key)) {
+          findings.push({
+            code: 'STALE',
+            key,
+            target: reg.file,
+            isError: false
+          });
+        }
       }
     }
   }

@@ -220,3 +220,91 @@ test('missing-locales-bad-registry: dev exits 1, release exits 1 (APPROVAL_INCOM
   assert.match(rel.stdout, /\bNO_LOCALES\b/);
   assert.match(rel.stdout, /\bAPPROVAL_INCOMPLETE\b/);
 });
+
+test('empty-en-objects: dev exits 0, release exits 1 (NO_EN_KEYS)', () => {
+  const dev = runCheck('empty-en-objects', false);
+  assert.strictEqual(dev.status, 0);
+  assert.match(dev.stdout, /\bNO_EN_KEYS\b/);
+
+  const rel = runCheck('empty-en-objects', true);
+  assert.strictEqual(rel.status, 1);
+  assert.match(rel.stdout, /\bNO_EN_KEYS\b/);
+});
+
+test('empty-en-arrays: dev exits 0, release exits 1 (NO_EN_KEYS)', () => {
+  const dev = runCheck('empty-en-arrays', false);
+  assert.strictEqual(dev.status, 0);
+  assert.match(dev.stdout, /\bNO_EN_KEYS\b/);
+
+  const rel = runCheck('empty-en-arrays', true);
+  assert.strictEqual(rel.status, 1);
+  assert.match(rel.stdout, /\bNO_EN_KEYS\b/);
+});
+
+test('duplicate-locale-key: dev exits 1, release exits 1 (DUPLICATE_LOCALE_KEY naming both files)', () => {
+  const dev = runCheck('duplicate-locale-key', false);
+  assert.strictEqual(dev.status, 1);
+  assert.match(dev.stdout, /\bDUPLICATE_LOCALE_KEY\b/);
+  assert.match(dev.stdout, /courses\.en\.json/);
+  assert.match(dev.stdout, /en\.json/);
+
+  const rel = runCheck('duplicate-locale-key', true);
+  assert.strictEqual(rel.status, 1);
+  assert.match(rel.stdout, /\bDUPLICATE_LOCALE_KEY\b/);
+  assert.match(rel.stdout, /courses\.en\.json/);
+  assert.match(rel.stdout, /en\.json/);
+});
+
+test('empty-translation: dev exits 1, release exits 1 (EMPTY_TRANSLATION)', () => {
+  const dev = runCheck('empty-translation', false);
+  assert.strictEqual(dev.status, 1);
+  assert.match(dev.stdout, /\bEMPTY_TRANSLATION\b/);
+
+  const rel = runCheck('empty-translation', true);
+  assert.strictEqual(rel.status, 1);
+  assert.match(rel.stdout, /\bEMPTY_TRANSLATION\b/);
+});
+
+test('whitespace-translation: dev exits 1, release exits 1 (EMPTY_TRANSLATION)', () => {
+  const dev = runCheck('whitespace-translation', false);
+  assert.strictEqual(dev.status, 1);
+  assert.match(dev.stdout, /\bEMPTY_TRANSLATION\b/);
+
+  const rel = runCheck('whitespace-translation', true);
+  assert.strictEqual(rel.status, 1);
+  assert.match(rel.stdout, /\bEMPTY_TRANSLATION\b/);
+});
+
+test('malformed-registry-row: dev exits 1, release exits 1 (MALFORMED_REGISTRY_ROW)', () => {
+  const dev = runCheck('malformed-registry-row', false);
+  assert.strictEqual(dev.status, 1);
+  assert.match(dev.stdout, /\bMALFORMED_REGISTRY_ROW\b/);
+  assert.match(dev.stdout, /\(6 cells\)/);
+  assert.match(dev.stdout, /\(8 cells\)/);
+
+  const rel = runCheck('malformed-registry-row', true);
+  assert.strictEqual(rel.status, 1);
+  assert.match(rel.stdout, /\bMALFORMED_REGISTRY_ROW\b/);
+  assert.match(rel.stdout, /\(6 cells\)/);
+  assert.match(rel.stdout, /\(8 cells\)/);
+});
+
+test('escaped-pipe-cell: dev exits 0, release exits 0', () => {
+  const dev = runCheck('escaped-pipe-cell', false);
+  assert.strictEqual(dev.status, 0);
+  assert.match(dev.stdout, /0 errors/);
+
+  const rel = runCheck('escaped-pipe-cell', true);
+  assert.strictEqual(rel.status, 0);
+  assert.match(rel.stdout, /0 errors/);
+});
+
+test('valid-header-separator-only: dev exits 0, release exits 0 (no MALFORMED_REGISTRY_ROW)', () => {
+  const dev = runCheck('valid-header-separator-only', false);
+  assert.strictEqual(dev.status, 0);
+  assert.doesNotMatch(dev.stdout, /\bMALFORMED_REGISTRY_ROW\b/);
+
+  const rel = runCheck('valid-header-separator-only', true);
+  assert.strictEqual(rel.status, 0);
+  assert.doesNotMatch(rel.stdout, /\bMALFORMED_REGISTRY_ROW\b/);
+});

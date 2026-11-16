@@ -162,13 +162,13 @@
 - **Error Responses**:
   - `403 Forbidden`: Course belongs to another lecturer.
   - `404 Not Found`: Course ID does not exist.
-  - `500 Internal Server Error`: Thrown when course contains materials/cases due to foreign key cascade restrictions. Replaced by soft archive proposal below.
+  - `500 Internal Server Error`: Thrown when course contains materials/cases due to foreign key cascade restrictions. (Conflict C1: Figma 02.3 hard delete vs PO Q4 soft archive; `BLOCKED-ON-C1 — pending PO`).
 
 ---
 
 ## 2. Proposed Endpoints [ĐỀ-XUẤT]
 
-### 2.1. Archive Course [ĐỀ-XUẤT] (BE-PROP-2, PO Q4 & OPD-014)
+### 2.1. Archive Course [ĐỀ-XUẤT] (BE-PROP-2, PO Q4 & OPD-014, BLOCKED-ON-C1)
 - **Status**: PROPOSED — not created in Jira (see `specs/001-fe026-courses-materials/be-dependencies.md`, task `BE-PROP-2`). Requires PO approval.
 - **Method / Endpoint**: `PATCH /courses/:courseId/archive` `[ĐỀ-XUẤT]`
 - **Description**: Soft-archives a course by updating the existing database column `is_active = FALSE` (`backend/migrations/V1__init_schema.sql:39`). Retains all child materials in `teaching_materials`, vector chunks in pgvector, and raw objects in MinIO storage without foreign key cascade failures. Active course queries filter `WHERE is_active = TRUE`. Blocks frontend tasks `T005`, `T011`, `T029`.

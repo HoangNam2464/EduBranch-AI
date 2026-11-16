@@ -47,13 +47,13 @@ export interface CourseOverviewProps {
     updatedAt: string;
   };
   onEditCourse: () => void;
-  onArchiveCourse: () => void;
+  onRemoveCourse: () => void; /* BLOCKED-ON-C1: course removal action (delete vs soft archive) */
   onNavigateToMaterials: () => void;
 }
 ```
 
 ### 1.3. `Dialog` (`src/components/ds/Dialog.tsx`)
-Used for Course Create/Edit modal (02.2), Course Archive dialog (02.3), Upload modal (02.5), Material Delete dialog (02.6).
+Used for Course Create/Edit modal (02.2), Course Removal dialog (02.3, BLOCKED-ON-C1: delete vs soft archive), Upload modal (02.5), Material Delete dialog (02.6).
 ```typescript
 export type DialogType = 'standard' | 'confirm' | 'danger';
 

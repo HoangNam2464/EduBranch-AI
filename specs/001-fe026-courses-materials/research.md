@@ -41,33 +41,45 @@
 
 ---
 
-### Decision 3: Failed Material Action Semantics & Flow (PO Q3, Review R2-4)
+### Decision 3: Failed Material Action Semantics & Flow (PO Q3, Review R2-4 → C2, BLOCKED-ON-C2)
 - **Problem**: Figma frames 02.4 and 02.6 label the action on a `FAILED` material row as "Thử lại" (Retry / node `586:8570`). However, the backend does not possess a re-ingestion endpoint for existing material records. In legacy code, clicking "Thử lại" merely reloaded the list without doing anything.
-- **Decision**: **Rename action label to "Tải lên lại" (or "Chọn tệp tải lại") as an intended deviation from Figma** (PO Q3, 2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`).
-  - Clicking "Tải lên lại" opens the Upload Modal (02.5) displaying the previous error context (`processingError`).
-  - Prompts the user to re-select the original file (e.g. after fixing file formatting issues) to initiate a new upload via existing `POST /courses/:courseId/materials`.
-  - Does not delete the old failed record until the new upload succeeds.
-  - Clear user notification that this generates a new processing attempt.
-- **Rationale**: Accurate semantics. Does not mislead the user into believing an automated server-side retry occurred.
-- **Alternatives Considered**:
-  - *Keep "Thử lại" label with no-op list reload*: Rejected as a deceptive UX pattern.
-  - *Implement backend re-ingest in FE-026*: Rejected; backend re-ingest requires pipeline architecture changes and PO approval.
+- **Context & Conflict**:
+  - [DỮ-KIỆN] Figma node `586:8570` labels the action button "Thử lại".
+  - [PO-ĐÃ-XÁC-NHẬN] PO Q3 (2026-11-15) requested renaming action label to "Tải lên lại" (or "Chọn tệp tải lại").
+  - **Action Button Label**: `BLOCKED-ON-C2 — pending PO`.
+  - **Common Behavior (settled)**: Under both label options, clicking the button opens the Upload Modal (02.5) displaying the previous error context (`processingError`), prompting the user to re-select the original file to initiate a new upload via existing `POST /courses/:courseId/materials`, without calling a fake re-ingest API.
+- **Alternatives Considered (C2 Option Analysis)**:
+  - *Option 1 — Retain "Thử lại" label per Figma (Node `586:8570`)*:
+    - Copy: Action button labeled "Thử lại" (Retry).
+    - Behaviour: Clicking button opens Upload Modal (02.5) displaying previous error context (`processingError`), prompting user to re-select original file to upload.
+    - Backend/data impact: Uses existing upload endpoint `POST /courses/:courseId/materials`; requires zero backend changes.
+  - *Option 2 — Rename to "Tải lên lại" / "Chọn tệp tải lại" per PO Q3 (2026-11-15)*:
+    - Copy: Action button labeled "Tải lên lại" (Re-upload) or "Chọn tệp tải lại".
+    - Behaviour: Identical to Option 1 (opens Upload Modal 02.5 with previous error context to re-select file).
+    - Backend/data impact: Uses existing upload endpoint `POST /courses/:courseId/materials`; requires zero backend changes.
+  - *Non-conflict technical scope fact*: Backend in-place re-ingestion endpoint (e.g. `POST /materials/:id/reingest` without re-selecting file) is out of scope for FE-026 per PO Q3; would require ingestion pipeline architecture changes and PO approval. (Legacy frontend behavior of reloading the list with no action does not trigger re-processing).
+  - *Decision*: `BLOCKED-ON-C2 — pending PO`.
 
 ---
 
-### Decision 4: Course Deletion & Soft Archive Policy (PO Q4 & OPD-014, Review R2-3)
+### Decision 4: Course Deletion vs Soft Archive Policy (PO Q4 & OPD-014, Review R2-3 → C1, BLOCKED-ON-C1)
 - **Problem**: Attempting to delete a course with associated materials returned HTTP 500 due to PostgreSQL foreign key constraints. In addition, OPD-014 established that courses and cases use a soft-archive mechanism rather than destructive deletion.
-- **Decision**: **Adopt soft archive for courses per OPD-014 and propose `PATCH /courses/:courseId/archive`** (PO Q4, 2026-11-15 `[PO-ĐÃ-XÁC-NHẬN]`).
-  - **Schema Evaluation**: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`). 
-  - **Evaluation Outcome**: Reusing `is_active` (`is_active = FALSE`) perfectly fulfills the soft-archive requirement without introducing redundant columns (such as `is_archived` or `archived_at`) or parallel mechanisms.
-  - Archiving sets `is_active = FALSE`. All linked materials, pgvector chunks, and MinIO objects are 100% preserved.
-  - Active course queries in backend filter `WHERE is_active = TRUE`.
-  - The UI dialog (02.3) updates its text and labels to "Lưu trữ khóa học", eliminating destructive deletion warnings.
-  - Proposed task: Backend implements `PATCH /api/v1/courses/:id/archive` setting `is_active = FALSE` and filters active listings.
-- **Rationale**: Completely resolves the HTTP 500 error without data loss, satisfying OPD-014 and avoiding parallel database mechanisms.
-- **Alternatives Considered**:
-  - *Hard delete with CASCADE*: Rejected by PO. Destroys historical case references and student attempt links.
-  - *Add new `is_archived` column*: Rejected. `is_active` already exists and represents active vs archived state.
+- **Context & Conflict**:
+  - [DỮ-KIỆN] Figma frame 02.3 specifies a destructive deletion dialog ("Xóa khóa học này?").
+  - [PO-ĐÃ-XÁC-NHẬN] PO Q4 (2026-11-15) and OPD-014 specify soft archive for courses (`courses.is_active = FALSE`), preserving materials, chunks, and cases.
+  - **Dialog Copy & Backend API**: `BLOCKED-ON-C1 — pending PO`.
+  - **Schema Evaluation for Soft Archive**: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`). Reusing `is_active` (`is_active = FALSE`) fulfills the soft-archive requirement without introducing redundant columns or parallel mechanisms if soft archive is confirmed.
+- **Alternatives Considered (C1 Option Analysis)**:
+  - *Option 1 — Hard delete per Figma frame 02.3 (`483:10111` / `483:10341`)*:
+    - Copy: Destructive deletion confirmation dialog titled "Xóa khóa học này?" with warning text.
+    - Behaviour: Irreversible removal of course record from database.
+    - Backend/data impact: Calls existing `DELETE /courses/:courseId`. In PostgreSQL, foreign key constraints from child materials or cases result in HTTP 500 unless ON DELETE CASCADE is configured on the backend; permanently removes associated case studies and materials.
+  - *Option 2 — Soft archive per PO Q4 (2026-11-15) & OPD-014*:
+    - Copy: Archive confirmation dialog (e.g. "Lưu trữ khóa học này?").
+    - Behaviour: Deactivates course from active view while preserving course materials, chunks, and case studies.
+    - Backend/data impact: Requires proposed backend endpoint `PATCH /courses/:courseId/archive` (BE-PROP-2) to set `courses.is_active = FALSE`. Schema fact: Database table `courses` already contains `is_active BOOLEAN NOT NULL DEFAULT TRUE` (`backend/migrations/V1__init_schema.sql:39`), so reusing `is_active` requires no schema migrations or new columns.
+  - *Non-conflict schema fact*: Introducing a separate `is_archived` column is not required if soft archive is confirmed, because `courses.is_active` already exists in the baseline schema.
+  - *Decision*: `BLOCKED-ON-C1 — pending PO`.
 
 ---
 
@@ -95,13 +107,21 @@
 
 ---
 
+### Decision 7: Course Code Required-ness (C3, BLOCKED-ON-C3)
+- **Context & Conflict**:
+  - [DỮ-KIỆN] Figma frame 02.2 (`483:9866`) marks "Mã môn học *" as a required field with an asterisk.
+  - [DỮ-KIỆN] Backend DTO `CreateCourseDto` (`backend/src/modules/course/dto/create-course.dto.ts:9`) defines `@IsOptional() courseCode?: string`.
+  - **UI Required-ness**: `BLOCKED-ON-C3 — pending PO`. Facts documented neutrally; awaiting PO decision on whether courseCode is required in the UI form or optional per DTO.
+
+---
+
 ## 2. Best Practices & Component Mapping
 
 | Figma Screen / Frame | FE-023 Target Page | DS Primitives (`src/components/ds/`) | Feedback Components (`src/components/feedback/`) |
 |---|---|---|---|
 | **02.1 Courses** (`483:9637`) | `pages/courses/CoursesPage.tsx` | `CourseCard`, `CourseOverview`, `Button`, `SearchField`, `FilterControl`, `Pagination`, `ResultCount` | `CourseListSkeleton`, `CourseCardSkeleton`, `EmptyState`, `ErrorState`, `NoResultsState` |
 | **02.2 Create/Edit Course** (`483:9866`) | Modal in `CoursesPage.tsx` | `Dialog`, `Field` (input, textarea), `Button` | N/A (inline form errors) |
-| **02.3 Archive Course** (`483:10111`) | Dialog in `CoursesPage.tsx` | `Dialog`, `Button` (tonal/danger) | N/A |
+| **02.3 Course Removal (C1)** (`483:10111`) | Dialog in `CoursesPage.tsx` | `Dialog`, `Button` (tonal/danger) | N/A |
 | **02.4 Materials Table** (`483:10342`) | `pages/materials/MaterialsPage.tsx` | `Breadcrumb`, `Button`, `ProcessingBadge`, `StatusPill`, `SearchField`, `Pagination` | `EmptyState`, `ErrorState`, `Skeleton` |
 | **02.5 Upload Modal** (`483:10598`) | Modal in `MaterialsPage.tsx` | `Dialog`, `Button`, `Field` | N/A (file queue state) |
 | **02.6 Delete Material** (`483:10890`) | Dialog in `MaterialsPage.tsx` | `Dialog`, `Button` (danger) | N/A |

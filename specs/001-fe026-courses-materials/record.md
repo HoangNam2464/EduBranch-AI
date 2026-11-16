@@ -46,13 +46,13 @@
 - **Extracted Frames (verified via Figma MCP `get_metadata`)**:
   - `02.1`: `483:9637` (1440 × 1413) — `02.1 · Giảng viên · Quản lý khóa học`
   - `02.2`: `483:9866` (1440 × 1413) — `02.2 · Giảng viên · Hộp thoại khởi tạo khóa học`
-  - `02.3`: `483:10111` (1440 × 1413, Dialog `483:10341`) — `02.3 · Giảng viên · Hộp thoại xác nhận xóa khóa học` (Soft Archive per OPD-014)
+  - `02.3`: `483:10111` (1440 × 1413, Dialog `483:10341`) — `02.3 · Giảng viên · Hộp thoại xác nhận xóa khóa học` (Xóa cứng vs Lưu trữ mềm: `BLOCKED-ON-C1 — pending PO`)
   - `02.4`: `483:10342` (1440 × 1123) — `02.4 · Giảng viên · Chi tiết khóa học — Tài liệu môn học`
   - `02.5`: `483:10598` (1440 × 1123) — `02.5 · Giảng viên · Hộp thoại tải tài liệu môn học`
   - `02.6`: `483:10890` (1440 × 1123) — `02.6 · Giảng viên · Hộp thoại xác nhận xóa tài liệu`
   - `02.7`: `483:11148` (1440 × 1329) — `02.7 · Giảng viên · RAG Source Inspector (DES-005)`
 - **Ready for Dev Status**: Provisional per GDS §0.2 and AGENTS.md Rule 9 pending formal token approval.
-- **Intended Deviation from Figma**: Frame 02.4 / Node `586:8570` FAILED action button renamed from "Thử lại" to "Tải lên lại" (or "Chọn tệp tải lại") per PO Decision Q3 (2026-11-15 [PO-ĐÃ-XÁC-NHẬN]).
+- **Xung đột nhãn nút FAILED (C2)**: Frame 02.4 / Node `586:8570`: [DỮ-KIỆN] Figma ghi "Thử lại", [PO-ĐÃ-XÁC-NHẬN] PO Q3 (2026-11-15) yêu cầu "Tải lên lại" (hoặc "Chọn tệp tải lại"); nhãn nút: `BLOCKED-ON-C2 — pending PO`.
 
 ### 1.5. Current Routes, Files & Known Gaps (`[DỮ-KIỆN]`)
 - **Current Routes**:
@@ -119,6 +119,20 @@ All decisions recorded verbatim from PO chat on 2026-11-15:
        - Hệ thống bản địa hóa hỗ trợ song ngữ Tiếng Việt và Tiếng Anh trong phạm vi giao diện được duyệt; khôi phục cặp tệp locale `.vi.json` / `.en.json` theo cơ chế i18n thực tế của FE-023 (`SUPPORTED_LANGUAGES = ["vi", "en"]`, `DEFAULT_LANGUAGE = "vi"`, `fallbackLng: "vi"`, lưu lựa chọn trong `localStorage` key `edubranch-lang`).
        - Tiêu chí nghiệm thu (AC) và kiểm thử phải kiểm chứng hành vi chuyển đổi ngôn ngữ thực tế trên trình duyệt, không chỉ kiểm tra riêng nút bấm.
        - Màn hình và component dùng chung hiển thị trọn vẹn theo một ngôn ngữ tại một thời điểm (không trộn lẫn ngôn ngữ); dữ liệu động từ API (tên khóa học, tên file, nội dung chunk) hiển thị đúng theo dữ liệu gốc được lưu trữ, không tự ý dịch; không tự ý dịch tự do thuật ngữ nghiệp vụ; các chuỗi tiếng Anh được đánh dấu `[ĐỀ-XUẤT]` cho đến khi PO duyệt.
+
+---
+
+## 3.1. Open Decisions Awaiting Product Owner Resolution (`[CHƯA-QUYẾT]`)
+
+- **C1: Xung đột nội dung Hộp thoại xóa/lưu trữ khóa học 02.3 — Figma (Xóa cứng) vs PO Q4 / OPD-014 (Lưu trữ mềm)** `[CHƯA-QUYẾT]`
+  - Facts: `[DỮ-KIỆN]` Figma frame 02.3 (`483:10111`, dialog `483:10341`) shows destructive delete dialog ("Xóa khóa học này?", warning copy, button "Xóa khóa học"). `[PO-ĐÃ-XÁC-NHẬN]` PO Q4 (2026-11-15) and OPD-014 specify soft archive (dialog "Lưu trữ khóa học", preserving data, button "Xác nhận lưu trữ").
+  - Status: `BLOCKED-ON-C1 — pending PO`. No interim option recommended.
+- **C2: Xung đột nhãn nút hành động trên dòng tài liệu FAILED — Figma ("Thử lại") vs PO Q3 ("Tải lên lại")** `[CHƯA-QUYẾT]`
+  - Facts: `[DỮ-KIỆN]` Figma frame 02.4 (`483:10342`, node `586:8570`) labels action button "Thử lại". `[PO-ĐÃ-XÁC-NHẬN]` PO Q3 (2026-11-15) requested "Tải lên lại" (or "Chọn tệp tải lại") opening upload modal with previous error context.
+  - Status: `BLOCKED-ON-C2 — pending PO`. No interim option recommended. Re-upload flow stays identical under both options.
+- **C3: Xung đột tính bắt buộc của trường Mã môn học — Figma 02.2 (Bắt buộc "*") vs CreateCourseDto (Tùy chọn)** `[CHƯA-QUYẾT]`
+  - Facts: `[DỮ-KIỆN]` Figma frame 02.2 (`483:9866`, node `I483:10105;226:146`) labels field "Mã môn học *" with red asterisk indicating required. `[DỮ-KIỆN]` Backend `backend/src/modules/course/dto/create-course.dto.ts:9-12` defines `courseCode` with `@IsOptional()`.
+  - Status: `BLOCKED-ON-C3 — pending PO`. No interim option recommended.
 
 ---
 

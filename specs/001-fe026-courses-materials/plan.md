@@ -13,8 +13,8 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 ### Core Architectural Decisions & Strategy:
 1. **Target Structure Dependency (PO Q1)**: Plan FE-026 against the FE-023 modular target structure (`frontend/src/pages/courses/CoursesPage.tsx`, `pages/materials/MaterialsPage.tsx`, `pages/materials/RagSourceInspectorPage.tsx`, `components/ds/`, `components/feedback/`, `routes/paths.ts`, `locales/`). Product code implementation will NOT occur on the legacy structure and will strictly await FE-023 being merged into `develop`.
 2. **Zero Fake Data Policy & Missing API ≠ Empty Data (PO Q2 & Jira AC 4)**: Completely excise `MOCK_CHUNKS`, `OTHER_DOCUMENTS`, and hard-coded fake upload items. Frame 02.7 connects to real chunks via proposed backend task `BE-PROP-1` (`GET /materials/:id/chunks`, see `specs/001-fe026-courses-materials/be-dependencies.md`). The UI shows `EmptyState` ONLY for a 200 OK response with an empty list (`items: []`); missing endpoints (404), 403, 5xx, and network errors display an authentic `ErrorState` with the real failure reason and a retry action where sensible, never an empty list, and never cached or mocked data.
-3. **Failed Material Semantics (PO Q3 & Review R2-4)**: The FAILED material action is renamed to "Tải lên lại" (Upload again) as an intended deviation from Figma node `586:8570`. Clicking opens the upload modal with the previous error context to upload a corrected file via existing `POST /courses/:courseId/materials`. No fake re-ingestion API is called.
-4. **Soft Archive via OPD-014 (PO Q4 & Review R2-3)**: Frame 02.3 replaces destructive deletion with soft archive, eliminating the HTTP 500 error on courses with materials. Schema evaluation confirms that reusing the existing `is_active` column on the `courses` table (`courses.is_active = FALSE` per `backend/migrations/V1__init_schema.sql:39`) fulfills all OPD-014 requirements without creating parallel columns or mechanisms.
+3. **Failed Material Semantics (PO Q3 & Review R2-4 → C2)**: [DỮ-KIỆN] Figma node `586:8570` labels action "Thử lại". [PO-ĐÃ-XÁC-NHẬN] PO Q3 requested "Tải lên lại" (or "Chọn tệp tải lại"). The action button label is `BLOCKED-ON-C2 — pending PO`. The action flow itself (clicking opens upload modal with previous error context to upload corrected file via existing `POST /courses/:courseId/materials` without fake re-ingest API) stays identical under both options.
+4. **Course Deletion vs Soft Archive (PO Q4 & Review R2-3 → C1)**: [DỮ-KIỆN] Frame 02.3 specifies destructive deletion dialog ("Xóa khóa học này?"). [PO-ĐÃ-XÁC-NHẬN] PO Q4 confirms OPD-014: courses use soft archive (`courses.is_active = FALSE`), preserving materials, chunks, and cases, and eliminating the foreign key HTTP 500 error. The deletion copy and mechanism is `BLOCKED-ON-C1 — pending PO`. Reusing `courses.is_active` per `backend/migrations/V1__init_schema.sql:39` is evaluated under `BE-PROP-2` if soft archive is chosen.
 5. **Route Alignment (PO Q5 & Review R2-1)**: Fix `DELETE /materials/:id` directly in frontend `materialService.ts` relative to `/api/v1` base URL.
 6. **API Response Envelope & Model Mapping (Review R3-1)**: All existing backend endpoints return `{ "status": "SUCCESS", "data": ... }` with snake_case fields (`course_code`, `lecturer_id`, `is_active`, `original_filename`, `stored_object_key`, `mime_type`, `size_bytes`, `processing_status`, `chunk_count`, `processing_error`, `uploaded_at`). Clean mapping to frontend camelCase models is encapsulated in `frontend/src/services/mappers/course.ts` and `material.ts`. All proposed endpoints (`PATCH /courses/:id/archive`, `GET /materials/:id/chunks`) adopt the identical envelope.
 7. **Localization Architecture & VI/EN Language Switch (`[PO-ĐÃ-XÁC-NHẬN]`)**:
@@ -96,9 +96,9 @@ Per PO decisions Q1, Q2, and Q4, the following items are dependencies recorded a
   - Integration tests verifying ownership boundaries and pagination.
   - UI rule (Missing API ≠ empty data): If endpoint is missing (404) or fails, UI renders `ErrorState` with real reason and retry; `EmptyState` is rendered only on 200 OK with `totalChunks = 0`.
 
-### Proposed Task 3: Backend Course Soft Archive API per OPD-014 (`BE-PROP-2`, PO Q4)
+### Proposed Task 3: Backend Course Soft Archive API per OPD-014 (`BE-PROP-2`, PO Q4) (BLOCKED-ON-C1)
 - **Scope**: Backend Gateway (`backend/src/modules/course/`) & Database
-- **Status**: PROPOSED — not created in Jira (requires PO approval)
+- **Status**: PROPOSED — not created in Jira (requires PO approval; `BLOCKED-ON-C1 — pending PO` for deletion vs soft archive resolution)
 - **Endpoint**: `PATCH /api/v1/courses/:id/archive` `[ĐỀ-XUẤT]`
 - **Requirements**:
   - Reuses existing column `courses.is_active` (`is_active = FALSE`).
@@ -200,5 +200,6 @@ frontend/src/
 
 | Consideration | Evaluation & Decision | Justification |
 |---|---|---|
-| **Soft Archive Database Schema** | Reusing `courses.is_active` vs adding new `is_archived` column | Reusing `is_active` (`is_active = FALSE`) avoids redundant columns and complies with PO Q4 directive to avoid parallel database mechanisms. |
-| **Material Re-ingest** | Renaming to "Tải lên lại" vs implementing backend re-ingest | Avoids scope creep and honors existing backend capabilities while maintaining honest UX. |
+| **Course Deletion vs Soft Archive (C1)** | Hard delete per Figma 02.3 vs soft archive per PO Q4 / OPD-014 | `BLOCKED-ON-C1 — pending PO`. Reusing `is_active` (`is_active = FALSE`) avoids redundant columns and complies with PO Q4 directive if soft archive is confirmed. |
+| **Material Re-ingest Label (C2)** | "Thử lại" per Figma node `586:8570` vs "Tải lên lại" per PO Q3 | `BLOCKED-ON-C2 — pending PO`. Re-upload flow stays identical under both options. |
+| **Course Code Required-ness (C3)** | "Mã môn học *" required per Figma 02.2 vs optional `courseCode` in `CreateCourseDto` | `BLOCKED-ON-C3 — pending PO`. Facts documented, UI requirement awaiting PO resolution. |
