@@ -78,7 +78,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 
 ### OPD-014 — Phạm vi xóa và lưu giữ dữ liệu
 - **Mức**: B (copy của hộp thoại xóa; có hay không thao tác "Lưu trữ")
-- **Bằng chứng**: BR-MAT-03 *"cascades deletion **or** archiving"* (để mở). Code hiện tại `course.service.ts deleteCourse` chạy **`DELETE FROM courses` (xóa cứng)**. `courses.is_active` đã có nhưng chưa dùng. Page 2 00.6 copy: *"This action cannot be undone."*
+- **Bằng chứng** (lịch sử, trước quyết định 2026-11-16): BR-MAT-03 *"cascades deletion **or** archiving"* (để mở). Code khi đó `course.service.ts deleteCourse` chạy **`DELETE FROM courses` (xóa cứng)**. `courses.is_active` đã có nhưng chưa dùng. Page 2 00.6 copy: *"This action cannot be undone."*
 
 | Tác động | A: Lưu trữ mềm khóa học/case | B: Xóa cứng dây chuyền |
 |---|---|---|
@@ -88,6 +88,7 @@ Ngoài ra có **các quyết định mới chưa có trong danh sách OPD** (m�
 
 - **Frame**: 29:1106 (xóa tài liệu, ít bị ảnh hưởng vì xóa tài liệu luôn là xóa thật theo FR), Page 2 00.6 (xóa khóa học), 1:2583 ("Lưu trữ"), 1:4795/1:5043 (menu Admin).
 - **Lưu ý**: Code đã đi trước quyết định (xóa cứng). Cần PO xác nhận trước khi QA viết test hành vi xóa.
+- **ĐÃ QUYẾT ĐỊNH 2026-11-16 (PO):** OPD-014 → **lưu trữ mềm** khóa học (C1-B). `PATCH /courses/:courseId/archive` đặt `courses.is_active = false`; tài liệu, chunks, object MinIO và case được giữ; khóa học đã lưu trữ rời danh sách đang hoạt động của giảng viên và không nhận tài liệu/case mới; `DELETE /courses/:courseId` đã gỡ. Sinh viên không đổi. Khôi phục: chưa có task (PO Q4 2026-11-15: không tự tạo nghiệp vụ khôi phục khi chưa có căn cứ). Ánh xạ nhãn: phương án **A** của bảng trên = **C1-B** trong spec FE-026 (`specs/001-fe026-courses-materials/`). Áp dụng cho khóa học; lưu trữ case chưa có task.
 
 ### OPD-015 — Phạm vi Admin trong MVP
 - **Mức**: A (0, 2 hay 10 màn)

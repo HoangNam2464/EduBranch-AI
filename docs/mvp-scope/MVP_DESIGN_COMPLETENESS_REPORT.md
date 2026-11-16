@@ -129,7 +129,7 @@ Có, đều ở **Page 1**:
 | R-8 | Merge (hoặc chuyển) `OPEN_PRODUCT_DECISIONS.md` vào `develop` sau khi PO review, để OPD có vị trí chính thức | Hiện chỉ có trên `feature/design-system` | PO |
 | R-9 | Bổ sung các trạng thái còn thiếu ở mục 2.3 vào baseline đã chọn | Đủ điều kiện Ready for Dev | Design (sau R-1/R-2) |
 | R-10 | Đổi nhãn `[Ngoài phạm vi]` trên 3 frame sinh viên thành `[HOLD · OPD-001]` | Nhãn hiện tại kết luận vượt bằng chứng | PO xác nhận |
-| R-11 | Ghi nhận lệch code với spec: login chưa chặn `is_active=false`; xóa khóa học đang xóa cứng | Không sửa code trong phạm vi này | BE lead |
+| R-11 | Ghi nhận lệch code với spec: login chưa chặn `is_active=false`; xóa khóa học đang xóa cứng (phần khóa học đã xử lý 2026-11-16: lưu trữ mềm theo OPD-014, `DELETE /courses/:courseId` đã gỡ) | Không sửa code trong phạm vi này | BE lead |
 
 ## 4. Điều kiện để một frame được gắn "Ready for Development"
 1. Thuộc chức năng **CONFIRMED** hoặc **IMPLIED**, và không phụ thuộc OPD/D chưa duyệt.

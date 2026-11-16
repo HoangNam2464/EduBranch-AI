@@ -732,7 +732,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 ### Acceptance Criteria
 - [ ] **AC-1**: Kiểm thử Lecturer B không thể đọc, tải hoặc xóa tài liệu của Lecturer A.
 - [ ] **AC-2**: Kiểm thử không thể đoán được URL/key tài liệu trên MinIO.
-- [ ] **AC-3**: Kiểm thử tính toàn vẹn khi xóa khóa học thì tài liệu liên quan bị xóa an toàn.
+- [ ] **AC-3**: Kiểm thử tính toàn vẹn khi lưu trữ khóa học (lưu trữ mềm, OPD-014 / C1-B): khóa học rời danh sách đang hoạt động; tài liệu, chunks pgvector, object MinIO và case được giữ nguyên; khóa học đã lưu trữ không nhận tài liệu hoặc case mới; không còn API xóa cứng khóa học. *(AC-3 cũ "xóa khóa học thì tài liệu bị xóa an toàn" được PO thay ngày 2026-11-16 khi chọn lưu trữ mềm C1-B.)*
 
 ---
 

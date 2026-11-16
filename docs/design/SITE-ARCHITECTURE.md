@@ -63,7 +63,7 @@ Because the Sprint Backlog tasks focus on core functional workflows, the Figma M
 
 ### 5.2. Lecturer Portal (`LecturerLayout` — shared collapsible sidebar)
 - `/lecturer/dashboard` — Lecturer dashboard [07.1] (D-05 → in MVP).
-- `/lecturer/courses` — Course catalog with detail panel, create and delete dialogs [02.1–02.3] (`CoursesPage.tsx`).
+- `/lecturer/courses` — Course catalog with detail panel, create and archive dialogs [02.1–02.3] (courses are archived, not deleted: OPD-014, PO 2026-11-16) (`CoursesPage.tsx`).
 - `/lecturer/courses/:courseId/materials` — Material upload and indexing status [02.4–02.6] (`MaterialsPage.tsx`).
 - `/lecturer/courses/:courseId/materials/:materialId/rag` — Indexed excerpts of a document [02.7] (`RagSourceInspectorPage.tsx`).
 - `/lecturer/cases`, `/lecturer/courses/:courseId/cases` — Case library, filter by status and learning mode [03.1–03.3] (`CasesPage.tsx`).
