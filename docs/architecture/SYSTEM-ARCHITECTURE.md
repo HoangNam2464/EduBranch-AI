@@ -43,7 +43,7 @@
 └──────────────────┘                                             ▼
                                                     ┌────────────────────────┐
                                                     │  LLM Providers         │
-                                                    │  Gemini 2.0 Flash      │
+                                                    │  Gemini 3.5 Flash      │
                                                     │  OpenAI GPT-4o-mini    │
                                                     │  (Provider Abstraction)│
                                                     └────────────────────────┘
@@ -72,7 +72,7 @@ flowchart TD
     end
 
     subgraph Providers ["☁️ External LLM Providers"]
-        LLM["Google Gemini 2.0 Flash / OpenAI GPT-4o-mini\n(Provider Abstraction)"]
+        LLM["Google Gemini 3.5 Flash / OpenAI GPT-4o-mini\n(Provider Abstraction)"]
     end
 
     FE -->|REST API + JWT| BG

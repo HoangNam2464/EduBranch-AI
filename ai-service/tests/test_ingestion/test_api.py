@@ -21,7 +21,7 @@ HEADERS = {"X-Internal-API-Key": settings.ai_service_api_key}
 
 FAKE_COURSE_ID = str(uuid.uuid4())
 FAKE_MATERIAL_ID = str(uuid.uuid4())
-FAKE_EMBEDDING = [0.1] * 768  # Matches Gemini text-embedding-004 dimensions
+FAKE_EMBEDDING = [0.1] * 768  # Matches the 768-dim Gemini embeddings (gemini-embedding-001)
 
 
 # ===========================================================================

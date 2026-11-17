@@ -2,7 +2,7 @@
 EduBranch AI — Unit Tests for Document Embedder Service [BE-010].
 
 Tests vector embedding generation, provider abstraction compliance, and batching:
-  - Gemini text-embedding-004 (768-dim) and OpenAI (1536-dim) support (AC-1)
+  - Gemini gemini-embedding-001 (768-dim) and OpenAI (1536-dim) support (AC-1)
   - Provider Abstraction Interface interaction (AC-2)
   - Batching optimization for latency and rate limits (AC-3)
 

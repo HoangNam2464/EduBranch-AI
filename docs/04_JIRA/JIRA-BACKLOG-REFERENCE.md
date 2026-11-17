@@ -559,7 +559,7 @@ Description:
 Không có trường Description riêng trong source.
 
 Acceptance Criteria:
-1. Sinh vector embeddings qua Gemini text-embedding-004 (768-dim) hoặc OpenAI (1536-dim).
+1. Sinh vector embeddings qua Gemini gemini-embedding-001 (768-dim; text-embedding-004 đã ngừng, cập nhật 2026-11-17) hoặc OpenAI (1536-dim).
 2. Gọi mô hình thông qua Provider Abstraction Interface.
 3. Xử lý batching embeddings để tối ưu hóa thời gian và tránh rate limit.
 

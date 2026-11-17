@@ -15,7 +15,7 @@ TeachingMaterial (PDF / DOCX stored in MinIO)
         Chunk size: configurable (default 512 tokens)
         Chunk overlap: configurable (default 64 tokens)
         ↓
-[3] EmbeddingGeneration   (OpenAI text-embedding-3-small | Gemini text-embedding-004)
+[3] EmbeddingGeneration   (OpenAI text-embedding-3-small | Gemini gemini-embedding-001 @768)
         ↓
 [4] pgvector storage      (table: document_chunks, column: embedding vector(1536))
         Store: chunk_text, chunk_index, document_id, course_id, page_number (if available)

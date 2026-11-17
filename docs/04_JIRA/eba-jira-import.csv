@@ -182,7 +182,7 @@ Nền tảng học tập trải nghiệm tình huống rẽ nhánh cho giáo d�
 
 Master Task ID: EBA-213
 Group Task ID: BE-010
-Dependency: is blocked by Master Task EBA-212",Highest,5,Sprint 2,EBA-213,BE-010,is blocked by Master Task EBA-212,IN PROGRESS,1. Sinh vector embeddings qua Gemini text-embedding-004 (768-dim) hoặc OpenAI (1536-dim). 2. Gọi mô hình thông qua Provider Abstraction Interface. 3. Xử lý batching embeddings để tối ưu hóa thời gian và tránh rate limit.
+Dependency: is blocked by Master Task EBA-212",Highest,5,Sprint 2,EBA-213,BE-010,is blocked by Master Task EBA-212,IN PROGRESS,1. Sinh vector embeddings qua Gemini gemini-embedding-001 (768-dim; text-embedding-004 đã ngừng, cập nhật 2026-11-17) hoặc OpenAI (1536-dim). 2. Gọi mô hình thông qua Provider Abstraction Interface. 3. Xử lý batching embeddings để tối ưu hóa thời gian và tránh rate limit.
 [OPS-003] Implement Document Chunks Persistence & HNSW Vector Indexing,Task,"Role: OPS
 
 Thực hiện công việc [[OPS-003] Implement Document Chunks Persistence & HNSW Vector Indexing] thuộc phân hệ Flow 1 trong khuôn khổ Sprint 2 của dự án EduBranch AI.

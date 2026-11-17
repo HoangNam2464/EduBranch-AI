@@ -27,7 +27,7 @@ sequenceDiagram
     AI->>S3: GetObject(key=file_uuid)
     AI->>AI: Parse text (PyPDF / python-docx)
     AI->>AI: Split into chunks (RecursiveCharacterTextSplitter)
-    AI->>AI: Generate embeddings (text-embedding-004 / text-embedding-3-small)
+    AI->>AI: Generate embeddings (gemini-embedding-001 @768 / text-embedding-3-small)
     AI->>DB: INSERT INTO document_chunks (chunk_text, embedding, metadata)
     AI-->>BE: 200 OK (chunk_count=N, status='COMPLETED')
     BE->>DB: UPDATE teaching_materials SET processing_status='COMPLETED', chunk_count=N
