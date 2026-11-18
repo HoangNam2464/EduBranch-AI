@@ -13,6 +13,7 @@ import {
 import { CaseService } from "./case.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
+import { UpdateNodeDto } from "./dto/update-node.dto";
 
 /**
  * CaseController — Flow 2: AI Case Generation & Lecturer Review Lifecycle
@@ -87,6 +88,24 @@ export class CaseController {
       throw new ForbiddenException("Only lecturers can edit cases");
     }
     const updated = await this.caseService.updateCase(id, user.id, body);
+    return {
+      status: "SUCCESS",
+      data: updated,
+    };
+  }
+
+  @Roles("LECTURER")
+  @Put("cases/:id/nodes/:nodeId")
+  async updateNode(
+    @Param("id") caseId: string,
+    @Param("nodeId") nodeId: string,
+    @Body() body: UpdateNodeDto,
+    @CurrentUser() user: { id: string; role: string },
+  ) {
+    if (user.role !== "LECTURER") {
+      throw new ForbiddenException("Only lecturers can edit nodes");
+    }
+    const updated = await this.caseService.updateNode(caseId, nodeId, user.id, body);
     return {
       status: "SUCCESS",
       data: updated,

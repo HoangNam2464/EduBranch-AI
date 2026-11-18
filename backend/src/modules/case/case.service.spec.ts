@@ -289,4 +289,117 @@ describe('CaseService', () => {
       expect(result.nodes[0].options[0].consequence).toBe('Severe stock drop');
     });
   });
+
+  describe('updateNode', () => {
+    it('should reject if lecturer does not own the course', async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ status: 'DRAFT', lecturer_id: 'other-lecturer', course_id: 'course-1', is_active: true }],
+      });
+
+      await expect(
+        service.updateNode('case-1', 'node-1', 'lecturer-1', { situation: 'New' }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should reject if course is archived (ConflictException)', async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ status: 'DRAFT', lecturer_id: 'lecturer-1', course_id: 'course-1', is_active: false }],
+      });
+
+      await expect(
+        service.updateNode('case-1', 'node-1', 'lecturer-1', { situation: 'New' }),
+      ).rejects.toThrow(new ConflictException('Course is archived'));
+    });
+
+    it('should reject if case is PUBLISHED or APPROVED', async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ status: 'PUBLISHED', lecturer_id: 'lecturer-1', course_id: 'course-1', is_active: true }],
+      });
+
+      await expect(
+        service.updateNode('case-1', 'node-1', 'lecturer-1', { situation: 'New' }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('should reject if target node does not exist in case (IDOR)', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({
+          rows: [{ status: 'DRAFT', lecturer_id: 'lecturer-1', course_id: 'course-1', is_active: true }],
+        })
+        .mockResolvedValueOnce({ rows: [{ id: 'node-1' }] }) // nodeCheck exists
+        .mockResolvedValueOnce({ rows: [] }); // target node does NOT exist
+
+      await expect(
+        service.updateNode('case-1', 'node-1', 'lecturer-1', {
+          options: [
+            { option_text: 'O1', consequence: 'C1', next_node_id: 'invalid-target' },
+            { option_text: 'O2', consequence: 'C2', next_node_id: 'node-2' },
+          ],
+        }),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should reject if cycle is detected in DAG (DFS 3-color)', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({
+          rows: [{ status: 'DRAFT', lecturer_id: 'lecturer-1', course_id: 'course-1', is_active: true }],
+        })
+        .mockResolvedValueOnce({ rows: [{ id: 'node-1' }] }) // nodeCheck exists
+        .mockResolvedValueOnce({ rows: [{ id: 'node-2' }] }) // target node 2 exists
+        .mockResolvedValueOnce({
+          rows: [
+            // Existing edge: node-2 -> node-1
+            { node_id: 'node-2', next_node_id: 'node-1' },
+          ],
+        }); // allEdgesRes
+
+      // Adding edge node-1 -> node-2 creates cycle: node-1 -> node-2 -> node-1
+      await expect(
+        service.updateNode('case-1', 'node-1', 'lecturer-1', {
+          options: [
+            { option_text: 'O1', consequence: 'C1', next_node_id: 'node-2' },
+            { option_text: 'O2', consequence: 'C2', next_node_id: null },
+          ],
+        }),
+      ).rejects.toThrow(new BadRequestException('Cycle detected in decision tree. Tree must be a directed acyclic graph (DAG).'));
+    });
+
+    it('should update node and commit transaction successfully', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({
+          rows: [{ status: 'DRAFT', lecturer_id: 'lecturer-1', course_id: 'course-1', is_active: true }],
+        })
+        .mockResolvedValueOnce({ rows: [{ id: 'node-1' }] }) // nodeCheck exists
+        .mockResolvedValueOnce({ rows: [{ id: 'node-2' }] }) // target node 2 exists
+        .mockResolvedValueOnce({ rows: [] }) // all edges (no cycle)
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }] }) // getCaseById caseRes
+        .mockResolvedValueOnce({ rows: [{ id: 'node-1', node_index: 0 }] }) // getCaseById nodesRes
+        .mockResolvedValueOnce({ rows: [{ id: 'opt-1', node_id: 'node-1' }] }); // getCaseById optionsRes
+
+      mockDbClient.query
+        .mockResolvedValueOnce(undefined) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ is_active: true }] }) // FOR SHARE
+        .mockResolvedValueOnce({ rows: [] }) // UPDATE case_nodes
+        .mockResolvedValueOnce({ rows: [{ id: 'opt-1' }] }) // IDOR check for option
+        .mockResolvedValueOnce({ rows: [] }) // UPDATE case_options
+        .mockResolvedValueOnce({ rows: [] }) // UPDATE cases updated_at
+        .mockResolvedValueOnce(undefined); // COMMIT
+
+      const result = await service.updateNode('case-1', 'node-1', 'lecturer-1', {
+        situation: 'New Situation',
+        options: [
+          { id: 'opt-1', option_text: 'O1', consequence: 'C1', next_node_id: 'node-2' },
+          { option_text: 'O2', consequence: 'C2', next_node_id: null },
+        ],
+      });
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('BEGIN');
+      expect(mockDbClient.query).toHaveBeenCalledWith(
+        'SELECT is_active FROM courses WHERE id = $1 FOR SHARE',
+        ['course-1'],
+      );
+      expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(result.id).toBe('case-1');
+    });
+  });
 });

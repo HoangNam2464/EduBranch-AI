@@ -33,6 +33,18 @@ export interface UpdateCaseRequest {
   }>;
 }
 
+/** Fields `PUT /cases/:id/nodes/:nodeId` persists (situation, key decision flag, options). */
+export interface UpdateNodeRequest {
+  situation?: string;
+  is_key_decision?: boolean;
+  options?: Array<{
+    id?: string;
+    option_text: string;
+    consequence: string;
+    next_node_id?: string | null;
+  }>;
+}
+
 export const caseService = {
   async getCasesByCourse(courseId: string): Promise<Case[]> {
     const res = await apiClient.get<Envelope<CaseRow[]>>(`/courses/${courseId}/cases`);
@@ -61,6 +73,11 @@ export const caseService = {
 
   async updateCase(caseId: string, data: UpdateCaseRequest): Promise<CaseDetail> {
     const res = await apiClient.put<Envelope<CaseDetailRow>>(`/cases/${caseId}`, data);
+    return toCaseDetail(res.data.data);
+  },
+
+  async updateNode(caseId: string, nodeId: string, data: UpdateNodeRequest): Promise<CaseDetail> {
+    const res = await apiClient.put<Envelope<CaseDetailRow>>(`/cases/${caseId}/nodes/${nodeId}`, data);
     return toCaseDetail(res.data.data);
   },
 
