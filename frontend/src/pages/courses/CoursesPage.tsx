@@ -1,5 +1,5 @@
 /**
- * CoursesPage — Giảng viên · Quản lý khóa học (Figma page 08: 02.1 list + details,
+ * CoursesPage — Giảng viên · Quản lý khóa học (Figma page EduBranch AI – Screens: 02.1 list + details,
  * 02.2 create dialog, 02.3 archive dialog; states 01.1 / 01.2 / 01.3 / 01.8).
  * Courses are archived, never deleted (PO C1-B / OPD-014): PATCH /courses/:id/archive.
  *

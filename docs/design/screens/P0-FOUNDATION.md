@@ -13,7 +13,7 @@
 Provides a clear, authoritative academic landing page for unauthenticated visitors, faculty, and students visiting the root URL (`/`). Explains what EduBranch-AI is without marketing fluff or "AI-hype" clichés, and directs users to `/login` or `/register`.
 
 ### Layout (`1440px` desktop, ONE scrolling page on a uniform `bg/canvas` background)
-> Updated 2026-11-12 (PO decision). Figma: page `08 · EduBranch – Bản hoàn chỉnh`, frame **00.2 · Chung · Trang giới thiệu**. The former separate frames 00.6 "Cách hoạt động" and 00.7 "Câu hỏi thường gặp" were merged into this page as anchor sections and deleted; there are no `/how-it-works` or `/faq` routes. UI copy is Vietnamese; colours are EduBranch navy `#2A4E7F` / sky `#00A5F5`. Headings use `EduBranch/Public *` (Be Vietnam Pro), body Roboto.
+> Updated 2026-11-12 (PO decision). Figma: page `EduBranch AI – Screens`, frame **00.2 · Chung · Trang giới thiệu**. The former separate frames 00.6 "Cách hoạt động" and 00.7 "Câu hỏi thường gặp" were merged into this page as anchor sections and deleted; there are no `/how-it-works` or `/faq` routes. UI copy is Vietnamese; colours are EduBranch navy `#2A4E7F` / sky `#00A5F5`. Headings use `EduBranch/Public *` (Be Vietnam Pro), body Roboto.
 
 1. **Public nav (`EB/Public Nav`, sticky, white)**: logo + "EduBranch AI"; links "Cách hoạt động" · "Hai chế độ học" · "Câu hỏi thường gặp" smooth-scroll to `#cach-hoat-dong`, `#hai-che-do`, `#cau-hoi` (`scroll-margin-top` = nav height; scroll-spy bolds the link of the section in view). From `/login` / `/register` these links go to `/#anchor`. Right: "Đăng nhập" (`/login`) + primary "Đăng ký" (`/register`).
 2. **Hero**: headline "Mỗi quyết định mở ra một nhánh mới", lead, CTAs "Đăng ký tài khoản" + "Xem cách hoạt động" (scrolls to `#cach-hoat-dong`); right side is a real branching-decision diagram (situation → options A/B/C → consequence).
@@ -32,13 +32,13 @@ Zero dark-mode hero sections, zero glowing purple/indigo gradients, zero 3D robo
 ## 1. App Shell & Role-Aware Navigation
 
 ### Purpose & Function
-Provides the persistent frame (sidebar/nav + content area) that every authenticated screen renders inside. Three role shells exist — `LecturerLayout`, `StudentLayout` and `AdminLayout` — built on the same shared sidebar, header actions and footer components (Figma page 08), plus `PublicLayout` for `/`, `/login` and `/register`.
+Provides the persistent frame (sidebar/nav + content area) that every authenticated screen renders inside. Three role shells exist — `LecturerLayout`, `StudentLayout` and `AdminLayout` — built on the same shared sidebar, header actions and footer components (Figma page EduBranch AI – Screens), plus `PublicLayout` for `/`, `/login` and `/register`.
 
 ### User & Context
 - **Lecturer** sees `LecturerLayout`: Khóa học, Case Study, Phản hồi sinh viên, Thống kê học tập; dashboard [07.1] and AI Studio [07.5–07.7] are reachable from it.
 - **Student** sees `StudentLayout`: Bàn học, Khóa học của tôi, Tham gia lớp học (OPD-001 → A, 2026-11-12). Case routes still carry the case id; a direct case link from the lecturer also works.
 - **Admin** sees `AdminLayout` with the 8 admin sections (OPD-015 → B).
-- The sidebar can collapse to a 72px icon rail (`Collapsed=True`); header actions include search (Ctrl K), VI/EN switch (part of approved shared header on page 08, default Vietnamese), light/dark toggle (dark theme not designed yet), notifications, settings and account.
+- The sidebar can collapse to a 72px icon rail (`Collapsed=True`); header actions include search (Ctrl K), VI/EN switch (part of approved shared header on page EduBranch AI – Screens, default Vietnamese), light/dark toggle (dark theme not designed yet), notifications, settings and account.
 - **When used**: On every authenticated screen; this is the persistent frame, not a standalone route.
 
 ### Information Hierarchy & Layout

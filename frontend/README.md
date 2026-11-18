@@ -69,10 +69,10 @@ src/
 - Import with the `@/` alias (`@/routes/paths`), not long relative paths.
 - Never hardcode a URL: use `PATHS.X`, or `buildPath(PATHS.X, { id })` for routes with params.
 - New UI text goes into `locales/vi.json` and `locales/en.json` with the same key, read with `t("key")`.
-  Screens move their remaining hardcoded text into the locale files when they are reworked to Figma page 08.
+  Screens move their remaining hardcoded text into the locale files when they are reworked to Figma page EduBranch AI – Screens.
 - Route guards only steer the UI; the backend is still the authorization boundary.
 
-## App shell (FE-025, Figma page 08)
+## App shell (FE-025, Figma page EduBranch AI – Screens)
 
 - `layouts/shell/AppShell.tsx` is the one layout for Lecturer, Student and Admin: sidebar 224px
   (collapsed 72px, remembered for the browser session), header with search / VI|EN / theme /

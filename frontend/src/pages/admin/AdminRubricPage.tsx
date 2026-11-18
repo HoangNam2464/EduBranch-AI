@@ -1,5 +1,5 @@
 /**
- * Admin · Nghiên cứu & Rubric — Figma page 08, frame 10.8 (536:8408).
+ * Admin · Nghiên cứu & Rubric — Figma page EduBranch AI – Screens, frame 10.8 (536:8408).
  *
  * In MVP since OPD-011 → A (FEATURE-EVALUATION-AND-RESEARCH, FR-EVAL-01..05). Real data only:
  * the backend `evaluation` module has no endpoint yet, and the route carries no case, so

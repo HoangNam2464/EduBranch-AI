@@ -9,7 +9,7 @@ trigger: always_on
 # EduBranch-AI — UI/UX Design Standards & Anti-Clutter Rulebook
 
 > **Canonical Reference**: Synchronized with [`docs/design/GLOBAL-DESIGN-SYSTEM.md`](../../docs/design/GLOBAL-DESIGN-SYSTEM.md) and [`docs/05_FIGMA.md`](../../docs/05_FIGMA.md).
-> **Visual language v2 (2026-11-12, PO decision in chat)** (typography and imagery aligned to the Eduva template later on 2026-11-12; canonical Figma reference: page `08 · EduBranch – Bản hoàn chỉnh`): The style rules in §1 (rules 3 and 5), §2, §3 (colors), §4, §5, §6 (colors/shapes) and §7 (language) were rewritten to adopt the layered navy/sky visual language of the licensed Eduva template (Figma page `03 · Eduva – Screens`, 14 original desktop screens) and the EduBranch design system derived from it. The previous flat gray/`#2563EB` rules are retired. **All product, pedagogy, accessibility and security rules are unchanged.**
+> **Visual language v2 (2026-11-12, PO decision in chat)** (typography and imagery aligned to the Eduva template later on 2026-11-12; canonical Figma reference: page `EduBranch AI – Screens`): The style rules in §1 (rules 3 and 5), §2, §3 (colors), §4, §5, §6 (colors/shapes) and §7 (language) were rewritten to adopt the layered navy/sky visual language of the licensed Eduva template (14 original desktop screens, now in the Eduva archive file (separate Figma file, copied by the PO on 2026-11-18; removed from the EduBranch file)) and the EduBranch design system derived from it. The previous flat gray/`#2563EB` rules are retired. **All product, pedagogy, accessibility and security rules are unchanged.**
 > **Scope**: All Frontend (`frontend/src/`) components, layouts, pages, ReactFlow graphs, and Figma/Stitch design specifications (`DES-001` → `DES-015`, `FE-001` → `FE-022`).
 > **Figma-First Master Template Mandate (Khuôn mẫu chuẩn từ Link Figma)**:
 > - Các task trong Sprint Backlog (`01_MASTER-TASKS.md` / `02_SPRINT-TASKS.md`) chỉ tập trung đặc tả các **tính năng nghiệp vụ chính**, còn các trang nền tảng/bao quanh như **Trang Giới thiệu (`/` — Landing Page)**, **Đăng nhập (`/login`)**, **Đăng ký (`/register`)**, **Khung điều hướng (`LecturerLayout`, `StudentLayout`, `PublicLayout`)**, **Quản lý Học phần (`/lecturer/courses` & Modals)**, **Thống kê (`/lecturer/statistics`)** và **Trang lỗi (`403` / `404`)** không có mã task riêng lẻ.
@@ -169,7 +169,7 @@ Every feature must use these consistent vector icon metaphors (never emojis):
 
 | UI Element / Concept | Required Vector Icon Metaphor (Lucide / SVG Equivalent) | Forbidden Replacement |
 |---|---|---|
-| Brand Header Wordmark | `EduBranch AI` wordmark with the official logo mark (Figma component `EB/Logo Mark`, source page 03 "Icon K3"; 32px in app shells, 36px on auth panels; never recolour or redraw) | 🚫 `🌿` leaf emoji |
+| Brand Header Wordmark | `EduBranch AI` wordmark with the official logo mark (Figma component `EB/Logo Mark`, originally the Eduva template's "Icon K3"; on page `EduBranch AI – Design System`; 32px in app shells, 36px on auth panels; never recolour or redraw) | 🚫 `🌿` leaf emoji |
 | Sidebar: Courses | `BookOpen` (`20px`) | 🚫 `📚` |
 | Sidebar: Teaching Materials | `FileText` or `Files` | 🚫 `📋` / `📄` |
 | Sidebar: Case Studies | `GitBranch` | 🚫 `🎯` |
@@ -195,7 +195,7 @@ Every feature must use these consistent vector icon metaphors (never emojis):
 ```css
 font-family: "Roboto", ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 ```
-Headings use **Regular (400)** exactly as in the Eduva template; hierarchy comes from size and the surface layout. Figma text styles: `Eduva/*` (page `02 · Eduva – Design System`).
+Headings use **Regular (400)** exactly as in the Eduva template; hierarchy comes from size and the surface layout. Figma text styles: `Eduva/*` (local text styles of the EduBranch file; the name is historical).
 Public landing page only (`/`, including its How it works and FAQ sections): headings use **Be Vietnam Pro SemiBold** via `EduBranch/Public *` text styles; body text stays Roboto. Never use Be Vietnam Pro on app screens.
 
 | Token | Size / Line-Height | Weight | Usage |
@@ -252,7 +252,7 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
 - **Wide screens** (PO decision 5, 2026-11-17): the canvas content (header, main, footer) is capped at `max-w-7xl` (1280px) and centred (`AppShell.tsx`; the code lands in the frontend PR, not yet on develop), so 1920/2K screens do not stretch cards. At 1440 with the expanded sidebar nothing changes; with the collapsed sidebar the content is 1280 wide and centred.
 
 ### 5.0. UI vs UX source (PO 2026-11-16: "tôi vẫn theo giao diện figma, nhưng UX thì bạn học theo file .zip đó"; boundary set by PO decision 5, 2026-11-17)
-- **UI** = Figma page 08: colours, data fields and business behaviour, plus the frame's structure (cards, order, labels). Never restructure a frame's layout.
+- **UI** = Figma page EduBranch AI – Screens: colours, data fields and business behaviour, plus the frame's structure (cards, order, labels). Never restructure a frame's layout.
 - **UX learned from the reference** (decision 5): content capped at `max-w-7xl`, thin borders and soft shadows on cards (§4.3, also applied in Figma), animation (framer-motion, respecting `prefers-reduced-motion`; PO confirmed 2026-11-17; code not yet on develop), and the behaviour below. Tokens `shadow-eb-card` / `shadow-eb-hover` also land with the frontend PR.
 - **UX behaviour** also follows the PO's reference frontend (`frontend.zip`; never copy its files into the repo; take visual traits from it only those listed above, and only after Figma shows them; never name that project in EduBranch docs or code):
   - Real data only; Skeleton shaped like the Figma content while loading; `ErrorState` + retry inside the same region on failure; `EmptyState` inside the same card when empty.
@@ -365,7 +365,7 @@ Public landing page only (`/`, including its How it works and FAQ sections): hea
 - `/login` — University email/password sign-in.
 - `/register` — Account registration with role selection (`STUDENT` | `LECTURER`).
 
-> Figma frame codes in brackets refer to page `08 · EduBranch – Bản hoàn chỉnh`; per-screen behaviour is in `docs/design/UX-SCREEN-NOTES.md`.
+> Figma frame codes in brackets refer to page `EduBranch AI – Screens`; per-screen behaviour is in `docs/design/UX-SCREEN-NOTES.md`.
 
 ### 8.2. Lecturer Routes (`LecturerLayout`)
 - `/lecturer/dashboard` — Lecturer dashboard: deadlines calendar, submissions awaiting feedback, to-do list [07.1] (D-05 decided: in MVP).

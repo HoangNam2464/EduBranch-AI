@@ -2,11 +2,11 @@ import type { ReactNode } from "react";
 import { BadgeBase } from "@/components/ds/BadgeBase";
 
 /**
- * Figma `Data Display/Badge/Submission` (page 02, node 225:347).
+ * Figma `Data Display/Badge/Submission` (page EduBranch AI – Design System, node 225:347).
  *  - Submitted: every page-08 instance (frames 00.4, 05.1, 05.9) overrides it to green:
  *    bg #E1F7E9, dot #00B343, text #007A2D (the set itself draws it blue #DFEDF9/#00A5F5/#2A4E7F).
- *  - Reviewed:  bg #FFF1DE, dot #F58A00, text #B86800 (set values; not used on page 08)
- *  - Reflected: bg #E1F7E9, dot #00B343, text #008A33 (set values; not used on page 08)
+ *  - Reviewed:  bg #FFF1DE, dot #F58A00, text #B86800 (set values; not used on page EduBranch AI – Screens)
+ *  - Reflected: bg #E1F7E9, dot #00B343, text #008A33 (set values; not used on page EduBranch AI – Screens)
  */
 export type SubmissionStatus = "submitted" | "reviewed" | "reflected";
 

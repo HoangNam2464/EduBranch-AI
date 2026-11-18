@@ -6,7 +6,7 @@ import { LogoMark } from "@/components/brand/LogoMark";
 import { cx, FOCUS_RING } from "@/components/ds";
 
 /**
- * Building blocks shared by the auth frames on Figma page 08
+ * Building blocks shared by the auth frames on Figma page EduBranch AI – Screens
  * (00.3 Đăng nhập, 00.4/00.5 Đăng ký, 10.1 Đăng nhập quản trị).
  *
  * Frame 1440x1024: row, padding 20 84 20 20, gap 84, items centred.

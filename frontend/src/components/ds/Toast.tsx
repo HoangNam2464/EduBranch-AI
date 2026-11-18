@@ -3,8 +3,8 @@ import { CircleCheck, CircleX, Info, X, type LucideIcon } from "lucide-react";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
 
 /**
- * Figma `Feedback/Toast` (page 02, node 228:178) — Type Success | Error | Info.
- *  - Card: white, width 360 (page 08 frame 03.3 uses 480), padding 16, gap 12, radius 12,
+ * Figma `Feedback/Toast` (page EduBranch AI – Design System, node 228:178) — Type Success | Error | Info.
+ *  - Card: white, width 360 (page EduBranch AI – Screens frame 03.3 uses 480), padding 16, gap 12, radius 12,
  *    shadow 0 8 24 rgba(42,78,127,.16); items top-aligned
  *  - Icon box 32x32 radius 8 with a 16px icon:
  *      Success #E1F7E9 + circle-check stroke 0.85 #00B343
@@ -12,7 +12,7 @@ import { cx, FOCUS_RING } from "@/components/ds/shared";
  *      Info    #DFEDF9 + info stroke 1.295 #2A4E7F
  *  - Content column gap 2: Title Roboto Medium 14/20 #202124, Message Regular 12/16 #696A70
  *  - Close: Icon/x 16px stroke 1.333 #909198
- * Page 08 places it at top 96 / right 32 of the screen (frame 03.3): see <ToastRegion>.
+ * Page EduBranch AI – Screens places it at top 96 / right 32 of the screen (frame 03.3): see <ToastRegion>.
  */
 export type ToastType = "success" | "error" | "info";
 

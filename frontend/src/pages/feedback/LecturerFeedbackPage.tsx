@@ -6,7 +6,7 @@ import { EmptyState } from "@/components/feedback";
 import { useLecturerCourseCases } from "@/pages/statistics/useLecturerCourseCases";
 
 /*
- * 04.1 Hàng đợi Review và phản hồi lập luận — Figma page 08, node 483:14976.
+ * 04.1 Hàng đợi Review và phản hồi lập luận — Figma page EduBranch AI – Screens, node 483:14976.
  *  - Metrics: 4 × "stacked" MetricCard (279x122), gap 20.
  *  - Student list: white, radius 18, padding 20, gap 24 → toolbar (h32), table
  *    (column headings h40 #F3F6FC radius 8, padding-left 16, labels 12/16 #696A70).

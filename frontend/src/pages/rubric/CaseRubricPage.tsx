@@ -1,5 +1,5 @@
 /**
- * CaseRubricPage — Giảng viên · Rubric nghiên cứu chất lượng tình huống (Figma page 08, frame 07.8).
+ * CaseRubricPage — Giảng viên · Rubric nghiên cứu chất lượng tình huống (Figma page EduBranch AI – Screens, frame 07.8).
  * Routes: /lecturer/cases/:caseId/rubric and /lecturer/rubric (no case selected).
  * The shell renders the page title; this component renders only the content area.
  *

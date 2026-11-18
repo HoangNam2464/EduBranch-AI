@@ -1,7 +1,8 @@
 /**
  * EduBranch design-system components — React twins of the Figma component sets
- * on page "02 · Eduva – Design System" (and the EB/* public-site sets on page 05)
- * exactly as they are instanced on page "08 · EduBranch – Bản hoàn chỉnh".
+ * on page "EduBranch AI – Design System" (shared sets moved there from the Eduva
+ * design-system page on 2026-11-18, plus the EB/* public-site sets)
+ * exactly as they are instanced on page "EduBranch AI – Screens".
  */
 export { cx, FOCUS_RING } from "@/components/ds/shared";
 
@@ -48,7 +49,7 @@ export type { PublicNavProps, PublicNavLink, PublicNavAction } from "@/component
 export { PublicFooter } from "@/components/ds/PublicFooter";
 export type { PublicFooterProps, PublicFooterColumn, PublicFooterLink } from "@/components/ds/PublicFooter";
 
-// Shared page patterns (hand-built on page 08, reused across screens).
+// Shared page patterns (hand-built on page EduBranch AI – Screens, reused across screens).
 export { StatusPill } from "@/components/ds/StatusPill";
 export type { StatusPillProps, StatusPillTone, StatusPillSize } from "@/components/ds/StatusPill";
 export { FilterControl } from "@/components/ds/FilterControl";

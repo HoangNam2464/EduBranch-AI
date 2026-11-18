@@ -5,7 +5,7 @@ import { PublicButton } from "@/components/ds/PublicButton";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
 
 /**
- * Figma `EB/Public Nav` (page 05, node 455:358) — Active None | "Cách hoạt động" | "Câu hỏi".
+ * Figma `EB/Public Nav` (page EduBranch AI – Design System, node 455:358) — Active None | "Cách hoạt động" | "Câu hỏi".
  *  - 1440x72, white, 1px bottom stroke #E1E8F5, padding 0 120, gap 40, items centred
  *  - Logo: EB/Logo Mark 32x32 + brand Roboto Medium 16/24 #202124, gap 10
  *  - Links gap 32: Roboto Regular 14/20 #696A70; the active link is Medium 14/20 #2A4E7F

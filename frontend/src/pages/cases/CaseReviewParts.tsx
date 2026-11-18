@@ -1,5 +1,5 @@
 /**
- * Building blocks of the case editor (Figma page 08 · 03.4 / 03.5), measured on the frames:
+ * Building blocks of the case editor (Figma page EduBranch AI – Screens · 03.4 / 03.5), measured on the frames:
  *  - Card: bg/surface, radius 18, padding 20; title Eduva/H3 (Roboto Regular 16/24, text/primary).
  *  - Row list ("Resource file"): rows 36 high, padding 8 0, gap 8, 1px bottom border/default,
  *    16px icon + Eduva/Body 14/20; rows are 8 apart.

@@ -1,5 +1,5 @@
 /**
- * CasesPage — Giảng viên · Quản lý Case Study (Figma page 08)
+ * CasesPage — Giảng viên · Quản lý Case Study (Figma page EduBranch AI – Screens)
  * - 03.1 Quản lý Case Study [483:14030]: status + learning-mode analytics, case library grid
  * - 03.2 Đang sinh case nháp [483:14338]: progress dialog while POST /cases/generate runs
  * - 03.3 Sinh case thất bại [483:14666]: error toast with the real failure

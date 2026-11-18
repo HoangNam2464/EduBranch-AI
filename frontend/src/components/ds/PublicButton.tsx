@@ -8,7 +8,7 @@ import { publicButtonClassName, type PublicButtonSize, type PublicButtonVariant 
 export type { PublicButtonSize, PublicButtonVariant };
 
 /**
- * Figma `EB/Button` (page 05, node 447:278) — the public-site button (landing, public nav).
+ * Figma `EB/Button` (page EduBranch AI – Design System, node 447:278) — the public-site button (landing, public nav).
  * It is NOT identical to `Actions/Button`: radius 6 (not 8), Secondary is white with a
  * 1px #D1D9E8 stroke, Ghost label is #696A70, Danger is #D11F1F, and there is a Tonal variant.
  *  - MD: h40, padding 0 16, gap 8, Roboto Medium 14/20 · SM: h32, padding 0 12, gap 8, Medium 12/16

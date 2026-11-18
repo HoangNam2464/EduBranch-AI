@@ -1,5 +1,5 @@
 /**
- * Admin · Nhật ký hệ thống — Figma page 08, frame 10.9 (536:7923).
+ * Admin · Nhật ký hệ thống — Figma page EduBranch AI – Screens, frame 10.9 (536:7923).
  *
  * Real data only: the backend writes no activity log that an API exposes (no
  * `@Roles("ADMIN")` controller), so the KPI cards and the log table are not rendered.

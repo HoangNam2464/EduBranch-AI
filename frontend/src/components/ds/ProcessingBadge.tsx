@@ -3,7 +3,7 @@ import { CircleCheck, CircleX, Clock, LoaderCircle, type LucideIcon } from "luci
 import { BadgeBase } from "@/components/ds/BadgeBase";
 
 /**
- * Figma `Data Display/Badge/Processing` (page 02, node 225:337), with the colour
+ * Figma `Data Display/Badge/Processing` (page EduBranch AI – Design System, node 225:337), with the colour
  * overrides every page-08 instance applies (frames 02.7, 05.1, 05.9, 10.7):
  *  - Pending    bg #FFF1DE, clock 14px stroke 1.511 #F58A00, text #9A5700
  *  - Processing bg #DFEDF9, loader-circle stroke 1.333 #00A5F5, text #2A4E7F

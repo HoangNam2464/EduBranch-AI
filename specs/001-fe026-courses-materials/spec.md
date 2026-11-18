@@ -7,14 +7,14 @@
 **Status**: Draft (Clarified)  
 **Parent Task**: Jira `EBA-89` (Sprint 3) · Master Tasks `EBA-101`, `EBA-102`, `EBA-201`, `EBA-202`, `EBA-203`, `EBA-204`, `EBA-205`, `EBA-206`, `EBA-207`, `EBA-217`, `EBA-218`  
 **Input**: Jira description (verbatim):
-> "Làm lại các màn Khóa học và Tài liệu đã code (danh sách khóa học, tạo/sửa khóa học, bảng tài liệu, upload, trạng thái xử lý, xem nguồn) cho khớp Figma page 08 (frame 02.1–02.7), giữ nguyên tích hợp API hiện có."
+> "Làm lại các màn Khóa học và Tài liệu đã code (danh sách khóa học, tạo/sửa khóa học, bảng tài liệu, upload, trạng thái xử lý, xem nguồn) cho khớp Figma page EduBranch AI – Screens (frame 02.1–02.7), giữ nguyên tích hợp API hiện có."
 
 ---
 
 ## 1. Mục tiêu & Phạm vi (Scope & Boundaries)
 
 ### 1.1. Mục tiêu (What & Why)
-- **Mục tiêu**: Tái cấu trúc và hoàn thiện giao diện các màn hình Quản lý Khóa học và Tài liệu môn học (`frontend/src/pages/lecturer/CoursesPage.tsx`, `MaterialsPage.tsx`, `RagSourceInspectorPage.tsx`) để đồng bộ 100% với bản thiết kế Figma chuẩn (Page `08 · EduBranch – Bản hoàn chỉnh`, các frame `02.1` đến `02.7`).
+- **Mục tiêu**: Tái cấu trúc và hoàn thiện giao diện các màn hình Quản lý Khóa học và Tài liệu môn học (`frontend/src/pages/lecturer/CoursesPage.tsx`, `MaterialsPage.tsx`, `RagSourceInspectorPage.tsx`) để đồng bộ 100% với bản thiết kế Figma chuẩn (Page `EduBranch AI – Screens`, các frame `02.1` đến `02.7`).
 - **Lý do**: Khắc phục các vi phạm thiết kế, loại bỏ 100% dữ liệu giả lập (`MOCK_CHUNKS`, fake upload files), chuẩn hóa hệ thống màu sắc theo Design System mới (Navy `#2A4E7F` / Sky `#00A5F5`), đồng thời bảo toàn các hành vi nghiệp vụ và bảo mật đã được nghiệm thu trong Sprint 1 và 2 (`FE-001` … `FE-006`, `QA-003`, `QA-004`).
 
 ### 1.2. Vai trò người dùng (Users & Roles)
@@ -64,13 +64,13 @@
 
 - **Q6: Phạm vi Bản địa hóa & Nút chuyển ngôn ngữ VI/EN trên Header (Localization Scope & Header Language Switch)**
   - **Question**: Bản thiết kế Figma thể hiện nút chuyển đổi ngôn ngữ VI/EN trên shared header (`EB/Header Actions`, frame `Language` node `544:5800`). Phạm vi bản địa hóa cho FE-026 và MVP được xác định như thế nào?
-  - **Answer**: `SUPERSEDED (2026-11-16, PO chat): replaced by the PO directive that the approved Figma page 08, including the VI/EN switch, is the UI source`:
+  - **Answer**: `SUPERSEDED (2026-11-16, PO chat): replaced by the PO directive that the approved Figma page EduBranch AI – Screens, including the VI/EN switch, is the UI source`:
     > "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."
   - **PO Directive mới `[PO-ĐÃ-XÁC-NHẬN]` (2026-11-16, chat, verbatim)**:
-    > "Figma page 08 đã được PO chốt. Nút chuyển ngôn ngữ VN / ENG là thành phần tôi chủ động bổ sung và đã hoàn thiện trên Figma. Thiết kế này thuộc giao diện sản phẩm đã được duyệt."
+    > "Figma page EduBranch AI – Screens đã được PO chốt. Nút chuyển ngôn ngữ VN / ENG là thành phần tôi chủ động bổ sung và đã hoàn thiện trên Figma. Thiết kế này thuộc giao diện sản phẩm đã được duyệt."
     - **Nguyên tắc**: (1) Figma đã duyệt là nguồn duy nhất cho thiết kế UI; (2) Các tài liệu kỹ thuật, ghi chú UX, Kế hoạch dự án và Spec Kit chưa được PO duyệt phải được cập nhật để khớp với Figma; (3) Tuyệt đối không dùng tài liệu cũ hoặc tài liệu Draft để loại bỏ, từ chối hay hoãn thành phần giao diện đã được duyệt.
     - **Yêu cầu thực thi**:
-      - Giữ nguyên nút chuyển đổi VI/EN trên shared header đúng như trên Figma page 08 (khung `Language` node `544:5800`, component `EB/Header Actions` `540:347`). Bản thân header thuộc phạm vi vỏ ứng dụng FE-025 (shell); các màn hình và component dùng chung của FE-026 phải chuyển đổi đồng bộ theo trạng thái ngôn ngữ được chọn.
+      - Giữ nguyên nút chuyển đổi VI/EN trên shared header đúng như trên Figma page EduBranch AI – Screens (khung `Language` node `544:5800`, component `EB/Header Actions` `540:347`). Bản thân header thuộc phạm vi vỏ ứng dụng FE-025 (shell); các màn hình và component dùng chung của FE-026 phải chuyển đổi đồng bộ theo trạng thái ngôn ngữ được chọn.
       - Hệ thống bản địa hóa hỗ trợ song ngữ Tiếng Việt và Tiếng Anh trong phạm vi giao diện được duyệt; khôi phục cặp tệp locale `.vi.json` / `.en.json` theo cơ chế i18n của FE-023 [FE-023 target (expected; not on develop `273f1fc`; verified by T028)] (`SUPPORTED_LANGUAGES = ["vi", "en"]`, `DEFAULT_LANGUAGE = "vi"`, `fallbackLng: "vi"`, lưu lựa chọn trong `localStorage` key `LANGUAGE_STORAGE_KEY = "edubranch-lang"`, localStorage-only detection, gộp file qua `import.meta.glob`).
       - Tiêu chí nghiệm thu (AC) và kiểm thử phải kiểm chứng hành vi chuyển đổi ngôn ngữ thực tế trên trình duyệt, không chỉ kiểm tra riêng nút bấm.
       - Màn hình và component dùng chung hiển thị trọn vẹn theo một ngôn ngữ tại một thời điểm (không trộn lẫn ngôn ngữ); dữ liệu động từ API (tên khóa học, tên file, nội dung chunk) hiển thị đúng theo dữ liệu gốc được lưu trữ, không tự ý dịch; không tự ý dịch tự do thuật ngữ nghiệp vụ; các chuỗi tiếng Anh được đánh dấu `[ĐỀ-XUẤT]` cho đến khi PO duyệt.
@@ -86,7 +86,7 @@
   - **Facts now true** `[DỮ-KIỆN]`:
     - Backend (branch `feature/course-soft-archive`, chưa merge): `PATCH /api/v1/courses/:courseId/archive` (LECTURER, chỉ owner; 404 course không tồn tại, 403 không phải owner; đặt `courses.is_active = false`; idempotent: lưu trữ lại một course đã lưu trữ trả 200 kèm course). Envelope `{ status: "SUCCESS", data: <course với is_active = false, active = false> }`. Tài liệu, chunks pgvector, object MinIO và case được giữ nguyên. `GET /courses` (danh sách giảng viên) chỉ trả course `is_active = TRUE`; `GET /courses/:courseId` vẫn trả course đã lưu trữ (is_active false). Tải tài liệu lên course đã lưu trữ hoặc sinh case trong đó trả HTTP 409 "Course is archived" (403 vẫn ưu tiên với non-owner). `DELETE /courses/:courseId` không còn (404). Không có thao tác khôi phục (restore/unarchive). Hành vi phía sinh viên không đổi.
     - Đây là triển khai của `BE-PROP-2` (route ở trên): đã triển khai trên nhánh `feature/course-soft-archive`, chờ merge; không có trong Jira (không khẳng định Jira key).
-    - Figma page 08 frame 02.3 (node `483:10111`, đổi tên "02.3 · Giảng viên · Hộp thoại xác nhận lưu trữ khóa học"), dialog instance `483:10341` (variant Type=Destructive, không đổi): title `I483:10341;228:301` = "Lưu trữ khóa học này?"; message `I483:10341;228:302` = "Khóa học sẽ ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên." + dòng 2 "CS402 · An ninh mạng & Ứng cứu sự cố · 4 tài liệu · 6 case"; nút xác nhận `I483:10341;228:310;225:254` = "Lưu trữ khóa học"; nút hủy "Hủy bỏ" không đổi.
+    - Figma page EduBranch AI – Screens frame 02.3 (node `483:10111`, đổi tên "02.3 · Giảng viên · Hộp thoại xác nhận lưu trữ khóa học"), dialog instance `483:10341` (variant Type=Destructive, không đổi): title `I483:10341;228:301` = "Lưu trữ khóa học này?"; message `I483:10341;228:302` = "Khóa học sẽ ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên." + dòng 2 "CS402 · An ninh mạng & Ứng cứu sự cố · 4 tài liệu · 6 case"; nút xác nhận `I483:10341;228:310;225:254` = "Lưu trữ khóa học"; nút hủy "Hủy bỏ" không đổi.
     - QA-004 AC-3 được PO sửa thành: "Kiểm thử tính toàn vẹn khi lưu trữ khóa học (lưu trữ mềm, OPD-014 / C1-B): khóa học rời danh sách đang hoạt động; tài liệu, chunks pgvector, object MinIO và case được giữ nguyên; khóa học đã lưu trữ không nhận tài liệu hoặc case mới; không còn API xóa cứng khóa học."
 
 ### Session 2026-11-16 (Tiếp tục) — Câu hỏi mở chờ Product Owner quyết định (`[CHƯA-QUYẾT]`)
@@ -120,14 +120,14 @@ Order convention: A = keep the approved Figma as drawn; B = follow the earlier P
 
 ### 3.1. Nguồn tham chiếu Figma & Trạng thái thiết kế
 - **Figma File Key**: `6CtSgJPKo4jCIbB7WwCaWw`
-- **Figma Canonical Page**: `08 · EduBranch – Bản hoàn chỉnh` (Node ID: `483:9634`)
+- **Figma Canonical Page**: `EduBranch AI – Screens` (Node ID: `483:9634`)
 - **Figma Section**: `02 · Giảng viên · Khóa học & Tài liệu` (Node ID: `483:9636`)
 - **Trạng thái đọc Figma MCP**: Đã kiểm tra và trích xuất thành công toàn bộ Node ID, tên frame và kích thước chính xác qua công cụ Figma MCP `get_metadata` trên section `483:9636`.
 - **Trạng thái phê duyệt Token**: `[DỮ-KIỆN]` Theo GDS §0.2 và AGENTS.md Quy tắc 9, các giá trị thiết kế là tạm thời (provisional) cho đến khi bộ token chính thức được phê duyệt; các frame chưa đóng dấu Ready for Dev.
 
 ### 3.2. Danh mục 7 Frames chuẩn (02.1 – 02.7)
 
-| Mã Frame | Node ID | Tên Frame trên Figma Page 08 | Kích thước (W × H) | Route / Vị trí hiển thị | Component Frontend tương ứng | Nhiệm vụ chính & Bố cục |
+| Mã Frame | Node ID | Tên Frame trên Figma Page EduBranch AI – Screens | Kích thước (W × H) | Route / Vị trí hiển thị | Component Frontend tương ứng | Nhiệm vụ chính & Bố cục |
 |---|---|---|---|---|---|---|
 | **02.1** | `483:9637` | `02.1 · Giảng viên · Quản lý khóa học` | 1440 × 1413 | `/lecturer/courses` | `CoursesPage.tsx` | Bố cục 2 cột: Danh sách thẻ khóa học bên trái (ảnh cover, mã `courseCode`, tên `name`, số tài liệu sẵn sàng, số case, ghi chú cần xử lý), panel chi tiết khóa học được chọn bên phải. |
 | **02.2** | `483:9866` | `02.2 · Giảng viên · Hộp thoại khởi tạo khóa học` | 1440 × 1413 | Modal trên `/lecturer/courses` | Modal trong `CoursesPage.tsx` | Hộp thoại tạo mới / chỉnh sửa khóa học: Tên khóa học (`name`, bắt buộc, độ dài 2..200 ký tự per `CreateCourseDto`), Mã khóa học (`courseCode`, [DỮ-KIỆN] Figma 02.2 ghi "Mã môn học *" bắt buộc, backend DTO ghi `@IsOptional()`; tính bắt buộc/tùy chọn: `BLOCKED-ON-C3 — pending PO` (C3-A bắt buộc vs C3-B tùy chọn); tối đa 20 ký tự), Mô tả (`description`, tùy chọn, tối đa 1000 ký tự), Ảnh bìa (tùy chọn). Submit `POST /courses` hoặc `PUT /courses/:courseId`. |
@@ -141,7 +141,7 @@ Order convention: A = keep the approved Figma as drawn; B = follow the earlier P
 - **Nhãn nút thao tác trên dòng FAILED (Frame 02.4 / Node `586:8570`)**: [DỮ-KIỆN] Trên Figma frame 02.4 (`586:8570`), nút hành động gắn nhãn "Thử lại". [PO-ĐÃ-XÁC-NHẬN] Theo PO Q3 (2026-11-15, chat), PO yêu cầu đổi nhãn nút thành "Tải lên lại" (hoặc "Chọn tệp tải lại") do backend chưa có API re-ingest tài liệu hiện hữu. Nhãn nút hành động trên giao diện: `BLOCKED-ON-C2 — pending PO` (C2-A "Thử lại" vs C2-B "Tải lên lại"). Về hành vi: khi bấm nút, hệ thống mở Modal Tải tài liệu (02.5) kèm ngữ cảnh lỗi của tệp trước đó và yêu cầu người dùng chọn lại file gốc để tạo lượt xử lý mới qua API upload hiện có `POST /courses/:courseId/materials` (luồng hành vi này là như nhau dưới cả C2-A và C2-B). Out of FE-026 note: cơ chế "Thử lại" re-ingest tài liệu hiện hữu tại chỗ đòi hỏi API backend mới và nằm ngoài phạm vi FE-026 (PO Q3).
 
 ### 3.2.2. Nút chuyển đổi ngôn ngữ VI/EN trên Shared Header (Figma Language Switch)
-- Nút chuyển đổi ngôn ngữ `Language` (Node `544:5800`) thuộc component dùng chung `EB/Header Actions` (Node `540:347`, COMPONENT; mô tả "... đổi ngôn ngữ VI/EN ..."; 76 instances trên Page 08 `483:9634`). Kích thước 78×40, fill `bg/surface-muted` (`#EEF2F9`), viền `border-default`, bo góc radius 10.
+- Nút chuyển đổi ngôn ngữ `Language` (Node `544:5800`) thuộc component dùng chung `EB/Header Actions` (Node `540:347`, COMPONENT; mô tả "... đổi ngôn ngữ VI/EN ..."; 76 instances trên Page EduBranch AI – Screens `483:9634`). Kích thước 78×40, fill `bg/surface-muted` (`#EEF2F9`), viền `border-default`, bo góc radius 10.
   - `Option · VI` (Node `544:5801`): 34×32, radius 8, fill `action/primary` (`#2A4E7F`), chữ "VI" (`544:5802`) Roboto Medium 12 `text/inverse` (`#FFFFFF`) — thể hiện trạng thái hoạt động (active state mặc định).
   - `Option · EN` (Node `544:5803`): không fill, chữ "EN" (`544:5804`) Roboto Medium 12 `text/secondary` (`#696A70`) — thể hiện trạng thái không hoạt động (inactive state). Nhãn trên Figma chính xác là "VI" và "EN".
   - Trạng thái EN-active chưa được vẽ riêng trên Figma prototype; khi EN được chọn, style hai tùy chọn được hoán đổi (EN nhận fill `action/primary` + `text/inverse`, VI chuyển sang no fill + `text/secondary`).
@@ -301,7 +301,7 @@ Giảng viên muốn kiểm tra các đoạn trích dẫn (chunks) của một t
 
 ### Measurable Outcomes (Chỉ số đo lường được)
 
-- **SC-001**: 100% giao diện của 7 frame (02.1–02.7) khớp pixel, bố cục, khoảng cách (4px grid), màu sắc token và typography với Figma Page 08 tại các frame node ID tương ứng khi kiểm tra visual QA song song trên trình duyệt thực tế.
+- **SC-001**: 100% giao diện của 7 frame (02.1–02.7) khớp pixel, bố cục, khoảng cách (4px grid), màu sắc token và typography với Figma Page EduBranch AI – Screens tại các frame node ID tương ứng khi kiểm tra visual QA song song trên trình duyệt thực tế.
 - **SC-002**: 0% dữ liệu giả lập còn sót lại trong codebase: loại bỏ hoàn toàn `MOCK_CHUNKS`, `OTHER_DOCUMENTS` và mảng 3 tệp hard-coded trong modal upload; áp dụng nguyên tắc Missing API ≠ Empty Data: `EmptyState` chỉ xuất hiện khi API trả về 200 OK với danh sách rỗng; các trạng thái lỗi hoặc thiếu API (404, 403, 5xx) thể hiện đúng `ErrorState` trung thực với lý do thực tế.
 - **SC-003**: 100% các tệp sai định dạng (không phải PDF/DOCX) hoặc vượt quá `MAX_SIZE_BYTES` (50MB) bị từ chối ngay tại client với thông báo lỗi cụ thể, không phát sinh request tải lên lãng phí lên server.
 - **SC-004**: 100% request xóa tài liệu gửi đúng endpoint `DELETE /materials/:id` (tương đối theo baseURL `/api/v1`); bảng danh sách tài liệu không tự ý gỡ hàng khi API trả về lỗi (403, 404, 500 hoặc mất kết nối).
@@ -317,7 +317,7 @@ Giảng viên muốn kiểm tra các đoạn trích dẫn (chunks) của một t
 - Cấm để sót bất kỳ tham chiếu nào tới `MOCK_CHUNKS`, `OTHER_DOCUMENTS`, hoặc mảng fake files trong `MaterialsPage.tsx`.
 
 ### 9.2. Phương pháp kiểm thử Visual QA đối chiếu Figma (CLAUDE.md & QG3)
-- Mở song song ứng dụng chạy trên trình duyệt thực tế (với backend docker compose) và bản thiết kế Figma Page 08 tại các frame 02.1 – 02.7 (`483:9637` đến `483:11148`).
+- Mở song song ứng dụng chạy trên trình duyệt thực tế (với backend docker compose) và bản thiết kế Figma Page EduBranch AI – Screens tại các frame 02.1 – 02.7 (`483:9637` đến `483:11148`).
 - Kiểm tra các tiêu chí thị giác:
   1. Bố cục 2 cột của `CoursesPage`: Tỉ lệ, khoảng cách card `20px`, màu nền canvas `#F3F6FC`, không có viền thừa quanh card trắng.
   2. Màu sắc nút và badge: Nút chính màu Navy `#2A4E7F`, không còn nút màu xanh lam cũ `#2563EB`, không có màu tím hay gradient.

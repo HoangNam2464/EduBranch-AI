@@ -1,7 +1,7 @@
  EduBranch-AI — Global Design System
 
 > **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
-> **Visual language v2 (2026-11-12, PO decision in chat)** (typography and imagery aligned to the Eduva template later on 2026-11-12; canonical Figma reference: page `08 · EduBranch – Bản hoàn chỉnh`): §1.1 (tone), §2, §3.1, §3.2 (colors), §4, §5, §6 (colors/shapes), §7 and §8 were updated to the layered navy/sky visual language derived from the licensed Eduva template (Figma page `03 · Eduva – Screens`, 14 original desktop screens). The previous flat gray/`#2563EB` values are retired. Product behaviour, pedagogy guardrails and accessibility rules are unchanged.
+> **Visual language v2 (2026-11-12, PO decision in chat)** (typography and imagery aligned to the Eduva template later on 2026-11-12; canonical Figma reference: page `EduBranch AI – Screens`): §1.1 (tone), §2, §3.1, §3.2 (colors), §4, §5, §6 (colors/shapes), §7 and §8 were updated to the layered navy/sky visual language derived from the licensed Eduva template (14 original desktop screens, now in the Eduva archive file (separate Figma file, copied by the PO on 2026-11-18; removed from the EduBranch file)). The previous flat gray/`#2563EB` values are retired. Product behaviour, pedagogy guardrails and accessibility rules are unchanged.
 > **Target Platform**: React 19 / TailwindCSS v4 implementation; Figma file `6CtSgJPKo4jCIbB7WwCaWw` (variables `EduBranch · *`, text styles `EduBranch/*`).
 > **Companion Agent Rule**: [`.agents/rules/01-ui-design-standards.md`](../../.agents/rules/01-ui-design-standards.md)
 > **Scope**: All EduBranch-AI product screens (14 routes across P0–P4). Does NOT cover the internal "Start Design" tooling — see [`SITE-ARCHITECTURE.md §7`](SITE-ARCHITECTURE.md) for its classification.
@@ -164,7 +164,7 @@ font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Hel
 | `text-overline` | `11px / 16px` | `500`, uppercase | `Eduva/Overline`: 1–3 word category labels only |
 | `text-mono` | `13px / 20px` | `400`, Roboto Mono | `Eduva/Mono`: course codes, file extensions, counts |
 
-The public site is a single scrolling landing page (`/`, Figma page 08, frame 00.2; PO decision 2026-11-12: the former separate How it works / FAQ frames 00.6 / 00.7 were merged into it as anchor sections `#cach-hoat-dong`, `#hai-che-do`, `#cau-hoi` on one uniform `bg/canvas` background). It uses **Be Vietnam Pro SemiBold** for headings only; body text stays Roboto. Figma text styles `EduBranch/Public Hero` (60/70), `EduBranch/Public H2` (40/50), `EduBranch/Public H3` (22/30), `EduBranch/Public Statement` (Medium 28/38). App screens never use Be Vietnam Pro.
+The public site is a single scrolling landing page (`/`, Figma page EduBranch AI – Screens, frame 00.2; PO decision 2026-11-12: the former separate How it works / FAQ frames 00.6 / 00.7 were merged into it as anchor sections `#cach-hoat-dong`, `#hai-che-do`, `#cau-hoi` on one uniform `bg/canvas` background). It uses **Be Vietnam Pro SemiBold** for headings only; body text stays Roboto. Figma text styles `EduBranch/Public Hero` (60/70), `EduBranch/Public H2` (40/50), `EduBranch/Public H3` (22/30), `EduBranch/Public Statement` (Medium 28/38). App screens never use Be Vietnam Pro.
 
 Rules:
 - Never use color alone to indicate emphasis where weight can do the job.
@@ -185,7 +185,7 @@ Rules:
   - **NEVER** use Unicode emojis (`🌿`, `📭`, `📚`, `📋`, `✅`, `🎯`, `📝`, `🏁`, `📊`, `💡`, `📍`, `⚡`, `✍️`, `🤖`, `🔒`, `👤`, `❓`, `👨‍🏫`, `👉`).
   - **NEVER** use raw ASCII character hacks (`->`, `<-`, `&rarr;`, `&times;`, `✕`, `↑`).
 - **Canonical Domain Icon Map**:
-  - Brand Mark: official logo mark — Figma component `EB/Logo Mark` (source page 03 "Icon K3"), never recoloured or redrawn
+  - Brand Mark: official logo mark — Figma component `EB/Logo Mark` (originally the Eduva template's "Icon K3"; on page `EduBranch AI – Design System`), never recoloured or redrawn
   - Courses: `BookOpen` · Materials: `FileText` / `Upload` · Cases: `FolderGit2`
   - Branching Study Mode: `GitFork` · Review Study Mode: `FileCheck2`
   - Terminal Outcome Node: `Flag` · Socratic Challenge Support: `MessageSquareQuestion` / `HelpCircle`
@@ -194,7 +194,7 @@ Rules:
 
 ### 3.3. Language & Microcopy Consistency
 
-- **UI Language** (PO 2026-11-16; supersedes the Vietnamese-only UI decision of 2026-11-02): Vietnamese is the default UI language; English is supported through the VI/EN switch approved on Figma page 08 (`EB/Header Actions` `540:347`, `Language` `544:5800`); each screen renders fully in the selected language; zero language mixing on the same screen; established domain terms are kept (e.g. Branching Study, Review Study, Case Study, Challenge Support); no leftover template copy.
+- **UI Language** (PO 2026-11-16; supersedes the Vietnamese-only UI decision of 2026-11-02): Vietnamese is the default UI language; English is supported through the VI/EN switch approved on Figma page EduBranch AI – Screens (`EB/Header Actions` `540:347`, `Language` `544:5800`); each screen renders fully in the selected language; zero language mixing on the same screen; established domain terms are kept (e.g. Branching Study, Review Study, Case Study, Challenge Support); no leftover template copy.
 - **No Preachy Instructional Callout Spam**: Do not place multi-sentence colored callout boxes explaining how the app works above every textarea or card. Use a single concise helper caption (`12px`, `text-secondary`) if needed.
 - Never show raw JSON, enum keys or internal IDs to users.
 

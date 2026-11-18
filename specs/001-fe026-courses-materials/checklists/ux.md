@@ -12,7 +12,7 @@
 
 ## 1. Figma Traceability & Layout Hierarchy
 
-- [ ] CHK001 Are canonical Figma frame node IDs explicitly specified for all seven screens/dialogs (02.1 through 02.7) on Page `08 · EduBranch – Bản hoàn chỉnh`? [Traceability, Spec §3.2]
+- [ ] CHK001 Are canonical Figma frame node IDs explicitly specified for all seven screens/dialogs (02.1 through 02.7) on Page `EduBranch AI – Screens`? [Traceability, Spec §3.2]
 - [ ] CHK002 Is the desktop canvas target viewport quantified as 1440px across all primary view specifications? [Clarity, Spec §3.2, Spec §9]
 - [ ] CHK003 Are layout hierarchy and column proportions defined for the 2-column layout on Frame 02.1 (left card list vs. right detail overview panel)? [Completeness, Spec §3.2, Spec §FR-001]
 - [ ] CHK004 Are aspect ratio, thumbnail dimensions, and fallback visual treatments specified for course card cover images? [Completeness, Spec §3.2, Frame 02.1]
@@ -68,7 +68,7 @@
 ## 7. Measurability & Acceptance Criteria Quality
 
 - [ ] CHK038 Can the "zero fake data" policy be objectively verified (complete removal of `MOCK_CHUNKS`, `OTHER_DOCUMENTS`, and hardcoded upload files)? [Measurability, Spec §8 SC-002, Jira AC 4]
-- [ ] CHK039 Are visual fidelity criteria defined with verifiable browser inspection procedures at 1440px viewport against Figma Page 08 frames? [Measurability, Spec §8 SC-001, Spec §9]
+- [ ] CHK039 Are visual fidelity criteria defined with verifiable browser inspection procedures at 1440px viewport against Figma Page EduBranch AI – Screens frames? [Measurability, Spec §8 SC-001, Spec §9]
 - [ ] CHK040 Is the material table row-retention criterion measurable (table must not remove rows prior to receiving HTTP 200/204 confirmation from backend)? [Measurability, Spec §8 SC-004, PO Q5]
 - [ ] CHK041 Is the production build validation criterion (`npm run build` passing with zero TypeScript or style errors) documented? [Measurability, Spec §8 SC-005, Jira AC 5]
 

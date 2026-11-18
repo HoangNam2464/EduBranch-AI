@@ -6,7 +6,7 @@ import { AuthFormHeading, AuthPasswordField, AuthSplitLayout, AuthSubmitButton }
 import showcaseImage from "@/pages/auth/assets/showcase-recovery.webp";
 
 /**
- * 00.3c · Mật khẩu mới · Biểu mẫu (Figma page 08, node 483:21621).
+ * 00.3c · Mật khẩu mới · Biểu mẫu (Figma page EduBranch AI – Screens, node 483:21621).
  * "Sign in form" 562 wide, column gap 20: heading · new password · confirm password
  * · "Primary action" (padding-top 16, column gap 32: button · back to sign in).
  * The backend has no reset-password endpoint: the form stays as designed and

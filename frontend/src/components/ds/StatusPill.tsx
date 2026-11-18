@@ -4,7 +4,7 @@ import { BadgeBase } from "@/components/ds/BadgeBase";
 import { cx } from "@/components/ds/shared";
 
 /**
- * Ad-hoc status / level / difficulty pills drawn by hand on page 08 (not instances of the
+ * Ad-hoc status / level / difficulty pills drawn by hand on page EduBranch AI – Screens (not instances of the
  * page-02 badge sets). Measured on 02.1, 02.4, 03.1, 04.1, 04.2, 05.3, 05.8, 07.3, 09.1, 10.3.
  *
  * Sizes (label Roboto Regular unless `weight="medium"`):

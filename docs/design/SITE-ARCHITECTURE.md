@@ -50,7 +50,7 @@ The system serves two academic user roles plus a system administrator (Admin, in
 
 ---
 
-## 5. Canonical Application Sitemap (Figma page 08)
+## 5. Canonical Application Sitemap (Figma page EduBranch AI – Screens)
 
 Because the Sprint Backlog tasks focus on core functional workflows, the Figma Master Template (`docs/05_FIGMA.md`) explicitly covers both the **foundational/public screens** (`/`, `/login`, `/register`, App Shells, Course Catalog, 403/404) and the **core academic feature screens**:
 
@@ -59,7 +59,7 @@ Because the Sprint Backlog tasks focus on core functional workflows, the Figma M
 - `/login` — **Sign In Page**: University email & password authentication (`pages/auth/LoginPage.tsx`).
 - `/register` — **Account Registration Page**: University account creation with explicit `Lecturer` / `Student` role selection (`pages/auth/RegisterPage.tsx`).
 
-> Update 2026-11-13: Figma page `08 · EduBranch – Bản hoàn chỉnh` is the finalized UI. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md). The same list is mirrored in `.agents/rules/01-ui-design-standards.md §8`.
+> Update 2026-11-13: Figma page `EduBranch AI – Screens` is the finalized UI. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md). The same list is mirrored in `.agents/rules/01-ui-design-standards.md §8`.
 
 ### 5.2. Lecturer Portal (`LecturerLayout` — shared collapsible sidebar)
 - `/lecturer/dashboard` — Lecturer dashboard [07.1] (D-05 → in MVP).

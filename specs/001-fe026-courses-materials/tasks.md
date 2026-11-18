@@ -163,7 +163,7 @@
 
 ## Phase 6: Polish & Cross-Cutting Concerns
 
-**Purpose**: System-wide regression verification, production build validation, and visual inspection against Figma Page 08 frames.
+**Purpose**: System-wide regression verification, production build validation, and visual inspection against Figma Page EduBranch AI – Screens frames.
 
 - [ ] T022 [P] Comprehensive QA Regression & Acceptance Matrix Verification in `frontend/src/qa/qa-matrix.spec.ts`  
   *Details*: Execute full QA regression matrix covering QA-003 (Courses & Course Archive, C1-B) and QA-004 (Materials, Upload, Delete, and RAG Source Inspector; AC-3 changed by the PO decision 2026-11-16 to: "Kiểm thử tính toàn vẹn khi lưu trữ khóa học (lưu trữ mềm, OPD-014 / C1-B): khóa học rời danh sách đang hoạt động; tài liệu, chunks pgvector, object MinIO và case được giữ nguyên; khóa học đã lưu trữ không nhận tài liệu hoặc case mới; không còn API xóa cứng khóa học."). Validate the 9 core scenarios in the Acceptance Test Matrix (ATM-Q3-01..03, ATM-Q4-01..03, ATM-Q5-01..03); ATM-Q2-01..03 are verified in T018, T020, T021 (`RagSourceInspectorPage.spec.ts`), ATM-L10N-01..05 in T002 and T033 (`localization.spec.ts`), and ATM-L10N-COPY-01 in T040 and T041 (`l10n-copy-review.md`, `scripts/l10n-approval-check.mjs`).  
@@ -173,8 +173,8 @@
   *Details*: Execute `npm run build` (`tsc -b && vite build`) at `frontend/` root to verify zero TypeScript errors, zero TailwindCSS warnings, and zero unresolved imports.  
   *AC*: SC-005, Jira AC 5. *Test*: Command line exit code 0.
 
-- [ ] T024 Perform Browser Visual Inspection at 1440px Viewport against Figma Page 08 Frames 02.1–02.7  
-  *Details*: Execute Quality Gate 3 (QG3) visual comparison in browser against canonical Figma Page 08 frames: `02.1` (`483:9637`), `02.2` (`483:9866`), `02.3` (`483:10111`), `02.4` (`483:10342`), `02.5` (`483:10598`), `02.6` (`483:10890`), `02.7` (`483:11148`). Verify 2-column layout, flat card surfaces, Navy `#2A4E7F` brand action buttons, 6px status dots, vector SVG icons, and zero emojis. Document evidence in verification report.  
+- [ ] T024 Perform Browser Visual Inspection at 1440px Viewport against Figma Page EduBranch AI – Screens Frames 02.1–02.7  
+  *Details*: Execute Quality Gate 3 (QG3) visual comparison in browser against canonical Figma Page EduBranch AI – Screens frames: `02.1` (`483:9637`), `02.2` (`483:9866`), `02.3` (`483:10111`), `02.4` (`483:10342`), `02.5` (`483:10598`), `02.6` (`483:10890`), `02.7` (`483:11148`). Verify 2-column layout, flat card surfaces, Navy `#2A4E7F` brand action buttons, 6px status dots, vector SVG icons, and zero emojis. Document evidence in verification report.  
   *AC*: SC-001, Jira AC 1, R01 §1–§6. *Test*: Visual QA checklist.
 
 ---
@@ -351,7 +351,7 @@ This Acceptance Test Matrix operationalizes the explicit directives provided by 
 
 ##### 5.1. Technical Language Switching Tests (ATM-L10N-01..05; may run with PROPOSED copy)
 
-- **Background & Context**: PO Directive (2026-11-16 `[PO-ĐÃ-XÁC-NHẬN]`) mandates that the approved Figma page 08, including the `Language` VI/EN toggle on shared header `EB/Header Actions` (Node `544:5800`), is the source for UI design. The frontend must support both Vietnamese (default) and English via FE-023 i18n mechanism with full key parity between `frontend/src/locales/courses.vi.json` / `courses.en.json` and `materials.vi.json` / `materials.en.json`. Automated tests (Playwright browser test & logic unit test) must verify real language switching in the browser, not just button presence. Technical switching tests verify switching behavior and may run with PROPOSED English copy.
+- **Background & Context**: PO Directive (2026-11-16 `[PO-ĐÃ-XÁC-NHẬN]`) mandates that the approved Figma page EduBranch AI – Screens, including the `Language` VI/EN toggle on shared header `EB/Header Actions` (Node `544:5800`), is the source for UI design. The frontend must support both Vietnamese (default) and English via FE-023 i18n mechanism with full key parity between `frontend/src/locales/courses.vi.json` / `courses.en.json` and `materials.vi.json` / `materials.en.json`. Automated tests (Playwright browser test & logic unit test) must verify real language switching in the browser, not just button presence. Technical switching tests verify switching behavior and may run with PROPOSED English copy.
 - **Test Case ATM-L10N-01 (Default Vietnamese on First Visit)**:
   - *Setup*: Clear `localStorage` (ensure `edubranch-lang` is absent).
   - *Execution*: Navigate to `/lecturer/courses`.

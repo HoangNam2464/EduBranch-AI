@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import { cx } from "@/components/ds/shared";
 
 /**
- * Figma `Forms/Field` (page 02, node 226:201) — Type Input | Textarea × State Default | Focus | Error | Disabled.
+ * Figma `Forms/Field` (page EduBranch AI – Design System, node 226:201) — Type Input | Textarea × State Default | Focus | Error | Disabled.
  *  - Column, gap 8: Label (Roboto Regular 14/20 #202124) / Control / Helper (Regular 12/16 #696A70)
  *  - Control: white, 1px inside stroke #D1D9E8, radius 8, padding 0 12, gap 8
  *      Input: h40, items centred · Textarea: h120, padding 12 12 0 12, items top
@@ -11,7 +11,7 @@ import { cx } from "@/components/ds/shared";
  *  - Focus: stroke 1.5px #00A5F5 + 0 0 0 3px rgba(0,165,245,.18)
  *  - Error: stroke 1px #FF3535, helper #FF3535
  *  - Disabled: label #909198, control #F3F6FC with stroke #E8EDF6, text #909198
- *  - Optional leading icon 16x16 #696A70 (page 08: book-open 1.7, key-round 1.36)
+ *  - Optional leading icon 16x16 #696A70 (page EduBranch AI – Screens: book-open 1.7, key-round 1.36)
  * Focus is driven by :focus-within, so the Default/Focus variants are one component.
  */
 type FieldBaseProps = {

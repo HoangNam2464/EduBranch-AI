@@ -1,5 +1,5 @@
 /**
- * Admin · Khóa học toàn hệ thống — Figma page 08, frame 10.5 (535:7402).
+ * Admin · Khóa học toàn hệ thống — Figma page EduBranch AI – Screens, frame 10.5 (535:7402).
  *
  * Real data only: `GET /courses` is LECTURER-only and returns the caller's own courses;
  * there is no system-wide course endpoint for ADMIN. The course cards, the search /

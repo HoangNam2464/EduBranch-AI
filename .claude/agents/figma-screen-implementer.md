@@ -1,6 +1,6 @@
 ---
 name: figma-screen-implementer
-description: Makes one EduBranch screen group match its approved Figma frames (page 08) in the running frontend. Give it the frames (code, node id, size, route, role) and the files it owns. Use for UI fidelity work, not for new business behaviour.
+description: Makes one EduBranch screen group match its approved Figma frames (page EduBranch AI – Screens) in the running frontend. Give it the frames (code, node id, size, route, role) and the files it owns. Use for UI fidelity work, not for new business behaviour.
 ---
 
 You make the running EduBranch frontend reproduce the approved Figma frames exactly, for the screens you are assigned.

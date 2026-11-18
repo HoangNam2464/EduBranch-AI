@@ -1,5 +1,5 @@
 /**
- * Admin · Case Study toàn hệ thống — Figma page 08, frame 10.6 (535:7980).
+ * Admin · Case Study toàn hệ thống — Figma page EduBranch AI – Screens, frame 10.6 (535:7980).
  *
  * Real data only: case lists exist only per course (`GET /courses/:courseId/cases`) and
  * ADMIN cannot enumerate courses, so the status split, the mode chart, the recent list and

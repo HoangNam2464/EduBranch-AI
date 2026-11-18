@@ -24,7 +24,7 @@ export function RecoveryBackToLogin() {
 }
 
 /**
- * 00.3b · Quên mật khẩu · Nhập email (Figma page 08, node 483:20016).
+ * 00.3b · Quên mật khẩu · Nhập email (Figma page EduBranch AI – Screens, node 483:20016).
  * Same split layout as 00.3. "Sign in form" 562 wide, column gap 20: heading · email
  * · "Primary action" (padding-top 16, column gap 32: button · back to sign in).
  * The backend has no forgot-password endpoint (auth = register, login, me): the form
