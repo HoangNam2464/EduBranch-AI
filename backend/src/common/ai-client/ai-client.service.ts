@@ -62,26 +62,42 @@ export class AiClientService {
     course_id: string;
     topic_hint?: string;
     num_nodes?: number;
+    idempotency_key?: string;
   }): Promise<any> {
     const url = `${this.baseUrl}/internal/v1/generation/generate-case`;
     this.logger.log(`Invoking AI Service case generation: ${url} for course ${payload.course_id}`);
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Internal-API-Key": this.apiKey,
-      },
-      body: JSON.stringify(payload),
-    });
+    const timeoutMs = this.configService.get<number>("AI_SERVICE_TIMEOUT_MS", 60000);
+    const controller = new AbortController();
+    const timeoutHandle = setTimeout(() => controller.abort(), timeoutMs);
 
-    if (!response.ok) {
-      const errText = await response.text();
-      this.logger.error(`AI Service generation failed (${response.status}): ${errText}`);
-      throw new Error(`AI Service generation error (${response.status}): ${errText}`);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Internal-API-Key": this.apiKey,
+        },
+        body: JSON.stringify(payload),
+        signal: controller.signal,
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        this.logger.error(`AI Service generation failed (${response.status}): ${errText}`);
+        throw new Error(`AI Service generation error (${response.status}): ${errText}`);
+      }
+
+      return await response.json();
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        this.logger.error(`AI Service generation timed out after ${timeoutMs}ms`);
+        throw new Error(`AI Service generation timed out after ${timeoutMs}ms`);
+      }
+      throw err;
+    } finally {
+      clearTimeout(timeoutHandle);
     }
-
-    return response.json();
   }
 
   async queryRetrieval(payload: {

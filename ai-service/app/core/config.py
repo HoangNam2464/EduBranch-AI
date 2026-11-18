@@ -75,6 +75,14 @@ class Settings(BaseSettings):
     rag_top_k: int = 5
 
     # =========================================================================
+    # AI Case Generation & Provider Limits [BE-015] (AC-4, AC-5, AC-6)
+    # =========================================================================
+    generation_timeout_seconds: float = 45.0  # Configurable timeout, default 45s (30s-60s per AC-4)
+    generation_max_attempts: int = 3  # 1 initial + max 2 retries (total 3 attempts per AC-5)
+    generation_retry_base_delay: float = 0.5  # Base delay for exponential backoff
+    generation_idempotency_ttl_seconds: int = 3600  # 1 hour TTL for idempotency deduplication cache
+
+    # =========================================================================
     # AI Reasoning / Challenge Support
     # =========================================================================
     challenge_support_max_rounds: int = 2
