@@ -42,9 +42,12 @@ describe('BranchingAttemptService', () => {
 
     it('should throw NotFoundException if case does not exist', async () => {
       mockDbService.query
-        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }) // resolveStudent
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }); // resolveStudent
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({ rows: [] }) // published-only case lookup
-        .mockResolvedValueOnce({ rows: [] }); // existence check
+        .mockResolvedValueOnce({ rows: [] }) // existence check
+        .mockResolvedValueOnce({}); // ROLLBACK
 
       await expect(service.startAttempt('non-existent-case', 'student-1')).rejects.toThrow(
         NotFoundException,
@@ -53,15 +56,18 @@ describe('BranchingAttemptService', () => {
 
     it('should throw ForbiddenException if case is not PUBLISHED', async () => {
       mockDbService.query
-        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }) // resolveStudent
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }); // resolveStudent
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({ rows: [] }) // published-only lookup rejects DRAFT
-        .mockResolvedValueOnce({ rows: [{ id: 'case-1' }] }); // status-only existence check
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1' }] }) // existence check
+        .mockResolvedValueOnce({}); // ROLLBACK
 
       await expect(service.startAttempt('case-1', 'student-1')).rejects.toThrow(
         ForbiddenException,
       );
-      expect(mockDbService.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
-      expect(mockDbService.query).not.toHaveBeenCalledWith(
+      expect(mockDbClient.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(
         expect.stringContaining('INSERT INTO branching_attempts'), expect.any(Array),
       );
     });
@@ -70,25 +76,22 @@ describe('BranchingAttemptService', () => {
       'should reject direct attempt access for %s cases before reading content',
       async (status) => {
         mockDbService.query
-          .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+          .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] });
+        mockDbClient.query
+          .mockResolvedValueOnce({})
           .mockResolvedValueOnce({ rows: [] })
-          .mockResolvedValueOnce({ rows: [{ id: 'case-1', status }] });
+          .mockResolvedValueOnce({ rows: [{ id: 'case-1', status }] })
+          .mockResolvedValueOnce({});
 
         await expect(service.startAttempt('case-1', 'student-1')).rejects.toThrow(ForbiddenException);
-        expect(mockDbService.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
-        expect(mockDbService.query.mock.calls[2][0]).toBe('SELECT id FROM cases WHERE id = $1');
+        expect(mockDbClient.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
+        expect(mockDbClient.query.mock.calls[2][0]).toBe('SELECT id FROM cases WHERE id = $1');
       },
     );
 
     it('should successfully create attempt and increment attempt number', async () => {
       mockDbService.query
         .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }) // resolveStudent
-        .mockResolvedValueOnce({
-          rows: [{ id: 'case-1', status: 'PUBLISHED', learning_mode: 'BRANCHING_STUDY', root_node_id: 'n-1' }],
-        }) // case lookup
-        .mockResolvedValueOnce({ rows: [{ max_num: '1' }] }) // previous attempts check
-        .mockResolvedValueOnce({ rows: [] }) // insert attempt
-        // getAttempt queries:
         .mockResolvedValueOnce({
           rows: [
             {
@@ -107,12 +110,24 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({ rows: [] }) // steps
         .mockResolvedValueOnce({ rows: [{ id: 'n-1', situation: 'Situation 1', is_terminal: false, node_index: 0 }] }) // current node
         .mockResolvedValueOnce({ rows: [{ id: 'opt-1', text: 'Option A' }] }); // current node options (no consequence/next_node_id)
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1', status: 'PUBLISHED', learning_mode: 'BRANCHING_STUDY', root_node_id: 'n-1' }] })
+        .mockResolvedValueOnce({ rows: [{ max_num: '1' }] })
+        .mockResolvedValueOnce({}) // INSERT
+        .mockResolvedValueOnce({}); // COMMIT
 
       const result = await service.startAttempt('case-1', 'student-1');
       expect(result).toBeDefined();
       expect(result.attemptNumber).toBe(2);
       expect(result.isCompleted).toBe(false);
       expect(result.currentNode.options[0].next_node_id).toBeUndefined();
+      expect(mockDbClient.query.mock.calls[1][0]).toContain('FOR UPDATE');
+      expect(mockDbClient.query.mock.calls[3][1]).toEqual([
+        expect.any(String), 'student-1', 'case-1', 2, 'n-1',
+      ]);
+      expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.release).toHaveBeenCalled();
     });
   });
 

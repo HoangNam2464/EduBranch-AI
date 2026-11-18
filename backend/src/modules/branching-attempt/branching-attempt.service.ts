@@ -54,42 +54,52 @@ export class BranchingAttemptService {
    */
   async startAttempt(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
-
-    const caseRes = await this.db.query(
-      "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1 AND status = 'PUBLISHED'",
-      [caseId],
-    );
-    if (caseRes.rows.length === 0) {
-      const existenceRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
-      if (existenceRes.rows.length > 0) {
-        throw new ForbiddenException("Cannot start attempt on an unpublished case");
-      }
-      throw new NotFoundException(`Case ${caseId} not found`);
-    }
-
-    const caseData = caseRes.rows[0];
-
-    if (caseData.learning_mode !== "BRANCHING_STUDY") {
-      throw new BadRequestException("Case is not a BRANCHING_STUDY mode case");
-    }
-
-    if (!caseData.root_node_id) {
-      throw new BadRequestException("Case does not have an active root node");
-    }
-
-    // Determine attempt number
-    const prevAttemptsRes = await this.db.query(
-      "SELECT COALESCE(MAX(attempt_number), 0) as max_num FROM branching_attempts WHERE case_id = $1 AND student_id = $2",
-      [caseId, effectiveStudentId],
-    );
-    const attemptNumber = parseInt(prevAttemptsRes.rows[0].max_num, 10) + 1;
-
     const attemptId = randomUUID();
-    await this.db.query(
-      `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, current_node_id, is_completed, reflection_status)
-       VALUES ($1, $2, $3, $4, $5, FALSE, 'NOT_STARTED')`,
-      [attemptId, effectiveStudentId, caseId, attemptNumber, caseData.root_node_id],
-    );
+
+    // Locking the published Case row serializes attempt-number allocation for
+    // concurrent requests on this Case. The unique constraint on
+    // (student_id, case_id, attempt_number) remains the final integrity guard.
+    const client = await this.db.getClient();
+    try {
+      await client.query("BEGIN");
+      const caseRes = await client.query(
+        "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1 AND status = 'PUBLISHED' FOR UPDATE",
+        [caseId],
+      );
+      if (caseRes.rows.length === 0) {
+        const existenceRes = await client.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+        if (existenceRes.rows.length > 0) {
+          throw new ForbiddenException("Cannot start attempt on an unpublished case");
+        }
+        throw new NotFoundException(`Case ${caseId} not found`);
+      }
+
+      const caseData = caseRes.rows[0];
+      if (caseData.learning_mode !== "BRANCHING_STUDY") {
+        throw new BadRequestException("Case is not a BRANCHING_STUDY mode case");
+      }
+      if (!caseData.root_node_id) {
+        throw new BadRequestException("Case does not have an active root node");
+      }
+
+      const prevAttemptsRes = await client.query(
+        "SELECT COALESCE(MAX(attempt_number), 0) as max_num FROM branching_attempts WHERE case_id = $1 AND student_id = $2",
+        [caseId, effectiveStudentId],
+      );
+      const attemptNumber = parseInt(prevAttemptsRes.rows[0].max_num, 10) + 1;
+
+      await client.query(
+        `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, current_node_id, is_completed, reflection_status)
+         VALUES ($1, $2, $3, $4, $5, FALSE, 'NOT_STARTED')`,
+        [attemptId, effectiveStudentId, caseId, attemptNumber, caseData.root_node_id],
+      );
+      await client.query("COMMIT");
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
 
     return this.getAttempt(attemptId, effectiveStudentId);
   }
