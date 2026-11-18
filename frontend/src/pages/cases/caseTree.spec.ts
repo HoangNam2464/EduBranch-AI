@@ -2,6 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import type { CaseNode } from "@/types";
 import { analyzeTree } from "./caseTree";
+import { orderNodes } from "./CaseReviewParts";
 
 const node = (id: string, next: Array<string | undefined>, isTerminal = next.length === 0): CaseNode => ({
   id,
@@ -33,5 +34,15 @@ describe("analyzeTree (FND §5 display checks)", () => {
 
   it("reports an empty tree without issues", () => {
     assert.deepEqual(analyzeTree([], undefined).issues, []);
+  });
+
+  it("orders nodes breadth-first from the root following option connections (orderNodes for DecisionTreeCanvas)", () => {
+    const nodes = [
+      node("n2", []),
+      node("root", ["n1", "n2"]),
+      node("n1", []),
+    ];
+    const ordered = orderNodes(nodes, "root");
+    assert.deepEqual(ordered.map((n) => n.id), ["root", "n1", "n2"]);
   });
 });
