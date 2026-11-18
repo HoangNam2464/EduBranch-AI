@@ -75,3 +75,6 @@ export { SectionHeading } from "@/components/ds/SectionHeading";
 export type { SectionHeadingProps } from "@/components/ds/SectionHeading";
 export { BackIconButton } from "@/components/ds/BackIconButton";
 export type { BackIconButtonProps } from "@/components/ds/BackIconButton";
+export { LanguageSwitcher } from "@/components/ds/LanguageSwitcher";
+export { ThemeToggle } from "@/components/ds/ThemeToggle";
+

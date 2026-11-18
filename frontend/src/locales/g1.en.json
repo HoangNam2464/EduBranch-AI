@@ -91,11 +91,17 @@
         "register": "Sign up"
       },
       "hero": {
+        "category": "Experiential Case & Critical Thinking Platform for Higher Education",
         "title": "Every decision opens a new branch",
         "lead": "EduBranch AI turns course materials into cases with many paths. Students choose how to respond, see the consequences of each choice, then get feedback from their lecturer.",
         "register": "Create an account",
         "howItWorks": "See how it works",
         "note": "For lecturers and students of Duy Tan University.",
+        "badges": {
+          "grounded": "RAG Grounding from course syllabi",
+          "pedagogical": "Realistic multi-branch decision trees",
+          "approved": "Lecturer holds 100% approval authority"
+        },
         "diagram": {
           "ariaLabel": "Example of one decision point in a branching case",
           "situationLabel": "Situation",
@@ -108,7 +114,16 @@
           "optionCText": "Pause promotions to reduce system load",
           "consequenceLabel": "Consequence",
           "consequence": "No orders are lost, but 1 in 8 customers leaves because of the wait. How do you handle the customers who leave?",
-          "caption": "Decision point 2 on the second attempt"
+          "caption": "Decision point 2 on the second attempt",
+          "simulationBadge": "Continuous Simulation",
+          "decisionPoint1": "Decision point 1",
+          "journeyReview": "Journey review",
+          "attempt2Title": "Attempt 2 · Next action & Outcome",
+          "retrospective": "Retrospective",
+          "attempt2Text": "Automatically send an apology voucher to waiting customers ➔ Retain customers and turn an incident into an opportunity to build satisfaction.",
+          "statusPaused": "Simulation paused — Move mouse away to resume",
+          "statusPlaying": "Auto-playing simulation (Hover to pause)",
+          "phaseProgress": "Phase {{current}} of {{total}}"
         }
       },
       "how": {
@@ -168,10 +183,13 @@
             "Outcome"
           ],
           "draft": "Draft",
+          "draftGenerated": "Draft generated",
           "reviewed": "Reviewed",
           "approve": "Approve",
           "running": "In progress",
+          "done": "Done",
           "publish": "Publish",
+          "publishedForClass": "Published for class",
           "options": [
             "Scale up servers",
             "Turn on a queue",
@@ -192,7 +210,13 @@
             "Focus on reasoning, no automatic grading",
             "Review the whole journey in Journey Review",
             "Write a reflection after each attempt"
-          ]
+          ],
+          "diagram": {
+            "init": "Initialize",
+            "option1": "Choice 1",
+            "option2": "Choice 2",
+            "outcome": "Outcome"
+          }
         },
         "review": {
           "title": "Review Study",
@@ -203,7 +227,9 @@
             "Submissions are final and cannot be edited"
           ],
           "answerLabel": "Proposed solution",
-          "sent": "Sent to the lecturer at 21:40"
+          "completed": "Completed",
+          "sent": "Sent to the lecturer at 21:40",
+          "receiveFeedback": "Receive lecturer feedback →"
         }
       },
       "lifecycle": {

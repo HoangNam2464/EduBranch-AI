@@ -28,7 +28,7 @@ export function LifecycleSection() {
   const { t } = useTranslation();
   const states = t("g1.landing.lifecycle.states", { returnObjects: true }) as StateCopy[];
   return (
-    <section className="w-full bg-primary py-24">
+    <section className="w-full bg-primary dark:bg-canvas py-24 border-y border-transparent dark:border-line transition-colors duration-300">
       <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 sm:px-8 lg:px-12">
         <div className="flex max-w-3xl flex-col gap-4">
           <h2 className={cx(DISPLAY_FONT, "text-[28px] leading-[38px] font-medium tracking-[-0.01em] whitespace-pre-line text-ink-inverse")}>
@@ -77,13 +77,26 @@ function StateCard({ index, copy, total, published }: { index: number; copy: Sta
   return (
     <div
       className={cx(
-        "flex h-[214px] min-w-0 flex-1 flex-col gap-3 rounded-[20px] p-6",
-        published ? "bg-surface" : "border border-white/16 bg-white/8",
+        "flex h-[214px] min-w-0 flex-1 flex-col gap-3 rounded-[20px] p-6 transition-all duration-300",
+        published
+          ? "bg-surface shadow-xl"
+          : "border border-white/16 bg-white/8",
       )}
     >
       <div className="flex items-center justify-between">
-        <span className={cx("flex size-10 items-center justify-center rounded-eb-lg", published ? "bg-primary-subtle" : "bg-white/12")}>
-          <Icon aria-hidden="true" size={20} absoluteStrokeWidth strokeWidth={iconStroke} className={published ? "text-primary" : "text-ink-inverse"} />
+        <span
+          className={cx(
+            "flex size-10 items-center justify-center rounded-eb-lg",
+            published ? "bg-primary-subtle" : "bg-white/12",
+          )}
+        >
+          <Icon
+            aria-hidden="true"
+            size={20}
+            absoluteStrokeWidth
+            strokeWidth={iconStroke}
+            className={published ? "text-primary" : "text-ink-inverse"}
+          />
         </span>
         <span className={cx("text-[12px] leading-4", published ? "text-ink-secondary" : "text-white/60")}>
           {index + 1}/{total}
@@ -91,13 +104,19 @@ function StateCard({ index, copy, total, published }: { index: number; copy: Sta
       </div>
       <p className="flex items-center gap-2">
         <span aria-hidden="true" className={cx("size-2.5 rounded-full", dot)} />
-        <span className={cx("text-[16px] leading-6 font-medium", published ? "text-ink" : "text-ink-inverse")}>{copy.name}</span>
+        <span className={cx("text-[16px] leading-6 font-medium", published ? "text-ink" : "text-ink-inverse")}>
+          {copy.name}
+        </span>
       </p>
-      <p className={cx("text-[14px] leading-5", published ? "text-ink-secondary" : "text-white/75")}>{copy.desc}</p>
+      <p className={cx("text-[14px] leading-5", published ? "text-ink-secondary" : "text-white/75")}>
+        {copy.desc}
+      </p>
       <span
         className={cx(
           "flex items-center gap-1.5 self-start rounded-full px-2.5 py-1 text-[12px] leading-4",
-          published ? "bg-primary-subtle text-primary" : "bg-white/12 text-ink-inverse",
+          published
+            ? "bg-primary-subtle text-primary"
+            : "bg-white/12 text-ink-inverse",
         )}
       >
         <ActorIcon aria-hidden="true" size={12} absoluteStrokeWidth strokeWidth={actorStroke} />

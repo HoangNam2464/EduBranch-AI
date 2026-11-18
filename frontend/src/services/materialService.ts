@@ -7,6 +7,7 @@
 import apiClient from "@/services/apiClient";
 import { TeachingMaterial } from "@/types";
 import { toMaterial, type MaterialRow } from "@/services/mappers/material";
+import { invalidateLecturerCourseCases } from "@/pages/statistics/useLecturerCourseCases";
 
 type Envelope<T> = { status: string; data: T };
 
@@ -40,11 +41,13 @@ export const materialService = {
         if (onProgress && event.total) onProgress(Math.round((event.loaded / event.total) * 100));
       },
     });
+    invalidateLecturerCourseCases();
     return toMaterial(res.data.data);
   },
 
   /** `DELETE /materials/:id` — removes the file and its indexed chunks. */
   async deleteMaterial(materialId: string): Promise<void> {
     await apiClient.delete(`/materials/${materialId}`);
+    invalidateLecturerCourseCases();
   },
 };

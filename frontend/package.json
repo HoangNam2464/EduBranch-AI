@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "npx tsx --test src/utils/navigation.spec.ts src/stores/authStore.spec.ts src/services/apiClient.spec.ts src/services/mappers/course.spec.ts src/services/mappers/case.spec.ts src/pages/cases/caseTree.spec.ts src/services/mappers/material.spec.ts src/services/mappers/adminHealth.spec.ts src/routes/guards.spec.ts src/routes/paths.spec.ts src/layouts/shell/shellRoutes.spec.ts src/components/feedback/states.spec.ts src/pages/courses/CoursesPage.spec.ts src/qa/qa-matrix.spec.ts src/qa/material-upload-qa.spec.ts src/services/mappers/branchingAttempt.spec.ts src/services/mappers/user.spec.ts",
+    "test": "npx tsx --test src/utils/navigation.spec.ts src/stores/authStore.spec.ts src/services/apiClient.spec.ts src/services/mappers/course.spec.ts src/services/mappers/case.spec.ts src/pages/cases/caseTree.spec.ts src/services/mappers/material.spec.ts src/services/mappers/adminHealth.spec.ts src/routes/guards.spec.ts src/routes/paths.spec.ts src/layouts/shell/shellRoutes.spec.ts src/components/feedback/states.spec.ts src/pages/courses/CoursesPage.spec.ts src/qa/qa-matrix.spec.ts src/qa/material-upload-qa.spec.ts src/services/mappers/branchingAttempt.spec.ts src/services/mappers/user.spec.ts src/pages/statistics/useLecturerCourseCases.spec.ts",
     "test:visual": "playwright test -c tests/visual/playwright.config.ts",
     "test:e2e": "playwright test -c tests/e2e/playwright.config.ts"
   },
@@ -17,6 +17,7 @@
     "@fontsource/roboto": "^5.3.0",
     "@tailwindcss/postcss": "^4.3.3",
     "axios": "^1.20.0",
+    "framer-motion": "^14.14.0",
     "i18next": "^25.10.10",
     "i18next-browser-languagedetector": "^8.2.4",
     "lucide-react": "^1.65.0",

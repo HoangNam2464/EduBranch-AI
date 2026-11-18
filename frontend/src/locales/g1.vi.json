@@ -91,11 +91,17 @@
         "register": "Đăng ký"
       },
       "hero": {
+        "category": "Nền tảng Tình huống Thực nghiệm & Tư duy Bậc Đại học",
         "title": "Mỗi quyết định mở ra một nhánh mới",
         "lead": "EduBranch AI biến tài liệu môn học thành tình huống có nhiều lối đi. Sinh viên chọn hướng xử lý, thấy hệ quả của từng lựa chọn, rồi nhận phản hồi từ giảng viên.",
         "register": "Đăng ký tài khoản",
         "howItWorks": "Xem cách hoạt động",
         "note": "Dành cho giảng viên và sinh viên Trường Đại học Duy Tân.",
+        "badges": {
+          "grounded": "RAG Grounding từ giáo trình",
+          "pedagogical": "Cây quyết định đa nhánh thực tế",
+          "approved": "Giảng viên phê duyệt toàn quyền"
+        },
         "diagram": {
           "ariaLabel": "Ví dụ một điểm quyết định trong case phân nhánh",
           "situationLabel": "Tình huống",
@@ -108,7 +114,16 @@
           "optionCText": "Tạm dừng khuyến mãi để giảm tải hệ thống",
           "consequenceLabel": "Hệ quả",
           "consequence": "Không đơn hàng nào bị mất, nhưng cứ 8 khách thì có 1 người rời đi vì phải chờ. Bạn xử lý phần khách rời đi thế nào?",
-          "caption": "Điểm quyết định 2 trên lượt làm thứ hai"
+          "caption": "Điểm quyết định 2 trên lượt làm thứ hai",
+          "simulationBadge": "Mô phỏng tự động",
+          "decisionPoint1": "Điểm quyết định 1",
+          "journeyReview": "Hồi cứu hành trình",
+          "attempt2Title": "Lượt làm 2 · Hành động tiếp theo & Kết cục",
+          "retrospective": "Rút kinh nghiệm",
+          "attempt2Text": "Tự động gửi voucher xin lỗi cho khách hàng phải chờ ➔ Giữ chân khách hàng và biến sự cố thành cơ hội củng cố sự hài lòng.",
+          "statusPaused": "Đang tạm dừng — Bỏ chuột để tiếp tục",
+          "statusPlaying": "Tự động trình diễn mô phỏng (Rê chuột để tạm dừng)",
+          "phaseProgress": "Pha {{current}} trên {{total}}"
         }
       },
       "how": {
@@ -168,10 +183,13 @@
             "Kết cục"
           ],
           "draft": "Bản nháp",
+          "draftGenerated": "Đã sinh bản nháp",
           "reviewed": "Đã rà soát",
           "approve": "Phê duyệt",
           "running": "Đang chạy",
+          "done": "Đã xong",
           "publish": "Xuất bản",
+          "publishedForClass": "Đã xuất bản cho lớp",
           "options": [
             "Mở rộng máy chủ",
             "Bật hàng đợi",
@@ -192,7 +210,13 @@
             "Tập trung vào lập luận, không chấm điểm tự động",
             "Xem lại toàn bộ hành trình ở Journey Review",
             "Viết suy ngẫm sau mỗi lượt làm"
-          ]
+          ],
+          "diagram": {
+            "init": "Khởi tạo",
+            "option1": "Lựa chọn 1",
+            "option2": "Lựa chọn 2",
+            "outcome": "Hậu quả (Outcome)"
+          }
         },
         "review": {
           "title": "Review Study",
@@ -203,7 +227,9 @@
             "Bài nộp là bản cuối, không sửa sau khi nộp"
           ],
           "answerLabel": "Phương án giải pháp",
-          "sent": "Đã gửi giảng viên lúc 21:40"
+          "completed": "Hoàn tất",
+          "sent": "Đã gửi giảng viên lúc 21:40",
+          "receiveFeedback": "Nhận phản hồi Giảng viên →"
         }
       },
       "lifecycle": {

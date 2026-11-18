@@ -12,6 +12,7 @@
 import apiClient from "@/services/apiClient";
 import type { Case, CaseDetail, CaseStatus } from "@/types";
 import { toCase, toCaseDetail, type CaseDetailRow, type CaseRow } from "@/services/mappers/case";
+import { invalidateLecturerCourseCases } from "@/pages/statistics/useLecturerCourseCases";
 
 type Envelope<T> = { status: string; data: T };
 
@@ -56,11 +57,13 @@ export const caseService = {
 
   async generateCase(data: GenerateCaseRequest): Promise<CaseDetail> {
     const res = await apiClient.post<Envelope<CaseDetailRow>>("/cases/generate", data);
+    invalidateLecturerCourseCases();
     return toCaseDetail(res.data.data);
   },
 
   async updateCase(caseId: string, data: UpdateCaseRequest): Promise<CaseDetail> {
     const res = await apiClient.put<Envelope<CaseDetailRow>>(`/cases/${caseId}`, data);
+    invalidateLecturerCourseCases();
     return toCaseDetail(res.data.data);
   },
 
@@ -68,6 +71,7 @@ export const caseService = {
     const res = await apiClient.patch<Envelope<{ id: string; status: CaseStatus }>>(`/cases/${caseId}/status`, {
       status,
     });
+    invalidateLecturerCourseCases();
     return res.data.data;
   },
 };

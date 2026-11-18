@@ -7,6 +7,7 @@
 import apiClient from "@/services/apiClient";
 import { Course } from "@/types";
 import { toCourse, type CourseRow } from "@/services/mappers/course";
+import { invalidateLecturerCourseCases } from "@/pages/statistics/useLecturerCourseCases";
 
 interface CreateCourseRequest {
   name: string;
@@ -30,11 +31,13 @@ export const courseService = {
 
   async createCourse(data: CreateCourseRequest): Promise<Course> {
     const res = await apiClient.post<Envelope<CourseRow>>("/courses", data);
+    invalidateLecturerCourseCases();
     return toCourse(res.data.data);
   },
 
   async updateCourse(courseId: string, data: Partial<CreateCourseRequest>): Promise<Course> {
     const res = await apiClient.put<Envelope<CourseRow>>(`/courses/${courseId}`, data);
+    invalidateLecturerCourseCases();
     return toCourse(res.data.data);
   },
 
@@ -45,6 +48,7 @@ export const courseService = {
    */
   async archiveCourse(courseId: string): Promise<Course> {
     const res = await apiClient.patch<Envelope<CourseRow>>(`/courses/${courseId}/archive`);
+    invalidateLecturerCourseCases();
     return toCourse(res.data.data);
   },
 };

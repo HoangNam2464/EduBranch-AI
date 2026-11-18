@@ -9,6 +9,16 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { User } from "@/types";
 
+const logoutListeners = new Set<() => void>();
+
+/** Register a callback invoked synchronously whenever logout() executes. */
+export function onAuthLogout(callback: () => void): () => void {
+  logoutListeners.add(callback);
+  return () => {
+    logoutListeners.delete(callback);
+  };
+}
+
 interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -52,14 +62,22 @@ export const useAuthStore = create<AuthState>()(
           sessionExpired: false,
         }),
 
-      logout: () =>
+      logout: () => {
+        logoutListeners.forEach((fn) => {
+          try {
+            fn();
+          } catch {
+            // ignore subscriber errors
+          }
+        });
         set({
           user: null,
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
           sessionExpired: false,
-        }),
+        });
+      },
 
       markSessionExpired: () => {
         if (get().isAuthenticated) set({ sessionExpired: true });
