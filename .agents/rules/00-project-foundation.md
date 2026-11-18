@@ -176,6 +176,7 @@ docs/<topic>             →  develop
 3. **Quy ước phân tách Backend & Frontend**:
    - **Frontend (hoặc tính năng chung)**: Dùng format chuẩn `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`).
    - **Backend khi phát triển riêng biệt**: Bắt buộc thêm hậu tố `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
+   - **AI service (`ai-service/`)**: Dùng chung nhánh `-backend` của tính năng, không tạo hậu tố riêng (ví dụ: `feature/rag-backend`). Code AI tiếp nối trên nhánh `-backend` đã có (PO quyết định 2026-11-19).
    - **Quy trình chuẩn**: Cả hai nhánh đều phân nhánh từ `develop` mới nhất (`git checkout develop && git pull`), kiểm thử độc lập qua Docker (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
 4. **Tính bền vững của nhánh**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task đơn lẻ.
 

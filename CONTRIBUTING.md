@@ -69,12 +69,13 @@ feature/<name>  →  develop  →  main
 > - **TUYỆT ĐỐI KHÔNG dùng mã task** (như `TASK-123`, `BE-001`, `FE-010`, `EBA-105`) để đặt tên nhánh Git.
 > - **Tên nhánh Frontend (hoặc chung)**: Đặt theo domain feature chung: format `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`, `feature/auth`).
 > - **Tên nhánh Backend (khi phát triển độc lập)**: Bắt buộc thêm đuôi `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
+> - **Code AI service (`ai-service/`)**: Dùng chung nhánh `-backend` của tính năng, không tạo hậu tố riêng (ví dụ: `feature/rag-backend`). Code AI tiếp nối trên nhánh `-backend` đã có.
 > - **Quy trình chuẩn**: Luôn tách nhánh từ `develop` mới nhất (`git checkout develop && git pull`), bật Docker test độc lập (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
 
 | Type | Pattern | Example |
 | :--- | :--- | :--- |
 | Feature (Frontend / Chung) | `feature/<feature-name>` | `feature/material`, `feature/course`, `feature/auth` |
-| Feature (Backend riêng) | `feature/<feature-name>-backend` | `feature/material-backend`, `feature/course-backend` |
+| Feature (Backend riêng, gồm cả `ai-service/`) | `feature/<feature-name>-backend` | `feature/material-backend`, `feature/course-backend`, `feature/rag-backend` |
 | Bug fix | `fix/<feature-name>-<description>` | `fix/auth-token-refresh` |
 | Hotfix | `hotfix/<description>` | `hotfix/jwt-expiry` |
 | Refactor | `refactor/<feature-name>` | `refactor/challenge-support` |
