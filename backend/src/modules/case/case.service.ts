@@ -7,6 +7,7 @@ import {
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
+import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
 import { randomUUID } from "crypto";
 
 @Injectable()
@@ -320,6 +321,193 @@ export class CaseService {
       throw e;
     } finally {
       client.release();
+    }
+  }
+
+  async updateCaseNode(
+    caseId: string,
+    nodeId: string,
+    lecturerId: string,
+    dto: UpdateCaseNodeDto,
+  ) {
+    if (!dto || typeof dto.situation !== "string" || !dto.situation.trim()) {
+      throw new BadRequestException("Node situation must be a non-empty string");
+    }
+    if (!Array.isArray(dto.options)) {
+      throw new BadRequestException("Node options must be an array");
+    }
+    for (const [index, option] of dto.options.entries()) {
+      if (!option || typeof option.text !== "string" || !option.text.trim()) {
+        throw new BadRequestException(`Option ${index} text must be a non-empty string`);
+      }
+      if (typeof option.consequence !== "string" || !option.consequence.trim()) {
+        throw new BadRequestException(`Option ${index} consequence must be a non-empty string`);
+      }
+      if (option.nextNodeId !== null &&
+          (typeof option.nextNodeId !== "string" || !option.nextNodeId.trim())) {
+        throw new BadRequestException(`Option ${index} nextNodeId must be a node UUID or null`);
+      }
+    }
+
+    const client = await this.db.getClient();
+    let transactionCommitted = false;
+    try {
+      await client.query("BEGIN");
+      const caseRes = await client.query(
+        `SELECT c.id, c.status, c.learning_mode, c.root_node_id, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON co.id = c.course_id
+         WHERE c.id = $1
+         FOR UPDATE OF c`,
+        [caseId],
+      );
+      if (caseRes.rows.length === 0) {
+        throw new NotFoundException(`Case ${caseId} not found`);
+      }
+      const caseRow = caseRes.rows[0];
+      if (caseRow.lecturer_id !== lecturerId) {
+        throw new ForbiddenException("You can only edit cases in your own courses");
+      }
+      if (caseRow.status !== "DRAFT") {
+        throw new ForbiddenException("Only DRAFT cases can be edited. Revert the case to DRAFT through the lifecycle workflow first.");
+      }
+      if (caseRow.learning_mode === "REVIEW_STUDY") {
+        throw new BadRequestException("Review Study cases do not have decision tree nodes");
+      }
+
+      const nodesRes = await client.query(
+        `SELECT id, situation, is_terminal, node_index
+         FROM case_nodes WHERE case_id = $1 ORDER BY node_index ASC FOR UPDATE`,
+        [caseId],
+      );
+      const nodes = nodesRes.rows as Array<{
+        id: string; situation: string; is_terminal: boolean; node_index: number | null;
+      }>;
+      const editedNode = nodes.find((node) => node.id === nodeId);
+      if (!editedNode) {
+        throw new NotFoundException(`Node ${nodeId} not found in case ${caseId}`);
+      }
+
+      const nodeIds = nodes.map((node) => node.id);
+      const optionsRes = nodeIds.length > 0
+        ? await client.query(
+          `SELECT id, node_id, option_text, consequence, next_node_id
+           FROM case_options WHERE node_id = ANY($1) FOR UPDATE`,
+          [nodeIds],
+        )
+        : { rows: [] };
+      const optionsByNode = new Map<string, Array<{
+        option_text: string; consequence: string; next_node_id: string | null;
+      }>>();
+      for (const option of optionsRes.rows) {
+        const current = optionsByNode.get(option.node_id) || [];
+        current.push({
+          option_text: option.option_text,
+          consequence: option.consequence,
+          next_node_id: option.next_node_id,
+        });
+        optionsByNode.set(option.node_id, current);
+      }
+      optionsByNode.set(nodeId, dto.options.map((option) => ({
+        option_text: option.text.trim(),
+        consequence: option.consequence.trim(),
+        next_node_id: option.nextNodeId,
+      })));
+
+      this.validateCaseTree(caseRow.root_node_id, nodeId, nodes, optionsByNode);
+
+      const isTerminal = dto.options.length === 0;
+      await client.query(
+        `UPDATE case_nodes SET situation = $1, is_terminal = $2
+         WHERE id = $3 AND case_id = $4`,
+        [dto.situation.trim(), isTerminal, nodeId, caseId],
+      );
+      await client.query("DELETE FROM case_options WHERE node_id = $1", [nodeId]);
+      for (const option of dto.options) {
+        await client.query(
+          `INSERT INTO case_options (id, node_id, option_text, consequence, next_node_id)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [randomUUID(), nodeId, option.text.trim(), option.consequence.trim(), option.nextNodeId],
+        );
+      }
+      await client.query("UPDATE cases SET updated_at = NOW() WHERE id = $1", [caseId]);
+      await client.query("COMMIT");
+      transactionCommitted = true;
+
+      return await this.getCaseById(caseId, "LECTURER", lecturerId);
+    } catch (error) {
+      if (!transactionCommitted) {
+        await client.query("ROLLBACK");
+      }
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  private validateCaseTree(
+    rootNodeId: string | null,
+    editedNodeId: string,
+    nodes: Array<{ id: string; situation: string; is_terminal: boolean }>,
+    optionsByNode: Map<string, Array<{ next_node_id: string | null }>>,
+  ) {
+    const nodeIds = new Set(nodes.map((node) => node.id));
+    if (nodes.length < 2) {
+      throw new BadRequestException("Decision tree must contain a root node and at least one child node");
+    }
+    if (!rootNodeId || !nodeIds.has(rootNodeId)) {
+      throw new BadRequestException("Decision tree must have a valid root node");
+    }
+
+    const adjacency = new Map<string, string[]>();
+    let terminalCount = 0;
+    for (const node of nodes) {
+      const options = optionsByNode.get(node.id) || [];
+      const isTerminal = node.id === editedNodeId ? options.length === 0 : node.is_terminal;
+      if (isTerminal !== (options.length === 0)) {
+        throw new BadRequestException(`Node ${node.id} terminal state does not match its options`);
+      }
+      if (isTerminal) {
+        terminalCount++;
+      } else if (options.length < 2 || options.length > 4) {
+        throw new BadRequestException(`Non-terminal node ${node.id} must have between 2 and 4 options`);
+      }
+      const targets: string[] = [];
+      for (const option of options) {
+        if (option.next_node_id === null) continue;
+        if (!nodeIds.has(option.next_node_id)) {
+          throw new BadRequestException(`Option references a node outside case: ${option.next_node_id}`);
+        }
+        targets.push(option.next_node_id);
+      }
+      adjacency.set(node.id, targets);
+    }
+    if (terminalCount === 0) {
+      throw new BadRequestException("Decision tree must contain at least one terminal node");
+    }
+
+    // Three-color DFS detects back edges and guarantees acyclicity.
+    const colors = new Map<string, 0 | 1 | 2>();
+    const visit = (nodeId: string): void => {
+      const color = colors.get(nodeId) || 0;
+      if (color === 1) throw new BadRequestException("Cannot save decision tree: loop detected");
+      if (color === 2) return;
+      colors.set(nodeId, 1);
+      for (const target of adjacency.get(nodeId) || []) visit(target);
+      colors.set(nodeId, 2);
+    };
+    for (const node of nodes) visit(node.id);
+
+    const reachable = new Set<string>();
+    const queue = [rootNodeId];
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (reachable.has(current)) continue;
+      reachable.add(current);
+      queue.push(...(adjacency.get(current) || []));
+    }
+    if (reachable.size !== nodes.length) {
+      throw new BadRequestException("This node has no incoming path from the start");
     }
   }
 

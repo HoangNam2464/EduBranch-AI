@@ -12,6 +12,7 @@ describe('CaseController', () => {
     getCasesByCourse: jest.fn(),
     getCaseById: jest.fn(),
     updateCase: jest.fn(),
+    updateCaseNode: jest.fn(),
     updateCaseStatus: jest.fn(),
   };
 
@@ -108,6 +109,31 @@ describe('CaseController', () => {
           { id: 'student-1', role: 'STUDENT' },
         ),
       ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('updateCaseNode', () => {
+    it('routes a lecturer node update to the case service and returns the updated case', async () => {
+      const body = {
+        situation: 'Updated situation',
+        options: [{ text: 'Option A', consequence: 'Consequence A', nextNodeId: null }],
+      };
+      mockCaseService.updateCaseNode.mockResolvedValue({ id: 'case-1', status: 'DRAFT' });
+
+      const result = await controller.updateCaseNode(
+        'case-1', 'node-1', body, { id: 'lecturer-1', role: 'LECTURER' },
+      );
+
+      expect(result).toEqual({ status: 'SUCCESS', data: { id: 'case-1', status: 'DRAFT' } });
+      expect(mockCaseService.updateCaseNode).toHaveBeenCalledWith('case-1', 'node-1', 'lecturer-1', body);
+    });
+
+    it('rejects a non-lecturer before invoking the service', async () => {
+      await expect(controller.updateCaseNode(
+        'case-1', 'node-1', { situation: 's', options: [] }, { id: 'student-1', role: 'STUDENT' },
+      )).rejects.toThrow(ForbiddenException);
+
+      expect(mockCaseService.updateCaseNode).not.toHaveBeenCalled();
     });
   });
 });

@@ -149,6 +149,145 @@ describe('CaseService', () => {
     });
   });
 
+  describe('updateCaseNode (BE-017)', () => {
+    const caseRow = {
+      id: 'case-1', status: 'DRAFT', learning_mode: 'BRANCHING_STUDY',
+      root_node_id: 'root', lecturer_id: 'lecturer-1',
+    };
+    const treeNodes = [
+      { id: 'root', situation: 'Root', is_terminal: false, node_index: 0 },
+      { id: 'leaf-1', situation: 'Leaf 1', is_terminal: true, node_index: 1 },
+      { id: 'leaf-2', situation: 'Leaf 2', is_terminal: true, node_index: 2 },
+    ];
+    const treeOptions = [
+      { id: 'option-1', node_id: 'root', option_text: 'A', consequence: 'A consequence', next_node_id: 'leaf-1' },
+      { id: 'option-2', node_id: 'root', option_text: 'B', consequence: 'B consequence', next_node_id: 'leaf-2' },
+    ];
+    const validUpdate = {
+      situation: 'Updated root',
+      options: [
+        { text: 'Updated A', consequence: 'Updated consequence A', nextNodeId: 'leaf-1' },
+        { text: 'Updated B', consequence: 'Updated consequence B', nextNodeId: 'leaf-2' },
+      ],
+    };
+
+    function mockLockedDraftTree(overrides: { row?: any; nodes?: any[]; options?: any[] } = {}) {
+      mockDbClient.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('FROM cases c') && sql.includes('FOR UPDATE OF c')) {
+          return { rows: [overrides.row || caseRow] };
+        }
+        if (sql.includes('FROM case_nodes') && sql.includes('FOR UPDATE')) {
+          return { rows: overrides.nodes || treeNodes };
+        }
+        if (sql.includes('FROM case_options') && sql.includes('FOR UPDATE')) {
+          return { rows: overrides.options || treeOptions };
+        }
+        return { rows: [] };
+      });
+    }
+
+    it('updates a valid node and its options atomically while keeping the case DRAFT', async () => {
+      mockLockedDraftTree();
+      jest.spyOn(service, 'getCaseById').mockResolvedValue({ id: 'case-1', status: 'DRAFT' } as any);
+
+      const result = await service.updateCaseNode('case-1', 'root', 'lecturer-1', validUpdate);
+
+      expect(result).toEqual({ id: 'case-1', status: 'DRAFT' });
+      expect(mockDbClient.query).toHaveBeenCalledWith('BEGIN');
+      expect(mockDbClient.query).toHaveBeenCalledWith(
+        expect.stringContaining('UPDATE case_nodes SET situation = $1, is_terminal = $2'),
+        ['Updated root', false, 'root', 'case-1'],
+      );
+      expect(mockDbClient.query).toHaveBeenCalledWith('DELETE FROM case_options WHERE node_id = $1', ['root']);
+      expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_options'), expect.any(Array));
+      expect(mockDbClient.query).toHaveBeenCalledWith('UPDATE cases SET updated_at = NOW() WHERE id = $1', ['case-1']);
+      expect(mockDbClient.query.mock.calls.some(([sql]) => String(sql).includes('SET status'))).toBe(false);
+      expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(service.getCaseById).toHaveBeenCalledWith('case-1', 'LECTURER', 'lecturer-1');
+    });
+
+    it('rejects a cycle without changing any node or option rows', async () => {
+      mockLockedDraftTree();
+      const cyclicUpdate = {
+        ...validUpdate,
+        options: [
+          { text: 'Loop', consequence: 'Loop', nextNodeId: 'root' },
+          { text: 'Leaf', consequence: 'Leaf', nextNodeId: 'leaf-2' },
+        ],
+      };
+
+      await expect(service.updateCaseNode('case-1', 'root', 'lecturer-1', cyclicUpdate))
+        .rejects.toThrow('loop detected');
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE case_nodes'), expect.any(Array));
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('DELETE FROM case_options'), expect.any(Array));
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_options'), expect.any(Array));
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+    });
+
+    it('rejects an orphan node without changing persisted data', async () => {
+      mockLockedDraftTree({
+        nodes: [...treeNodes, { id: 'orphan', situation: 'Orphan', is_terminal: true, node_index: 3 }],
+      });
+
+      await expect(service.updateCaseNode('case-1', 'root', 'lecturer-1', validUpdate))
+        .rejects.toThrow('no incoming path');
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE case_nodes'), expect.any(Array));
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('DELETE FROM case_options'), expect.any(Array));
+    });
+
+    it('rejects an option that targets a node outside the case without persisting', async () => {
+      mockLockedDraftTree();
+      const invalidTargetUpdate = {
+        ...validUpdate,
+        options: [
+          { text: 'External', consequence: 'Invalid', nextNodeId: 'node-from-another-case' },
+          validUpdate.options[1],
+        ],
+      };
+
+      await expect(service.updateCaseNode('case-1', 'root', 'lecturer-1', invalidTargetUpdate))
+        .rejects.toThrow('outside case');
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE case_nodes'), expect.any(Array));
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('DELETE FROM case_options'), expect.any(Array));
+    });
+
+    it('rejects malformed node content before opening a transaction', async () => {
+      await expect(service.updateCaseNode('case-1', 'root', 'lecturer-1', {
+        situation: '  ', options: [],
+      })).rejects.toThrow(BadRequestException);
+
+      expect(mockDbService.getClient).not.toHaveBeenCalled();
+    });
+
+    it('denies another lecturer and leaves node and option rows untouched', async () => {
+      mockLockedDraftTree({ row: { ...caseRow, lecturer_id: 'lecturer-2' } });
+
+      await expect(service.updateCaseNode('case-1', 'root', 'lecturer-1', validUpdate))
+        .rejects.toThrow(ForbiddenException);
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE case_nodes'), expect.any(Array));
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('DELETE FROM case_options'), expect.any(Array));
+    });
+
+    it('does not allow node edits to bypass lifecycle state', async () => {
+      mockLockedDraftTree({ row: { ...caseRow, status: 'REVIEWED' } });
+
+      await expect(service.updateCaseNode('case-1', 'root', 'lecturer-1', validUpdate))
+        .rejects.toThrow(ForbiddenException);
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE case_nodes'), expect.any(Array));
+      expect(mockDbClient.query.mock.calls.some(([sql]) => String(sql).includes('SET status'))).toBe(false);
+    });
+  });
+
   describe('lifecycle status transitions (P0-DATA-03)', () => {
     it('should reject status change if lecturer does not own the course', async () => {
       mockDbService.query.mockResolvedValueOnce({
