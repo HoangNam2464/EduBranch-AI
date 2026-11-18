@@ -34,7 +34,7 @@ export type VisualStep = { hover: string } | { click: string } | { waitFor: stri
 export const SCREENS: VisualScreen[] = [
   // G1 · Public & auth. Budgets = measured after the 2026-11-14 audit + ~0.3pp margin;
   // lead-verified (comparison images + DOM measurements), pending PO sign-off.
-  { code: "00.2", name: "Trang giới thiệu", nodeId: "496:4734", route: "/", role: null, height: 5366, needsData: false, budget: 0.023 },
+  { code: "00.2", name: "Trang giới thiệu", nodeId: "496:4734", route: "/", role: null, height: 5422, needsData: false, budget: 0.023 },
   { code: "00.3", name: "Đăng nhập", nodeId: "483:17474", route: "/login", role: null, height: 1024, needsData: false, budget: 0.012 },
   { code: "00.4", name: "Đăng ký · Sinh viên", nodeId: "483:18286", route: "/register", role: null, height: 1024, needsData: false, budget: 0.017 },
   { code: "00.5", name: "Đăng ký · Giảng viên", nodeId: "483:18640", route: "/register?role=lecturer", role: null, height: 1024, needsData: false, budget: 0.02 },
@@ -64,7 +64,7 @@ export const SCREENS: VisualScreen[] = [
   { code: "04.2", name: "Chi tiết phản hồi lập luận", nodeId: "483:15233", route: "/lecturer/feedback/sub-01", role: "LECTURER", height: 977, needsData: true },
   { code: "04.2b", name: "Chi tiết bài nộp Review Study", nodeId: "517:6602", route: "/lecturer/feedback/sub-02", role: "LECTURER", height: 1053, needsData: true },
   { code: "04.3", name: "Thống kê luồng học tập", nodeId: "483:15369", route: "/lecturer/statistics", role: "LECTURER", height: 1445, needsData: true },
-  { code: "07.1", name: "Bảng điều khiển (giảng viên)", nodeId: "483:16309", route: "/lecturer/dashboard", role: "LECTURER", height: 945, needsData: true },
+  { code: "07.1", name: "Bảng điều khiển (giảng viên)", nodeId: "483:16309", route: "/lecturer/dashboard", role: "LECTURER", height: 1502, needsData: true },
   { code: "09.1", name: "Hồ sơ tài khoản · Giảng viên", nodeId: "484:11904", route: "/lecturer/profile", role: "LECTURER", height: 1170, needsData: true },
   { code: "09.2", name: "Hồ sơ tài khoản · Sinh viên", nodeId: "484:12467", route: "/student/profile", role: "STUDENT", height: 1173, needsData: true },
   // G5 · Student (no frames yet)
