@@ -113,7 +113,7 @@ Student submits overall Reflection
 | Vector DB | PostgreSQL 16 + pgvector | Embeddings + relational business data |
 | Cache & Session | Redis 7 | Caching, session store |
 | Object Storage | MinIO | PDF/DOCX teaching material storage |
-| LLM | Gemini 2.0 Flash / OpenAI GPT-4o-mini | Provider abstraction for text & embeddings |
+| LLM | Gemini 3.5 Flash (`gemini-3.5-flash`; embeddings `gemini-embedding-001` 768-dim) / OpenAI GPT-4o-mini | Provider abstraction for text & embeddings |
 
 ---
 

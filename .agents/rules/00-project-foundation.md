@@ -23,7 +23,7 @@ trigger: always_on
   - **Internal AI Service**: Python 3.12 (FastAPI + Pydantic v2 + LangChain)
   - **Frontend Web App**: React 19 + Vite + TypeScript + TailwindCSS v4 + Zustand + ReactFlow
   - **Data & Storage**: PostgreSQL 16 + pgvector | MinIO (Object Storage) | Redis 7 (Cache/Session)
-  - **LLM Providers**: Google Gemini 2.0 Flash / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`)
+  - **LLM Providers**: Google Gemini 3.5 Flash (`gemini-3.5-flash`, pinned; `gemini-2.0-flash` was retired by Google — PO 2026-11-17) / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`); embeddings Gemini `gemini-embedding-001` at 768 dims
 
 ### 1.1. Core Pedagogical Model
 1. **Experiential Case-Based Learning**: EduBranch-AI immerses university students into realistic multi-branch decision-making scenarios (`Branching Study`) and open analytical problems (`Review Study`) grounded in the lecturer's actual course materials (Business, Law, Medicine, Management, Engineering, etc.).

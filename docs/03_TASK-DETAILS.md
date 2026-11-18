@@ -601,7 +601,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 `ai-service/app/ingestion/embedder.py`, `ai-service/app/providers/factory.py` (Embedding provider abstraction).
 
 ### Acceptance Criteria
-- [ ] **AC-1**: Sinh vector embeddings qua Gemini text-embedding-004 (768-dim) hoặc OpenAI (1536-dim).
+- [ ] **AC-1**: Sinh vector embeddings qua Gemini gemini-embedding-001 (768-dim; text-embedding-004 đã ngừng, cập nhật 2026-11-17) hoặc OpenAI (1536-dim).
 - [ ] **AC-2**: Gọi mô hình thông qua Provider Abstraction Interface.
 - [ ] **AC-3**: Xử lý batching embeddings để tối ưu hóa thời gian và tránh rate limit.
 
