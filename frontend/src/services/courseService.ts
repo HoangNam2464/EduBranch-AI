@@ -1,10 +1,12 @@
 /**
  * EduBranch AI — Course Service
- * CRUD operations for lecturer courses.
+ * Lecturer course operations (backend `CourseController`, prefix /courses): list, read,
+ * create, update and archive. There is no delete route.
  */
 
-import apiClient from "./apiClient";
-import { Course } from "../types";
+import apiClient from "@/services/apiClient";
+import { Course } from "@/types";
+import { toCourse, type CourseRow } from "@/services/mappers/course";
 
 interface CreateCourseRequest {
   name: string;
@@ -12,36 +14,37 @@ interface CreateCourseRequest {
   courseCode?: string;
 }
 
+type Envelope<T> = { status: string; data: T };
+
 export const courseService = {
+  /** Courses owned by the signed-in lecturer (`GET /courses`, LECTURER only). */
   async getMyCourses(): Promise<Course[]> {
-    try {
-      const res = await apiClient.get<{ status: string; data: Course[] }>("/courses/my-courses");
-      return res.data.data;
-    } catch (err: any) {
-      if (err?.response?.status === 404) {
-        const fallback = await apiClient.get<{ status: string; data: Course[] }>("/courses");
-        return fallback.data.data;
-      }
-      throw err;
-    }
+    const res = await apiClient.get<Envelope<CourseRow[]>>("/courses");
+    return res.data.data.map(toCourse);
   },
 
   async getCourseById(courseId: string): Promise<Course> {
-    const res = await apiClient.get<{ status: string; data: Course }>(`/courses/${courseId}`);
-    return res.data.data;
+    const res = await apiClient.get<Envelope<CourseRow>>(`/courses/${courseId}`);
+    return toCourse(res.data.data);
   },
 
   async createCourse(data: CreateCourseRequest): Promise<Course> {
-    const res = await apiClient.post<{ status: string; data: Course }>("/courses", data);
-    return res.data.data;
+    const res = await apiClient.post<Envelope<CourseRow>>("/courses", data);
+    return toCourse(res.data.data);
   },
 
   async updateCourse(courseId: string, data: Partial<CreateCourseRequest>): Promise<Course> {
-    const res = await apiClient.put<{ status: string; data: Course }>(`/courses/${courseId}`, data);
-    return res.data.data;
+    const res = await apiClient.put<Envelope<CourseRow>>(`/courses/${courseId}`, data);
+    return toCourse(res.data.data);
   },
 
-  async deleteCourse(courseId: string): Promise<void> {
-    await apiClient.delete(`/courses/${courseId}`);
+  /**
+   * Archives a course (`PATCH /courses/:courseId/archive`, owner lecturer, idempotent).
+   * Courses are archived, never deleted (PO decision C1-B / OPD-014): materials and cases are kept,
+   * the course leaves `GET /courses`, and uploads / case generation on it return 409.
+   */
+  async archiveCourse(courseId: string): Promise<Course> {
+    const res = await apiClient.patch<Envelope<CourseRow>>(`/courses/${courseId}/archive`);
+    return toCourse(res.data.data);
   },
 };

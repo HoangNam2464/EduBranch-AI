@@ -20,8 +20,8 @@ if (typeof (globalThis as any).window === "undefined") {
 }
 (globalThis as any).window.localStorage = fakeLocalStorage;
 
-const { useAuthStore } = await import("../stores/authStore");
-const { default: apiClient } = await import("./apiClient");
+const { useAuthStore } = await import("@/stores/authStore");
+const { default: apiClient } = await import("@/services/apiClient");
 
 describe("apiClient (HTTP 401 Handling & Authentication Contract)", () => {
   beforeEach(() => {
@@ -58,7 +58,7 @@ describe("apiClient (HTTP 401 Handling & Authentication Contract)", () => {
     assert.equal(modifiedConfig.headers.Authorization, undefined);
   });
 
-  it("should handle HTTP 401 by immediately calling logout without hanging on refresh endpoint", async () => {
+  it("should flag the session as expired on HTTP 401 without hanging on a refresh endpoint (Figma 01.6)", async () => {
     useAuthStore.getState().login(
       {
         id: "u-1",
@@ -88,10 +88,24 @@ describe("apiClient (HTTP 401 Handling & Authentication Contract)", () => {
       }
     );
 
-    // Verify session was terminated
+    // The session is flagged as expired; the shell dialog asks the user to sign in again.
+    assert.equal(useAuthStore.getState().sessionExpired, true);
+
+    // "Đăng nhập lại" clears the session completely.
+    useAuthStore.getState().logout();
     const state = useAuthStore.getState();
     assert.equal(state.isAuthenticated, false);
     assert.equal(state.accessToken, null);
     assert.equal(state.user, null);
+    assert.equal(state.sessionExpired, false);
+  });
+
+  it("should not flag an expired session for a 401 while signed out (e.g. wrong password)", async () => {
+    useAuthStore.getState().logout();
+    const responseErrorHandler = (apiClient.interceptors.response as any).handlers[0]?.rejected;
+    await assert.rejects(async () => {
+      await responseErrorHandler({ response: { status: 401 }, config: {} });
+    });
+    assert.equal(useAuthStore.getState().sessionExpired, false);
   });
 });

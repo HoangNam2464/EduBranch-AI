@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
-import { resolveSafeReturnUrl, DEFAULT_ROLE_REDIRECT } from './navigation';
+import { resolveSafeReturnUrl, DEFAULT_ROLE_REDIRECT } from '@/utils/navigation';
 
 describe('resolveSafeReturnUrl (Role-Aware Return URL & Open Redirect Defense)', () => {
   // 1. Student + direct-link hợp lệ

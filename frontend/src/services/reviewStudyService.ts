@@ -1,10 +1,15 @@
 /**
  * EduBranch AI — Review Study Service
  * Student Review Study submission and lecturer feedback.
+ *
+ * NOT CALLABLE YET: backend/src/modules/review-study/review-study.controller.ts is an
+ * empty skeleton, so none of the routes below exist on the gateway (they return 404).
+ * Screens must not call these methods until the backend implements them; 06.1–06.3
+ * render the case (GET /cases/:id) and state the missing submission API instead.
  */
 
-import apiClient from "./apiClient";
-import { ReviewStudySubmission } from "../types";
+import apiClient from "@/services/apiClient";
+import { ReviewStudySubmission } from "@/types";
 
 interface SubmitReviewStudyRequest {
   studentAnalysis?: string;

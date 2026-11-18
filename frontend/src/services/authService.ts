@@ -3,8 +3,8 @@
  * Handles login, register, and token management.
  */
 
-import apiClient from "./apiClient";
-import { AuthResponse, LoginRequest, RegisterRequest } from "../types";
+import apiClient from "@/services/apiClient";
+import { AuthResponse, LoginRequest, RegisterRequest } from "@/types";
 
 export const authService = {
   async login(data: LoginRequest): Promise<AuthResponse> {
