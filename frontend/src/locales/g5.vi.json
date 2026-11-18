@@ -161,7 +161,22 @@
       "replyLabel": "Luận điểm phản hồi của bạn",
       "replyPlaceholder": "Trình bày luận điểm bảo vệ quyết định hoặc cơ chế dự phòng bổ sung...",
       "skip": "Bỏ qua",
-      "send": "Gửi phản hồi vòng {{round}}"
+      "send": "Gửi phản hồi vòng {{round}}",
+      "roundStatus": "Vòng {{current}}/{{max}}",
+      "roundBadge": "AI phản biện · Vòng {{round}}/{{max}}",
+      "roundFinalBadge": "AI phản biện · Vòng {{round}}/{{max}} (Vòng cuối)",
+      "completedBadge": "Đã hoàn thành 2/2 vòng",
+      "studentResponseLabel": "Phản hồi của bạn (Vòng {{round}})",
+      "originalReasoning": "Lập luận ban đầu của bạn",
+      "sessionCompletedTitle": "Phiên phản biện đã hoàn tất",
+      "sessionCompletedBody": "Đã đạt giới hạn tối đa 2 vòng phản biện. Bạn có thể tiếp tục xem lại hành trình hoặc chuyển sang phần suy ngẫm.",
+      "returnToReview": "Quay lại Journey Review",
+      "concludeEarly": "Kết thúc phiên",
+      "noGradingNotice": "AI chỉ đặt câu hỏi gợi mở phản biện — Tuyệt đối không chấm điểm hay đánh giá đúng/sai.",
+      "submitting": "Đang gửi phản hồi...",
+      "defaultDecision": "Lựa chọn phương án triển khai chiến lược",
+      "q1Prompt": "Xét trong bối cảnh quyết định này, bạn đã cân nhắc đến rủi ro hoặc giả định trọng yếu nào chưa được kiểm chứng trong tình huống thực tế?",
+      "q2FollowUp": "Cảm ơn lập luận bổ sung của bạn. Đối với phương án bạn vừa nêu, liệu chi phí cơ hội hoặc sự đánh đổi về mặt vận hành có làm suy yếu mục tiêu cốt lõi không?"
     },
     "reflection": {
       "pageTitle": "Suy ngẫm & đúc kết bài học",
@@ -268,7 +283,15 @@
       "month": "Tháng {{month}}, {{year}}",
       "previousMonth": "Tháng trước",
       "nextMonth": "Tháng sau",
-      "weekdays": ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+      "weekdays": [
+        "CN",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7"
+      ],
       "newCases": "Case mới mở",
       "newCasesEmpty": "Chưa có case mới."
     },

@@ -161,7 +161,22 @@
       "replyLabel": "Your response",
       "replyPlaceholder": "Defend your decision or describe an extra fallback mechanism...",
       "skip": "Skip",
-      "send": "Send round {{round}} response"
+      "send": "Send round {{round}} response",
+      "roundStatus": "Round {{current}}/{{max}}",
+      "roundBadge": "AI Challenge · Round {{round}}/{{max}}",
+      "roundFinalBadge": "AI Challenge · Round {{round}}/{{max}} (Final round)",
+      "completedBadge": "Completed 2/2 rounds",
+      "studentResponseLabel": "Your response (Round {{round}})",
+      "originalReasoning": "Your original reasoning",
+      "sessionCompletedTitle": "Challenge Support session completed",
+      "sessionCompletedBody": "Maximum 2 rounds reached. You may now continue your journey review or proceed to reflection.",
+      "returnToReview": "Return to Journey Review",
+      "concludeEarly": "Conclude session",
+      "noGradingNotice": "AI asks Socratic questions only — No grading, scoring, or pass/fail evaluation.",
+      "submitting": "Submitting response...",
+      "defaultDecision": "Strategic implementation option selection",
+      "q1Prompt": "In the context of this decision, what critical risks or unverified assumptions have you considered in real-world scenarios?",
+      "q2FollowUp": "Thank you for the additional reasoning. Regarding the approach you presented, could opportunity costs or operational trade-offs compromise the primary objective?"
     },
     "reflection": {
       "pageTitle": "Reflect & capture the lessons",
@@ -268,7 +283,15 @@
       "month": "{{month}}/{{year}}",
       "previousMonth": "Previous month",
       "nextMonth": "Next month",
-      "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "weekdays": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
       "newCases": "Newly opened cases",
       "newCasesEmpty": "No new cases yet."
     },
