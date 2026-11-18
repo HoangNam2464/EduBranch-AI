@@ -8,6 +8,8 @@ import {
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
+import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
+import { CaseStatus } from "./dto/update-case-status.dto";
 import { randomUUID } from "crypto";
 
 @Injectable()
@@ -56,6 +58,7 @@ export class CaseService {
     });
 
     const client = await this.db.getClient();
+    let transactionCommitted = false;
     try {
       await client.query("BEGIN");
 
@@ -80,6 +83,33 @@ export class CaseService {
       );
 
       const nodes = aiResponse.nodes || [];
+      if (!Array.isArray(nodes) || nodes.length === 0) {
+        throw new BadRequestException("Generated decision tree must contain at least one node");
+      }
+
+      const rootIndex = aiResponse.root_node_index ?? 0;
+      if (!Number.isInteger(rootIndex) || rootIndex < 0 || rootIndex >= nodes.length) {
+        throw new BadRequestException(`Invalid root node index: ${rootIndex}`);
+      }
+
+      // Validate every temporary edge before writing nodes/options. This prevents
+      // dangling references from being silently persisted as terminal options.
+      for (let sourceIndex = 0; sourceIndex < nodes.length; sourceIndex++) {
+        const node = nodes[sourceIndex];
+        if (!node || typeof node.situation !== "string" || !node.situation.trim()) {
+          throw new BadRequestException(`Node ${sourceIndex} has no valid situation`);
+        }
+        if (node.options != null && !Array.isArray(node.options)) {
+          throw new BadRequestException(`Node ${sourceIndex} options must be an array`);
+        }
+        for (const option of node.options || []) {
+          if (option.next_node_index != null &&
+              (!Number.isInteger(option.next_node_index) || option.next_node_index < 0 || option.next_node_index >= nodes.length)) {
+            throw new BadRequestException(`Option on node ${sourceIndex} references invalid node index ${option.next_node_index}`);
+          }
+        }
+      }
+
       const nodeMap = new Map<number, string>();
       for (let i = 0; i < nodes.length; i++) {
         nodeMap.set(i, randomUUID());
@@ -98,8 +128,10 @@ export class CaseService {
 
         if (node.options && Array.isArray(node.options)) {
           for (const opt of node.options) {
-            const nextNodeId =
-              opt.next_node_index != null ? nodeMap.get(opt.next_node_index) || null : null;
+            const nextNodeId = opt.next_node_index != null ? nodeMap.get(opt.next_node_index) : null;
+            if (opt.next_node_index != null && !nextNodeId) {
+              throw new BadRequestException(`Option references unmapped node index ${opt.next_node_index}`);
+            }
             const optionText = opt.text || opt.option_text || "Choose Option";
             const consequence = opt.consequence || "Consequence recorded.";
 
@@ -112,17 +144,43 @@ export class CaseService {
         }
       }
 
-      const rootIndex = aiResponse.root_node_index ?? 0;
       const rootNodeId = nodeMap.get(rootIndex);
-      if (rootNodeId) {
-        await client.query(`UPDATE cases SET root_node_id = $1 WHERE id = $2`, [rootNodeId, caseId]);
+      if (!rootNodeId) {
+        throw new BadRequestException(`Root node index ${rootIndex} was not persisted`);
+      }
+      await client.query(`UPDATE cases SET root_node_id = $1 WHERE id = $2`, [rootNodeId, caseId]);
+
+      // Confirm persisted references and root linkage before allowing the commit.
+      const referencesRes = await client.query(
+        `SELECT
+           (SELECT COUNT(*) FROM case_nodes WHERE case_id = $1) AS node_count,
+           (SELECT COUNT(*) FROM cases c JOIN case_nodes n ON n.id = c.root_node_id
+             WHERE c.id = $1 AND n.case_id = c.id) AS root_count,
+           (SELECT COUNT(*) FROM case_options o
+             JOIN case_nodes source ON source.id = o.node_id
+             LEFT JOIN case_nodes target ON target.id = o.next_node_id
+             WHERE source.case_id = $1 AND (target.id IS NULL OR target.case_id = $1 OR o.next_node_id IS NULL)) AS valid_option_count,
+           (SELECT COUNT(*) FROM case_options o JOIN case_nodes source ON source.id = o.node_id
+             LEFT JOIN case_nodes target ON target.id = o.next_node_id
+             WHERE source.case_id = $1 AND o.next_node_id IS NOT NULL AND target.id IS NULL) AS invalid_target_count`,
+        [caseId],
+      );
+      const refs = referencesRes.rows[0];
+      const expectedOptionCount = nodes.reduce((count, node) => count + (node.options?.length || 0), 0);
+      const persistedOptionCount = Number(refs.valid_option_count);
+      if (Number(refs.node_count) !== nodes.length || Number(refs.root_count) !== 1 ||
+          persistedOptionCount !== expectedOptionCount || Number(refs.invalid_target_count) !== 0) {
+        throw new BadRequestException("Persisted decision tree contains invalid node or option references");
       }
 
       await client.query("COMMIT");
+      transactionCommitted = true;
 
       return this.getCaseById(caseId, "LECTURER", lecturerId);
     } catch (e) {
-      await client.query("ROLLBACK");
+      if (!transactionCommitted) {
+        await client.query("ROLLBACK");
+      }
       this.logger.error("Failed to persist generated case:", e);
       throw e;
     } finally {
@@ -131,21 +189,30 @@ export class CaseService {
   }
 
   async getCaseById(caseId: string, role?: string, _userId?: string) {
+    const isStudent = role === "STUDENT";
     const caseRes = await this.db.query(
       `SELECT c.*, co.lecturer_id
        FROM cases c
        JOIN courses co ON c.course_id = co.id
-       WHERE c.id = $1`,
-      [caseId],
+       WHERE c.id = $1
+         AND ($2::boolean = FALSE OR c.status = 'PUBLISHED')`,
+      [caseId, isStudent],
     );
-    if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
+    if (caseRes.rows.length === 0) {
+      if (isStudent) {
+        // Check existence using only the identifier; never load case content for
+        // a student unless the published-only query above returns a row.
+        const existenceRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+        if (existenceRes.rows.length > 0) {
+          throw new ForbiddenException("Students can only access PUBLISHED cases");
+        }
+      }
+      throw new NotFoundException(`Case ${caseId} not found`);
+    }
     const caseData = caseRes.rows[0];
 
     // P0-SEC-01 & P0-SEC-02: Strict role gating and data masking for students
     if (role === "STUDENT") {
-      if (caseData.status !== "PUBLISHED") {
-        throw new ForbiddenException("Students can only access PUBLISHED cases");
-      }
       // P0-SEC-02: Never leak decision tree, options, or consequences to students
       // Students play through /branching-attempts endpoints step-by-step
       return {
@@ -283,73 +350,282 @@ export class CaseService {
     }
   }
 
+  async updateCaseNode(
+    caseId: string,
+    nodeId: string,
+    lecturerId: string,
+    dto: UpdateCaseNodeDto,
+  ) {
+    if (!dto || typeof dto.situation !== "string" || !dto.situation.trim()) {
+      throw new BadRequestException("Node situation must be a non-empty string");
+    }
+    if (!Array.isArray(dto.options)) {
+      throw new BadRequestException("Node options must be an array");
+    }
+    for (const [index, option] of dto.options.entries()) {
+      if (!option || typeof option.text !== "string" || !option.text.trim()) {
+        throw new BadRequestException(`Option ${index} text must be a non-empty string`);
+      }
+      if (typeof option.consequence !== "string" || !option.consequence.trim()) {
+        throw new BadRequestException(`Option ${index} consequence must be a non-empty string`);
+      }
+      if (option.nextNodeId !== null &&
+          (typeof option.nextNodeId !== "string" || !option.nextNodeId.trim())) {
+        throw new BadRequestException(`Option ${index} nextNodeId must be a node UUID or null`);
+      }
+    }
+
+    const client = await this.db.getClient();
+    let transactionCommitted = false;
+    try {
+      await client.query("BEGIN");
+      const caseRes = await client.query(
+        `SELECT c.id, c.status, c.learning_mode, c.root_node_id, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON co.id = c.course_id
+         WHERE c.id = $1
+         FOR UPDATE OF c`,
+        [caseId],
+      );
+      if (caseRes.rows.length === 0) {
+        throw new NotFoundException(`Case ${caseId} not found`);
+      }
+      const caseRow = caseRes.rows[0];
+      if (caseRow.lecturer_id !== lecturerId) {
+        throw new ForbiddenException("You can only edit cases in your own courses");
+      }
+      if (caseRow.status !== "DRAFT") {
+        throw new ForbiddenException("Only DRAFT cases can be edited. Revert the case to DRAFT through the lifecycle workflow first.");
+      }
+      if (caseRow.learning_mode === "REVIEW_STUDY") {
+        throw new BadRequestException("Review Study cases do not have decision tree nodes");
+      }
+
+      const nodesRes = await client.query(
+        `SELECT id, situation, is_terminal, node_index
+         FROM case_nodes WHERE case_id = $1 ORDER BY node_index ASC FOR UPDATE`,
+        [caseId],
+      );
+      const nodes = nodesRes.rows as Array<{
+        id: string; situation: string; is_terminal: boolean; node_index: number | null;
+      }>;
+      const editedNode = nodes.find((node) => node.id === nodeId);
+      if (!editedNode) {
+        throw new NotFoundException(`Node ${nodeId} not found in case ${caseId}`);
+      }
+
+      const nodeIds = nodes.map((node) => node.id);
+      const optionsRes = nodeIds.length > 0
+        ? await client.query(
+          `SELECT id, node_id, option_text, consequence, next_node_id
+           FROM case_options WHERE node_id = ANY($1) FOR UPDATE`,
+          [nodeIds],
+        )
+        : { rows: [] };
+      const optionsByNode = new Map<string, Array<{
+        option_text: string; consequence: string; next_node_id: string | null;
+      }>>();
+      for (const option of optionsRes.rows) {
+        const current = optionsByNode.get(option.node_id) || [];
+        current.push({
+          option_text: option.option_text,
+          consequence: option.consequence,
+          next_node_id: option.next_node_id,
+        });
+        optionsByNode.set(option.node_id, current);
+      }
+      optionsByNode.set(nodeId, dto.options.map((option) => ({
+        option_text: option.text.trim(),
+        consequence: option.consequence.trim(),
+        next_node_id: option.nextNodeId,
+      })));
+
+      this.validateCaseTree(caseRow.root_node_id, nodeId, nodes, optionsByNode);
+
+      const isTerminal = dto.options.length === 0;
+      await client.query(
+        `UPDATE case_nodes SET situation = $1, is_terminal = $2
+         WHERE id = $3 AND case_id = $4`,
+        [dto.situation.trim(), isTerminal, nodeId, caseId],
+      );
+      await client.query("DELETE FROM case_options WHERE node_id = $1", [nodeId]);
+      for (const option of dto.options) {
+        await client.query(
+          `INSERT INTO case_options (id, node_id, option_text, consequence, next_node_id)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [randomUUID(), nodeId, option.text.trim(), option.consequence.trim(), option.nextNodeId],
+        );
+      }
+      await client.query("UPDATE cases SET updated_at = NOW() WHERE id = $1", [caseId]);
+      await client.query("COMMIT");
+      transactionCommitted = true;
+
+      return await this.getCaseById(caseId, "LECTURER", lecturerId);
+    } catch (error) {
+      if (!transactionCommitted) {
+        await client.query("ROLLBACK");
+      }
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  private validateCaseTree(
+    rootNodeId: string | null,
+    editedNodeId: string,
+    nodes: Array<{ id: string; situation: string; is_terminal: boolean }>,
+    optionsByNode: Map<string, Array<{ next_node_id: string | null }>>,
+  ) {
+    const nodeIds = new Set(nodes.map((node) => node.id));
+    if (nodes.length < 2) {
+      throw new BadRequestException("Decision tree must contain a root node and at least one child node");
+    }
+    if (!rootNodeId || !nodeIds.has(rootNodeId)) {
+      throw new BadRequestException("Decision tree must have a valid root node");
+    }
+
+    const adjacency = new Map<string, string[]>();
+    let terminalCount = 0;
+    for (const node of nodes) {
+      const options = optionsByNode.get(node.id) || [];
+      const isTerminal = node.id === editedNodeId ? options.length === 0 : node.is_terminal;
+      if (isTerminal !== (options.length === 0)) {
+        throw new BadRequestException(`Node ${node.id} terminal state does not match its options`);
+      }
+      if (isTerminal) {
+        terminalCount++;
+      } else if (options.length < 2 || options.length > 4) {
+        throw new BadRequestException(`Non-terminal node ${node.id} must have between 2 and 4 options`);
+      }
+      const targets: string[] = [];
+      for (const option of options) {
+        if (option.next_node_id === null) continue;
+        if (!nodeIds.has(option.next_node_id)) {
+          throw new BadRequestException(`Option references a node outside case: ${option.next_node_id}`);
+        }
+        targets.push(option.next_node_id);
+      }
+      adjacency.set(node.id, targets);
+    }
+    if (terminalCount === 0) {
+      throw new BadRequestException("Decision tree must contain at least one terminal node");
+    }
+
+    // Three-color DFS detects back edges and guarantees acyclicity.
+    const colors = new Map<string, 0 | 1 | 2>();
+    const visit = (nodeId: string): void => {
+      const color = colors.get(nodeId) || 0;
+      if (color === 1) throw new BadRequestException("Cannot save decision tree: loop detected");
+      if (color === 2) return;
+      colors.set(nodeId, 1);
+      for (const target of adjacency.get(nodeId) || []) visit(target);
+      colors.set(nodeId, 2);
+    };
+    for (const node of nodes) visit(node.id);
+
+    const reachable = new Set<string>();
+    const queue = [rootNodeId];
+    while (queue.length > 0) {
+      const current = queue.shift()!;
+      if (reachable.has(current)) continue;
+      reachable.add(current);
+      queue.push(...(adjacency.get(current) || []));
+    }
+    if (reachable.size !== nodes.length) {
+      throw new BadRequestException("This node has no incoming path from the start");
+    }
+  }
+
   async updateCaseStatus(
     caseId: string,
     lecturerId: string,
-    newStatus: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED",
+    newStatus: CaseStatus,
   ) {
-    // P0-DATA-03: Verify course ownership
-    const caseRes = await this.db.query(
-      `SELECT c.id, c.status, c.learning_mode, c.root_node_id, c.context_text, c.problem_text, co.lecturer_id
-       FROM cases c
-       JOIN courses co ON c.course_id = co.id
-       WHERE c.id = $1`,
-      [caseId],
-    );
-    if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
-    const caseRow = caseRes.rows[0];
-
-    if (caseRow.lecturer_id !== lecturerId) {
-      throw new ForbiddenException("You can only change the status of cases in your own courses");
-    }
-
-    // P0-DATA-03: Enforce valid state machine transitions (DRAFT -> REVIEWED -> APPROVED -> PUBLISHED)
-    const ALLOWED_TRANSITIONS: Record<string, string[]> = {
+    const allowedTransitions: Record<CaseStatus, readonly CaseStatus[]> = {
       DRAFT: ["REVIEWED"],
       REVIEWED: ["APPROVED", "DRAFT"],
       APPROVED: ["PUBLISHED", "DRAFT"],
       PUBLISHED: ["DRAFT"],
     };
 
-    const currentStatus = caseRow.status;
-    if (currentStatus !== newStatus) {
-      const allowed = ALLOWED_TRANSITIONS[currentStatus];
-      if (!allowed || !allowed.includes(newStatus)) {
+    const client = await this.db.getClient();
+    let transactionCommitted = false;
+    try {
+      await client.query("BEGIN");
+      // Serialize transitions for this case so two concurrent requests cannot
+      // both validate against the same stale status.
+      const caseRes = await client.query(
+        `SELECT c.id, c.status, c.learning_mode, c.root_node_id, c.context_text, c.problem_text, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1
+         FOR UPDATE OF c`,
+        [caseId],
+      );
+      if (caseRes.rows.length === 0) {
+        throw new NotFoundException(`Case ${caseId} not found`);
+      }
+      const caseRow = caseRes.rows[0];
+      if (caseRow.lecturer_id !== lecturerId) {
+        throw new ForbiddenException("You can only change the status of cases in your own courses");
+      }
+
+      const currentStatus = caseRow.status as CaseStatus;
+      if (currentStatus !== newStatus && !allowedTransitions[currentStatus]?.includes(newStatus)) {
+        const allowed = allowedTransitions[currentStatus] || [];
         throw new BadRequestException(
-          `Invalid status transition from ${currentStatus} to ${newStatus}. Permitted transitions: ${allowed ? allowed.join(", ") : "none"}`
+          `Invalid status transition from ${currentStatus} to ${newStatus}. Permitted transitions: ${allowed.length ? allowed.join(", ") : "none"}`,
         );
       }
-    }
 
-    // P0-DATA-03: Publishing gates differentiated by learning_mode (Proposal V1.2 & INV-02/INV-03)
-    if (newStatus === "PUBLISHED") {
-      const mode = caseRow.learning_mode || "BRANCHING_STUDY";
+      if (currentStatus === newStatus) {
+        await client.query("COMMIT");
+        transactionCommitted = true;
+        return { id: caseId, status: currentStatus };
+      }
 
-      if (mode === "REVIEW_STUDY") {
-        if (!caseRow.context_text || !caseRow.context_text.trim()) {
-          throw new BadRequestException("Cannot publish Review Study case: Context text must be provided");
-        }
-        if (!caseRow.problem_text || !caseRow.problem_text.trim()) {
-          throw new BadRequestException("Cannot publish Review Study case: Problem text must be provided");
-        }
-      } else {
-        // BRANCHING_STUDY requires root node and at least one terminal node
-        if (!caseRow.root_node_id) {
-          throw new ForbiddenException("Cannot publish case without a designated root node");
-        }
-
-        const terminalRes = await this.db.query(
-          "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
-          [caseId],
-        );
-        const terminalCount = parseInt(terminalRes.rows[0]?.count || "0", 10);
-        if (terminalCount === 0) {
-          throw new BadRequestException("Cannot publish case: The decision tree must contain at least one terminal node");
+      if (newStatus === "PUBLISHED") {
+        const mode = caseRow.learning_mode || "BRANCHING_STUDY";
+        if (mode === "REVIEW_STUDY") {
+          if (!caseRow.context_text || !caseRow.context_text.trim()) {
+            throw new BadRequestException("Cannot publish Review Study case: Context text must be provided");
+          }
+          if (!caseRow.problem_text || !caseRow.problem_text.trim()) {
+            throw new BadRequestException("Cannot publish Review Study case: Problem text must be provided");
+          }
+        } else {
+          if (!caseRow.root_node_id) {
+            throw new ForbiddenException("Cannot publish case without a designated root node");
+          }
+          const terminalRes = await client.query(
+            "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
+            [caseId],
+          );
+          if (parseInt(terminalRes.rows[0]?.count || "0", 10) === 0) {
+            throw new BadRequestException("Cannot publish case: The decision tree must contain at least one terminal node");
+          }
         }
       }
-    }
 
-    await this.db.query("UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2", [newStatus, caseId]);
-    return { id: caseId, status: newStatus };
+      const updateRes = await client.query(
+        "UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2 AND status = $3",
+        [newStatus, caseId, currentStatus],
+      );
+      if (updateRes.rowCount !== 1) {
+        throw new ConflictException("Case status changed before the transition could be saved");
+      }
+
+      await client.query("COMMIT");
+      transactionCommitted = true;
+      return { id: caseId, status: newStatus };
+    } catch (error) {
+      if (!transactionCommitted) {
+        await client.query("ROLLBACK");
+      }
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 }

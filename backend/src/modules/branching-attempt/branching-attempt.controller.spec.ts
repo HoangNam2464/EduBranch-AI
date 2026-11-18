@@ -8,6 +8,7 @@ describe('BranchingAttemptController', () => {
 
   const mockService = {
     startAttempt: jest.fn(),
+    getJourneyReview: jest.fn(),
     getAttemptsByCase: jest.fn(),
     getAttempt: jest.fn(),
     chooseOption: jest.fn(),
@@ -50,6 +51,26 @@ describe('BranchingAttemptController', () => {
       const res = await controller.startAttempt('case-1', { id: 'student-1', role: 'STUDENT' });
       expect(mockService.startAttempt).toHaveBeenCalledWith('case-1', 'student-1');
       expect(res.data.id).toBe('att-1');
+    });
+  });
+
+  describe('getJourneyReview', () => {
+    it('rejects non-student callers', async () => {
+      await expect(controller.getJourneyReview('case-1', 'att-1', {
+        id: 'lecturer-1', role: 'LECTURER',
+      })).rejects.toThrow(ForbiddenException);
+      expect(mockService.getJourneyReview).not.toHaveBeenCalled();
+    });
+
+    it('passes Case, attempt, and authenticated Student identity to the service', async () => {
+      mockService.getJourneyReview.mockResolvedValueOnce({ attemptId: 'att-1', path: [] });
+
+      const result = await controller.getJourneyReview('case-1', 'att-1', {
+        id: 'student-1', role: 'STUDENT',
+      });
+
+      expect(mockService.getJourneyReview).toHaveBeenCalledWith('case-1', 'att-1', 'student-1');
+      expect(result.data.attemptId).toBe('att-1');
     });
   });
 

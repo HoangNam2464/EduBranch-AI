@@ -54,41 +54,52 @@ export class BranchingAttemptService {
    */
   async startAttempt(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
-
-    const caseRes = await this.db.query(
-      "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1",
-      [caseId],
-    );
-    if (caseRes.rows.length === 0) {
-      throw new NotFoundException(`Case ${caseId} not found`);
-    }
-
-    const caseData = caseRes.rows[0];
-    if (caseData.status !== "PUBLISHED") {
-      throw new ForbiddenException("Cannot start attempt on an unpublished case");
-    }
-
-    if (caseData.learning_mode !== "BRANCHING_STUDY") {
-      throw new BadRequestException("Case is not a BRANCHING_STUDY mode case");
-    }
-
-    if (!caseData.root_node_id) {
-      throw new BadRequestException("Case does not have an active root node");
-    }
-
-    // Determine attempt number
-    const prevAttemptsRes = await this.db.query(
-      "SELECT COALESCE(MAX(attempt_number), 0) as max_num FROM branching_attempts WHERE case_id = $1 AND student_id = $2",
-      [caseId, effectiveStudentId],
-    );
-    const attemptNumber = parseInt(prevAttemptsRes.rows[0].max_num, 10) + 1;
-
     const attemptId = randomUUID();
-    await this.db.query(
-      `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, current_node_id, is_completed, reflection_status)
-       VALUES ($1, $2, $3, $4, $5, FALSE, 'NOT_STARTED')`,
-      [attemptId, effectiveStudentId, caseId, attemptNumber, caseData.root_node_id],
-    );
+
+    // Locking the published Case row serializes attempt-number allocation for
+    // concurrent requests on this Case. The unique constraint on
+    // (student_id, case_id, attempt_number) remains the final integrity guard.
+    const client = await this.db.getClient();
+    try {
+      await client.query("BEGIN");
+      const caseRes = await client.query(
+        "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1 AND status = 'PUBLISHED' FOR UPDATE",
+        [caseId],
+      );
+      if (caseRes.rows.length === 0) {
+        const existenceRes = await client.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+        if (existenceRes.rows.length > 0) {
+          throw new ForbiddenException("Cannot start attempt on an unpublished case");
+        }
+        throw new NotFoundException(`Case ${caseId} not found`);
+      }
+
+      const caseData = caseRes.rows[0];
+      if (caseData.learning_mode !== "BRANCHING_STUDY") {
+        throw new BadRequestException("Case is not a BRANCHING_STUDY mode case");
+      }
+      if (!caseData.root_node_id) {
+        throw new BadRequestException("Case does not have an active root node");
+      }
+
+      const prevAttemptsRes = await client.query(
+        "SELECT COALESCE(MAX(attempt_number), 0) as max_num FROM branching_attempts WHERE case_id = $1 AND student_id = $2",
+        [caseId, effectiveStudentId],
+      );
+      const attemptNumber = parseInt(prevAttemptsRes.rows[0].max_num, 10) + 1;
+
+      await client.query(
+        `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, current_node_id, is_completed, reflection_status)
+         VALUES ($1, $2, $3, $4, $5, FALSE, 'NOT_STARTED')`,
+        [attemptId, effectiveStudentId, caseId, attemptNumber, caseData.root_node_id],
+      );
+      await client.query("COMMIT");
+    } catch (error) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
+    }
 
     return this.getAttempt(attemptId, effectiveStudentId);
   }
@@ -103,17 +114,34 @@ export class BranchingAttemptService {
       `SELECT a.*, c.title as case_title, c.description as case_description
        FROM branching_attempts a
        JOIN cases c ON a.case_id = c.id
-       WHERE a.id = $1`,
-      [attemptId],
+       WHERE a.id = $1
+         AND ($2::boolean = TRUE OR (c.status = 'PUBLISHED' AND a.student_id = $3))`,
+      [attemptId, isLecturer, studentId || null],
     );
     if (attemptRes.rows.length === 0) {
+      if (!isLecturer) {
+        const accessRes = await this.db.query(
+          `SELECT a.student_id, c.status
+           FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+           WHERE a.id = $1`,
+          [attemptId],
+        );
+        if (accessRes.rows.length > 0) {
+          if (!studentId || accessRes.rows[0].student_id !== studentId) {
+            throw new ForbiddenException("You do not have permission to view this attempt");
+          }
+          if (accessRes.rows[0].status !== "PUBLISHED") {
+            throw new ForbiddenException("Students can only access attempts for PUBLISHED cases");
+          }
+        }
+      }
       throw new NotFoundException(`Attempt ${attemptId} not found`);
     }
 
     const attempt = attemptRes.rows[0];
 
     // Ownership check: If not lecturer, must be owner student
-    if (!isLecturer && studentId && attempt.student_id !== studentId) {
+    if (!isLecturer && (!studentId || attempt.student_id !== studentId)) {
       throw new ForbiddenException("You do not have permission to view this attempt");
     }
 
@@ -213,6 +241,130 @@ export class BranchingAttemptService {
   }
 
   /**
+   * Assemble the post-completion Journey Review for the owning Student.
+   * Authorization, Case publication, completion, and outcome checks happen
+   * before any path or consequence rows are queried.
+   */
+  async getJourneyReview(caseId: string, attemptId: string, studentId?: string) {
+    const effectiveStudentId = await this.resolveStudent(studentId);
+    const reviewAccessRes = await this.db.query(
+      `SELECT a.id, a.case_id, a.student_id, a.attempt_number, a.started_at,
+              a.completed_at, a.outcome_node_id, c.title AS case_title,
+              outcome.situation AS outcome_situation,
+              outcome.node_index AS outcome_node_index
+       FROM branching_attempts a
+       JOIN cases c ON c.id = a.case_id
+       JOIN case_nodes outcome ON outcome.id = a.outcome_node_id AND outcome.case_id = c.id
+       WHERE a.id = $1 AND a.case_id = $2 AND a.student_id = $3
+         AND c.status = 'PUBLISHED' AND a.is_completed = TRUE
+         AND a.outcome_node_id IS NOT NULL AND outcome.is_terminal = TRUE`,
+      [attemptId, caseId, effectiveStudentId],
+    );
+
+    if (reviewAccessRes.rows.length === 0) {
+      const accessRes = await this.db.query(
+        `SELECT a.case_id, a.student_id, a.is_completed, a.outcome_node_id, c.status
+         FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+         WHERE a.id = $1`,
+        [attemptId],
+      );
+      if (accessRes.rows.length === 0) {
+        throw new NotFoundException(`Attempt ${attemptId} not found`);
+      }
+
+      const access = accessRes.rows[0];
+      if (access.student_id !== effectiveStudentId || access.case_id !== caseId) {
+        throw new ForbiddenException("You do not have permission to view this Journey Review");
+      }
+      if (access.status !== "PUBLISHED") {
+        throw new ForbiddenException("Students can only access reviews for PUBLISHED cases");
+      }
+      if (!access.is_completed || !access.outcome_node_id) {
+        throw new ForbiddenException("Journey Review is available only after the attempt is completed");
+      }
+      throw new BadRequestException("Attempt outcome is not a valid terminal node");
+    }
+
+    const attempt = reviewAccessRes.rows[0];
+    const pathRes = await this.db.query(
+      `SELECT r.node_id, r.selected_option_id, r.reasoning_text, r.submitted_at,
+              n.situation, n.node_index,
+              selected.option_text, selected.consequence, selected.next_node_id
+       FROM student_reasoning r
+       JOIN case_nodes n ON n.id = r.node_id AND n.case_id = $2
+       JOIN case_options selected
+         ON selected.id = r.selected_option_id AND selected.node_id = n.id
+       WHERE r.attempt_id = $1
+       ORDER BY r.submitted_at ASC, r.id ASC`,
+      [attemptId, caseId],
+    );
+
+    const steps = pathRes.rows;
+    for (let index = 0; index < steps.length; index += 1) {
+      const expectedNextNodeId = steps[index].next_node_id || attempt.outcome_node_id;
+      const actualNextNodeId = steps[index + 1]?.node_id || attempt.outcome_node_id;
+      if (expectedNextNodeId !== actualNextNodeId) {
+        throw new BadRequestException("Stored attempt path does not match its selected option links");
+      }
+    }
+    if (steps.length > 0) {
+      const lastStep = steps[steps.length - 1];
+      const recordedOutcome = lastStep.next_node_id || lastStep.node_id;
+      if (recordedOutcome !== attempt.outcome_node_id) {
+        throw new BadRequestException("Stored path does not reach the recorded outcome node");
+      }
+    }
+
+    const nodeIds = [...new Set(steps.map((step) => step.node_id))];
+    const alternativesRes = nodeIds.length
+      ? await this.db.query(
+          `SELECT node_id, id, option_text
+           FROM case_options
+           WHERE node_id = ANY($1::uuid[])
+           ORDER BY node_id, id`,
+          [nodeIds],
+        )
+      : { rows: [] as any[] };
+    const alternativesByNode = new Map<string, Array<{ id: string; text: string }>>();
+    for (const option of alternativesRes.rows) {
+      const options = alternativesByNode.get(option.node_id) || [];
+      options.push({ id: option.id, text: option.option_text });
+      alternativesByNode.set(option.node_id, options);
+    }
+
+    return {
+      attemptId: attempt.id,
+      caseId: attempt.case_id,
+      caseTitle: attempt.case_title,
+      attemptNumber: attempt.attempt_number,
+      startedAt: attempt.started_at,
+      completedAt: attempt.completed_at,
+      outcome: {
+        nodeId: attempt.outcome_node_id,
+        nodeIndex: attempt.outcome_node_index,
+        situation: attempt.outcome_situation,
+        outcomeText: steps[steps.length - 1]?.consequence || null,
+      },
+      path: steps.map((step, index) => ({
+        step: index + 1,
+        nodeId: step.node_id,
+        nodeIndex: step.node_index,
+        situation: step.situation,
+        selectedOption: {
+          id: step.selected_option_id,
+          text: step.option_text,
+          consequence: step.consequence,
+          nextNodeId: step.next_node_id,
+        },
+        alternatives: (alternativesByNode.get(step.node_id) || [])
+          .filter((option) => option.id !== step.selected_option_id),
+        reasoningText: step.reasoning_text,
+        submittedAt: step.submitted_at,
+      })),
+    };
+  }
+
+  /**
    * Flow 4: Experience-First Continuous Navigation
    * - P0-DATA-04: Protected by database transaction with SELECT ... FOR UPDATE.
    * - Enforces student ownership check.
@@ -228,10 +380,24 @@ export class BranchingAttemptService {
 
       // Pessimistic lock on attempt row
       const attemptRes = await client.query(
-        "SELECT * FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        `SELECT a.*
+         FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+         WHERE a.id = $1 AND c.status = 'PUBLISHED' FOR UPDATE OF a`,
         [attemptId],
       );
       if (attemptRes.rows.length === 0) {
+        const accessRes = await client.query(
+          `SELECT a.student_id, c.status
+           FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+           WHERE a.id = $1`,
+          [attemptId],
+        );
+        if (accessRes.rows.length > 0) {
+          if (accessRes.rows[0].student_id !== studentId) {
+            throw new ForbiddenException("You do not have permission to modify this attempt");
+          }
+          throw new ForbiddenException("Students can only access attempts for PUBLISHED cases");
+        }
         throw new NotFoundException(`Attempt ${attemptId} not found`);
       }
 
@@ -263,10 +429,10 @@ export class BranchingAttemptService {
       // Record option selection into student_reasoning
       const reasoningId = randomUUID();
       await client.query(
-        `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, submitted_at)
-         VALUES ($1, $2, $3, $4, NOW())
+        `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, reasoning_text, submitted_at)
+         VALUES ($1, $2, $3, $4, NULL, NOW())
          ON CONFLICT (attempt_id, node_id)
-         DO UPDATE SET selected_option_id = $4, submitted_at = NOW()`,
+         DO UPDATE SET selected_option_id = $4, reasoning_text = NULL, submitted_at = NOW()`,
         [reasoningId, attemptId, dto.nodeId, dto.selectedOptionId],
       );
 
@@ -274,14 +440,24 @@ export class BranchingAttemptService {
       let isTerminalTransition = false;
 
       if (!nextNodeId) {
-        // If next_node_id is null, current node is terminal for this path
+        // A null edge is valid only when the current node itself is terminal.
+        const currentNodeRes = await client.query(
+          "SELECT is_terminal FROM case_nodes WHERE id = $1 AND case_id = $2",
+          [dto.nodeId, attempt.case_id],
+        );
+        if (currentNodeRes.rows.length === 0 || !currentNodeRes.rows[0].is_terminal) {
+          throw new BadRequestException("Selected option does not lead to a valid terminal node");
+        }
         isTerminalTransition = true;
       } else {
         const nextNodeRes = await client.query(
-          "SELECT is_terminal FROM case_nodes WHERE id = $1",
-          [nextNodeId],
+          "SELECT is_terminal FROM case_nodes WHERE id = $1 AND case_id = $2",
+          [nextNodeId, attempt.case_id],
         );
-        if (nextNodeRes.rows.length === 0 || nextNodeRes.rows[0].is_terminal) {
+        if (nextNodeRes.rows.length === 0) {
+          throw new BadRequestException("Selected option points to an invalid node");
+        }
+        if (nextNodeRes.rows[0].is_terminal) {
           isTerminalTransition = true;
         }
       }
@@ -425,10 +601,22 @@ export class BranchingAttemptService {
    */
   async getAttemptsByCase(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
+    const publishedCaseRes = await this.db.query(
+      "SELECT id FROM cases WHERE id = $1 AND status = 'PUBLISHED'",
+      [caseId],
+    );
+    if (publishedCaseRes.rows.length === 0) {
+      const existenceRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+      if (existenceRes.rows.length > 0) {
+        throw new ForbiddenException("Students can only access attempts for PUBLISHED cases");
+      }
+      throw new NotFoundException(`Case ${caseId} not found`);
+    }
     const res = await this.db.query(
-      `SELECT id, attempt_number, is_completed, reflection_status, started_at, completed_at
-       FROM branching_attempts
-       WHERE case_id = $1 AND student_id = $2
+      `SELECT a.id, a.attempt_number, a.is_completed, a.reflection_status, a.started_at, a.completed_at
+       FROM branching_attempts a
+       JOIN cases c ON c.id = a.case_id
+       WHERE a.case_id = $1 AND a.student_id = $2 AND c.status = 'PUBLISHED'
        ORDER BY attempt_number DESC`,
       [caseId, effectiveStudentId],
     );
