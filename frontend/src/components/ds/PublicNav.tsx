@@ -106,7 +106,7 @@ export function PublicNav({ brandName, homeTo, links, secondaryAction, primaryAc
           {(secondaryAction || primaryAction) && (
             <div className="flex items-center gap-2.5 border-l border-line pl-3">
               {secondaryAction && (
-                <PublicButton variant="ghost" size="md" to={secondaryAction.to} onClick={secondaryAction.onClick}>
+                <PublicButton variant="secondary" size="md" to={secondaryAction.to} onClick={secondaryAction.onClick}>
                   {secondaryAction.label}
                 </PublicButton>
               )}
