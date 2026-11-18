@@ -18,6 +18,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
  *
  * Routes (prefixed with /api/v1):
  *   POST /api/v1/cases/:caseId/branching-attempts   (Start or retry attempt - Student only)
+ *   GET  /api/v1/cases/:caseId/branching-attempts/:attemptId/review (Completed Journey Review - owner only)
  *   GET  /api/v1/cases/:caseId/attempts             (List student attempts for case)
  *   GET  /api/v1/branching-attempts/:id             (Get attempt details & steps - Owner only)
  *   POST /api/v1/branching-attempts/:id/step        (Experience phase: pick option - Owner only)
@@ -39,6 +40,23 @@ export class BranchingAttemptController {
       throw new ForbiddenException("Only students can start branching attempts");
     }
     const result = await this.attemptService.startAttempt(caseId, user.id);
+    return {
+      status: "SUCCESS",
+      data: result,
+    };
+  }
+
+  @Roles("STUDENT")
+  @Get("cases/:caseId/branching-attempts/:attemptId/review")
+  async getJourneyReview(
+    @Param("caseId") caseId: string,
+    @Param("attemptId") attemptId: string,
+    @CurrentUser() user: { id: string; role: string },
+  ) {
+    if (user.role !== "STUDENT") {
+      throw new ForbiddenException("Only students can view a Journey Review");
+    }
+    const result = await this.attemptService.getJourneyReview(caseId, attemptId, user.id);
     return {
       status: "SUCCESS",
       data: result,

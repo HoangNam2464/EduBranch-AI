@@ -274,6 +274,102 @@ describe('BranchingAttemptService', () => {
     });
   });
 
+  describe('getJourneyReview', () => {
+    const completedAttempt = {
+      id: 'att-1',
+      case_id: 'case-1',
+      student_id: 'student-1',
+      attempt_number: 2,
+      started_at: '2026-11-19T10:00:00.000Z',
+      completed_at: '2026-11-19T10:05:00.000Z',
+      outcome_node_id: 'terminal-1',
+      case_title: 'Published case',
+      outcome_situation: 'The final outcome',
+      outcome_node_index: 3,
+    };
+
+    it('returns the persisted path in order and unlocks selected consequences only after completion', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }) // resolve student
+        .mockResolvedValueOnce({ rows: [completedAttempt] }) // authorization + completion gate
+        .mockResolvedValueOnce({
+          rows: [
+            { node_id: 'node-1', node_index: 0, situation: 'First decision', selected_option_id: 'option-1', option_text: 'Scale workers', consequence: 'Capacity improved.', next_node_id: 'node-2', reasoning_text: 'Protect the service.', submitted_at: '2026-11-19T10:01:00.000Z' },
+            { node_id: 'node-2', node_index: 2, situation: 'Second decision', selected_option_id: 'option-2', option_text: 'Restore gradually', consequence: 'Traffic stabilized.', next_node_id: 'terminal-1', reasoning_text: null, submitted_at: '2026-11-19T10:03:00.000Z' },
+          ],
+        }) // persisted traversal
+        .mockResolvedValueOnce({
+          rows: [
+            { node_id: 'node-1', id: 'option-1', option_text: 'Scale workers' },
+            { node_id: 'node-1', id: 'option-alt', option_text: 'Stop all payments' },
+            { node_id: 'node-2', id: 'option-2', option_text: 'Restore gradually' },
+          ],
+        }); // alternatives
+
+      const result = await service.getJourneyReview('case-1', 'att-1', 'student-1');
+
+      expect(result.path.map((step) => step.nodeId)).toEqual(['node-1', 'node-2']);
+      expect(result.path.map((step) => step.step)).toEqual([1, 2]);
+      expect(result.path[0].selectedOption).toEqual({
+        id: 'option-1', text: 'Scale workers', consequence: 'Capacity improved.', nextNodeId: 'node-2',
+      });
+      expect(result.path[0].alternatives).toEqual([{ id: 'option-alt', text: 'Stop all payments' }]);
+      expect(result.path[1].selectedOption.consequence).toBe('Traffic stabilized.');
+      expect(result.outcome).toEqual({
+        nodeId: 'terminal-1', nodeIndex: 3, situation: 'The final outcome', outcomeText: 'Traffic stabilized.',
+      });
+      expect(mockDbService.query.mock.calls[2][0]).toContain('ORDER BY r.submitted_at ASC, r.id ASC');
+    });
+
+    it('rejects an incomplete attempt before querying path or consequences', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ case_id: 'case-1', student_id: 'student-1', is_completed: false, outcome_node_id: null, status: 'PUBLISHED' }] });
+
+      await expect(service.getJourneyReview('case-1', 'att-1', 'student-1')).rejects.toThrow(ForbiddenException);
+      expect(mockDbService.query).toHaveBeenCalledTimes(3);
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('FROM student_reasoning'), expect.any(Array));
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('FROM case_options'), expect.any(Array));
+    });
+
+    it('rejects another Student and a mismatched Case before querying path data', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ case_id: 'case-1', student_id: 'owner-student', is_completed: true, outcome_node_id: 'terminal-1', status: 'PUBLISHED' }] });
+
+      await expect(service.getJourneyReview('case-1', 'att-1', 'student-1')).rejects.toThrow(ForbiddenException);
+      expect(mockDbService.query).toHaveBeenCalledTimes(3);
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('FROM student_reasoning'), expect.any(Array));
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('FROM case_options'), expect.any(Array));
+    });
+
+    it('rejects a Case ID that does not match the attempt', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ case_id: 'case-1', student_id: 'student-1', is_completed: true, outcome_node_id: 'terminal-1', status: 'PUBLISHED' }] });
+
+      await expect(service.getJourneyReview('different-case', 'att-1', 'student-1')).rejects.toThrow(ForbiddenException);
+      expect(mockDbService.query).toHaveBeenCalledTimes(3);
+    });
+
+    it('rejects persisted path data whose selected option links do not match traversal order', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+        .mockResolvedValueOnce({ rows: [completedAttempt] })
+        .mockResolvedValueOnce({ rows: [
+          { node_id: 'node-1', node_index: 0, next_node_id: 'wrong-node', submitted_at: '2026-11-19T10:01:00.000Z' },
+          { node_id: 'node-2', node_index: 2, next_node_id: 'terminal-1', submitted_at: '2026-11-19T10:03:00.000Z' },
+        ] });
+
+      await expect(service.getJourneyReview('case-1', 'att-1', 'student-1')).rejects.toThrow(BadRequestException);
+      expect(mockDbService.query).toHaveBeenCalledTimes(3);
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('FROM case_options'), expect.any(Array));
+    });
+  });
+
   describe('chooseOption (P0-DATA-04 with FOR UPDATE transaction)', () => {
     it('should throw ForbiddenException if student does not own attempt', async () => {
       mockDbClient.query

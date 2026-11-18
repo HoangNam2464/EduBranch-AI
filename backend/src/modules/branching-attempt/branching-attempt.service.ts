@@ -241,6 +241,130 @@ export class BranchingAttemptService {
   }
 
   /**
+   * Assemble the post-completion Journey Review for the owning Student.
+   * Authorization, Case publication, completion, and outcome checks happen
+   * before any path or consequence rows are queried.
+   */
+  async getJourneyReview(caseId: string, attemptId: string, studentId?: string) {
+    const effectiveStudentId = await this.resolveStudent(studentId);
+    const reviewAccessRes = await this.db.query(
+      `SELECT a.id, a.case_id, a.student_id, a.attempt_number, a.started_at,
+              a.completed_at, a.outcome_node_id, c.title AS case_title,
+              outcome.situation AS outcome_situation,
+              outcome.node_index AS outcome_node_index
+       FROM branching_attempts a
+       JOIN cases c ON c.id = a.case_id
+       JOIN case_nodes outcome ON outcome.id = a.outcome_node_id AND outcome.case_id = c.id
+       WHERE a.id = $1 AND a.case_id = $2 AND a.student_id = $3
+         AND c.status = 'PUBLISHED' AND a.is_completed = TRUE
+         AND a.outcome_node_id IS NOT NULL AND outcome.is_terminal = TRUE`,
+      [attemptId, caseId, effectiveStudentId],
+    );
+
+    if (reviewAccessRes.rows.length === 0) {
+      const accessRes = await this.db.query(
+        `SELECT a.case_id, a.student_id, a.is_completed, a.outcome_node_id, c.status
+         FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+         WHERE a.id = $1`,
+        [attemptId],
+      );
+      if (accessRes.rows.length === 0) {
+        throw new NotFoundException(`Attempt ${attemptId} not found`);
+      }
+
+      const access = accessRes.rows[0];
+      if (access.student_id !== effectiveStudentId || access.case_id !== caseId) {
+        throw new ForbiddenException("You do not have permission to view this Journey Review");
+      }
+      if (access.status !== "PUBLISHED") {
+        throw new ForbiddenException("Students can only access reviews for PUBLISHED cases");
+      }
+      if (!access.is_completed || !access.outcome_node_id) {
+        throw new ForbiddenException("Journey Review is available only after the attempt is completed");
+      }
+      throw new BadRequestException("Attempt outcome is not a valid terminal node");
+    }
+
+    const attempt = reviewAccessRes.rows[0];
+    const pathRes = await this.db.query(
+      `SELECT r.node_id, r.selected_option_id, r.reasoning_text, r.submitted_at,
+              n.situation, n.node_index,
+              selected.option_text, selected.consequence, selected.next_node_id
+       FROM student_reasoning r
+       JOIN case_nodes n ON n.id = r.node_id AND n.case_id = $2
+       JOIN case_options selected
+         ON selected.id = r.selected_option_id AND selected.node_id = n.id
+       WHERE r.attempt_id = $1
+       ORDER BY r.submitted_at ASC, r.id ASC`,
+      [attemptId, caseId],
+    );
+
+    const steps = pathRes.rows;
+    for (let index = 0; index < steps.length; index += 1) {
+      const expectedNextNodeId = steps[index].next_node_id || attempt.outcome_node_id;
+      const actualNextNodeId = steps[index + 1]?.node_id || attempt.outcome_node_id;
+      if (expectedNextNodeId !== actualNextNodeId) {
+        throw new BadRequestException("Stored attempt path does not match its selected option links");
+      }
+    }
+    if (steps.length > 0) {
+      const lastStep = steps[steps.length - 1];
+      const recordedOutcome = lastStep.next_node_id || lastStep.node_id;
+      if (recordedOutcome !== attempt.outcome_node_id) {
+        throw new BadRequestException("Stored path does not reach the recorded outcome node");
+      }
+    }
+
+    const nodeIds = [...new Set(steps.map((step) => step.node_id))];
+    const alternativesRes = nodeIds.length
+      ? await this.db.query(
+          `SELECT node_id, id, option_text
+           FROM case_options
+           WHERE node_id = ANY($1::uuid[])
+           ORDER BY node_id, id`,
+          [nodeIds],
+        )
+      : { rows: [] as any[] };
+    const alternativesByNode = new Map<string, Array<{ id: string; text: string }>>();
+    for (const option of alternativesRes.rows) {
+      const options = alternativesByNode.get(option.node_id) || [];
+      options.push({ id: option.id, text: option.option_text });
+      alternativesByNode.set(option.node_id, options);
+    }
+
+    return {
+      attemptId: attempt.id,
+      caseId: attempt.case_id,
+      caseTitle: attempt.case_title,
+      attemptNumber: attempt.attempt_number,
+      startedAt: attempt.started_at,
+      completedAt: attempt.completed_at,
+      outcome: {
+        nodeId: attempt.outcome_node_id,
+        nodeIndex: attempt.outcome_node_index,
+        situation: attempt.outcome_situation,
+        outcomeText: steps[steps.length - 1]?.consequence || null,
+      },
+      path: steps.map((step, index) => ({
+        step: index + 1,
+        nodeId: step.node_id,
+        nodeIndex: step.node_index,
+        situation: step.situation,
+        selectedOption: {
+          id: step.selected_option_id,
+          text: step.option_text,
+          consequence: step.consequence,
+          nextNodeId: step.next_node_id,
+        },
+        alternatives: (alternativesByNode.get(step.node_id) || [])
+          .filter((option) => option.id !== step.selected_option_id),
+        reasoningText: step.reasoning_text,
+        submittedAt: step.submitted_at,
+      })),
+    };
+  }
+
+  /**
    * Flow 4: Experience-First Continuous Navigation
    * - P0-DATA-04: Protected by database transaction with SELECT ... FOR UPDATE.
    * - Enforces student ownership check.
