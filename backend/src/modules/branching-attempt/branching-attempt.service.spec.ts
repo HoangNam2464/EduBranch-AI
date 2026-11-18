@@ -316,11 +316,54 @@ describe('BranchingAttemptService', () => {
       expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
     });
 
+    it('rejects an option outside the current node without writing the path', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }] })
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({});
+
+      await expect(service.chooseOption('att-1', 'student-1', {
+        nodeId: 'n-1', selectedOptionId: 'option-from-another-node',
+      })).rejects.toThrow(BadRequestException);
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO student_reasoning'), expect.any(Array),
+      );
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(
+        expect.stringContaining('UPDATE branching_attempts'), expect.any(Array),
+      );
+    });
+
+    it('rolls back the selected option if its target node is invalid for the Case', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'opt-1', next_node_id: 'node-from-another-case' }] })
+        .mockResolvedValueOnce({}) // reasoning insert is rolled back
+        .mockResolvedValueOnce({ rows: [] }) // target must belong to this Case
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.chooseOption('att-1', 'student-1', {
+        nodeId: 'n-1', selectedOptionId: 'opt-1',
+      })).rejects.toThrow(BadRequestException);
+
+      expect(mockDbClient.query).toHaveBeenCalledWith(
+        expect.stringContaining('WHERE id = $1 AND case_id = $2'),
+        ['node-from-another-case', 'case-1'],
+      );
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(
+        expect.stringContaining('UPDATE branching_attempts'), expect.any(Array),
+      );
+    });
+
     it('should execute FOR UPDATE transaction and advance node', async () => {
       mockDbClient.query
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
-          rows: [{ id: 'att-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }],
+          rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }],
         }) // SELECT ... FOR UPDATE
         .mockResolvedValueOnce({
           rows: [{ id: 'opt-1', option_text: 'Choice A', consequence: 'Cons A', next_node_id: 'n-2' }],
@@ -351,6 +394,10 @@ describe('BranchingAttemptService', () => {
         ['att-1'],
       );
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query).toHaveBeenCalledWith(
+        expect.stringContaining('reasoning_text = NULL'),
+        expect.arrayContaining([expect.any(String), 'att-1', 'n-1', 'opt-1']),
+      );
     });
   });
 

@@ -305,10 +305,10 @@ export class BranchingAttemptService {
       // Record option selection into student_reasoning
       const reasoningId = randomUUID();
       await client.query(
-        `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, submitted_at)
-         VALUES ($1, $2, $3, $4, NOW())
+        `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, reasoning_text, submitted_at)
+         VALUES ($1, $2, $3, $4, NULL, NOW())
          ON CONFLICT (attempt_id, node_id)
-         DO UPDATE SET selected_option_id = $4, submitted_at = NOW()`,
+         DO UPDATE SET selected_option_id = $4, reasoning_text = NULL, submitted_at = NOW()`,
         [reasoningId, attemptId, dto.nodeId, dto.selectedOptionId],
       );
 
@@ -320,10 +320,13 @@ export class BranchingAttemptService {
         isTerminalTransition = true;
       } else {
         const nextNodeRes = await client.query(
-          "SELECT is_terminal FROM case_nodes WHERE id = $1",
-          [nextNodeId],
+          "SELECT is_terminal FROM case_nodes WHERE id = $1 AND case_id = $2",
+          [nextNodeId, attempt.case_id],
         );
-        if (nextNodeRes.rows.length === 0 || nextNodeRes.rows[0].is_terminal) {
+        if (nextNodeRes.rows.length === 0) {
+          throw new BadRequestException("Selected option points to an invalid node");
+        }
+        if (nextNodeRes.rows[0].is_terminal) {
           isTerminalTransition = true;
         }
       }
