@@ -43,7 +43,8 @@ describe('BranchingAttemptService', () => {
     it('should throw NotFoundException if case does not exist', async () => {
       mockDbService.query
         .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }) // resolveStudent
-        .mockResolvedValueOnce({ rows: [] }); // case lookup
+        .mockResolvedValueOnce({ rows: [] }) // published-only case lookup
+        .mockResolvedValueOnce({ rows: [] }); // existence check
 
       await expect(service.startAttempt('non-existent-case', 'student-1')).rejects.toThrow(
         NotFoundException,
@@ -53,14 +54,31 @@ describe('BranchingAttemptService', () => {
     it('should throw ForbiddenException if case is not PUBLISHED', async () => {
       mockDbService.query
         .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }) // resolveStudent
-        .mockResolvedValueOnce({
-          rows: [{ id: 'case-1', status: 'DRAFT', learning_mode: 'BRANCHING_STUDY', root_node_id: 'n-1' }],
-        });
+        .mockResolvedValueOnce({ rows: [] }) // published-only lookup rejects DRAFT
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1' }] }); // status-only existence check
 
       await expect(service.startAttempt('case-1', 'student-1')).rejects.toThrow(
         ForbiddenException,
       );
+      expect(mockDbService.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
+      expect(mockDbService.query).not.toHaveBeenCalledWith(
+        expect.stringContaining('INSERT INTO branching_attempts'), expect.any(Array),
+      );
     });
+
+    it.each(['REVIEWED', 'APPROVED'])(
+      'should reject direct attempt access for %s cases before reading content',
+      async (status) => {
+        mockDbService.query
+          .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+          .mockResolvedValueOnce({ rows: [] })
+          .mockResolvedValueOnce({ rows: [{ id: 'case-1', status }] });
+
+        await expect(service.startAttempt('case-1', 'student-1')).rejects.toThrow(ForbiddenException);
+        expect(mockDbService.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
+        expect(mockDbService.query.mock.calls[2][0]).toBe('SELECT id FROM cases WHERE id = $1');
+      },
+    );
 
     it('should successfully create attempt and increment attempt number', async () => {
       mockDbService.query
@@ -98,6 +116,35 @@ describe('BranchingAttemptService', () => {
     });
   });
 
+  describe('getAttemptsByCase published-only access', () => {
+    it('lists attempts only after a published-only Case lookup succeeds', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', attempt_number: 1 }] });
+
+      const result = await service.getAttemptsByCase('case-1', 'student-1');
+
+      expect(result).toEqual([{ id: 'att-1', attempt_number: 1 }]);
+      expect(mockDbService.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
+      expect(mockDbService.query.mock.calls[2][0]).toContain("c.status = 'PUBLISHED'");
+    });
+
+    it.each(['DRAFT', 'REVIEWED', 'APPROVED'])(
+      'rejects attempts lookup for an unpublished %s Case',
+      async (status) => {
+        mockDbService.query
+          .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] })
+          .mockResolvedValueOnce({ rows: [] })
+          .mockResolvedValueOnce({ rows: [{ id: 'case-1', status }] });
+
+        await expect(service.getAttemptsByCase('case-1', 'student-1')).rejects.toThrow(ForbiddenException);
+        expect(mockDbService.query.mock.calls[1][0]).toContain("status = 'PUBLISHED'");
+        expect(mockDbService.query).toHaveBeenCalledTimes(3);
+      },
+    );
+  });
+
   describe('getAttempt & Data Masking (P0-SEC-02, P0-DATA-04)', () => {
     it('should throw ForbiddenException if student does not own attempt', async () => {
       mockDbService.query.mockResolvedValueOnce({
@@ -107,6 +154,17 @@ describe('BranchingAttemptService', () => {
       await expect(service.getAttempt('att-1', 'intruder-student')).rejects.toThrow(
         ForbiddenException,
       );
+    });
+
+    it('should reject a direct attempt ID lookup when the Case is not published before loading steps', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', status: 'APPROVED' }] });
+
+      await expect(service.getAttempt('att-1', 'student-1')).rejects.toThrow(ForbiddenException);
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('student_reasoning'), expect.any(Array));
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('case_nodes'), expect.any(Array));
     });
 
     it('should hide consequences and next_node_id while attempt is in progress', async () => {
@@ -228,6 +286,21 @@ describe('BranchingAttemptService', () => {
       expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
     });
 
+    it('rejects step requests for attempts whose Case is no longer published', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', status: 'DRAFT' }] });
+
+      await expect(service.chooseOption('att-1', 'student-1', {
+        nodeId: 'n-1', selectedOptionId: 'opt-1',
+      })).rejects.toThrow(ForbiddenException);
+
+      expect(mockDbClient.query.mock.calls[1][0]).toContain("c.status = 'PUBLISHED'");
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('FROM case_options'), expect.any(Array));
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+    });
+
     it('should execute FOR UPDATE transaction and advance node', async () => {
       mockDbClient.query
         .mockResolvedValueOnce({}) // BEGIN
@@ -259,7 +332,7 @@ describe('BranchingAttemptService', () => {
       expect(res).toBeDefined();
       expect(mockDbClient.query).toHaveBeenCalledWith('BEGIN');
       expect(mockDbClient.query).toHaveBeenCalledWith(
-        'SELECT * FROM branching_attempts WHERE id = $1 FOR UPDATE',
+        expect.stringContaining("c.status = 'PUBLISHED' FOR UPDATE OF a"),
         ['att-1'],
       );
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');

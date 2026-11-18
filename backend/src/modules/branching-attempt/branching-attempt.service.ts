@@ -56,17 +56,18 @@ export class BranchingAttemptService {
     const effectiveStudentId = await this.resolveStudent(studentId);
 
     const caseRes = await this.db.query(
-      "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1",
+      "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1 AND status = 'PUBLISHED'",
       [caseId],
     );
     if (caseRes.rows.length === 0) {
+      const existenceRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+      if (existenceRes.rows.length > 0) {
+        throw new ForbiddenException("Cannot start attempt on an unpublished case");
+      }
       throw new NotFoundException(`Case ${caseId} not found`);
     }
 
     const caseData = caseRes.rows[0];
-    if (caseData.status !== "PUBLISHED") {
-      throw new ForbiddenException("Cannot start attempt on an unpublished case");
-    }
 
     if (caseData.learning_mode !== "BRANCHING_STUDY") {
       throw new BadRequestException("Case is not a BRANCHING_STUDY mode case");
@@ -103,17 +104,34 @@ export class BranchingAttemptService {
       `SELECT a.*, c.title as case_title, c.description as case_description
        FROM branching_attempts a
        JOIN cases c ON a.case_id = c.id
-       WHERE a.id = $1`,
-      [attemptId],
+       WHERE a.id = $1
+         AND ($2::boolean = TRUE OR (c.status = 'PUBLISHED' AND a.student_id = $3))`,
+      [attemptId, isLecturer, studentId || null],
     );
     if (attemptRes.rows.length === 0) {
+      if (!isLecturer) {
+        const accessRes = await this.db.query(
+          `SELECT a.student_id, c.status
+           FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+           WHERE a.id = $1`,
+          [attemptId],
+        );
+        if (accessRes.rows.length > 0) {
+          if (!studentId || accessRes.rows[0].student_id !== studentId) {
+            throw new ForbiddenException("You do not have permission to view this attempt");
+          }
+          if (accessRes.rows[0].status !== "PUBLISHED") {
+            throw new ForbiddenException("Students can only access attempts for PUBLISHED cases");
+          }
+        }
+      }
       throw new NotFoundException(`Attempt ${attemptId} not found`);
     }
 
     const attempt = attemptRes.rows[0];
 
     // Ownership check: If not lecturer, must be owner student
-    if (!isLecturer && studentId && attempt.student_id !== studentId) {
+    if (!isLecturer && (!studentId || attempt.student_id !== studentId)) {
       throw new ForbiddenException("You do not have permission to view this attempt");
     }
 
@@ -228,10 +246,24 @@ export class BranchingAttemptService {
 
       // Pessimistic lock on attempt row
       const attemptRes = await client.query(
-        "SELECT * FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        `SELECT a.*
+         FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+         WHERE a.id = $1 AND c.status = 'PUBLISHED' FOR UPDATE OF a`,
         [attemptId],
       );
       if (attemptRes.rows.length === 0) {
+        const accessRes = await client.query(
+          `SELECT a.student_id, c.status
+           FROM branching_attempts a JOIN cases c ON c.id = a.case_id
+           WHERE a.id = $1`,
+          [attemptId],
+        );
+        if (accessRes.rows.length > 0) {
+          if (accessRes.rows[0].student_id !== studentId) {
+            throw new ForbiddenException("You do not have permission to modify this attempt");
+          }
+          throw new ForbiddenException("Students can only access attempts for PUBLISHED cases");
+        }
         throw new NotFoundException(`Attempt ${attemptId} not found`);
       }
 
@@ -425,10 +457,22 @@ export class BranchingAttemptService {
    */
   async getAttemptsByCase(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
+    const publishedCaseRes = await this.db.query(
+      "SELECT id FROM cases WHERE id = $1 AND status = 'PUBLISHED'",
+      [caseId],
+    );
+    if (publishedCaseRes.rows.length === 0) {
+      const existenceRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+      if (existenceRes.rows.length > 0) {
+        throw new ForbiddenException("Students can only access attempts for PUBLISHED cases");
+      }
+      throw new NotFoundException(`Case ${caseId} not found`);
+    }
     const res = await this.db.query(
-      `SELECT id, attempt_number, is_completed, reflection_status, started_at, completed_at
-       FROM branching_attempts
-       WHERE case_id = $1 AND student_id = $2
+      `SELECT a.id, a.attempt_number, a.is_completed, a.reflection_status, a.started_at, a.completed_at
+       FROM branching_attempts a
+       JOIN cases c ON c.id = a.case_id
+       WHERE a.case_id = $1 AND a.student_id = $2 AND c.status = 'PUBLISHED'
        ORDER BY attempt_number DESC`,
       [caseId, effectiveStudentId],
     );

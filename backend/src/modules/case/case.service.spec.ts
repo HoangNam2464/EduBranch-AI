@@ -403,11 +403,48 @@ describe('CaseService', () => {
   });
 
   describe('student access restriction and data privacy (P0-SEC-01 & P0-SEC-02)', () => {
-    it('should forbid student from accessing non-published case', async () => {
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }],
-      });
-      await expect(service.getCaseById('case-1', 'STUDENT')).rejects.toThrow(ForbiddenException);
+    it.each(['DRAFT', 'REVIEWED', 'APPROVED'])(
+      'should block direct Case ID access for %s before loading content or tree records',
+      async (status) => {
+        mockDbService.query
+          .mockResolvedValueOnce({ rows: [] })
+          .mockResolvedValueOnce({ rows: [{ id: 'case-1', status }] });
+
+        await expect(service.getCaseById('case-1', 'STUDENT')).rejects.toThrow(ForbiddenException);
+
+        expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
+        expect(mockDbService.query.mock.calls[0][1]).toEqual(['case-1', true]);
+        expect(mockDbService.query.mock.calls[1][0]).toBe('SELECT id FROM cases WHERE id = $1');
+        expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('case_nodes'), expect.any(Array));
+        expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('case_options'), expect.any(Array));
+      },
+    );
+
+    it('returns NotFound for an unknown direct Case ID without loading content', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [] });
+
+      await expect(service.getCaseById('missing-case', 'STUDENT')).rejects.toThrow(NotFoundException);
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
+      expect(mockDbService.query).not.toHaveBeenCalledWith(expect.stringContaining('case_nodes'), expect.any(Array));
+    });
+
+    it('filters the Case list query to PUBLISHED rows for students', async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [{ id: 'case-1', status: 'PUBLISHED' }] });
+
+      await service.getCasesByCourse('course-1', 'STUDENT');
+
+      expect(mockDbService.query.mock.calls[0][0]).toContain("AND status = 'PUBLISHED'");
+      expect(mockDbService.query.mock.calls[0][1]).toEqual(['course-1']);
+    });
+
+    it('does not apply the student visibility filter to lecturer reads', async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [{ id: 'case-1', status: 'DRAFT' }] });
+
+      await service.getCasesByCourse('course-1', 'LECTURER');
+
+      expect(mockDbService.query.mock.calls[0][0]).not.toContain("status = 'PUBLISHED'");
     });
 
     it('should allow student accessing published case but HIDE nodes, options, and consequences', async () => {
@@ -426,6 +463,8 @@ describe('CaseService', () => {
 
       expect(result.status).toBe('PUBLISHED');
       expect(result.title).toBe('Business Ethics Case');
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
+      expect(mockDbService.query).toHaveBeenCalledTimes(1);
       // P0-SEC-02: Nodes and options MUST NOT be returned in student DTO
       expect(result.nodes).toBeUndefined();
       expect(result.all_options).toBeUndefined();

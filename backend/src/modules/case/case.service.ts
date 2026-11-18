@@ -174,21 +174,30 @@ export class CaseService {
   }
 
   async getCaseById(caseId: string, role?: string, _userId?: string) {
+    const isStudent = role === "STUDENT";
     const caseRes = await this.db.query(
       `SELECT c.*, co.lecturer_id
        FROM cases c
        JOIN courses co ON c.course_id = co.id
-       WHERE c.id = $1`,
-      [caseId],
+       WHERE c.id = $1
+         AND ($2::boolean = FALSE OR c.status = 'PUBLISHED')`,
+      [caseId, isStudent],
     );
-    if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
+    if (caseRes.rows.length === 0) {
+      if (isStudent) {
+        // Check existence using only the identifier; never load case content for
+        // a student unless the published-only query above returns a row.
+        const existenceRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+        if (existenceRes.rows.length > 0) {
+          throw new ForbiddenException("Students can only access PUBLISHED cases");
+        }
+      }
+      throw new NotFoundException(`Case ${caseId} not found`);
+    }
     const caseData = caseRes.rows[0];
 
     // P0-SEC-01 & P0-SEC-02: Strict role gating and data masking for students
     if (role === "STUDENT") {
-      if (caseData.status !== "PUBLISHED") {
-        throw new ForbiddenException("Students can only access PUBLISHED cases");
-      }
       // P0-SEC-02: Never leak decision tree, options, or consequences to students
       // Students play through /branching-attempts endpoints step-by-step
       return {
