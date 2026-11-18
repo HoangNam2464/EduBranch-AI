@@ -10,6 +10,7 @@
       "previousMonth": "Previous month",
       "nextMonth": "Next month",
       "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "today": "Today",
       "monthTitle": "{{month}}/{{year}}",
       "monthShort": "M{{month}}"
     },
@@ -39,13 +40,25 @@
       "courseFilter": "Filter by course",
       "filter": "Filter",
       "createCase": "New case",
+      "moreCases": "+{{count}} other cases",
       "pendingTitle": "Submissions awaiting your feedback",
       "pendingUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
+      "trackSubmissions": "Track submissions",
+      "openSubmissionsQueue": "Open submissions queue",
       "todoTitle": "To do",
       "todoEmpty": "No case is waiting for your review.",
+      "access": "Access",
+      "courseSectionFallback": "COURSE",
+      "statusActive": "Active",
+      "statusInactive": "Paused",
+      "casesCount": "{{total}} cases ({{published}} published)",
+      "materialsCount": "{{ready}}/{{total}} materials",
+      "materialsLink": "Materials →",
+      "enterCourse": "Enter course",
       "quickActions": {
         "title": "Quick Actions",
         "subtitle": "Shortcuts for teaching operations",
+        "aiStudioBadge": "AI Studio",
         "aiStudio": {
           "title": "AI Case Studio",
           "desc": "Generate branching scenarios or case analyses from syllabus."

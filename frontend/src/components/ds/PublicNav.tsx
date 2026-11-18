@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { PublicButton } from "@/components/ds/PublicButton";
 import { LanguageSwitcher } from "@/components/ds/LanguageSwitcher";
@@ -41,6 +42,7 @@ export interface PublicNavProps {
 }
 
 export function PublicBrand({ brandName, homeTo = "/" }: { brandName: ReactNode; homeTo?: string }) {
+  const { t } = useTranslation();
   const handleClick = (e: React.MouseEvent) => {
     if (window.location.pathname === homeTo) {
       e.preventDefault();
@@ -52,7 +54,7 @@ export function PublicBrand({ brandName, homeTo = "/" }: { brandName: ReactNode;
     <Link
       to={homeTo}
       onClick={handleClick}
-      title="EduBranch AI — Về trang chủ"
+      title={`${t("common.appName")} — ${t("common.backHome")}`}
       className={cx("flex shrink-0 items-center gap-2.5 rounded-eb-sm transition-opacity hover:opacity-90", FOCUS_RING)}
     >
       <LogoMark size={32} />

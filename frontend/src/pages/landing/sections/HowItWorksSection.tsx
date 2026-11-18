@@ -1,10 +1,11 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Check, CircleCheck, CloudUpload, Compass, FileText, GitBranch, MessageSquare, SquarePen, Sparkles, type LucideIcon } from "lucide-react";
+import { Check, CircleCheck, CloudUpload, Compass, Cpu, FileText, GitBranch, MessageSquare, SquarePen, type LucideIcon } from "lucide-react";
 import { cx, FOCUS_RING } from "@/components/ds";
 import { SectionTitle } from "@/pages/landing/landingShared";
 import { LANDING_ANCHORS } from "@/pages/landing/landingConstants";
+import { usePrefersReducedMotion } from "@/pages/landing/usePrefersReducedMotion";
 
 /**
  * "Cách hoạt động · #cach-hoat-dong" (580:8645): column gap 32, padding 96 104, items centred.
@@ -34,20 +35,6 @@ const STEP_ICONS: { icon: LucideIcon; stroke: number }[] = [
 const STEP_MS = 3200;
 const LOOP_PAUSE_MS = 1500;
 const START_STEP = 2;
-
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(() =>
-    typeof window !== "undefined" && window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)").matches : false,
-  );
-  useEffect(() => {
-    if (!window.matchMedia) return;
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = () => setReduced(mq.matches);
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
-  return reduced;
-}
 
 export function HowItWorksSection() {
   const { t } = useTranslation();
@@ -277,8 +264,8 @@ function StepDemo({ index, state }: { index: number; state: StepState }) {
       <>
         <span className="flex w-full text-[12px] leading-4 items-center">
           <span className="min-w-0 flex-1 text-ink-secondary flex items-center gap-1">
-            <Sparkles size={11} className={cx("text-accent", isActive && "animate-spin")} />
-            {isDone ? "Đã sinh bản nháp" : d("generating")}
+            <Cpu size={11} className={cx("text-accent", isActive && "animate-pulse")} />
+            {isDone ? d("draftGenerated") : d("generating")}
           </span>
           <span className="font-semibold text-primary">
             {isDoneOrActive ? "100%" : "0%"}
@@ -304,21 +291,20 @@ function StepDemo({ index, state }: { index: number; state: StepState }) {
   }
   if (index === 2) {
     return (
-      <>
-        <DemoState active={isDoneOrActive}>{d("draft")}</DemoState>
-        <DemoState active={isDoneOrActive}>{d("reviewed")}</DemoState>
-        <span className="flex h-6 items-center gap-2 rounded-eb-md bg-surface px-2 shadow-xs">
-          <span aria-hidden="true" className={cx("size-2.5 shrink-0 rounded-full", isDone ? "bg-emerald-500" : "bg-accent", isActive && "animate-ping")} />
-          <span className="min-w-0 flex-1 text-[12px] leading-4 font-medium text-ink truncate">{d("approve")}</span>
-          <span className={cx("text-[11px] leading-4 font-medium", isDone ? "text-emerald-700" : "text-accent")}>
-            {isDone ? "Đã xong" : d("running")}
-          </span>
+      <span className="flex items-center justify-between rounded-eb-md bg-surface px-2.5 py-2 shadow-xs transition-colors">
+        <span className="flex items-center gap-1.5 text-[12px] leading-4 font-medium text-ink">
+          <CircleCheck size={13} className={cx("shrink-0", isDoneOrActive ? "text-success" : "text-ink-muted")} />
+          <span>{d("reviewed")}</span>
         </span>
-        <span className={cx("flex h-6 items-center gap-2 rounded-eb-md px-2", isDone ? "text-emerald-700 font-medium" : "opacity-60")}>
-          <span aria-hidden="true" className={cx("size-2.5 shrink-0 rounded-full", isDone ? "bg-emerald-500" : "border-[1.5px] border-line-strong")} />
-          <span className="min-w-0 flex-1 text-[12px] leading-4">{isDone ? "Đã xuất bản cho lớp" : d("publish")}</span>
+        <span
+          className={cx(
+            "rounded-full px-2 py-0.5 text-[10.5px] font-medium transition-colors",
+            isDoneOrActive ? "bg-success-bg text-success-text" : "bg-surface-muted text-ink-secondary",
+          )}
+        >
+          {isDone ? d("publishedForClass") : d("done")}
         </span>
-      </>
+      </span>
     );
   }
   if (index === 3) {
@@ -364,21 +350,6 @@ function StepDemo({ index, state }: { index: number; state: StepState }) {
         <span className="min-w-0 flex-1 text-[11px] leading-4 font-medium text-accent">{d("reflection")}</span>
       </span>
     </>
-  );
-}
-
-function DemoState({ children, active }: { children: ReactNode; active?: boolean }) {
-  return (
-    <span className="flex h-5 items-center gap-2 rounded-eb-md px-2">
-      <CircleCheck
-        aria-hidden="true"
-        size={12}
-        absoluteStrokeWidth
-        strokeWidth={1.5}
-        className={cx("shrink-0", active ? "text-emerald-600" : "text-primary")}
-      />
-      <span className="min-w-0 flex-1 text-[12px] leading-4 text-ink truncate">{children}</span>
-    </span>
   );
 }
 

@@ -9,21 +9,22 @@ import {
   CircleCheck,
   Clock,
   CloudUpload,
+  Cpu,
   ChevronRight,
   FileText,
   GitBranch,
   MessageSquare,
   Plus,
-  Sparkles,
   SquarePen,
   type LucideIcon,
 } from "lucide-react";
 import { Avatar, Button, FilterControl, MetricCard, StatusTabs, cx } from "@/components/ds";
 import { ErrorState, SkeletonLine, SkeletonRegion } from "@/components/feedback";
-import { PATHS } from "@/routes/paths";
+import { PATHS, buildPath } from "@/routes/paths";
 import { addMonths, buildMonthWeeks, startOfMonth } from "@/pages/profile/components/calendar";
 import { MonthStepper } from "@/pages/profile/components/MonthStepper";
 import { countCases, describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo } from "@/pages/statistics/useLecturerCourseCases";
+import { usePrefersReducedMotion } from "@/pages/landing/usePrefersReducedMotion";
 import type { Case } from "@/types";
 
 /*
@@ -66,7 +67,7 @@ function TodoList({ todos }: { todos: LecturerTodo[] }) {
           <li key={todo.key}>
             <Link
               to={targetUrl}
-              className="group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-canvas-hover transition-colors"
+              className="group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-surface-hover transition-colors"
             >
               <div className="flex items-center gap-3 min-w-0">
                 <Avatar initials={desc.lead} size="sm" />
@@ -128,7 +129,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                 return (
                   <td
                     key={d.key}
-                    className="h-28 bg-surface p-2 align-top shadow-[inset_0_0_0_0.5px_var(--color-line-soft)] hover:bg-canvas-hover/30 transition-colors"
+                    className="h-28 bg-surface p-2 align-top shadow-[inset_0_0_0_0.5px_var(--color-line-soft)] hover:bg-surface-muted/60 transition-colors"
                   >
                     <div className="flex items-center justify-between mb-1">
                       <span
@@ -145,8 +146,8 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                         {d.day}
                       </span>
                       {d.isToday && (
-                        <span className="text-[10px] font-medium text-primary bg-primary-subtle px-1.5 py-0.2 rounded-full">
-                          Hôm nay
+                        <span className="text-[10px] font-medium text-primary bg-primary-subtle px-1.5 py-0.5 rounded-full">
+                          {t("g4.calendar.today")}
                         </span>
                       )}
                     </div>
@@ -155,14 +156,14 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                         {dayCases.slice(0, 2).map((c) => (
                           <Link
                             key={c.id}
-                            to={c.status === "PUBLISHED" ? PATHS.LECTURER.CASES : `/lecturer/cases/${c.id}/review`}
+                            to={c.status === "PUBLISHED" ? PATHS.LECTURER.CASES : buildPath(PATHS.LECTURER.CASE_REVIEW, { caseId: c.id })}
                             className={cx(
                               "group flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] leading-tight font-medium truncate transition-all duration-150",
                               c.status === "PUBLISHED"
-                                ? "bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200/60"
+                                ? "bg-success-bg text-success-text hover:bg-success-bg/80 border border-success-border"
                                 : c.status === "APPROVED"
-                                ? "bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200/60"
-                                : "bg-sky-50 text-sky-800 hover:bg-sky-100 border border-sky-200/60",
+                                ? "bg-warning-bg text-warning-text hover:bg-warning-bg/80 border border-warning-border"
+                                : "bg-primary-subtle text-primary hover:bg-primary-subtle-hover border border-line",
                             )}
                             title={`${c.title} (${c.status})`}
                           >
@@ -170,10 +171,10 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                               className={cx(
                                 "size-1.5 rounded-full shrink-0",
                                 c.status === "PUBLISHED"
-                                  ? "bg-emerald-500"
+                                  ? "bg-success"
                                   : c.status === "APPROVED"
-                                  ? "bg-amber-500"
-                                  : "bg-sky-500",
+                                  ? "bg-warning"
+                                  : "bg-accent",
                               )}
                             />
                             <span className="truncate">{c.title}</span>
@@ -181,7 +182,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                         ))}
                         {dayCases.length > 2 && (
                           <span className="text-[10px] text-ink-secondary px-1 font-medium">
-                            +{dayCases.length - 2} case khác
+                            {t("g4.dashboard.moreCases", { count: dayCases.length - 2 })}
                           </span>
                         )}
                       </div>
@@ -199,6 +200,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
 
 export function LecturerDashboardPage() {
   const { t } = useTranslation();
+  const reducedMotion = usePrefersReducedMotion();
   const { state, retry } = useLecturerCourseCases({ withMaterials: true });
   const [today] = useState(() => new Date());
   const [month, setMonth] = useState(() => startOfMonth(today));
@@ -233,8 +235,6 @@ export function LecturerDashboardPage() {
     { icon: MessageSquare, stroke: 1.36, label: t("g4.dashboard.metrics.pending"), value: t("g4.common.unknownValue") },
   ];
 
-  const publishedCount = ready ? countCases(ready, ["PUBLISHED"]) : 0;
-
   const quickActions: {
     icon: LucideIcon;
     title: string;
@@ -243,11 +243,11 @@ export function LecturerDashboardPage() {
     badge?: string;
   }[] = [
     {
-      icon: Sparkles,
+      icon: Cpu,
       title: t("g4.dashboard.quickActions.aiStudio.title"),
       desc: t("g4.dashboard.quickActions.aiStudio.desc"),
       to: PATHS.LECTURER.AI_STUDIO,
-      badge: "AI Studio",
+      badge: t("g4.dashboard.quickActions.aiStudioBadge"),
     },
     {
       icon: CloudUpload,
@@ -271,9 +271,9 @@ export function LecturerDashboardPage() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
+      initial={reducedMotion ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={reducedMotion ? { duration: 0 } : { duration: 0.2 }}
       className="flex flex-col gap-6"
     >
       {/* 4 Metrics in a row */}
@@ -326,22 +326,16 @@ export function LecturerDashboardPage() {
               <div className="flex flex-col gap-2 rounded-eb-lg bg-canvas px-3.5 py-3 text-[12px] leading-4 text-ink-secondary">
                 <div className="flex items-center gap-2 font-medium text-ink">
                   <Clock size={16} className="text-primary shrink-0" />
-                  <span>Theo dõi bài nộp</span>
+                  <span>{t("g4.dashboard.trackSubmissions")}</span>
                 </div>
-                <p>
-                  {publishedCount > 0
-                    ? `Hiện có ${publishedCount} case đã xuất bản. Sinh viên làm bài sẽ tự động cập nhật vào hàng đợi.`
-                    : t("g4.dashboard.pendingUnavailable")}
-                </p>
-                {publishedCount > 0 && (
-                  <Link
-                    to={PATHS.LECTURER.FEEDBACK}
-                    className="mt-1 inline-flex items-center gap-1 font-medium text-primary hover:underline"
-                  >
-                    <span>Mở hàng đợi bài nộp</span>
-                    <ChevronRight size={14} />
-                  </Link>
-                )}
+                <p>{t("g4.dashboard.pendingUnavailable")}</p>
+                <Link
+                  to={PATHS.LECTURER.FEEDBACK}
+                  className="mt-1 inline-flex items-center gap-1 font-medium text-primary hover:underline"
+                >
+                  <span>{t("g4.dashboard.openSubmissionsQueue")}</span>
+                  <ChevronRight size={14} />
+                </Link>
               </div>
             </SidePanel>
             <SidePanel title={t("g4.dashboard.todoTitle")}>
@@ -398,7 +392,7 @@ export function LecturerDashboardPage() {
                 </div>
               </div>
               <div className="mt-4 flex items-center gap-1 text-[12px] font-medium text-primary">
-                <span>Truy cập</span>
+                <span>{t("g4.dashboard.access")}</span>
                 <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
@@ -441,11 +435,11 @@ export function LecturerDashboardPage() {
                   <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between gap-2">
                       <span className="inline-flex items-center rounded-md bg-primary-subtle px-2 py-0.5 text-[12px] font-medium text-primary">
-                        {c.courseCode ?? "HỌC PHẦN"}
+                        {c.courseCode ?? t("g4.dashboard.courseSectionFallback")}
                       </span>
                       <span className="flex items-center gap-1.5 text-[12px] text-ink-secondary">
-                        <span className={cx("size-2 rounded-full", c.active ? "bg-emerald-500" : "bg-slate-400")} />
-                        {c.active ? "Đang giảng dạy" : "Tạm dừng"}
+                        <span className={cx("size-2 rounded-full", c.active ? "bg-success" : "bg-ink-muted")} />
+                        {c.active ? t("g4.dashboard.statusActive") : t("g4.dashboard.statusInactive")}
                       </span>
                     </div>
                     <div>
@@ -457,27 +451,27 @@ export function LecturerDashboardPage() {
                     <div className="flex items-center gap-4 text-[12px] text-ink-secondary pt-2 border-t border-line-soft">
                       <span className="flex items-center gap-1.5">
                         <GitBranch size={14} className="text-primary shrink-0" />
-                        <span><strong>{cases.length}</strong> case ({pubCount} xuất bản)</span>
+                        <span>{t("g4.dashboard.casesCount", { total: cases.length, published: pubCount })}</span>
                       </span>
                       <span className="flex items-center gap-1.5">
                         <FileText size={14} className="text-ink-muted shrink-0" />
-                        <span><strong>{readyMaterials}/{totalMaterials}</strong> tài liệu</span>
+                        <span>{t("g4.dashboard.materialsCount", { ready: readyMaterials, total: totalMaterials })}</span>
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between gap-2 pt-4 mt-2">
                     <Link
-                      to={`/lecturer/courses/${c.id}/materials`}
+                      to={buildPath(PATHS.LECTURER.COURSE_MATERIALS, { courseId: c.id })}
                       className="text-[12px] font-medium text-ink-secondary hover:text-primary transition-colors"
                     >
-                      Tài liệu &rarr;
+                      {t("g4.dashboard.materialsLink")}
                     </Link>
                     <Link
-                      to={`/lecturer/courses/${c.id}/cases`}
+                      to={buildPath(PATHS.LECTURER.COURSE_CASES, { courseId: c.id })}
                       className="inline-flex items-center gap-1 rounded-md bg-canvas px-3 py-1.5 text-[12px] font-medium text-primary hover:bg-primary-subtle transition-colors"
                     >
-                      <span>Vào lớp học</span>
+                      <span>{t("g4.dashboard.enterCourse")}</span>
                       <ChevronRight size={14} />
                     </Link>
                   </div>

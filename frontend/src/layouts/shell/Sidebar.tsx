@@ -101,7 +101,7 @@ export function Sidebar({
             to={homePath}
             onClick={handleBrandClick}
             aria-label={t("common.appName")}
-            title={t("common.appName") + " — Về trang chủ"}
+            title={`${t("common.appName")} — ${t("common.backHome")}`}
             className={`rounded-eb-md transition-opacity hover:opacity-85 ${FOCUS}`}
           >
             <LogoMark />
@@ -112,7 +112,7 @@ export function Sidebar({
           <Link
             to={homePath}
             onClick={handleBrandClick}
-            title={t("common.appName") + " — Về trang chủ"}
+            title={`${t("common.appName")} — ${t("common.backHome")}`}
             className={`flex h-7 items-center gap-2.5 rounded-eb-md transition-opacity hover:opacity-85 ${FOCUS}`}
           >
             <LogoMark />

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { courseService } from "@/services/courseService";
 import { caseService } from "@/services/caseService";
 import { materialService } from "@/services/materialService";
+import { useAuthStore, onAuthLogout } from "@/stores/authStore";
 import type { Case, CaseStatus, Course, TeachingMaterial } from "@/types";
 
 /**
@@ -27,26 +28,55 @@ export function httpStatusOf(error: unknown): number | undefined {
   return typeof status === "number" ? status : undefined;
 }
 
-// In-memory cache to prevent repeated roundtrips when navigating between tabs
+// In-memory cache scoped strictly by userId and subKey to prevent cross-user data leakage
 const CACHE_TTL_MS = 60000; // 60 seconds
-let globalCache: {
-  key: string;
+
+interface CacheEntry {
+  userId: string;
+  subKey: string;
   data: CourseWithCases[];
   timestamp: number;
-} | null = null;
+}
 
-function getFreshCache(key: string): CourseWithCases[] | null {
-  if (globalCache && globalCache.key === key && Date.now() - globalCache.timestamp < CACHE_TTL_MS) {
+let globalCache: CacheEntry | null = null;
+
+export function invalidateLecturerCourseCases(): void {
+  globalCache = null;
+}
+
+// Reset cache whenever any user logs out
+onAuthLogout(() => {
+  invalidateLecturerCourseCases();
+});
+
+export function getFreshCache(userId: string, subKey: string, now: number = Date.now()): CourseWithCases[] | null {
+  if (
+    globalCache &&
+    globalCache.userId === userId &&
+    globalCache.subKey === subKey &&
+    now - globalCache.timestamp < CACHE_TTL_MS
+  ) {
     return globalCache.data;
   }
   return null;
 }
 
+export function setLecturerCourseCasesCache(
+  userId: string,
+  subKey: string,
+  data: CourseWithCases[],
+  timestamp: number = Date.now(),
+): void {
+  globalCache = { userId, subKey, data, timestamp };
+}
+
 export function useLecturerCourseCases({ withMaterials = false }: { withMaterials?: boolean } = {}) {
-  const cacheKey = withMaterials ? "with-mat" : "no-mat";
+  const user = useAuthStore((s) => s.user);
+  const userId = user?.id ?? "anonymous";
+  const subKey = withMaterials ? "with-mat" : "no-mat";
 
   const [state, setState] = useState<LoadState<CourseWithCases[]>>(() => {
-    const cached = getFreshCache(cacheKey);
+    const cached = getFreshCache(userId, subKey);
     return cached ? { status: "ready", data: cached } : { status: "loading" };
   });
   const [attempt, setAttempt] = useState(0);
@@ -54,12 +84,14 @@ export function useLecturerCourseCases({ withMaterials = false }: { withMaterial
   useEffect(() => {
     let cancelled = false;
 
-    (async () => {
-      const cached = getFreshCache(cacheKey);
-      if (!cached || attempt > 0) {
-        if (!cached) setState({ status: "loading" });
-      }
+    const cached = getFreshCache(userId, subKey);
+    if (cached && attempt === 0) {
+      setState({ status: "ready", data: cached });
+    } else {
+      setState({ status: "loading" });
+    }
 
+    (async () => {
       try {
         const courses = await courseService.getMyCourses();
         const data = await Promise.all(
@@ -72,20 +104,17 @@ export function useLecturerCourseCases({ withMaterials = false }: { withMaterial
           }),
         );
 
-        globalCache = {
-          key: cacheKey,
-          data,
-          timestamp: Date.now(),
-        };
+        setLecturerCourseCasesCache(userId, subKey, data);
 
         if (!cancelled) {
           setState({ status: "ready", data });
         }
       } catch (error) {
         if (!cancelled) {
-          // If we already have fresh cached data, keep displaying it rather than crashing to error state
-          if (globalCache && globalCache.key === cacheKey) {
-            setState({ status: "ready", data: globalCache.data });
+          // Never fall back to expired cache or cache belonging to another user
+          const fresh = getFreshCache(userId, subKey);
+          if (fresh && attempt === 0) {
+            setState({ status: "ready", data: fresh });
           } else {
             setState({ status: "error", code: httpStatusOf(error), at: new Date() });
           }
@@ -96,7 +125,7 @@ export function useLecturerCourseCases({ withMaterials = false }: { withMaterial
     return () => {
       cancelled = true;
     };
-  }, [withMaterials, attempt, cacheKey]);
+  }, [userId, withMaterials, attempt, subKey]);
 
   const retry = useCallback(() => {
     setState({ status: "loading" });

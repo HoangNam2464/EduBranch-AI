@@ -1,71 +1,39 @@
-import { useState, useEffect } from "react";
+import { Moon, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Sun, Moon } from "lucide-react";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
+import { useThemeStore } from "@/stores/themeStore";
 
-export function ThemeToggle({ className }: { className?: string }) {
+interface ThemeToggleProps {
+  className?: string;
+  size?: "sm" | "md";
+}
+
+export function ThemeToggle({ className, size = "md" }: ThemeToggleProps) {
   const { t } = useTranslation();
-  const [isDark, setIsDark] = useState(() => {
-    if (typeof window === "undefined") return false;
-    const stored = localStorage.getItem("vite-ui-theme");
-    return stored === "dark";
-  });
+  const theme = useThemeStore((s) => s.theme);
+  const toggleTheme = useThemeStore((s) => s.toggleTheme);
 
-  useEffect(() => {
-    // Initial sync
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
-    const handleThemeChange = () => {
-      const stored = localStorage.getItem("vite-ui-theme");
-      const dark = stored === "dark";
-      setIsDark(dark);
-      root.classList.toggle("dark", dark);
-    };
-
-    window.addEventListener("storage", handleThemeChange);
-    window.addEventListener("theme-change", handleThemeChange);
-    return () => {
-      window.removeEventListener("storage", handleThemeChange);
-      window.removeEventListener("theme-change", handleThemeChange);
-    };
-  }, [isDark]);
-
-  const toggleTheme = () => {
-    const nextDark = !isDark;
-    const nextTheme = nextDark ? "dark" : "light";
-    setIsDark(nextDark);
-
-    const root = document.documentElement;
-    root.classList.toggle("dark", nextDark);
-    localStorage.setItem("vite-ui-theme", nextTheme);
-    window.dispatchEvent(new Event("theme-change"));
-  };
-
-  const label = isDark
-    ? t("shell.themeLight", "Chuyển sang giao diện Sáng")
-    : t("shell.themeDark", "Chuyển sang giao diện Tối");
+  const isDark = theme === "dark";
+  const label = isDark ? t("shell.themeLight") : t("shell.themeDark");
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
+      aria-label={label}
+      title={label}
       className={cx(
-        "relative flex size-10 shrink-0 items-center justify-center rounded-[10px] border border-line bg-surface-muted text-ink-secondary hover:bg-surface-hover hover:text-ink transition-colors",
+        "relative flex shrink-0 items-center justify-center rounded-eb-sm transition-colors",
+        size === "sm" ? "size-8" : "size-10",
+        "text-ink-secondary hover:text-ink hover:bg-surface-muted",
         FOCUS_RING,
         className,
       )}
-      title={label}
-      aria-label={label}
     >
       {isDark ? (
-        <Sun size={18} strokeWidth={2.2} className="text-amber-400 transition-transform duration-200 rotate-0 hover:rotate-45" />
+        <Sun size={size === "sm" ? 16 : 18} strokeWidth={2} className="text-warning-text" aria-hidden="true" />
       ) : (
-        <Moon size={18} strokeWidth={2.2} className="text-ink-secondary transition-transform duration-200 -rotate-12 hover:rotate-0" />
+        <Moon size={size === "sm" ? 16 : 18} strokeWidth={2} aria-hidden="true" />
       )}
     </button>
   );

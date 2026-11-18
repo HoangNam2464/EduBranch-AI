@@ -10,6 +10,7 @@
       "previousMonth": "Tháng trước",
       "nextMonth": "Tháng sau",
       "weekdays": ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+      "today": "Hôm nay",
       "monthTitle": "Tháng {{month}}, {{year}}",
       "monthShort": "Th{{month}}"
     },
@@ -39,13 +40,25 @@
       "courseFilter": "Lọc theo khóa học",
       "filter": "Lọc",
       "createCase": "Tạo Case mới",
+      "moreCases": "+{{count}} case khác",
       "pendingTitle": "Bài nộp chờ bạn phản hồi",
       "pendingUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên.",
+      "trackSubmissions": "Theo dõi bài nộp",
+      "openSubmissionsQueue": "Mở hàng đợi bài nộp",
       "todoTitle": "Việc cần làm",
       "todoEmpty": "Không có case nào đang chờ bạn rà soát.",
+      "access": "Truy cập",
+      "courseSectionFallback": "HỌC PHẦN",
+      "statusActive": "Đang giảng dạy",
+      "statusInactive": "Tạm dừng",
+      "casesCount": "{{total}} case ({{published}} xuất bản)",
+      "materialsCount": "{{ready}}/{{total}} tài liệu",
+      "materialsLink": "Tài liệu →",
+      "enterCourse": "Vào lớp học",
       "quickActions": {
         "title": "Hành động nhanh",
         "subtitle": "Lối tắt thao tác cho giảng viên",
+        "aiStudioBadge": "AI Studio",
         "aiStudio": {
           "title": "Sinh Case bằng AI",
           "desc": "Tạo kịch bản rẽ nhánh hoặc bài phân tích tình huống từ giáo trình."

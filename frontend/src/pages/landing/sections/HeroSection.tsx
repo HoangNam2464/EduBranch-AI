@@ -6,7 +6,6 @@ import {
   CheckCircle2,
   Compass,
   GitBranch,
-  Sparkles,
   ShieldCheck,
   GraduationCap,
   ArrowRight,
@@ -14,37 +13,39 @@ import {
 import { PublicButton, cx, publicButtonClassName } from "@/components/ds";
 import { PATHS } from "@/routes/paths";
 import { DISPLAY_FONT, LANDING_ANCHORS } from "@/pages/landing/landingConstants";
+import { usePrefersReducedMotion } from "@/pages/landing/usePrefersReducedMotion";
 
 /**
  * 00.2 Hero Section — High-Engagement Automated Branching Scenario Simulation.
  * Styled as a modern, high-polish App Studio Mockup Window:
  * - Hands-free cinematic auto-play with Hover-to-Pause and Click-to-Jump controls
  * - Full pedagogical story arc: Situation -> Option B Chosen -> Consequence -> Next Decision & Terminal Outcome on Attempt 2
- * - Smooth Bezier paths, glowing nodes, and clean layered design system styling
+ * - Smooth Bezier paths and clean layered design system styling
  */
 export function HeroSection() {
   const { t } = useTranslation();
+  const reducedMotion = usePrefersReducedMotion();
 
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] dark:from-[#0B1120] dark:via-[#0F172A] dark:to-[#0B1120] pt-10 pb-20 transition-colors duration-300">
-      {/* Soft Ambient Light Glow behind Hero */}
+    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] dark:from-page dark:via-canvas dark:to-page pt-10 pb-20 transition-colors duration-300">
+      {/* Soft Ambient Light behind Hero */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/40 via-blue-100/20 to-transparent dark:from-sky-500/10 dark:via-blue-500/5 dark:to-transparent blur-3xl -z-10"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/40 via-blue-100/20 to-transparent dark:from-accent/10 dark:via-primary/5 dark:to-transparent blur-3xl -z-10"
       />
 
       <div className="mx-auto flex min-h-[720px] max-w-7xl flex-col items-center justify-between gap-12 px-6 lg:flex-row lg:px-12">
         {/* Left Column: Hero Copy & Value Props */}
         <motion.div
-          initial={{ opacity: 0, x: -28 }}
+          initial={reducedMotion ? false : { opacity: 0, x: -28 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className="flex min-w-0 flex-1 flex-col gap-6"
         >
           {/* Category Chip */}
-          <div className="inline-flex items-center gap-2 self-start rounded-full bg-white/95 dark:bg-slate-800/90 border border-line-soft dark:border-slate-700 px-3.5 py-1.5 text-[13px] font-medium text-primary dark:text-sky-400 shadow-xs backdrop-blur-sm">
-            <GraduationCap className="h-4 w-4 text-primary dark:text-sky-400" />
-            <span>{t("g1.landing.hero.category", "Nền tảng Tình huống Thực nghiệm & Tư duy Bậc Đại học")}</span>
+          <div className="inline-flex items-center gap-2 self-start rounded-full bg-surface-muted/95 border border-line px-3.5 py-1.5 text-[13px] font-medium text-primary shadow-xs backdrop-blur-sm">
+            <GraduationCap className="h-4 w-4 text-primary" />
+            <span>{t("g1.landing.hero.category")}</span>
           </div>
 
           {/* Heading */}
@@ -79,27 +80,27 @@ export function HeroSection() {
           </div>
 
           {/* Trust Proof Badges */}
-          <div className="flex flex-wrap items-center gap-6 pt-4 text-[13px] text-ink-secondary border-t border-line-soft dark:border-slate-800">
+          <div className="flex flex-wrap items-center gap-6 pt-4 text-[13px] text-ink-secondary border-t border-line">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{t("g1.landing.hero.badges.grounded", "RAG Grounding từ giáo trình")}</span>
+              <ShieldCheck className="h-4 w-4 text-success" />
+              <span>{t("g1.landing.hero.badges.grounded")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <GitBranch className="h-4 w-4 text-primary dark:text-sky-400" />
-              <span>{t("g1.landing.hero.badges.pedagogical", "Cây quyết định đa nhánh thực tế")}</span>
+              <GitBranch className="h-4 w-4 text-primary" />
+              <span>{t("g1.landing.hero.badges.pedagogical")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-accent" />
-              <span>{t("g1.landing.hero.badges.approved", "Giảng viên phê duyệt toàn quyền")}</span>
+              <CheckCircle2 className="h-4 w-4 text-primary" />
+              <span>{t("g1.landing.hero.badges.approved")}</span>
             </div>
           </div>
         </motion.div>
 
         {/* Right Column: Studio Mockup Window with Automated Simulation */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
+          initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="shrink-0"
         >
           <StudioMockupWindow />
@@ -115,18 +116,18 @@ export function HeroSection() {
  * smooth Bezier curves, and interactive phase navigation.
  */
 function StudioMockupWindow() {
-  const { t, i18n } = useTranslation();
-  const isEn = i18n.language === "en";
+  const { t } = useTranslation();
+  const reducedMotion = usePrefersReducedMotion();
   // Phase 0: Tình huống; Phase 1: Lựa chọn B; Phase 2: Hệ quả; Phase 3: Kết cục lượt 2
-  const [phase, setPhase] = useState<0 | 1 | 2 | 3>(1);
+  const [phase, setPhase] = useState<0 | 1 | 2 | 3>(() => (reducedMotion ? 3 : 1));
   const [isPaused, setIsPaused] = useState(false);
   const timerRef = useRef<number | null>(null);
 
   const k = (key: string) => t(`g1.landing.hero.diagram.${key}`);
 
-  // Automated cinematic loop with pause support
+  // Automated cinematic loop with pause support (stops when reduced motion is preferred)
   useEffect(() => {
-    if (isPaused) {
+    if (reducedMotion || isPaused) {
       if (timerRef.current) clearInterval(timerRef.current);
       return;
     }
@@ -138,17 +139,17 @@ function StudioMockupWindow() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isPaused]);
+  }, [reducedMotion, isPaused]);
 
   return (
     <figure
       aria-label={k("ariaLabel")}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative h-[620px] w-[620px] overflow-hidden rounded-[24px] bg-[#162947] border border-white/20 shadow-2xl shadow-primary/30 flex flex-col text-white"
+      className="relative h-[620px] w-[620px] overflow-hidden rounded-[24px] bg-[#162947] dark:bg-canvas border border-white/20 dark:border-line shadow-2xl shadow-primary/30 flex flex-col text-white transition-colors duration-300"
     >
       {/* ─── Studio Window Titlebar ─── */}
-      <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 bg-white/5 px-4 backdrop-blur-md">
+      <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 dark:border-line bg-white/5 dark:bg-surface-muted/30 px-4 backdrop-blur-md">
         {/* Left: Window Dots */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
@@ -165,7 +166,7 @@ function StudioMockupWindow() {
         {/* Right: Clean Live Simulator Badge */}
         <div className="flex items-center gap-1.5 text-[11px] text-white/75 font-medium bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
           <span className="size-2 rounded-full bg-accent animate-pulse" />
-          <span>{isEn ? "Continuous Simulation" : "Mô phỏng tự động"}</span>
+          <span>{k("simulationBadge")}</span>
         </div>
       </div>
 
@@ -187,10 +188,6 @@ function StudioMockupWindow() {
           className="absolute inset-0 pointer-events-none"
         >
           <defs>
-            <filter id="studio-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feGaussianBlur stdDeviation="3.5" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
             <linearGradient id="active-branch" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#00A5F5" />
               <stop offset="100%" stopColor="#38BDF8" />
@@ -249,11 +246,11 @@ function StudioMockupWindow() {
             className="transition-all duration-500"
           />
 
-          {/* Pulsing Energy Nodes */}
-          <circle cx="290" cy="82" r="5" fill="#00A5F5" filter="url(#studio-glow)" />
+          {/* Nodes */}
+          <circle cx="290" cy="82" r="5" fill="#00A5F5" />
           {phase >= 1 && <circle cx="290" cy="134" r="4.5" fill="#00A5F5" />}
           {phase >= 2 && <circle cx="290" cy="278" r="4.5" fill="#00A5F5" />}
-          {phase >= 3 && <circle cx="290" cy="402" r="5.5" fill="#10B981" filter="url(#studio-glow)" />}
+          {phase >= 3 && <circle cx="290" cy="402" r="5.5" fill="#10B981" />}
         </svg>
 
         {/* 1. TOP NODE: Tình huống nghiệp vụ (Situation) */}
@@ -266,9 +263,9 @@ function StudioMockupWindow() {
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold text-sky-300 uppercase tracking-wider flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-accent" />
-              {k("situationLabel")} · {isEn ? "Decision point 1" : "Điểm quyết định 1"}
+              {k("situationLabel")} · {k("decisionPoint1")}
             </span>
-            {phase === 0 && (
+            {phase === 0 && !reducedMotion && (
               <span className="flex size-2 rounded-full bg-accent animate-ping" />
             )}
           </div>
@@ -327,7 +324,7 @@ function StudioMockupWindow() {
               <span>{k("consequenceLabel")}</span>
             </p>
             <span className="text-[10.5px] font-medium text-sky-400/90">
-              {isEn ? "Journey review" : "Hồi cứu hành trình"}
+              {k("journeyReview")}
             </span>
           </div>
           <p className="mt-1 text-[13px] leading-5 text-white/90">
@@ -348,37 +345,31 @@ function StudioMockupWindow() {
             <div className="flex items-center gap-1.5">
               <CheckCircle2 size={14} className="text-emerald-400" />
               <p className="text-[11.5px] leading-4 font-semibold text-emerald-300">
-                {isEn ? "Attempt 2 · Next action & Outcome" : "Lượt làm 2 · Hành động tiếp theo & Kết cục"}
+                {k("attempt2Title")}
               </p>
             </div>
             <span className="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
-              {isEn ? "Retrospective" : "Rút kinh nghiệm"}
+              {k("retrospective")}
             </span>
           </div>
           <p className="mt-1 text-[12.5px] leading-4.5 text-white/95">
-            {isEn
-              ? "Automatically send a 15% discount voucher to waiting customers ➔ Successfully retain 85% of customers, turning an incident into customer loyalty."
-              : "Tự động gửi voucher xin lỗi 15% cho khách hàng phải chờ ➔ Giữ chân thành công 85% khách hàng, biến sự cố thành cơ hội củng cố lòng trung thành."}
+            {k("attempt2Text")}
           </p>
         </div>
       </div>
 
       {/* ─── Bottom Status Footer ─── */}
-      <figcaption className="h-10 shrink-0 border-t border-white/10 bg-black/20 px-5 flex items-center justify-between text-[11.5px] text-white/70">
+      <figcaption className="h-10 shrink-0 border-t border-white/10 dark:border-line bg-black/20 dark:bg-canvas px-5 flex items-center justify-between text-[11.5px] text-white/70">
         <span className="flex items-center gap-1.5">
           <span className="size-2 rounded-full bg-accent animate-pulse" />
           <span>
-            {isPaused
-              ? isEn
-                ? "Simulation paused — Move mouse away to resume"
-                : "Đang tạm dừng — Bỏ chuột để tiếp tục"
-              : isEn
-                ? "Auto-playing simulation (Hover to pause)"
-                : "Tự động trình diễn mô phỏng (Rê chuột để tạm dừng)"}
+            {isPaused || reducedMotion
+              ? k("statusPaused")
+              : k("statusPlaying")}
           </span>
         </span>
         <span className="text-white/50 text-[10.5px]">
-          {isEn ? `Phase ${phase + 1} of 4` : `Pha ${phase + 1} trên 4`}
+          {t("g1.landing.hero.diagram.phaseProgress", { current: phase + 1, total: 4 })}
         </span>
       </figcaption>
     </figure>

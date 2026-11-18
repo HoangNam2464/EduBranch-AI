@@ -48,6 +48,7 @@ function Mode({ copy, visual }: { copy: ModeCopy; visual: ReactNode }) {
 
 /** "Path visual": white 180px card; the 520x180 "Decision path" drawing sits 32px in. */
 function DecisionPathVisual() {
+  const { t } = useTranslation();
   return (
     <div aria-hidden="true" className="relative flex h-[180px] w-full items-center overflow-hidden rounded-[20px] bg-surface p-5 shadow-eb-card border border-line-soft hover:shadow-eb-hover transition-shadow">
       <svg width="520" height="180" viewBox="0 0 520 180" fill="none" className="w-full h-full max-w-lg mx-auto">
@@ -69,10 +70,18 @@ function DecisionPathVisual() {
         <circle cx="380" cy="50" r="7" fill="#D6DFEC" />
 
         {/* Node labels */}
-        <text x="60" y="125" textAnchor="middle" fill="#696A70" fontSize="11" fontWeight="500">Khởi tạo</text>
-        <text x="180" y="125" textAnchor="middle" fill="#696A70" fontSize="11" fontWeight="500">Lựa chọn 1</text>
-        <text x="300" y="125" textAnchor="middle" fill="#696A70" fontSize="11" fontWeight="500">Lựa chọn 2</text>
-        <text x="440" y="130" textAnchor="middle" fill="var(--color-accent)" fontSize="11" fontWeight="600">Hậu quả (Outcome)</text>
+        <text x="60" y="125" textAnchor="middle" fill="var(--color-ink-secondary)" fontSize="11" fontWeight="500">
+          {t("g1.landing.modes.branching.diagram.init")}
+        </text>
+        <text x="180" y="125" textAnchor="middle" fill="var(--color-ink-secondary)" fontSize="11" fontWeight="500">
+          {t("g1.landing.modes.branching.diagram.option1")}
+        </text>
+        <text x="300" y="125" textAnchor="middle" fill="var(--color-ink-secondary)" fontSize="11" fontWeight="500">
+          {t("g1.landing.modes.branching.diagram.option2")}
+        </text>
+        <text x="440" y="130" textAnchor="middle" fill="var(--color-accent)" fontSize="11" fontWeight="600">
+          {t("g1.landing.modes.branching.diagram.outcome")}
+        </text>
       </svg>
     </div>
   );
@@ -86,7 +95,9 @@ function SubmissionVisual() {
       <div className="flex flex-col gap-2.5 rounded-eb-lg bg-canvas p-4 border border-line-soft">
         <div className="flex items-center justify-between">
           <p className="text-[12px] leading-4 font-medium text-ink-secondary">{t("g1.landing.modes.review.answerLabel")}</p>
-          <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Hoàn tất</span>
+          <span className="text-[11px] font-medium text-success-text bg-success-bg px-2 py-0.5 rounded-full border border-success-border">
+            {t("g1.landing.modes.review.completed")}
+          </span>
         </div>
         <span className="h-2 w-full max-w-[340px] rounded-[4px] bg-line-strong/60" />
         <span className="h-2 w-full max-w-[280px] rounded-[4px] bg-line-strong/60" />
@@ -97,7 +108,9 @@ function SubmissionVisual() {
           <span className="size-2 rounded-full bg-accent animate-pulse" />
           {t("g1.landing.modes.review.sent")}
         </p>
-        <span className="text-[11px] text-primary font-medium">Nhận phản hồi Giảng viên &rarr;</span>
+        <span className="text-[11px] text-primary font-medium">
+          {t("g1.landing.modes.review.receiveFeedback")}
+        </span>
       </div>
     </div>
   );

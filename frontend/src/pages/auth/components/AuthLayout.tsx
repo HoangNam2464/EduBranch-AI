@@ -37,7 +37,7 @@ export function AuthSplitLayout({ showcaseImage, children }: { showcaseImage: st
           <div className="flex flex-col items-center pt-3 text-center">
             <Link
               to={PATHS.HOME}
-              title={t("g1.brand") + " — Về trang chủ"}
+              title={`${t("g1.brand")} — ${t("common.backHome")}`}
               className={cx("flex items-center gap-2 transition-transform hover:scale-[1.02] focus:outline-none", FOCUS_RING)}
             >
               <LogoMark size={26} />
@@ -74,7 +74,7 @@ export function AuthFormHeading({ title, subtitle }: { title: ReactNode; subtitl
     <div className="flex w-full flex-col items-center gap-3 pb-6 text-center sm:gap-4 sm:pb-8">
       <Link
         to={PATHS.HOME}
-        title={t("g1.brand") + " — Về trang chủ"}
+        title={`${t("g1.brand")} — ${t("common.backHome")}`}
         className={cx("flex items-center gap-2 pb-2 sm:pb-3 transition-transform hover:scale-[1.02] focus:outline-none", FOCUS_RING)}
       >
         <LogoMark size={26} />
