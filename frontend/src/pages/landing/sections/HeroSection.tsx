@@ -9,8 +9,6 @@ import {
   Sparkles,
   ShieldCheck,
   GraduationCap,
-  Play,
-  Pause,
   ArrowRight,
 } from "lucide-react";
 import { PublicButton, cx, publicButtonClassName } from "@/components/ds";
@@ -28,11 +26,11 @@ export function HeroSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] pt-10 pb-20">
+    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] dark:from-[#0B1120] dark:via-[#0F172A] dark:to-[#0B1120] pt-10 pb-20 transition-colors duration-300">
       {/* Soft Ambient Light Glow behind Hero */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/40 via-blue-100/20 to-transparent blur-3xl -z-10"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/40 via-blue-100/20 to-transparent dark:from-sky-500/10 dark:via-blue-500/5 dark:to-transparent blur-3xl -z-10"
       />
 
       <div className="mx-auto flex min-h-[720px] max-w-7xl flex-col items-center justify-between gap-12 px-6 lg:flex-row lg:px-12">
@@ -44,8 +42,8 @@ export function HeroSection() {
           className="flex min-w-0 flex-1 flex-col gap-6"
         >
           {/* Category Chip */}
-          <div className="inline-flex items-center gap-2 self-start rounded-full bg-white/95 border border-line-soft px-3.5 py-1.5 text-[13px] font-medium text-primary shadow-xs backdrop-blur-sm">
-            <GraduationCap className="h-4 w-4 text-primary" />
+          <div className="inline-flex items-center gap-2 self-start rounded-full bg-white/95 dark:bg-slate-800/90 border border-line-soft dark:border-slate-700 px-3.5 py-1.5 text-[13px] font-medium text-primary dark:text-sky-400 shadow-xs backdrop-blur-sm">
+            <GraduationCap className="h-4 w-4 text-primary dark:text-sky-400" />
             <span>{t("g1.landing.hero.category", "Nền tảng Tình huống Thực nghiệm & Tư duy Bậc Đại học")}</span>
           </div>
 
@@ -81,13 +79,13 @@ export function HeroSection() {
           </div>
 
           {/* Trust Proof Badges */}
-          <div className="flex flex-wrap items-center gap-6 pt-4 text-[13px] text-ink-secondary border-t border-line-soft">
+          <div className="flex flex-wrap items-center gap-6 pt-4 text-[13px] text-ink-secondary border-t border-line-soft dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               <span>{t("g1.landing.hero.badges.grounded", "RAG Grounding từ giáo trình")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <GitBranch className="h-4 w-4 text-primary" />
+              <GitBranch className="h-4 w-4 text-primary dark:text-sky-400" />
               <span>{t("g1.landing.hero.badges.pedagogical", "Cây quyết định đa nhánh thực tế")}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -142,20 +140,6 @@ function StudioMockupWindow() {
     };
   }, [isPaused]);
 
-  const phases = isEn
-    ? [
-        { id: 0, label: "1. Situation" },
-        { id: 1, label: "2. Decision B" },
-        { id: 2, label: "3. Review" },
-        { id: 3, label: "4. Run 2 Outcome" },
-      ]
-    : [
-        { id: 0, label: "1. Tình huống" },
-        { id: 1, label: "2. Quyết định B" },
-        { id: 2, label: "3. Hồi cứu" },
-        { id: 3, label: "4. Kết cục Lượt 2" },
-      ];
-
   return (
     <figure
       aria-label={k("ariaLabel")}
@@ -178,35 +162,10 @@ function StudioMockupWindow() {
           </span>
         </div>
 
-        {/* Center/Right: Interactive Phase Chips & Pause Button */}
-        <div className="flex items-center gap-1.5">
-          <div className="hidden sm:flex items-center gap-1 bg-black/20 rounded-full p-0.5 border border-white/10 text-[10.5px]">
-            {phases.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setPhase(p.id as 0 | 1 | 2 | 3)}
-                className={cx(
-                  "px-2 py-0.5 rounded-full transition-colors font-medium",
-                  phase === p.id
-                    ? "bg-accent text-white shadow-xs"
-                    : "text-white/60 hover:text-white hover:bg-white/10",
-                )}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setIsPaused((prev) => !prev)}
-            className="flex size-7 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white/80 transition-colors ml-1"
-            title={isPaused ? "Tiếp tục chạy tự động" : "Tạm dừng để đọc"}
-            aria-label={isPaused ? "Play" : "Pause"}
-          >
-            {isPaused ? <Play size={11} fill="currentColor" /> : <Pause size={11} fill="currentColor" />}
-          </button>
+        {/* Right: Clean Live Simulator Badge */}
+        <div className="flex items-center gap-1.5 text-[11px] text-white/75 font-medium bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
+          <span className="size-2 rounded-full bg-accent animate-pulse" />
+          <span>{isEn ? "Continuous Simulation" : "Mô phỏng tự động"}</span>
         </div>
       </div>
 
@@ -419,7 +378,7 @@ function StudioMockupWindow() {
           </span>
         </span>
         <span className="text-white/50 text-[10.5px]">
-          {isEn ? "Click step numbers above to jump phases" : "Nhấn các nút số phía trên để tua nhanh pha"}
+          {isEn ? `Phase ${phase + 1} of 4` : `Pha ${phase + 1} trên 4`}
         </span>
       </figcaption>
     </figure>

@@ -6,6 +6,8 @@
 @import "@fontsource/be-vietnam-pro/500.css";
 @import "@fontsource/be-vietnam-pro/600.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
  * EduBranch design tokens — mirrors the "EduBranch" variable collections of
  * Figma file 6CtSgJPKo4jCIbB7WwCaWw (page 08 is the approved UI).
@@ -96,6 +98,36 @@
 }
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  :root.dark, .dark {
+    color-scheme: dark;
+    --color-page: #0B1120;
+    --color-canvas: #0F172A;
+    --color-surface: #1E293B;
+    --color-surface-muted: #162032;
+    --color-surface-hover: #273549;
+    --color-selected: #1E3A5F;
+
+    --color-ink: #F8FAFC;
+    --color-ink-secondary: #94A3B8;
+    --color-ink-muted: #64748B;
+    --color-ink-inverse: #FFFFFF;
+    --color-link: #38BDF8;
+
+    --color-line: #334155;
+    --color-line-soft: #1E293B;
+    --color-line-strong: #475569;
+    --color-focus: #38BDF8;
+
+    --color-primary-hover: #223F68;
+    --color-primary-active: #1B3253;
+    --color-primary-subtle: #162947;
+    --color-primary-subtle-hover: #1E3A5F;
+  }
+
   body {
     font-family: var(--font-sans);
     background-color: var(--color-page);
