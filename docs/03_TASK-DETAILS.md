@@ -1032,19 +1032,19 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Priority**: `Highest`
 - **Story Points**: `5`
 - **Flow / Milestone**: `Flow 2`
-- **Trạng thái nguồn**: `IN PROGRESS`
+- **Trạng thái nguồn**: `DONE`
 - **Dependencies**: is blocked by Master Task EBA-215 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
 Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
-`ai-service/app/generation/schemas.py`, `ai-service/app/generation/tree_validator.py` (DFS 3-color cycle detection).
+`ai-service/app/generation/schemas/decision_tree.py`, `ai-service/app/generation/tree_validator.py` (DFS 3-color cycle detection, reachability, terminal path), `ai-service/tests/test_case_generation_schema.py`, `ai-service/tests/test_graph_invariants.py`.
 
 ### Acceptance Criteria
-- [ ] **AC-1**: Định nghĩa CaseGenerationOutput, CaseNode, CaseOption Pydantic schemas tại app/generation/schemas/decision_tree.py.
-- [ ] **AC-2**: Thuật toán DFS 3 màu phát hiện và từ chối tuyệt đối cây có chu trình (cycles).
-- [ ] **AC-3**: Xác thực không có nút mồ côi (unreachable nodes) và có ít nhất 1 terminal path.
+- [x] **AC-1**: Định nghĩa CaseGenerationOutput, CaseNode, CaseOption Pydantic schemas tại app/generation/schemas/decision_tree.py.
+- [x] **AC-2**: Thuật toán DFS 3 màu phát hiện và từ chối tuyệt đối cây có chu trình (cycles).
+- [x] **AC-3**: Xác thực không có nút mồ côi (unreachable nodes) và có ít nhất 1 terminal path.
 
 ---
 

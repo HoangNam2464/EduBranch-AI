@@ -21,6 +21,40 @@ def _model_path(name: str) -> str:
     return name if name.startswith(("models/", "tunedModels/")) else f"models/{name}"
 
 
+def _sanitize_schema_for_gemini(schema: dict[str, Any]) -> dict[str, Any]:
+    """
+    Sanitize Pydantic model_json_schema() for Google Generative AI SDK.
+    Resolves $ref from $defs and filters schema keywords to the exact subset
+    supported by Google's protobuf content.Schema:
+    ['type', 'format', 'description', 'nullable', 'enum', 'items', 'properties', 'required'].
+    Preserves all arbitrary property names inside 'properties' mappings.
+    """
+    defs = schema.get("$defs", {})
+
+    def resolve_and_filter(obj: Any) -> Any:
+        if isinstance(obj, dict):
+            if "$ref" in obj:
+                ref_key = obj["$ref"].split("/")[-1]
+                target = defs.get(ref_key, {})
+                merged = {k: v for k, v in obj.items() if k != "$ref"}
+                merged.update(target)
+                return resolve_and_filter(merged)
+
+            allowed = {"type", "format", "description", "nullable", "enum", "items", "properties", "required"}
+            res: dict[str, Any] = {}
+            for k, v in obj.items():
+                if k == "properties" and isinstance(v, dict):
+                    res["properties"] = {prop_name: resolve_and_filter(prop_schema) for prop_name, prop_schema in v.items()}
+                elif k in allowed:
+                    res[k] = resolve_and_filter(v)
+            return res
+        elif isinstance(obj, list):
+            return [resolve_and_filter(item) for item in obj]
+        return obj
+
+    return resolve_and_filter(schema)
+
+
 class GeminiProvider(BaseLLMProvider):
     """Google Gemini provider using Gemini Flash for generation."""
 
@@ -58,12 +92,13 @@ class GeminiProvider(BaseLLMProvider):
 
     async def generate_structured(self, prompt: str, schema: dict[str, Any], system_prompt: str | None = None, **kwargs) -> dict[str, Any]:
         try:
+            sanitized_schema = _sanitize_schema_for_gemini(schema)
             model = genai.GenerativeModel(
                 model_name=self._model_name,
                 system_instruction=system_prompt,
                 generation_config=genai.GenerationConfig(
                     response_mime_type="application/json",
-                    response_schema=schema,
+                    response_schema=sanitized_schema,
                 ),
             )
             response = await model.generate_content_async(prompt)
