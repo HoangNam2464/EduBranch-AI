@@ -70,3 +70,48 @@
 | `shell.themeLight` | Chuyển sang giao diện sáng | Switch to light theme | PROPOSED | — | — | PR-54-FIX |
 | `shell.themeDark` | Chuyển sang giao diện tối | Switch to dark theme | PROPOSED | — | — | PR-54-FIX |
 | `shell.themeToggle` | Chuyển đổi giao diện sáng / tối | Toggle light / dark theme | PROPOSED | — | — | PR-54-FIX |
+| `caseReview.branching.selectNextNode` | Chọn tình huống tiếp theo | Choose the next situation | PROPOSED | — | — | FE-009/FE-010 node editor |
+| `caseReview.branching.maxOptions` | Mỗi tình huống có tối đa {{max}} phương án | A situation has at most {{max}} options | PROPOSED | — | — | FE-009/FE-010 node editor |
+| `caseReview.validation.nextRequired` | Mỗi phương án của {{node}} cần chọn tình huống tiếp theo. | Each option of {{node}} needs a next situation. | PROPOSED | — | — | FE-009/FE-010 node editor |
+| `caseReview.branching.treeTitle` | Cây quyết định | Decision tree | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.nodeCount` | {{count}} nút | {{count}} nodes | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.treeValid` | Hợp lệ · mọi nhánh dẫn tới kết cục | Valid · every branch reaches an outcome | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.treeInvalid` | {{count}} lỗi cấu trúc cần sửa | {{count}} structure issues to fix | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.badgeStart` | Bắt đầu | Start | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.badgeOutcome` | Kết cục | Outcome | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.badgePoint` | Điểm {{n}} | Point {{n}} | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.treeHint` | Chọn một nút để sửa nội dung ở cột trái. | Select a node to edit its content in the left column. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.topologyLabel` | Topology: | Topology: | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.topology` | {{nodes}} nút · {{situations}} tình huống · {{outcomes}} kết quả | {{nodes}} nodes · {{situations}} situations · {{outcomes}} outcomes | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.checkLabel` | Kiểm tra cây: | Tree check: | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.issueCount` | {{count}} lỗi cấu trúc | {{count}} structure issues | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.optionSummary` | Phương án {{n}} · {{text}} → {{target}} | Option {{n}} · {{text}} → {{target}} | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.branching.expandOption` | Mở phương án {{n}} | Open option {{n}} | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.review.answersHint` | Mỗi sinh viên nộp một lần. Bạn phản hồi bằng nhận xét, không chấm điểm. | Each student submits once. You respond with comments, not grades. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.errors.detail` | Chi tiết: {{detail}} | Details: {{detail}} | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.sources.title` | Đoạn nguồn được trích | Cited source passages | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.sources.unavailable` | Hệ thống chưa trả về đoạn nguồn được trích cho case này. | The system does not return cited source passages for this case yet. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.bar.label` | Thanh duyệt case | Case review bar | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.bar.stepper` | Tiến độ duyệt case | Case review progress | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.bar.locked.DRAFT` | Phê duyệt và Xuất bản bị khóa cho đến khi case được đánh dấu đã rà soát. | Approve and Publish stay locked until the case is marked as reviewed. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.bar.locked.REVIEWED` | Có thể phê duyệt; Xuất bản vẫn khóa. | You can approve now; Publish stays locked. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.bar.locked.APPROVED` | Nội dung đã chốt. Có thể xuất bản cho sinh viên hoặc trả về bản nháp để sửa tiếp. | The content is final. Publish it for students or return it to draft to keep editing. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.bar.locked.PUBLISHED` | Sinh viên trong khóa đã thấy case. Chỉ còn sao chép đường dẫn gửi lớp. | Students in the course can see the case. Only copying the class link remains. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.description` | Sau khi xuất bản, sinh viên trong khóa {{course}} có thể mở và làm case này. | Once published, students in {{course}} can open and work on this case. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.descriptionNoCourse` | Sau khi xuất bản, sinh viên trong khóa có thể mở và làm case này. | Once published, students in the course can open and work on this case. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.points` | {{count}} điểm quyết định | {{count}} decision points | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.outcomes` | {{count}} kết cục | {{count}} outcomes | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.checkTree` | Cây quyết định hợp lệ, mọi nhánh đều dẫn tới kết cục | The decision tree is valid and every branch reaches an outcome | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.checkConsequences` | Mọi phương án đều có hậu quả | Every option has a consequence | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.checkApproved` | Đã rà soát và phê duyệt | Reviewed and approved | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.checkContext` | Đã có bối cảnh & số liệu | Context and data are filled in | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.checkProblem` | Đã có vấn đề cần phân tích | The problem to analyse is filled in | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.checkOk` | Đạt | Passed | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.checkFailed` | Chưa đạt | Not passed | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.publishModal.warning` | Sau khi xuất bản, nội dung case không chỉnh sửa được. | After publishing, the case content can no longer be edited. | PROPOSED | — | — | Figma 03.4–03.7 (missing keys on develop) |
+| `caseReview.errors.invalid` | Dữ liệu chưa hợp lệ. Hãy kiểm tra lại các trường đã sửa. | Some data is not valid. Check the fields you changed. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
+| `caseReview.errors.forbidden` | Bạn không có quyền thực hiện thao tác này. | You do not have permission for this action. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
+| `caseReview.errors.notFound` | Không tìm thấy case hoặc nội dung cần lưu. | The case or the content to save was not found. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
+| `caseReview.errors.conflict` | Thao tác xung đột với dữ liệu hiện tại. | This action conflicts with the current data. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
+| `caseReview.errors.network` | Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại. | Cannot reach the server. Check your connection and try again. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
+| `caseReview.errors.generic` | Đã có lỗi xảy ra. Vui lòng thử lại. | Something went wrong. Please try again. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
