@@ -22,7 +22,7 @@ export class CaseService {
   async generateCase(
     courseId: string,
     lecturerId: string,
-    dto: { materialIds: string[]; topicHint?: string; numNodes?: number },
+    dto: { materialIds: string[]; topicHint?: string; numNodes?: number; idempotencyKey?: string },
   ) {
     // Verify lecturer exists
     const userRes = await this.db.query(
@@ -46,12 +46,13 @@ export class CaseService {
       throw new ConflictException("Course is archived");
     }
 
-    // 2. Call AI Service to generate case draft
+    // 2. Call AI Service to generate case draft with idempotency support
     const aiResponse = await this.aiClient.generateCase({
       material_ids: dto.materialIds,
       course_id: courseId,
       topic_hint: dto.topicHint,
       num_nodes: dto.numNodes,
+      idempotency_key: dto.idempotencyKey,
     });
 
     const client = await this.db.getClient();

@@ -38,6 +38,7 @@ export class CaseController {
       materialIds: string[];
       topicHint?: string;
       numNodes?: number;
+      idempotencyKey?: string;
     },
     @CurrentUser() user: { id: string; role: string },
   ) {
