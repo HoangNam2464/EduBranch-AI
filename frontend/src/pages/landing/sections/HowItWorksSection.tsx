@@ -227,17 +227,21 @@ function StepCard({
       <span className="text-[12px] leading-4 text-ink-secondary line-clamp-2">{step.desc}</span>
 
       <span className={cx("mt-auto flex w-full flex-col gap-1.5 rounded-eb-lg p-2.5 transition-colors", active ? "bg-primary-subtle/80" : "bg-canvas")}>
-        <StepDemo index={index} active={active} />
+        <StepDemo index={index} state={state} />
       </span>
     </button>
   );
 }
 
-/** The "Mini demo" content of each card, with live dynamic states when active. */
-function StepDemo({ index, active }: { index: number; active: boolean }) {
+/** The "Mini demo" content of each card, with live dynamic states matching pedagogical progression. */
+function StepDemo({ index, state }: { index: number; state: StepState }) {
   const { t } = useTranslation();
   const d = (key: string) => t(`g1.landing.how.demo.${key}`);
   const list = (key: string) => t(`g1.landing.how.demo.${key}`, { returnObjects: true }) as string[];
+
+  const isDone = state === "done";
+  const isActive = state === "active";
+  const isDoneOrActive = isDone || isActive;
 
   if (index === 0) {
     return (
@@ -247,7 +251,7 @@ function StepDemo({ index, active }: { index: number; active: boolean }) {
             key={file}
             className={cx(
               "flex items-center gap-1.5 rounded-eb-md bg-surface px-2 py-[5px] transition-all",
-              active && "shadow-xs",
+              isActive && "shadow-xs",
             )}
           >
             <FileText aria-hidden="true" size={12} absoluteStrokeWidth strokeWidth={1.7} className="shrink-0 text-ink-muted" />
@@ -257,7 +261,7 @@ function StepDemo({ index, active }: { index: number; active: boolean }) {
               size={12}
               absoluteStrokeWidth
               strokeWidth={2.09}
-              className={cx("shrink-0", active ? "text-emerald-600 animate-pulse" : "text-primary")}
+              className={cx("shrink-0", isDone ? "text-emerald-600" : isActive ? "text-emerald-600 animate-pulse" : "text-primary")}
             />
           </span>
         ))}
@@ -269,22 +273,24 @@ function StepDemo({ index, active }: { index: number; active: boolean }) {
       <>
         <span className="flex w-full text-[12px] leading-4 items-center">
           <span className="min-w-0 flex-1 text-ink-secondary flex items-center gap-1">
-            <Sparkles size={11} className={cx("text-accent", active && "animate-spin")} />
-            {d("generating")}
+            <Sparkles size={11} className={cx("text-accent", isActive && "animate-spin")} />
+            {isDone ? "Đã sinh bản nháp" : d("generating")}
           </span>
-          <span className="font-semibold text-primary">{active ? "100%" : "95%"}</span>
+          <span className="font-semibold text-primary">
+            {isDoneOrActive ? "100%" : "0%"}
+          </span>
         </span>
         <span className="block h-1.5 w-full overflow-hidden rounded-[3px] bg-surface">
           <span
             className={cx(
-              "block h-full rounded-[3px] bg-primary transition-all duration-1000",
-              active ? "w-full" : "w-4/5",
+              "block h-full rounded-[3px] bg-primary transition-all duration-700",
+              isDoneOrActive ? "w-full" : "w-0",
             )}
           />
         </span>
         <span className="flex flex-wrap gap-1 pt-0.5">
           {list("nodes").map((node) => (
-            <Pill key={node} className={cx("bg-surface text-[11px]", active && "border border-primary-subtle")}>
+            <Pill key={node} className={cx("bg-surface text-[11px]", isDoneOrActive && "border border-primary-subtle font-medium")}>
               {node}
             </Pill>
           ))}
@@ -295,16 +301,18 @@ function StepDemo({ index, active }: { index: number; active: boolean }) {
   if (index === 2) {
     return (
       <>
-        <DemoState>{d("draft")}</DemoState>
-        <DemoState>{d("reviewed")}</DemoState>
+        <DemoState active={isDoneOrActive}>{d("draft")}</DemoState>
+        <DemoState active={isDoneOrActive}>{d("reviewed")}</DemoState>
         <span className="flex h-6 items-center gap-2 rounded-eb-md bg-surface px-2 shadow-xs">
-          <span aria-hidden="true" className={cx("size-2.5 shrink-0 rounded-full bg-accent", active && "animate-ping")} />
+          <span aria-hidden="true" className={cx("size-2.5 shrink-0 rounded-full", isDone ? "bg-emerald-500" : "bg-accent", isActive && "animate-ping")} />
           <span className="min-w-0 flex-1 text-[12px] leading-4 font-medium text-ink truncate">{d("approve")}</span>
-          <span className="text-[11px] leading-4 font-medium text-accent">{d("running")}</span>
+          <span className={cx("text-[11px] leading-4 font-medium", isDone ? "text-emerald-700" : "text-accent")}>
+            {isDone ? "Đã xong" : d("running")}
+          </span>
         </span>
-        <span className="flex h-6 items-center gap-2 rounded-eb-md px-2 opacity-60">
-          <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full border-[1.5px] border-line-strong" />
-          <span className="min-w-0 flex-1 text-[12px] leading-4 text-ink-muted">{d("publish")}</span>
+        <span className={cx("flex h-6 items-center gap-2 rounded-eb-md px-2", isDone ? "text-emerald-700 font-medium" : "opacity-60")}>
+          <span aria-hidden="true" className={cx("size-2.5 shrink-0 rounded-full", isDone ? "bg-emerald-500" : "border-[1.5px] border-line-strong")} />
+          <span className="min-w-0 flex-1 text-[12px] leading-4">{isDone ? "Đã xuất bản cho lớp" : d("publish")}</span>
         </span>
       </>
     );
@@ -355,10 +363,16 @@ function StepDemo({ index, active }: { index: number; active: boolean }) {
   );
 }
 
-function DemoState({ children }: { children: ReactNode }) {
+function DemoState({ children, active }: { children: ReactNode; active?: boolean }) {
   return (
     <span className="flex h-5 items-center gap-2 rounded-eb-md px-2">
-      <CircleCheck aria-hidden="true" size={12} absoluteStrokeWidth strokeWidth={1.5} className="shrink-0 text-emerald-600" />
+      <CircleCheck
+        aria-hidden="true"
+        size={12}
+        absoluteStrokeWidth
+        strokeWidth={1.5}
+        className={cx("shrink-0", active ? "text-emerald-600" : "text-primary")}
+      />
       <span className="min-w-0 flex-1 text-[12px] leading-4 text-ink truncate">{children}</span>
     </span>
   );
