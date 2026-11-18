@@ -1,0 +1,143 @@
+{
+  "caseReview": {
+    "back": "Back to cases",
+    "breadcrumb": "Case Study",
+    "editor": "Editor",
+    "editorReview": "Review Study editor",
+    "mode": {
+      "BRANCHING_STUDY": "Branching Study",
+      "REVIEW_STUDY": "Review Study",
+      "lockedHint": "The learning mode is set when the case is created and cannot be changed here."
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "REVIEWED": "Reviewed",
+      "APPROVED": "Approved",
+      "PUBLISHED": "Published"
+    },
+    "load": {
+      "loading": "Loading case…",
+      "notFoundTitle": "Case not found",
+      "notFoundDescription": "This case does not exist or has been deleted.",
+      "forbiddenTitle": "You cannot view this case",
+      "forbiddenDescription": "Your current account is not allowed to open this case.",
+      "errorTitle": "Couldn't load the case",
+      "errorDescription": "Check your connection and try again."
+    },
+    "readOnlyNotice": "Approved or published cases cannot be edited directly. Return the case to draft to edit it.",
+    "unsupportedHint": "Saving this field is not supported yet.",
+    "required": "Required",
+    "branching": {
+      "situationCard": "Situation",
+      "outcomeCard": "Outcome",
+      "aiDraft": "AI Draft",
+      "situationTitle": "Situation title",
+      "promptQuestion": "Choice prompt",
+      "keyDecision": "Mark as a key decision",
+      "keyDecisionHelp": "This decision is highlighted in Journey Review. Students are encouraged to explain their reasoning for this step; challenging it with AI is optional.",
+      "situationContent": "Situation details",
+      "outcomeContent": "Outcome details",
+      "optionsTitle": "Options ({{count}})",
+      "optionsHelp": "Each option leads to a next situation and carries its consequence",
+      "noOptions": "An outcome node ends the journey, so it has no options.",
+      "optionLabel": "Option {{n}}",
+      "deleteOption": "Delete option",
+      "optionText": "Option label",
+      "optionDescription": "Option action description",
+      "nextNode": "Next situation for this option",
+      "endsJourney": "Ends the journey",
+      "consequence": "Consequence (set by the lecturer)",
+      "consequenceHelp": "Shown to students only in Journey Review, not while they play",
+      "addOption": "+ Add option",
+      "nodeList": "Situations ({{count}})",
+      "editingNode": "Editing · Step {{step}}",
+      "rootTag": "Root",
+      "branches": "Branches:",
+      "branchItem": "{{option}} → {{target}}",
+      "nodeSituation": "Situation {{n}}",
+      "nodeOutcome": "Outcome {{n}}",
+      "nodeLabel": "{{label}}: {{text}}",
+      "deleteNode": "Delete situation",
+      "addNode": "+ Add situation",
+      "noNodes": "This case has no nodes in its decision tree yet.",
+      "treeCheck": "Decision tree check",
+      "topology": "Structure: {{nodes}} nodes · {{situations}} situations · {{outcomes}} outcomes",
+      "treeOk": "Tree check: 0 structural errors",
+      "treeIssues": "Tree check: {{count}} structural errors",
+      "issue": {
+        "noRoot": "The case has no root node.",
+        "danglingNext": "An option points to a node that does not exist.",
+        "cycle": "The tree contains a loop.",
+        "orphan": "Some nodes cannot be reached from the root.",
+        "optionCount": "Each situation needs 2–4 options.",
+        "noTerminal": "The tree has no outcome node."
+      }
+    },
+    "review": {
+      "contentCard": "Review Study content",
+      "title": "Case title",
+      "shortDesc": "Short description",
+      "context": "Context & data",
+      "problem": "Problem to analyse",
+      "infoCard": "Case details",
+      "modeLabel": "Mode:",
+      "courseLabel": "Course:",
+      "statusLabel": "Status:",
+      "versionLabel": "Version:",
+      "version": "v{{version}}",
+      "structureLabel": "Structure:",
+      "noTree": "No decision tree",
+      "unknown": "—",
+      "studentAnswers": "Students will answer",
+      "answerSolution": "1. Proposed solution / action plan",
+      "answerReasoning": "2. Supporting reasoning (based on the data and course knowledge)"
+    },
+    "validation": {
+      "title": "Not saved",
+      "titleRequired": "The case title cannot be empty.",
+      "situationRequired": "The situation details cannot be empty.",
+      "optionRequired": "Each option needs a label and a consequence."
+    },
+    "toast": {
+      "close": "Close notification",
+      "savedTitle": "Changes saved",
+      "saveFailedTitle": "Couldn't save changes",
+      "statusChangedTitle": "Status updated",
+      "statusChangedMessage": "The case is now “{{status}}”.",
+      "statusFailedTitle": "Couldn't change the status",
+      "genericError": "Something went wrong. Please try again."
+    },
+    "bar": {
+      "saving": "Saving...",
+      "saveAndReview": "Save & mark as reviewed",
+      "saveChanges": "Save changes",
+      "revertToDraft": "Return to draft",
+      "openForStudents": "Open to students",
+      "approve": "Approve",
+      "approveNeedsSave": "Save your changes before approving.",
+      "publish": "Publish",
+      "publishForStudents": "Publish to students",
+      "copyLink": "Copy link",
+      "copied": "Student link copied!",
+      "copyFailed": "Couldn't copy the link. Select it and copy it manually.",
+      "subtitle": {
+        "DRAFT": "{{mode}} · Version {{version}} · Not reviewed",
+        "REVIEWED": "{{mode}} · Version {{version}} · Awaiting approval",
+        "APPROVED": "{{mode}} · Version {{version}} · Ready to publish",
+        "PUBLISHED": "{{mode}} · Version {{version}} · Available to students"
+      }
+    },
+    "publishModal": {
+      "title": "Publish case study",
+      "description": "Once published, students can open this case through the link below. Share it with the class via the LMS, email or in class.",
+      "close": "Close",
+      "linkLabel": "Student link",
+      "copy": "Copy",
+      "deadline": "Due date (optional)",
+      "notify": "Send in-app and email notifications to students in the class",
+      "cancel": "Cancel",
+      "confirm": "Confirm publishing",
+      "publishing": "Publishing..."
+    }
+  }
+}

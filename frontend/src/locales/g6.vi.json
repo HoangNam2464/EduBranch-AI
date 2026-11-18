@@ -1,0 +1,95 @@
+{
+  "g6": {
+    "noData": {
+      "title": "Chưa có dữ liệu",
+      "description": "Mục này hiển thị khi máy chủ cung cấp dữ liệu quản trị."
+    },
+    "dashboard": {
+      "activity": {
+        "title": "Hoạt động học tập theo tuần",
+        "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống"
+      },
+      "usersByRole": {
+        "title": "Người dùng theo vai trò",
+        "subtitle": "Tài khoản đang hoạt động"
+      },
+      "health": {
+        "title": "Tình trạng hệ thống",
+        "updatedAt": "Cập nhật lúc {{time}}",
+        "appServer": "Máy chủ ứng dụng",
+        "database": "Cơ sở dữ liệu",
+        "up": "Ổn định",
+        "down": "Gián đoạn",
+        "loading": "Đang kiểm tra tình trạng hệ thống…",
+        "errorTitle": "Không kiểm tra được"
+      },
+      "casesByCourse": {
+        "title": "Case theo khóa học",
+        "subtitle": "Số case đã xuất bản và bản nháp ở mỗi khóa"
+      },
+      "recentLog": {
+        "title": "Nhật ký gần đây",
+        "subtitle": "Hôm nay"
+      }
+    },
+    "users": {
+      "emptyTitle": "Chưa có dữ liệu người dùng",
+      "emptyDescription": "Danh sách tài khoản hiển thị khi máy chủ cung cấp dữ liệu quản trị người dùng."
+    },
+    "courses": {
+      "title": "Tất cả khóa học",
+      "emptyTitle": "Chưa có dữ liệu khóa học",
+      "emptyDescription": "Khóa học toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị khóa học."
+    },
+    "cases": {
+      "byStatus": "Case Study theo trạng thái",
+      "byMode": "Chế độ học theo case",
+      "library": "Kho Case Study",
+      "emptyTitle": "Chưa có dữ liệu Case Study",
+      "emptyDescription": "Case Study toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị Case Study."
+    },
+    "aiService": {
+      "recent": {
+        "title": "Lần sinh case gần đây",
+        "subtitle": "Mỗi lần sinh tạo một bản nháp chờ giảng viên rà soát"
+      },
+      "indexing": {
+        "title": "Trạng thái lập chỉ mục tài liệu",
+        "subtitle": "Tài liệu được tách đoạn và lập chỉ mục để AI trích dẫn khi sinh case"
+      },
+      "config": {
+        "title": "Cấu hình hiện tại",
+        "providerLabel": "Nhà cung cấp AI",
+        "providerValue": "Cố định trong cấu hình máy chủ",
+        "modelLabel": "Mô hình",
+        "modelValue": "Do nhóm kỹ thuật thiết lập"
+      },
+      "change": {
+        "title": "Thay đổi cấu hình",
+        "body": "Nhà cung cấp và mô hình AI được cố định trong tệp môi trường của máy chủ (OPD-013). Màn này chỉ để theo dõi, không có thao tác đổi cấu hình."
+      }
+    },
+    "rubric": {
+      "title": "Đánh giá chất lượng tình huống",
+      "description": "Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
+      "saved": "Phiếu đánh giá đã lưu",
+      "emptyTitle": "Chưa có dữ liệu đánh giá",
+      "emptyDescription": "Phiếu đánh giá hiển thị khi máy chủ cung cấp dữ liệu đánh giá Case Study."
+    },
+    "logs": {
+      "emptyTitle": "Chưa có dữ liệu nhật ký",
+      "emptyDescription": "Nhật ký hệ thống hiển thị khi máy chủ cung cấp dữ liệu nhật ký hoạt động."
+    },
+    "settings": {
+      "platform": "Thông tin nền tảng",
+      "platformEmpty": "Tên nền tảng, đơn vị vận hành, thông báo đăng nhập và email hỗ trợ hiển thị khi máy chủ cung cấp dữ liệu cài đặt.",
+      "limits": "Giới hạn & đăng ký",
+      "ai": {
+        "title": "Dịch vụ AI",
+        "provider": "Nhà cung cấp: cố định trong cấu hình máy chủ",
+        "monitor": "Theo dõi trạng thái tại mục Dịch vụ AI",
+        "note": "Cấu hình AI không chỉnh trên giao diện (OPD-013)."
+      }
+    }
+  }
+}

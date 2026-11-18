@@ -1,0 +1,22 @@
+{
+  "authRecovery": {
+    "backToLogin": "Back to sign in",
+    "unavailable": "Password recovery is not available yet. Please contact an administrator.",
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your registered email to receive a recovery link.",
+      "emailLabel": "Your email",
+      "emailPlaceholder": "name@duytan.edu.vn",
+      "submit": "Send password reset link"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "subtitle": "Passwords must be at least 6 characters.",
+      "passwordLabel": "New password",
+      "passwordPlaceholder": "At least 6 characters",
+      "confirmLabel": "Confirm new password",
+      "confirmPlaceholder": "Re-enter your new password",
+      "submit": "Save new password"
+    }
+  }
+}

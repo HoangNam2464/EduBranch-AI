@@ -1,0 +1,73 @@
+{
+  "states": {
+    "loading": {
+      "label": "Đang tải…",
+      "courseList": "Đang tải danh sách khóa học…"
+    },
+    "empty": {
+      "courses": {
+        "title": "Chưa có khóa học nào",
+        "description": "Tạo khóa học để tải tài liệu môn học và xây dựng case study.",
+        "action": "Tạo khóa học mới"
+      }
+    },
+    "error": {
+      "title": "Không tải được dữ liệu",
+      "description": "Kiểm tra kết nối mạng rồi thử lại.",
+      "retry": "Thử lại",
+      "codeLine": "Mã lỗi {{code}} · {{time}} — nếu lỗi lặp lại, gửi mã này tới ",
+      "codeLineNoTime": "Mã lỗi {{code}} — nếu lỗi lặp lại, gửi mã này tới ",
+      "courses": {
+        "title": "Không tải được danh sách khóa học",
+        "description": "Kiểm tra kết nối mạng rồi thử lại. Các khóa học hiện có không bị ảnh hưởng."
+      }
+    },
+    "noResults": {
+      "title": "Không tìm thấy kết quả phù hợp",
+      "description": "Không có kết quả nào khớp với “{{keyword}}”. Thử từ khóa khác hoặc xóa bộ lọc.",
+      "clear": "Xóa tìm kiếm",
+      "courses": {
+        "title": "Không tìm thấy khóa học phù hợp",
+        "description": "Không có khóa học nào khớp với “{{keyword}}”. Thử từ khóa khác hoặc xóa bộ lọc."
+      }
+    },
+    "forbidden": {
+      "code": "403",
+      "title": "Bạn không có quyền truy cập trang này",
+      "description": "Tài khoản bạn đang dùng không có quyền xem trang này.",
+      "descriptionWithRole": "Trang {{page}} chỉ dành cho {{allowedRole}}. Bạn đang đăng nhập với vai trò {{currentRole}}.",
+      "switchAccount": "Đăng nhập tài khoản khác",
+      "home": "Về trang của tôi",
+      "helpBefore": "Nếu bạn cho rằng đây là nhầm lẫn, liên hệ giảng viên phụ trách hoặc ",
+      "helpAfter": ".",
+      "roleFor": {
+        "lecturer": "giảng viên",
+        "student": "sinh viên",
+        "admin": "quản trị viên"
+      }
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Không tìm thấy trang",
+      "description": "Đường dẫn có thể đã sai hoặc trang đã bị xóa. Kiểm tra lại địa chỉ hoặc quay về trang chính.",
+      "path": "Đường dẫn: {{path}}",
+      "back": "Quay lại trang trước",
+      "home": "Về trang chính",
+      "helpBefore": "Cần hỗ trợ? Liên hệ "
+    },
+    "serverError": {
+      "code": "500",
+      "title": "Hệ thống đang gặp sự cố",
+      "description": "Yêu cầu của bạn chưa được xử lý. Dữ liệu đã lưu không bị ảnh hưởng. Vui lòng thử lại sau ít phút.",
+      "incident": "Mã sự cố: {{id}} · {{time}}",
+      "incidentNoTime": "Mã sự cố: {{id}}",
+      "home": "Về trang chính",
+      "reload": "Tải lại trang"
+    },
+    "sessionExpired": {
+      "title": "Phiên đăng nhập đã hết hạn",
+      "description": "Vì lý do bảo mật, bạn cần đăng nhập lại để tiếp tục. Nội dung chưa lưu trên trang này có thể bị mất.",
+      "signIn": "Đăng nhập lại"
+    }
+  }
+}
