@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { BadgeBase } from "@/components/ds/BadgeBase";
 
 /**
- * Figma `Data Display/Badge/Case Status` (page 02, node 225:308). Not instanced on page 08;
+ * Figma `Data Display/Badge/Case Status` (node 225:308, now only in the Eduva archive file). Not instanced on page EduBranch AI – Screens;
  * colours follow the component set (status/* variables).
  *  - Draft     bg #EEF2F9 dot #909198 text #696A70
  *  - Reviewed  bg #DFEDF9 dot #00A5F5 text #2A4E7F

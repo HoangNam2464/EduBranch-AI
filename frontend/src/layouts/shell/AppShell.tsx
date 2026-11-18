@@ -18,7 +18,7 @@ import {
 } from "@/layouts/shell/shellRoutes";
 
 /*
- * Shared app shell for Lecturer / Student / Admin (Figma page 08, FE-025):
+ * Shared app shell for Lecturer / Student / Admin (Figma page EduBranch AI – Screens, FE-025):
  * white page · Navigation/Sidebar (224 / 72) · "Main Content" panel
  * (bg/canvas #F3F6FC, radius 18, padding-top 8) holding Header (h 84),
  * the screen and EB/App Footer.

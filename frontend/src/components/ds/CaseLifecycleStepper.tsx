@@ -3,8 +3,8 @@ import { Check } from "lucide-react";
 import { cx } from "@/components/ds/shared";
 
 /**
- * Figma `Learning/Case Lifecycle Stepper` (page 02, node 228:279) — Current Draft | Reviewed | Approved | Published.
- *  - Card: white, 720 wide on page 08 (fills its column), padding 16 20, gap 12, radius 18, no stroke
+ * Figma `Learning/Case Lifecycle Stepper` (page EduBranch AI – Design System, node 228:279) — Current Draft | Reviewed | Approved | Published.
+ *  - Card: white, 720 wide on page EduBranch AI – Screens (fills its column), padding 16 20, gap 12, radius 18, no stroke
  *  - Step = marker 28x28 (radius 999) + label, gap 8; connectors are 2px bars (radius 1) that fill the rest
  *  - Done:     marker #2A4E7F + Icon/check 14px stroke 2.092 white; label Regular 14/20 #202124
  *  - Current:  marker #DFEDF9 + 1.5px #2A4E7F stroke, number Medium 12/16 #2A4E7F; label Medium 14/20 #202124

@@ -1,4 +1,4 @@
-/** Helpers shared by the design-system components (Figma page 02 / page 08). */
+/** Helpers shared by the design-system components (Figma pages EduBranch AI – Design System / EduBranch AI – Screens). */
 
 /** Joins class names, skipping falsy values. */
 export function cx(...parts: Array<string | false | null | undefined>): string {

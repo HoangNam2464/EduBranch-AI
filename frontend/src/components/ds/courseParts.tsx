@@ -2,7 +2,7 @@ import type { LucideIcon } from "lucide-react";
 import { cx } from "@/components/ds/shared";
 import { THUMBNAIL_TONES, type CourseThumbnailTone } from "@/components/ds/courseTones";
 
-/** Pieces shared by CourseCard and CourseOverview (page 08, 02.x). Internal to the DS. */
+/** Pieces shared by CourseCard and CourseOverview (page EduBranch AI – Screens, 02.x). Internal to the DS. */
 
 export function ThumbnailIcon({ icon: Icon, size, strokeWidth, tone }: { icon: LucideIcon; size: number; strokeWidth: number; tone: CourseThumbnailTone }) {
   return <Icon aria-hidden="true" size={size} absoluteStrokeWidth strokeWidth={strokeWidth} className={cx("shrink-0", THUMBNAIL_TONES[tone].icon)} />;

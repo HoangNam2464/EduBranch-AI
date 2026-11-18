@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
 
 /**
- * Figma `EB/Social Sign-in` (page 05, node 538:347) — divider + Google / Microsoft buttons.
- *  - Column gap 20 (520 wide in the set; fills the auth card on page 08, frames 00.3–00.5)
+ * Figma `EB/Social Sign-in` (page EduBranch AI – Design System, node 538:347) — divider + Google / Microsoft buttons.
+ *  - Column gap 20 (520 wide in the set; fills the auth card on page EduBranch AI – Screens, frames 00.3–00.5)
  *  - Divider: 1px #E1E8F5 lines either side of a Roboto Regular 12/16 #909198 label, gap 12
  *  - Providers row gap 8; each button fills, #F3F6FC, radius 8, padding 10 16, gap 10,
  *    18px brand logo + Roboto Regular 14/20 #202124 label

@@ -1,5 +1,5 @@
 /**
- * Admin · Quản lý người dùng — Figma page 08, frames 10.3 (533:7204) and 10.4 (534:7373, lock dialog).
+ * Admin · Quản lý người dùng — Figma page EduBranch AI – Screens, frames 10.3 (533:7204) and 10.4 (534:7373, lock dialog).
  *
  * Real data only: the backend has no admin user endpoints yet (no `@Roles("ADMIN")`
  * controller), so the KPI cards, the user table and the lock / unlock action are not

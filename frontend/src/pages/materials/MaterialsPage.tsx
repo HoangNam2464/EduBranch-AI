@@ -1,6 +1,6 @@
 /**
  * MaterialsPage — Giảng viên · Chi tiết khóa học — Tài liệu môn học
- * (Figma page 08: 02.4 page, 02.5 upload dialog, 02.6 delete dialog).
+ * (Figma page EduBranch AI – Screens: 02.4 page, 02.5 upload dialog, 02.6 delete dialog).
  * Route: /lecturer/courses/:courseId/materials
  *
  * Real data only: GET /courses/:id, GET /courses/:id/materials, GET /courses/:id/cases,

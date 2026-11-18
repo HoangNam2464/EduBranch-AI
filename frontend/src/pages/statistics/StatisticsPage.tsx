@@ -8,7 +8,7 @@ import { useLecturerCourseCases } from "@/pages/statistics/useLecturerCourseCase
 import type { Case } from "@/types";
 
 /*
- * 04.3 Thống kê luồng học tập — Figma page 08, node 483:15369.
+ * 04.3 Thống kê luồng học tập — Figma page EduBranch AI – Screens, node 483:15369.
  * Layout: chart section (fills, column gap 20) + right column 320 wide (gap 20).
  *  - KPIs: 3 × "compact" MetricCard (265x78), gap 20.
  *  - Chart panels: white, radius 18, padding 20, heading row h32; rows of 2 × 408 (h370, h336)

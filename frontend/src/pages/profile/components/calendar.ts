@@ -1,6 +1,6 @@
 /**
  * Month grid helpers shared by the G4 calendars (07.1 month view, 09.1 / 04.3 mini calendar).
- * Weeks start on Sunday ("CN") as in Figma page 08. Pure functions, no data access.
+ * Weeks start on Sunday ("CN") as in Figma page EduBranch AI – Screens. Pure functions, no data access.
  */
 export interface CalendarDay {
   date: Date;

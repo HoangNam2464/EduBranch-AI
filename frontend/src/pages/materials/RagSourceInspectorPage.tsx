@@ -1,5 +1,5 @@
 /**
- * RagSourceInspectorPage — Giảng viên · Đoạn trích của tài liệu (Figma page 08, 02.7, node 483:11148).
+ * RagSourceInspectorPage — Giảng viên · Đoạn trích của tài liệu (Figma page EduBranch AI – Screens, 02.7, node 483:11148).
  * Route: /lecturer/courses/:courseId/materials/:materialId/rag
  *
  * Layout (content area, the shell draws sidebar/header/footer):

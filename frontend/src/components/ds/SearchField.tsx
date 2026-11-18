@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { cx } from "@/components/ds/shared";
 
 /**
- * Figma `Forms/Search Field` (page 02, node 230:460) — the h32 search box of list toolbars.
+ * Figma `Forms/Search Field` (page EduBranch AI – Design System, node 230:460) — the h32 search box of list toolbars.
  *  - 200x32 by default, padding 0 12, space-between, white fill, 1px inside stroke #D1D9E8, radius 8
  *  - Text Roboto Regular 12/16: placeholder #909198, typed value #202124 (frame 01.8)
  *  - Trailing Icon/search 16x16, stroke 1.6, #696A70

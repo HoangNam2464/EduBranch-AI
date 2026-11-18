@@ -1,7 +1,7 @@
 # Quickstart & Verification Guide: Courses & Materials [FE-026]
 
 **Feature Directory**: `specs/001-fe026-courses-materials`  
-**Reference Design**: Figma Page `08 · EduBranch – Bản hoàn chỉnh` (frames `02.1` – `02.7`)  
+**Reference Design**: Figma Page `EduBranch AI – Screens` (frames `02.1` – `02.7`)  
 **Date**: 2026-11-16  
 **Audience**: Implementers, Reviewers, and QA Engineers
 

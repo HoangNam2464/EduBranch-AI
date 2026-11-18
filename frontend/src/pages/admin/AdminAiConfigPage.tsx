@@ -1,5 +1,5 @@
 /**
- * Admin · Dịch vụ AI (chỉ xem) — Figma page 08, frame 10.7 (536:7648).
+ * Admin · Dịch vụ AI (chỉ xem) — Figma page EduBranch AI – Screens, frame 10.7 (536:7648).
  *
  * Read-only by decision OPD-013: the provider and model are fixed in the server
  * environment, so this screen has no write action. Real data only: the backend exposes

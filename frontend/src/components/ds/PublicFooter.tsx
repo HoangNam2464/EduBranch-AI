@@ -4,7 +4,7 @@ import { PublicBrand } from "@/components/ds/PublicNav";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
 
 /**
- * Figma `EB/Public Footer` (page 05, node 455:359).
+ * Figma `EB/Public Footer` (page EduBranch AI – Design System, node 455:359).
  *  - 1440 wide, #F3F6FC, padding 56 120 32, column gap 40
  *  - Top row gap 64: brand column 360 (logo + Regular 14/20 #696A70 description, gap 12),
  *    spacer, then 160-wide link columns (gap 12): heading Medium 14/20 #202124,

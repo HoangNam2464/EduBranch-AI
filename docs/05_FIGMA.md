@@ -11,12 +11,13 @@
 
 ## 0. TRẠNG THÁI HIỆN TẠI (cập nhật 2026-11-13) — ĐỌC TRƯỚC
 
-- **Cả 15 task DES đã Done** (Jira `EBA`, 2026-11-13). Giao diện đã chốt nằm ở Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page **`08 · EduBranch – Bản hoàn chỉnh`**. Khi mục §1–§3 bên dưới khác với page 08, **làm theo Figma page 08**; các mục đó là đặc tả ban đầu, giữ lại để tra cứu Acceptance Criteria.
+- **Cả 15 task DES đã Done** (Jira `EBA`, 2026-11-13). Giao diện đã chốt nằm ở Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page **`EduBranch AI – Screens`**. Khi mục §1–§3 bên dưới khác với page EduBranch AI – Screens, **làm theo Figma page EduBranch AI – Screens**; các mục đó là đặc tả ban đầu, giữ lại để tra cứu Acceptance Criteria.
+- **Đổi tên page (PO, 2026-11-18):** file chỉ còn 2 page: `EduBranch AI – Design System` (`445:239`, trước đây "05 · EduBranch – Design System") và `EduBranch AI – Screens` (`483:9634`, trước đây "08 · EduBranch – Bản hoàn chỉnh"). ID page và frame không đổi. Hai page Eduva ("02 · Eduva – Design System", "03 · Eduva – Screens") đã chuyển sang một file Figma lưu trữ riêng; 72 component EduBranch đang dùng được chuyển trước sang page Design System (section `696:297`, giữ nguyên node ID). Các nhật ký quyết định cũ ghi "page 08" hoặc "page 02" nghĩa là hai page này; không sửa nhật ký.
 - Ghi chú từng màn: [`design/UX-SCREEN-NOTES.md`](design/UX-SCREEN-NOTES.md). Token và component: [`design/GLOBAL-DESIGN-SYSTEM.md`](design/GLOBAL-DESIGN-SYSTEM.md). Route: [`design/SITE-ARCHITECTURE.md §5`](design/SITE-ARCHITECTURE.md).
 
-### 0.1. DES → frame trên page 08
+### 0.1. DES → frame trên page EduBranch AI – Screens
 
-| Task | Frame trên page 08 |
+| Task | Frame trên page EduBranch AI – Screens |
 |---|---|
 | DES-001 IA & app shell | 00.2 trang công khai (một trang cuộn), 00.3–00.5 đăng nhập/đăng ký; sidebar, header, footer dùng chung cho 3 vai trò |
 | DES-002 Trạng thái dùng chung | 01.1–01.8 |
@@ -34,13 +35,13 @@
 | DES-014 Phản hồi giảng viên | 04.1, 04.2, 04.2b, 06.3 |
 | DES-015 AI Challenge Support | 05.5, 05.6 (OPD-005 còn HOLD) |
 
-Ngoài 15 task DES, page 08 còn các màn MVP đã chốt nhưng chưa có task: 04.3 thống kê, 07.1–07.8 (dashboard giảng viên, Bàn học, Khóa học của tôi, Tham gia lớp học, AI Studio, Rubric), 09.1–09.2 hồ sơ, 10.1–10.10 Admin.
+Ngoài 15 task DES, page EduBranch AI – Screens còn các màn MVP đã chốt nhưng chưa có task: 04.3 thống kê, 07.1–07.8 (dashboard giảng viên, Bàn học, Khóa học của tôi, Tham gia lớp học, AI Studio, Rubric), 09.1–09.2 hồ sơ, 10.1–10.10 Admin.
 
 ### 0.2. Các giá trị trong §1–§3 đã bị thay thế
 
-| Đặc tả ban đầu | Theo Figma page 08 |
+| Đặc tả ban đầu | Theo Figma page EduBranch AI – Screens |
 |---|---|
-| Cấu trúc 6 page Figma (§1.1) | Một page canonical `08 · EduBranch – Bản hoàn chỉnh`, các khu 00–10 |
+| Cấu trúc 6 page Figma (§1.1) | Một page canonical `EduBranch AI – Screens`, các khu 00–10 |
 | Màu chính `#2563EB`, `bg-canvas #F9FAFB`, viền `#E5E7EB` | Navy `#2A4E7F` (`action/primary`), sky `#00A5F5` (`action/accent`), token `EduBranch · Color` |
 | Sinh viên: Top Bar 56px + cột đọc 768px, không sidebar | Sinh viên dùng cùng khung sidebar thu gọn được như giảng viên; vùng đọc/viết giữ độ rộng 65–75 ký tự |
 | Sidebar giảng viên 240px có vạch active 3px | Sidebar dùng chung (`Navigation/Sidebar`), mục đang chọn nền navy, không vạch; bản thu gọn 72px |

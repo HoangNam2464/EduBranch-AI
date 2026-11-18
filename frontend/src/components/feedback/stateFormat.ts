@@ -1,5 +1,5 @@
 /**
- * Pure helpers shared by the feedback states (Figma page 08, frames 01.x).
+ * Pure helpers shared by the feedback states (Figma page EduBranch AI – Screens, frames 01.x).
  * No React imports here so the helpers can be unit-tested with node:test.
  */
 

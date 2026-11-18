@@ -8,7 +8,7 @@
 
 /*
  * EduBranch design tokens — mirrors the "EduBranch" variable collections of
- * Figma file 6CtSgJPKo4jCIbB7WwCaWw (page 08 is the approved UI).
+ * Figma file 6CtSgJPKo4jCIbB7WwCaWw (page EduBranch AI – Screens is the approved UI).
  * Utilities: bg-canvas, text-ink, border-line, bg-primary, text-accent, ...
  * Existing Tailwind palette classes keep working for screens not yet reworked.
  */
@@ -75,7 +75,7 @@
   --radius-eb-xl: 18px;
 
   /* Design-system components (frontend/src/components/ds). Values measured on
-   * Figma page 02 component sets as instanced on page 08. */
+   * Figma EduBranch AI – Design System component sets as instanced on page EduBranch AI – Screens. */
   --color-mode-review-bg: #E6F6FE;      /* mode/review-bg (sky/50) */
   --color-mode-review-border: #B3E4FC;  /* mode/review-border (sky/200) */
   --color-mode-review-text: #0087C9;    /* mode/review-text (sky/600) */
@@ -88,7 +88,7 @@
      + EduBranch/Elevation/Card. Hover on clickable cards: EduBranch/Elevation/Hover. PO 2026-11-17. */
   --shadow-eb-card: inset 0 0 0 1px rgb(225 232 245 / 0.8), 0 1px 2px 0 rgb(32 33 36 / 0.05), 0 1px 3px 0 rgb(32 33 36 / 0.06);
   --shadow-eb-hover: inset 0 0 0 1px rgb(225 232 245 / 0.8), 0 2px 8px 0 rgb(32 33 36 / 0.06);
-  /* Shared page patterns (components/ds) — colours resolved on page 08 that have no token above. */
+  /* Shared page patterns (components/ds) — colours resolved on page EduBranch AI – Screens that have no token above. */
   --color-control-icon: #4B5563;        /* "Expand" chevron of Filter control / Dropdown / Pagination (02.1, 03.1, 05.9) */
   --color-result-count: #73807F;        /* "Hiển thị … trên N" labels of Result count (01.2, 02.1, 05.9) */
   --color-back-icon: #808080;           /* "Back to courses" arrow-left (02.4, 05.1) */

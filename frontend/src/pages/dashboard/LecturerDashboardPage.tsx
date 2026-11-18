@@ -9,7 +9,7 @@ import { MonthStepper } from "@/pages/profile/components/MonthStepper";
 import { countCases, describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo } from "@/pages/statistics/useLecturerCourseCases";
 
 /*
- * 07.1 Bảng điều khiển (giảng viên) — Figma page 08, node 483:16309.
+ * 07.1 Bảng điều khiển (giảng viên) — Figma page EduBranch AI – Screens, node 483:16309.
  * Workspace: column gap 20 under the shell header.
  *  - Metric cards: 4 × "inline" MetricCard (279x76) in a row, gap 20.
  *  - Calendar section: white, radius 18, padding 20. Controls row h52; then month view

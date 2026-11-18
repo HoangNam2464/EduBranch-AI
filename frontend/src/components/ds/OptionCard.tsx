@@ -2,7 +2,7 @@ import type { MouseEvent, ReactNode } from "react";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
 
 /**
- * Figma `Learning/Option Card` (page 02, node 228:191) — State Default | Hover | Selected.
+ * Figma `Learning/Option Card` (page EduBranch AI – Design System, node 228:191) — State Default | Hover | Selected.
  *  - Row: padding 16, gap 12, radius 12, items centred, fills its column (640 in the set)
  *  - Default:  white, 1px inside stroke #D1D9E8, key box #F3F6FC
  *  - Hover:    #F3F6FC, 1px stroke #D1D9E8, key box white

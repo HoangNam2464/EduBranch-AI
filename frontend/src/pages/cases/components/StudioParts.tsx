@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 import { cx } from "@/components/ds";
 
 /*
- * Pieces of the AI Studio wizard (07.5–07.7) drawn by hand on page 08.
+ * Pieces of the AI Studio wizard (07.5–07.7) drawn by hand on page EduBranch AI – Screens.
  */
 
 /** White card radius 18, padding 20, column gap `gap` (24 in "Course Information", 23 elsewhere). */

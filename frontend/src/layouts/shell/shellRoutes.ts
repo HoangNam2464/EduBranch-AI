@@ -2,7 +2,7 @@
  * EduBranch AI — App shell route logic (pure, unit-tested).
  *
  * Decides, from the current URL, which sidebar menu to show, which item is
- * active and which page title the header shows. Mirrors Figma page 08:
+ * active and which page title the header shows. Mirrors Figma page EduBranch AI – Screens:
  * - Lecturer: Khóa học · Case Study · Phản hồi sinh viên · Thống kê học tập
  *   (dashboard 07.1 and profile 09.1 have no active item).
  * - Student, main area: Bàn học · Khóa học của tôi · Tham gia lớp học.

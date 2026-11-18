@@ -1,5 +1,5 @@
 /**
- * Admin · Cài đặt hệ thống — Figma page 08, frame 10.10 (536:8783).
+ * Admin · Cài đặt hệ thống — Figma page EduBranch AI – Screens, frame 10.10 (536:8783).
  *
  * Real data only: there is no settings endpoint, so the platform fields, the sign-in
  * notice, the support email, the limits list and the save / publish bar are not rendered

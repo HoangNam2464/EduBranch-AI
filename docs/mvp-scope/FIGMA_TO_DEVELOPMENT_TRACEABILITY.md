@@ -76,10 +76,10 @@ Page: `Page 1` cho tất cả. Trạng thái: MVP cho tất cả (chưa Ready fo
 
 | Node | Frame | Tình trạng |
 |---|---|---|
-| `34:3183`, `1:3490` | Dashboard giảng viên | Không có yêu cầu trong Proposal hay task. Bản gốc lưu trữ. Revision 01 → **MVP** (D-05 chốt 2026-11-12; page 08 `07.1`) — **thiếu task** |
-| `1:1305`, `1:1202`, `1:1084` | Màn sinh viên: Bàn học, Khóa học, Tham gia lớp | **MVP** (OPD-001 chốt A 2026-11-12; page 08 `07.2`–`07.4`) — **thiếu task**, chưa có route và bảng `course_enrollments`; P0 §1, P2 §1 cần sửa |
-| `1:3088`, `1:2939`, `1:2818` | AI Studio (wizard 3 bước) | **MVP** (OPD-006 chốt wizard 2026-11-12; page 08 `07.5`–`07.7`) — gắn DES-006, FE-007; cần đổi tên/AC DES-006 |
+| `34:3183`, `1:3490` | Dashboard giảng viên | Không có yêu cầu trong Proposal hay task. Bản gốc lưu trữ. Revision 01 → **MVP** (D-05 chốt 2026-11-12; page EduBranch AI – Screens `07.1`) — **thiếu task** |
+| `1:1305`, `1:1202`, `1:1084` | Màn sinh viên: Bàn học, Khóa học, Tham gia lớp | **MVP** (OPD-001 chốt A 2026-11-12; page EduBranch AI – Screens `07.2`–`07.4`) — **thiếu task**, chưa có route và bảng `course_enrollments`; P0 §1, P2 §1 cần sửa |
+| `1:3088`, `1:2939`, `1:2818` | AI Studio (wizard 3 bước) | **MVP** (OPD-006 chốt wizard 2026-11-12; page EduBranch AI – Screens `07.5`–`07.7`) — gắn DES-006, FE-007; cần đổi tên/AC DES-006 |
 | `26:148` | Email kích hoạt | Không có task. HOLD (OPD-008) |
-| 10 frame Admin | — | **MVP** (OPD-015 → B, 2026-11-12; page 08 `10.1`–`10.10`) — không có spec feature, **thiếu task** |
-| `1:2081`, `1:4511` | Rubric giảng viên, Admin Nghiên cứu & Rubric | **MVP** (OPD-011 chốt A 2026-11-12; page 08 `07.8`, `10.8`) — Proposal có (¶140), **thiếu task** |
-| page 08 `09.1`, `09.2` | Hồ sơ tài khoản giảng viên / sinh viên | **MVP** (PO 2026-11-12) — **thiếu task** |
+| 10 frame Admin | — | **MVP** (OPD-015 → B, 2026-11-12; page EduBranch AI – Screens `10.1`–`10.10`) — không có spec feature, **thiếu task** |
+| `1:2081`, `1:4511` | Rubric giảng viên, Admin Nghiên cứu & Rubric | **MVP** (OPD-011 chốt A 2026-11-12; page EduBranch AI – Screens `07.8`, `10.8`) — Proposal có (¶140), **thiếu task** |
+| page EduBranch AI – Screens `09.1`, `09.2` | Hồ sơ tài khoản giảng viên / sinh viên | **MVP** (PO 2026-11-12) — **thiếu task** |

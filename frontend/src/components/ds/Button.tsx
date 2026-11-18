@@ -7,7 +7,7 @@ import { buttonClassName, type ButtonSize, type ButtonVariant } from "@/componen
 export type { ButtonSize, ButtonVariant };
 
 /**
- * Figma `Actions/Button` (page 02, node 225:287) — the app button used on page 08.
+ * Figma `Actions/Button` (page EduBranch AI – Design System, node 225:287) — the app button used on page EduBranch AI – Screens.
  *  - MD: h40, padding 0 16, gap 8, Roboto Medium 14/20, radius 8
  *  - SM: h32, padding 0 12, gap 8, Roboto Medium 12/16, radius 8
  *  - Primary  #2A4E7F / hover #223F68 / disabled #94A7C0, label white

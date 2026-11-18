@@ -5,7 +5,7 @@ import { cx } from "@/components/ds";
 import { EmptyState } from "@/components/feedback";
 
 /**
- * White section card of the admin screens (Figma page 08, section 10).
+ * White section card of the admin screens (Figma page EduBranch AI – Screens, section 10).
  *  - "dashboard" (10.2): radius 16, padding 24, column gap 16; header "Titles" column gap 2:
  *    title Regular 16/24 #202124 + subtitle Regular 12/16 #909198.
  *  - "page" (10.5–10.10): radius 18, padding 20, column gap 20; title Regular 16/24 #202124.

@@ -8,7 +8,7 @@
 
 ## 1. Summary
 
-This plan governs the visual rework and behavioral hardening of the Courses and Materials screens for the Lecturer Portal to align 100% with canonical Figma Page `08 · EduBranch – Bản hoàn chỉnh` (frames `02.1` to `02.7`). 
+This plan governs the visual rework and behavioral hardening of the Courses and Materials screens for the Lecturer Portal to align 100% with canonical Figma Page `EduBranch AI – Screens` (frames `02.1` to `02.7`). 
 
 ### Core Architectural Decisions & Strategy:
 1. **Target Structure Dependency (PO Q1)**: Plan FE-026 against the FE-023 modular target structure (`frontend/src/pages/courses/CoursesPage.tsx`, `pages/materials/MaterialsPage.tsx`, `pages/materials/RagSourceInspectorPage.tsx`, `components/ds/`, `components/feedback/`, `routes/paths.ts`, `locales/`). Product code implementation will NOT occur on the legacy structure and will strictly await FE-023 being merged into `develop`.
@@ -18,9 +18,9 @@ This plan governs the visual rework and behavioral hardening of the Courses and 
 5. **Route Alignment (PO Q5 & Review R2-1)**: Fix `DELETE /materials/:id` directly in frontend `materialService.ts` relative to `/api/v1` base URL.
 6. **API Response Envelope & Model Mapping (Review R3-1)**: All existing backend endpoints return `{ "status": "SUCCESS", "data": ... }` with snake_case fields (`course_code`, `lecturer_id`, `is_active`, `original_filename`, `stored_object_key`, `mime_type`, `size_bytes`, `processing_status`, `chunk_count`, `processing_error`, `uploaded_at`). Clean mapping to frontend camelCase models is encapsulated in `frontend/src/services/mappers/course.ts` and `material.ts`. All proposed endpoints (`PATCH /courses/:courseId/archive` (BE-PROP-2, implemented on branch `feature/course-soft-archive`, pending merge), `GET /materials/:id/chunks`) adopt the identical envelope.
 7. **Localization Architecture & VI/EN Language Switch (`[PO-ĐÃ-XÁC-NHẬN]`)**:
-   - `SUPERSEDED (2026-11-16, PO chat): replaced by the PO directive that the approved Figma page 08, including the VI/EN switch, is the UI source`:
+   - `SUPERSEDED (2026-11-16, PO chat): replaced by the PO directive that the approved Figma page EduBranch AI – Screens, including the VI/EN switch, is the UI source`:
      > "MVP chỉ sử dụng tiếng Việt. English localization chỉ triển khai sau khi sản phẩm đạt khoảng 75% và có PO approval."
-   - **PO Directive mới (2026-11-16, verbatim)**: "Figma page 08 đã được PO chốt. Nút chuyển ngôn ngữ VN / ENG là thành phần tôi chủ động bổ sung và đã hoàn thiện trên Figma. Thiết kế này thuộc giao diện sản phẩm đã được duyệt."
+   - **PO Directive mới (2026-11-16, verbatim)**: "Figma page EduBranch AI – Screens đã được PO chốt. Nút chuyển ngôn ngữ VN / ENG là thành phần tôi chủ động bổ sung và đã hoàn thiện trên Figma. Thiết kế này thuộc giao diện sản phẩm đã được duyệt."
    - **Cơ chế i18n theo chuẩn FE-023 [FE-023 target (expected; not on develop `273f1fc`; verified by T028)]**: `src/lib/i18n.ts` định nghĩa `SUPPORTED_LANGUAGES = ["vi", "en"]`, `DEFAULT_LANGUAGE = "vi"`, `fallbackLng: "vi"`; ngôn ngữ được lưu trong `localStorage` key `LANGUAGE_STORAGE_KEY = "edubranch-lang"` (thứ tự phát hiện chỉ đọc localStorage; không đọc ngôn ngữ trình duyệt, lần đầu truy cập luôn mở tiếng Việt). File cơ sở `src/locales/vi.json` + `en.json` cùng bộ key, cộng các file tính năng `src/locales/<feature>.vi.json` / `<feature>.en.json` (mỗi file một top-level key: `courses`, `materials`) được gộp tự động qua `import.meta.glob`. Do `fallbackLng` là `vi`, bất kỳ key nào thiếu trong `.en.json` sẽ hiển thị tiếng Việt trên màn hình tiếng Anh gây trộn lẫn ngôn ngữ; vì vậy yêu cầu bắt buộc bảo đảm key parity (tập key giống hệt nhau giữa hai file).
    - **Shared Header Switch [FE-023 target (expected; not on develop `273f1fc`; verified by T028)]**: Shell FE-025 (`frontend/src/layouts/shell/HeaderActions.tsx`) hiển thị nút chuyển ngôn ngữ với `aria-pressed`, `lang`, label `lang.toUpperCase()`, gọi `i18n.changeLanguage(lang)`. Các màn hình FE-026 và component dùng chung chuyển đổi đầy đủ theo ngôn ngữ được chọn. Bản dịch tiếng Anh được gắn nhãn `[ĐỀ-XUẤT]` chờ PO duyệt.
 
@@ -134,7 +134,7 @@ specs/001-fe026-courses-materials/
 ```text
 frontend/src/
 ├── components/
-│   ├── ds/                      # Design System Primitives (Figma Page 02 & 08)
+│   ├── ds/                      # Design System Primitives (Figma pages EduBranch AI – Design System & EduBranch AI – Screens)
 │   │   ├── CourseCard.tsx       # Frame 02.1 course card
 │   │   ├── CourseOverview.tsx   # Frame 02.1 detail panel
 │   │   ├── Dialog.tsx           # Modals 02.2, 02.3, 02.5, 02.6

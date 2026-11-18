@@ -20,7 +20,7 @@ import {
 import showcaseImage from "@/pages/auth/assets/showcase-login.webp";
 
 /**
- * 00.3 · Đăng nhập · Mặc định (Figma page 08, node 483:17474).
+ * 00.3 · Đăng nhập · Mặc định (Figma page EduBranch AI – Screens, node 483:17474).
  * "Sign in form" 562 wide, column gap 20: heading · email · password · session options
  * (space-between) · primary action · EB/Social Sign-in (padding-top 4) · account switch.
  */

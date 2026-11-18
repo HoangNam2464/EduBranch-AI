@@ -4,13 +4,13 @@ import { Button } from "@/components/ds/Button";
 import { cx } from "@/components/ds/shared";
 
 /**
- * Figma `Overlays/Dialog` (page 02, node 228:318) — Type Confirm | Destructive.
- *  - Panel: white, width 480 (custom dialogs on page 08 use 520/560/600), padding 24, gap 8,
+ * Figma `Overlays/Dialog` (page EduBranch AI – Design System, node 228:318) — Type Confirm | Destructive.
+ *  - Panel: white, width 480 (custom dialogs on page EduBranch AI – Screens use 520/560/600), padding 24, gap 8,
  *    radius 18, shadow 0 16 40 rgba(32,33,36,.16)
  *  - Title Roboto Regular 20/28 #202124 · Message Regular 14/20 #696A70
  *  - Actions row: padding-top 16, gap 12, right-aligned; Secondary MD "cancel" +
  *    Primary MD (Confirm) or Danger MD (Destructive)
- *  - Scrim (page 08 frames 01.6, 02.3, 05.10, 10.4): #202124 at 45% over the whole viewport
+ *  - Scrim (page EduBranch AI – Screens frames 01.6, 02.3, 05.10, 10.4): #202124 at 45% over the whole viewport
  * Accessibility: role="dialog", aria-modal, labelled by the title, Escape closes,
  * Tab is trapped inside, focus returns to the opener on close.
  */

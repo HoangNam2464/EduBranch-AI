@@ -12,7 +12,7 @@ import { FaqSection } from "@/pages/landing/sections/FaqSection";
 import { CtaSection } from "@/pages/landing/sections/CtaSection";
 
 /**
- * 00.2 · Chung · Trang giới thiệu (Figma page 08, node 496:4734) — the one-page public site.
+ * 00.2 · Chung · Trang giới thiệu (Figma page EduBranch AI – Screens, node 496:4734) — the one-page public site.
  * Column on bg/canvas: EB/Public Nav (sticky, scroll-spy) · Hero · Cách hoạt động · Hai chế độ học
  * · lifecycle band · Theo vai trò · Câu hỏi thường gặp · Kêu gọi · EB/Public Footer (1440x5366).
  */

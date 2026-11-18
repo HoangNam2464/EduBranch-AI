@@ -1,6 +1,6 @@
 /**
  * Case editor action bar + publish dialog.
- * Figma page 08:
+ * Figma page EduBranch AI – Screens:
  *  - 03.4 / 03.5 "Page actions": white card, radius 18, padding 20, 84 high, items centred and
  *    spread (space-between): left action · Learning/Case Lifecycle Stepper (720) · right actions (gap 8).
  *    Bar buttons are 44 high, padding 0 16, radius 8, Eduva/Body 14/20:

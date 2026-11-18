@@ -1,5 +1,5 @@
 /**
- * Admin · Bảng điều khiển — Figma page 08, frame 10.2 (535:8436) / 10.2b (544:11248).
+ * Admin · Bảng điều khiển — Figma page EduBranch AI – Screens, frame 10.2 (535:8436) / 10.2b (544:11248).
  *
  * Real data only: the backend has no admin endpoints yet, so the attention banner,
  * KPI band, charts, role split and recent log are not rendered with values; their

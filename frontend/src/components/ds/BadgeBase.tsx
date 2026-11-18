@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 import { cx } from "@/components/ds/shared";
 
 /**
- * Shared shape of the Figma `Data Display/Badge/*` sets (page 02):
+ * Shared shape of the Figma `Data Display/Badge/*` sets (page EduBranch AI – Design System):
  * auto-layout row, padding 3/8 (3/8/3/4 with an icon), gap 4, radius 999,
  * label Roboto Medium 12/16, so 22px tall (24px with the 1px stroke of Learning Mode).
  * Dot = 6x6 ellipse; icon = 14x14 Lucide with the stroke measured in Figma.

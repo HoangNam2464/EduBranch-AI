@@ -1,7 +1,7 @@
 import { cx } from "@/components/ds/shared";
 
 /**
- * Figma `Data Display/Avatar` (page 02, node 226:225) — initials tile.
+ * Figma `Data Display/Avatar` (page EduBranch AI – Design System, node 226:225) — initials tile.
  *  - SM: 32x32, radius 8, Roboto Medium 12/16 · MD: 40x40, radius 8, Roboto Medium 14/20
  *  - Fill #DFEDF9 (bg/selected), initials #2A4E7F (text/link). Rounded square, not a circle.
  */

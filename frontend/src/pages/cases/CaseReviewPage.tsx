@@ -1,6 +1,6 @@
 /**
  * CaseReviewPage — Giảng viên · Trình chỉnh sửa Case Study
- * Figma page 08 (section 03):
+ * Figma page EduBranch AI – Screens (section 03):
  *  - 03.4 Branching Study editor: left column (Tình huống · Nội dung tình huống chi tiết ·
  *    Các phương án lựa chọn), right column 478 (Cây quyết định · Kiểm tra cây · Đoạn nguồn được trích),
  *    columns 20 apart, then the action bar (03.6) and the publish dialog (03.7).

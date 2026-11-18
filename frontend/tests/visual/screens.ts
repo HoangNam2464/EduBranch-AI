@@ -1,6 +1,6 @@
 /**
  * Visual QA manifest: approved Figma frames (file 6CtSgJPKo4jCIbB7WwCaWw, page
- * "08 · EduBranch – Bản hoàn chỉnh") and the route that implements each one.
+ * "EduBranch AI – Screens") and the route that implements each one.
  *
  * - `figma/<code>.png` is the baseline exported from Figma at scale 1. It is
  *   never replaced by an application screenshot.

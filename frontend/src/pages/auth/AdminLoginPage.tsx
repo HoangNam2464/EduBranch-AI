@@ -18,7 +18,7 @@ import {
 import showcaseImage from "@/pages/auth/assets/showcase-admin.webp";
 
 /**
- * 10.1 · Admin · Đăng nhập quản trị (Figma page 08, node 536:9029).
+ * 10.1 · Admin · Đăng nhập quản trị (Figma page EduBranch AI – Screens, node 536:9029).
  * Same split layout as 00.3. "Sign in form" 562 wide, column gap 20: heading · email · password
  * · session options · primary action (button, then the account switch 32 below) · an empty
  * "Alternative sign in" block (gap 20 + padding-top 44 + 44 tall, content hidden in Figma) = pb 108.
