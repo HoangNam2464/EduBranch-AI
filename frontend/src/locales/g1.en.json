@@ -91,11 +91,17 @@
         "register": "Sign up"
       },
       "hero": {
+        "category": "Experiential Case & Critical Thinking Platform for Higher Education",
         "title": "Every decision opens a new branch",
         "lead": "EduBranch AI turns course materials into cases with many paths. Students choose how to respond, see the consequences of each choice, then get feedback from their lecturer.",
         "register": "Create an account",
         "howItWorks": "See how it works",
         "note": "For lecturers and students of Duy Tan University.",
+        "badges": {
+          "grounded": "RAG Grounding from course syllabi",
+          "pedagogical": "Realistic multi-branch decision trees",
+          "approved": "Lecturer holds 100% approval authority"
+        },
         "diagram": {
           "ariaLabel": "Example of one decision point in a branching case",
           "situationLabel": "Situation",

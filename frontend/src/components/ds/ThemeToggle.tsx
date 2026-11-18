@@ -8,9 +8,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   const [isDark, setIsDark] = useState(() => {
     if (typeof window === "undefined") return false;
     const stored = localStorage.getItem("vite-ui-theme");
-    if (stored === "dark") return true;
-    if (stored === "light") return false;
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return stored === "dark";
   });
 
   useEffect(() => {
@@ -24,17 +22,9 @@ export function ThemeToggle({ className }: { className?: string }) {
 
     const handleThemeChange = () => {
       const stored = localStorage.getItem("vite-ui-theme");
-      if (stored === "dark") {
-        setIsDark(true);
-        root.classList.add("dark");
-      } else if (stored === "light") {
-        setIsDark(false);
-        root.classList.remove("dark");
-      } else {
-        const matches = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        setIsDark(matches);
-        root.classList.toggle("dark", matches);
-      }
+      const dark = stored === "dark";
+      setIsDark(dark);
+      root.classList.toggle("dark", dark);
     };
 
     window.addEventListener("storage", handleThemeChange);

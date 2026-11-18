@@ -91,11 +91,17 @@
         "register": "Đăng ký"
       },
       "hero": {
+        "category": "Nền tảng Tình huống Thực nghiệm & Tư duy Bậc Đại học",
         "title": "Mỗi quyết định mở ra một nhánh mới",
         "lead": "EduBranch AI biến tài liệu môn học thành tình huống có nhiều lối đi. Sinh viên chọn hướng xử lý, thấy hệ quả của từng lựa chọn, rồi nhận phản hồi từ giảng viên.",
         "register": "Đăng ký tài khoản",
         "howItWorks": "Xem cách hoạt động",
         "note": "Dành cho giảng viên và sinh viên Trường Đại học Duy Tân.",
+        "badges": {
+          "grounded": "RAG Grounding từ giáo trình",
+          "pedagogical": "Cây quyết định đa nhánh thực tế",
+          "approved": "Giảng viên phê duyệt toàn quyền"
+        },
         "diagram": {
           "ariaLabel": "Ví dụ một điểm quyết định trong case phân nhánh",
           "situationLabel": "Tình huống",

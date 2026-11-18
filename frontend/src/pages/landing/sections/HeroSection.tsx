@@ -28,11 +28,11 @@ export function HeroSection() {
   const { t } = useTranslation();
 
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 pt-10 pb-20 transition-colors duration-300">
+    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] pt-10 pb-20">
       {/* Soft Ambient Light Glow behind Hero */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/35 via-blue-100/15 to-transparent dark:from-sky-500/10 dark:via-blue-500/5 dark:to-transparent blur-3xl -z-10"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/40 via-blue-100/20 to-transparent blur-3xl -z-10"
       />
 
       <div className="mx-auto flex min-h-[720px] max-w-7xl flex-col items-center justify-between gap-12 px-6 lg:flex-row lg:px-12">
@@ -44,9 +44,9 @@ export function HeroSection() {
           className="flex min-w-0 flex-1 flex-col gap-6"
         >
           {/* Category Chip */}
-          <div className="inline-flex items-center gap-2 self-start rounded-full bg-white/90 dark:bg-slate-800/90 border border-line-soft dark:border-slate-700 px-3.5 py-1.5 text-[13px] font-medium text-primary dark:text-sky-400 shadow-xs backdrop-blur-sm">
-            <GraduationCap className="h-4 w-4 text-primary dark:text-sky-400" />
-            <span>Nền tảng Tình huống Thực nghiệm & Tư duy Bậc Đại học</span>
+          <div className="inline-flex items-center gap-2 self-start rounded-full bg-white/95 border border-line-soft px-3.5 py-1.5 text-[13px] font-medium text-primary shadow-xs backdrop-blur-sm">
+            <GraduationCap className="h-4 w-4 text-primary" />
+            <span>{t("g1.landing.hero.category", "Nền tảng Tình huống Thực nghiệm & Tư duy Bậc Đại học")}</span>
           </div>
 
           {/* Heading */}
@@ -61,14 +61,14 @@ export function HeroSection() {
 
           {/* Subtitle */}
           <p className="max-w-[560px] text-[16px] leading-7 font-normal text-ink-secondary">
-            {t("g1.landing.hero.subtitle")}
+            {t("g1.landing.hero.lead")}
           </p>
 
           {/* Action CTAs */}
           <div className="flex flex-wrap items-center gap-4 pt-2">
             <PublicButton variant="primary" size="md" to={PATHS.AUTH.REGISTER}>
               <span className="flex items-center gap-2">
-                <span>{t("g1.landing.hero.primaryCta")}</span>
+                <span>{t("g1.landing.hero.register")}</span>
                 <ArrowRight size={16} />
               </span>
             </PublicButton>
@@ -76,23 +76,23 @@ export function HeroSection() {
               href={`#${LANDING_ANCHORS.how}`}
               className={publicButtonClassName("secondary", "md")}
             >
-              {t("g1.landing.hero.secondaryCta")}
+              {t("g1.landing.hero.howItWorks")}
             </a>
           </div>
 
           {/* Trust Proof Badges */}
-          <div className="flex flex-wrap items-center gap-6 pt-4 text-[13px] text-ink-secondary border-t border-line-soft dark:border-slate-800">
+          <div className="flex flex-wrap items-center gap-6 pt-4 text-[13px] text-ink-secondary border-t border-line-soft">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{t("g1.landing.hero.badges.noK12")}</span>
+              <ShieldCheck className="h-4 w-4 text-emerald-600" />
+              <span>{t("g1.landing.hero.badges.grounded", "RAG Grounding từ giáo trình")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary dark:text-sky-400" />
-              <span>{t("g1.landing.hero.badges.pedagogical")}</span>
+              <GitBranch className="h-4 w-4 text-primary" />
+              <span>{t("g1.landing.hero.badges.pedagogical", "Cây quyết định đa nhánh thực tế")}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              <span>{t("g1.landing.hero.badges.grounded")}</span>
+              <Sparkles className="h-4 w-4 text-accent" />
+              <span>{t("g1.landing.hero.badges.approved", "Giảng viên phê duyệt toàn quyền")}</span>
             </div>
           </div>
         </motion.div>
@@ -117,7 +117,8 @@ export function HeroSection() {
  * smooth Bezier curves, and interactive phase navigation.
  */
 function StudioMockupWindow() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = i18n.language === "en";
   // Phase 0: Tình huống; Phase 1: Lựa chọn B; Phase 2: Hệ quả; Phase 3: Kết cục lượt 2
   const [phase, setPhase] = useState<0 | 1 | 2 | 3>(1);
   const [isPaused, setIsPaused] = useState(false);
@@ -141,19 +142,26 @@ function StudioMockupWindow() {
     };
   }, [isPaused]);
 
-  const phases = [
-    { id: 0, label: "1. Tình huống" },
-    { id: 1, label: "2. Quyết định B" },
-    { id: 2, label: "3. Hồi cứu" },
-    { id: 3, label: "4. Kết cục Lượt 2" },
-  ];
+  const phases = isEn
+    ? [
+        { id: 0, label: "1. Situation" },
+        { id: 1, label: "2. Decision B" },
+        { id: 2, label: "3. Review" },
+        { id: 3, label: "4. Run 2 Outcome" },
+      ]
+    : [
+        { id: 0, label: "1. Tình huống" },
+        { id: 1, label: "2. Quyết định B" },
+        { id: 2, label: "3. Hồi cứu" },
+        { id: 3, label: "4. Kết cục Lượt 2" },
+      ];
 
   return (
     <figure
       aria-label={k("ariaLabel")}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative h-[620px] w-[620px] overflow-hidden rounded-[24px] bg-[#162947] dark:bg-[#0c182c] border border-white/20 dark:border-white/10 shadow-2xl shadow-primary/30 flex flex-col text-white"
+      className="relative h-[620px] w-[620px] overflow-hidden rounded-[24px] bg-[#162947] border border-white/20 shadow-2xl shadow-primary/30 flex flex-col text-white"
     >
       {/* ─── Studio Window Titlebar ─── */}
       <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 bg-white/5 px-4 backdrop-blur-md">
@@ -299,7 +307,7 @@ function StudioMockupWindow() {
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-semibold text-sky-300 uppercase tracking-wider flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-accent" />
-              {k("situationLabel")} · Điểm quyết định 1
+              {k("situationLabel")} · {isEn ? "Decision point 1" : "Điểm quyết định 1"}
             </span>
             {phase === 0 && (
               <span className="flex size-2 rounded-full bg-accent animate-ping" />
@@ -359,7 +367,9 @@ function StudioMockupWindow() {
               <Compass size={13} className="text-accent" />
               <span>{k("consequenceLabel")}</span>
             </p>
-            <span className="text-[10.5px] font-medium text-sky-400/90">Hồi cứu hành trình</span>
+            <span className="text-[10.5px] font-medium text-sky-400/90">
+              {isEn ? "Journey review" : "Hồi cứu hành trình"}
+            </span>
           </div>
           <p className="mt-1 text-[13px] leading-5 text-white/90">
             {k("consequence")}
@@ -379,15 +389,17 @@ function StudioMockupWindow() {
             <div className="flex items-center gap-1.5">
               <CheckCircle2 size={14} className="text-emerald-400" />
               <p className="text-[11.5px] leading-4 font-semibold text-emerald-300">
-                Lượt làm 2 · Hành động tiếp theo & Kết cục
+                {isEn ? "Attempt 2 · Next action & Outcome" : "Lượt làm 2 · Hành động tiếp theo & Kết cục"}
               </p>
             </div>
             <span className="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
-              Rút kinh nghiệm
+              {isEn ? "Retrospective" : "Rút kinh nghiệm"}
             </span>
           </div>
           <p className="mt-1 text-[12.5px] leading-4.5 text-white/95">
-            Tự động gửi voucher xin lỗi 15% cho khách hàng phải chờ ➔ Giữ chân thành công 85% khách hàng, biến sự cố thành cơ hội củng cố lòng trung thành.
+            {isEn
+              ? "Automatically send a 15% discount voucher to waiting customers ➔ Successfully retain 85% of customers, turning an incident into customer loyalty."
+              : "Tự động gửi voucher xin lỗi 15% cho khách hàng phải chờ ➔ Giữ chân thành công 85% khách hàng, biến sự cố thành cơ hội củng cố lòng trung thành."}
           </p>
         </div>
       </div>
@@ -396,9 +408,19 @@ function StudioMockupWindow() {
       <figcaption className="h-10 shrink-0 border-t border-white/10 bg-black/20 px-5 flex items-center justify-between text-[11.5px] text-white/70">
         <span className="flex items-center gap-1.5">
           <span className="size-2 rounded-full bg-accent animate-pulse" />
-          <span>{isPaused ? "Đang tạm dừng — Bỏ chuột để tiếp tục" : "Tự động trình diễn mô phỏng (Rê chuột để tạm dừng)"}</span>
+          <span>
+            {isPaused
+              ? isEn
+                ? "Simulation paused — Move mouse away to resume"
+                : "Đang tạm dừng — Bỏ chuột để tiếp tục"
+              : isEn
+                ? "Auto-playing simulation (Hover to pause)"
+                : "Tự động trình diễn mô phỏng (Rê chuột để tạm dừng)"}
+          </span>
         </span>
-        <span className="text-white/50 text-[10.5px]">Nhấn các nút số phía trên để tua nhanh pha</span>
+        <span className="text-white/50 text-[10.5px]">
+          {isEn ? "Click step numbers above to jump phases" : "Nhấn các nút số phía trên để tua nhanh pha"}
+        </span>
       </figcaption>
     </figure>
   );
