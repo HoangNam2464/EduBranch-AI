@@ -1,4 +1,4 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
 @import "@fontsource/roboto/400.css";
 @import "@fontsource/roboto/500.css";
 @import "@fontsource/roboto/700.css";
@@ -100,6 +100,34 @@
     font-family: var(--font-sans);
     background-color: var(--color-page);
     color: var(--color-ink);
+  }
+
+  .dark {
+    --color-page: #0B1120;
+    --color-canvas: #0F172A;
+    --color-surface: #1E293B;
+    --color-surface-muted: #162032;
+    --color-surface-hover: #273549;
+    --color-selected: #1E3A5F;
+
+    --color-ink: #F8FAFC;
+    --color-ink-secondary: #94A3B8;
+    --color-ink-muted: #64748B;
+    --color-ink-inverse: #FFFFFF;
+    --color-link: #38BDF8;
+
+    --color-line: #334155;
+    --color-line-soft: #1E293B;
+    --color-line-strong: #475569;
+    --color-focus: #38BDF8;
+
+    --color-primary: #38BDF8;
+    --color-primary-hover: #0284C7;
+    --color-primary-active: #0369A1;
+    --color-primary-subtle: #1E3A5F;
+    --color-primary-subtle-hover: #284E7F;
+
+    color-scheme: dark;
   }
 
   h1, h2, h3, h4, h5, h6 {

@@ -80,10 +80,14 @@ export function HowItWorksSection() {
           <p className="text-[15px] leading-6 font-normal text-ink-secondary">{t("g1.landing.how.subtitle")}</p>
         </div>
 
-        <ol aria-label={t("g1.landing.how.stepsLabel")} className="flex w-full items-stretch">
+        <ol aria-label={t("g1.landing.how.stepsLabel")} className="grid grid-cols-1 sm:grid-cols-2 lg:flex w-full items-stretch gap-4 lg:gap-0">
           {steps.map((step, i) => (
-            <li key={step.title} className="contents">
-              {i > 0 && <StepConnector state={i <= current ? "done" : i - 1 === current ? "active" : "next"} />}
+            <li key={step.title} className="flex min-w-0 flex-1">
+              {i > 0 && (
+                <span className="hidden lg:flex items-center">
+                  <StepConnector state={i <= current ? "done" : i - 1 === current ? "active" : "next"} />
+                </span>
+              )}
               <StepCard
                 index={i}
                 step={step}

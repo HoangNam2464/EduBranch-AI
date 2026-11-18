@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Check, ChevronDown, Eye, EyeOff, Search } from "lucide-react";
 import { LogoMark } from "@/components/brand/LogoMark";
+import { PATHS } from "@/routes/paths";
 import { cx, FOCUS_RING } from "@/components/ds";
 
 /**
@@ -34,10 +35,14 @@ export function AuthSplitLayout({ showcaseImage, children }: { showcaseImage: st
         >
           {/* Top text block: logo + title + subtitle */}
           <div className="flex flex-col items-center pt-3 text-center">
-            <div className="flex items-center gap-2">
+            <Link
+              to={PATHS.HOME}
+              title={t("g1.brand") + " — Về trang chủ"}
+              className={cx("flex items-center gap-2 transition-transform hover:scale-[1.02] focus:outline-none", FOCUS_RING)}
+            >
               <LogoMark size={26} />
               <span className="text-[20px] leading-7 font-normal">{t("g1.brand")}</span>
-            </div>
+            </Link>
             <h2 className="mt-5 max-w-[460px] text-center text-[22px] leading-8 font-medium sm:text-[24px] sm:leading-9">
               {t("g1.showcase.title")}
             </h2>
@@ -67,10 +72,14 @@ export function AuthFormHeading({ title, subtitle }: { title: ReactNode; subtitl
   const { t } = useTranslation();
   return (
     <div className="flex w-full flex-col items-center gap-3 pb-6 text-center sm:gap-4 sm:pb-8">
-      <div className="flex items-center gap-2 pb-2 sm:pb-3">
+      <Link
+        to={PATHS.HOME}
+        title={t("g1.brand") + " — Về trang chủ"}
+        className={cx("flex items-center gap-2 pb-2 sm:pb-3 transition-transform hover:scale-[1.02] focus:outline-none", FOCUS_RING)}
+      >
         <LogoMark size={26} />
         <span className="text-[22px] leading-7 font-normal text-ink">{t("g1.brand")}</span>
-      </div>
+      </Link>
       <h1 className="text-[26px] leading-8 font-medium tracking-normal text-ink sm:text-[28px] sm:leading-9">{title}</h1>
       <p className="w-full text-[15px] leading-6 font-normal text-ink-secondary sm:text-[16px]">{subtitle}</p>
     </div>

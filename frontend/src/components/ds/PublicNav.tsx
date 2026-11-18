@@ -2,6 +2,8 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { PublicButton } from "@/components/ds/PublicButton";
+import { LanguageSwitcher } from "@/components/ds/LanguageSwitcher";
+import { ThemeToggle } from "@/components/ds/ThemeToggle";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
 
 /**
@@ -39,8 +41,20 @@ export interface PublicNavProps {
 }
 
 export function PublicBrand({ brandName, homeTo = "/" }: { brandName: ReactNode; homeTo?: string }) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (window.location.pathname === homeTo) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
-    <Link to={homeTo} className={cx("flex shrink-0 items-center gap-2.5 rounded-eb-sm", FOCUS_RING)}>
+    <Link
+      to={homeTo}
+      onClick={handleClick}
+      title="EduBranch AI — Về trang chủ"
+      className={cx("flex shrink-0 items-center gap-2.5 rounded-eb-sm transition-opacity hover:opacity-90", FOCUS_RING)}
+    >
       <LogoMark size={32} />
       <span className="text-[16px] leading-6 font-medium text-ink">{brandName}</span>
     </Link>
@@ -84,20 +98,24 @@ export function PublicNav({ brandName, homeTo, links, secondaryAction, primaryAc
           ))}
         </nav>
         <div aria-hidden="true" className="flex-1" />
-        {(secondaryAction || primaryAction) && (
-          <div className="flex items-center gap-3">
-            {secondaryAction && (
-              <PublicButton variant="ghost" size="md" to={secondaryAction.to} onClick={secondaryAction.onClick}>
-                {secondaryAction.label}
-              </PublicButton>
-            )}
-            {primaryAction && (
-              <PublicButton variant="primary" size="md" to={primaryAction.to} onClick={primaryAction.onClick}>
-                {primaryAction.label}
-              </PublicButton>
-            )}
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <ThemeToggle />
+          {(secondaryAction || primaryAction) && (
+            <div className="flex items-center gap-2.5 border-l border-line pl-3">
+              {secondaryAction && (
+                <PublicButton variant="ghost" size="md" to={secondaryAction.to} onClick={secondaryAction.onClick}>
+                  {secondaryAction.label}
+                </PublicButton>
+              )}
+              {primaryAction && (
+                <PublicButton variant="primary" size="md" to={primaryAction.to} onClick={primaryAction.onClick}>
+                  {primaryAction.label}
+                </PublicButton>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

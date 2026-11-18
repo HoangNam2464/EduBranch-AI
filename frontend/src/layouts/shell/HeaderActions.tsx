@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Bell, Moon, Search, SlidersHorizontal } from "lucide-react";
+import { Bell, Search, SlidersHorizontal } from "lucide-react";
+import { ThemeToggle } from "@/components/ds";
 import { SUPPORTED_LANGUAGES, type AppLanguage } from "@/lib/i18n";
 
 /*
@@ -122,9 +123,7 @@ export function HeaderActions({
         })}
       </div>
 
-      <button type="button" className={ICON_BUTTON} aria-label={t("shell.themeSoon")} title={t("shell.themeSoon")}>
-        <Moon size={18} strokeWidth={2.67} aria-hidden="true" />
-      </button>
+      <ThemeToggle className="size-10 rounded-[10px] bg-primary-subtle border-none" />
 
       <button
         type="button"

@@ -80,6 +80,13 @@ export function Sidebar({
 }: SidebarProps) {
   const { t } = useTranslation();
 
+  const handleBrandClick = (e: React.MouseEvent) => {
+    if (window.location.pathname === homePath) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   return (
     <aside
       aria-label={t("shell.sidebar")}
@@ -90,13 +97,24 @@ export function Sidebar({
       {/* Brand area */}
       {collapsed ? (
         <div className="flex h-20 shrink-0 flex-col items-center pt-7 pb-6">
-          <Link to={homePath} aria-label={t("common.appName")} className={`rounded-eb-md ${FOCUS}`}>
+          <Link
+            to={homePath}
+            onClick={handleBrandClick}
+            aria-label={t("common.appName")}
+            title={t("common.appName") + " — Về trang chủ"}
+            className={`rounded-eb-md transition-opacity hover:opacity-85 ${FOCUS}`}
+          >
             <LogoMark />
           </Link>
         </div>
       ) : (
         <div className="flex h-[102px] shrink-0 flex-col gap-1.5 pt-7 pr-5 pb-6 pl-8">
-          <Link to={homePath} className={`flex h-7 items-center gap-2.5 rounded-eb-md ${FOCUS}`}>
+          <Link
+            to={homePath}
+            onClick={handleBrandClick}
+            title={t("common.appName") + " — Về trang chủ"}
+            className={`flex h-7 items-center gap-2.5 rounded-eb-md transition-opacity hover:opacity-85 ${FOCUS}`}
+          >
             <LogoMark />
             <span className="text-xl leading-7 font-normal text-ink">{t("common.appName")}</span>
           </Link>
