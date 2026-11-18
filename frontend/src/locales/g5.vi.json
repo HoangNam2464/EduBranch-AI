@@ -268,9 +268,24 @@
       "month": "Tháng {{month}}, {{year}}",
       "previousMonth": "Tháng trước",
       "nextMonth": "Tháng sau",
-      "weekdays": ["CN", "T2", "T3", "T4", "T5", "T6", "T7"],
+      "weekdays": [
+        "CN",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7"
+      ],
       "newCases": "Case mới mở",
-      "newCasesEmpty": "Chưa có case mới."
+      "newCasesEmpty": "Chưa có case mới.",
+      "deskTitle": "Bàn học",
+      "deskSubtitle": "Theo dõi tiến độ học tập và các tình huống rẽ nhánh đang diễn ra",
+      "activeTasks": "Nhiệm vụ đang thực hiện",
+      "noActiveTasks": "Không có nhiệm vụ nào đang dang dở. Hãy bắt đầu một case mới!",
+      "enrolledCoursesTitle": "Khóa học của tôi",
+      "errorTitle": "Không thể tải dữ liệu bàn học",
+      "retry": "Thử lại"
     },
     "courses": {
       "listTitle": "Danh sách lớp học phần",
@@ -282,7 +297,22 @@
       "codeLabel": "Mã lớp *",
       "codePlaceholder": "Ví dụ: SEC7A2",
       "joinSubmit": "Tham gia lớp",
-      "joinUnavailable": "Chưa thể tham gia: máy chủ chưa có API ghi danh bằng mã lớp."
+      "joinUnavailable": "Chưa thể tham gia: máy chủ chưa có API ghi danh bằng mã lớp.",
+      "joinSuccess": "Tham gia lớp học thành công!",
+      "joinErrorInvalid": "Mã mời không đúng hoặc không tồn tại. Vui lòng kiểm tra lại.",
+      "joinErrorExpired": "Mã mời đã hết hạn. Vui lòng liên hệ giảng viên để nhận mã mới.",
+      "joinErrorAlreadyJoined": "Bạn đã tham gia lớp học phần này từ trước.",
+      "joinErrorGeneric": "Không thể tham gia lớp học. Vui lòng thử lại sau.",
+      "joinLoading": "Đang xác thực mã mời...",
+      "publishedCases": "Case study đã mở",
+      "activeCases": "Nhiệm vụ đang thực hiện",
+      "enrolledSummary": "{{count}} khóa học đã tham gia",
+      "viewCases": "Xem case study",
+      "noPublishedCases": "Chưa có tình huống nào được xuất bản trong môn này.",
+      "errorTitle": "Không thể tải danh sách khóa học",
+      "retry": "Thử lại",
+      "courseCode": "Mã môn: {{code}}",
+      "lecturer": "Giảng viên: {{name}}"
     }
   }
 }

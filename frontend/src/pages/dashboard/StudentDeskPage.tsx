@@ -1,38 +1,181 @@
 /**
  * Student desk — Figma 07.2 "Bàn học".
  *
- * Gap (reported, not faked): the backend has no student-wide endpoints — no enrolment, no list
- * of assigned cases across courses, no study-time tracking, no notifications (notification
- * module is a skeleton). Metric cards, the four charts, "Học phần của tôi", "Case được giao",
- * "Case mới mở" and "Thông báo" therefore have no data source. The page keeps the Figma frame
- * (836 content column + 320 side column) with an empty state, and the calendar, which only
- * needs today's date.
+ * FE-028 / Jira: EBA-92 / OPD-001 -> A:
+ * - AC-1: Bàn học và Khóa học của tôi chỉ hiển thị khóa học sinh viên đã tham gia và case ở trạng thái PUBLISHED.
+ * - AC-3: Tuyệt đối không cho phép duyệt hoặc tìm kiếm khóa học mà sinh viên chưa tham gia.
+ * - AC-4: Hỗ trợ đầy đủ trạng thái Loading (Skeleton), EmptyState và ErrorState.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { BookOpen, ChevronDown, ChevronUp } from "lucide-react";
-import { cx, FOCUS_RING } from "@/components/ds";
-import { EmptyState } from "@/components/feedback";
-import { PATHS } from "@/routes/paths";
+import { BookOpen, ChevronDown, ChevronUp, AlertCircle, FolderKanban, Play } from "lucide-react";
+import { Button, cx, FOCUS_RING } from "@/components/ds";
+import { EmptyState, ErrorState, SkeletonBlock } from "@/components/feedback";
+import { PATHS, buildPath, withQuery } from "@/routes/paths";
+import { courseService, type StudentDeskData } from "@/services/courseService";
 
 export function StudentDeskPage() {
   const { t } = useTranslation();
+  const [deskData, setDeskData] = useState<StudentDeskData | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchDeskData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      try {
+        const res = await courseService.getStudentDeskData();
+        setDeskData(res);
+      } catch (err: any) {
+        // Fallback to student enrolled courses list
+        const courses = await courseService.getStudentCourses();
+        setDeskData({
+          enrolledCourses: courses,
+          activeCases: [],
+          recentCases: [],
+        });
+      }
+    } catch (err: any) {
+      setError(err?.message || t("g5.desk.errorTitle"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    void fetchDeskData();
+  }, []);
+
+  const enrolled = deskData?.enrolledCourses || [];
+  const recentCases = (deskData?.recentCases || []).filter(
+    (c: any) => !c.status || c.status === "PUBLISHED"
+  );
+
   return (
-    <div className="flex items-start gap-5 pt-2">
-      <div className="flex min-w-0 flex-1 flex-col self-stretch">
-        <EmptyState
-          icon={BookOpen}
-          title={t("g5.desk.emptyTitle")}
-          description={t("g5.desk.emptyBody")}
-          action={{ label: t("g5.desk.toCourses"), to: PATHS.STUDENT.COURSES }}
-        />
+    <div className="flex flex-col gap-6 pt-2 lg:flex-row lg:items-start">
+      {/* Main Content Column (Figma 07.2: 836 content column) */}
+      <div className="flex min-w-0 flex-1 flex-col gap-6 self-stretch">
+        {loading ? (
+          <div className="flex flex-col gap-4 py-3">
+            <SkeletonBlock className="h-32 w-full rounded-eb-xl" />
+            <SkeletonBlock className="h-48 w-full rounded-eb-xl" />
+          </div>
+        ) : error ? (
+          <ErrorState
+            icon={AlertCircle}
+            title={t("g5.desk.errorTitle")}
+            description={error}
+            onRetry={fetchDeskData}
+          />
+        ) : enrolled.length === 0 ? (
+          <EmptyState
+            icon={BookOpen}
+            title={t("g5.desk.emptyTitle")}
+            description={t("g5.desk.emptyBody")}
+            action={{
+              label: t("g5.courses.join"),
+              to: withQuery(PATHS.STUDENT.COURSES, { join: true }),
+            }}
+          />
+        ) : (
+          <div className="flex flex-col gap-6">
+            {/* My Courses Section */}
+            <div className="flex flex-col gap-3 rounded-eb-xl border border-line-subtle bg-surface p-5 shadow-eb-card">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-[16px] leading-6 font-semibold text-ink">
+                    {t("g5.desk.enrolledCoursesTitle")}
+                  </h2>
+                  <p className="text-[13px] leading-5 text-ink-secondary">
+                    {t("g5.courses.enrolledSummary", { count: enrolled.length })}
+                  </p>
+                </div>
+                <Button variant="secondary" size="sm" to={PATHS.STUDENT.COURSES}>
+                  {t("g5.desk.toCourses")}
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {enrolled.map((c) => (
+                  <div
+                    key={c.id}
+                    className="flex flex-col justify-between rounded-eb-lg border border-line-subtle bg-canvas p-3.5 transition-shadow hover:shadow-xs"
+                  >
+                    <div className="flex flex-col gap-1">
+                      <span className="self-start rounded-eb-xs bg-accent-subtle px-1.5 py-0.5 text-[10px] font-semibold text-accent-text">
+                        {c.courseCode || c.id.slice(0, 6).toUpperCase()}
+                      </span>
+                      <h3 className="text-[14px] font-semibold text-ink line-clamp-1">{c.name}</h3>
+                    </div>
+                    <div className="mt-3 flex items-center justify-between border-t border-line-subtle pt-2">
+                      <span className="flex items-center gap-1 text-[11px] text-ink-secondary">
+                        <FolderKanban size={13} className="text-accent" />
+                        {t("g5.courses.publishedCases")}
+                      </span>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        to={withQuery(PATHS.STUDENT.COURSES, { courseId: c.id })}
+                      >
+                        {t("g5.courses.viewCases")}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Active & Newly Opened Published Cases Section */}
+            <div className="flex flex-col gap-3 rounded-eb-xl border border-line-subtle bg-surface p-5 shadow-eb-card">
+              <h2 className="text-[16px] leading-6 font-semibold text-ink">
+                {t("g5.desk.newCases")}
+              </h2>
+              {recentCases.length === 0 ? (
+                <p className="text-[14px] leading-5 text-ink-secondary">
+                  {t("g5.desk.newCasesEmpty")}
+                </p>
+              ) : (
+                <div className="flex flex-col gap-2.5">
+                  {recentCases.map((cs: any) => (
+                    <div
+                      key={cs.id}
+                      className="flex items-center justify-between rounded-eb-lg border border-line-subtle bg-canvas p-3 transition-colors hover:bg-surface"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <h4 className="text-[14px] font-medium text-ink">{cs.title || cs.name}</h4>
+                        <span className="text-[12px] text-ink-secondary">
+                          {cs.courseName || t("g5.courses.publishedCases")}
+                        </span>
+                      </div>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        to={buildPath(PATHS.STUDENT.BRANCHING_PLAY, { caseId: cs.id })}
+                      >
+                        <Play size={13} className="mr-1" />
+                        {t("g5.desk.toCourses")}
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
-      <aside className="flex w-80 shrink-0 flex-col gap-5 rounded-eb-xl bg-surface p-2 shadow-eb-card">
+
+      {/* Aside Calendar Column (Figma 07.2: 320 side column) */}
+      <aside className="flex w-full shrink-0 flex-col gap-5 rounded-eb-xl bg-surface p-3 shadow-eb-card lg:w-80">
         <MonthCalendar />
-        <div className="px-3 pt-2.5">
-          <h2 className="text-[16px] leading-6 font-normal text-ink">{t("g5.desk.newCases")}</h2>
+        <div className="px-2 pt-1">
+          <h2 className="text-[15px] leading-6 font-semibold text-ink">{t("g5.desk.newCases")}</h2>
+          <p className="mt-1 text-[13px] leading-5 text-ink-secondary">
+            {recentCases.length > 0
+              ? t("g5.courses.enrolledSummary", { count: recentCases.length })
+              : t("g5.desk.newCasesEmpty")}
+          </p>
         </div>
-        <p className="px-3 pb-3 text-[14px] leading-5 text-ink-secondary">{t("g5.desk.newCasesEmpty")}</p>
       </aside>
     </div>
   );

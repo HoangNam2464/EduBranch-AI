@@ -268,9 +268,24 @@
       "month": "{{month}}/{{year}}",
       "previousMonth": "Previous month",
       "nextMonth": "Next month",
-      "weekdays": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "weekdays": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
       "newCases": "Newly opened cases",
-      "newCasesEmpty": "No new cases yet."
+      "newCasesEmpty": "No new cases yet.",
+      "deskTitle": "Student Desk",
+      "deskSubtitle": "Track learning progress and ongoing branching study scenarios",
+      "activeTasks": "Active tasks",
+      "noActiveTasks": "No pending tasks. Start a new case study!",
+      "enrolledCoursesTitle": "My courses",
+      "errorTitle": "Could not load student desk data",
+      "retry": "Retry"
     },
     "courses": {
       "listTitle": "Class list",
@@ -282,7 +297,22 @@
       "codeLabel": "Class code *",
       "codePlaceholder": "e.g. SEC7A2",
       "joinSubmit": "Join class",
-      "joinUnavailable": "Cannot join yet: the server has no API to enrol by class code."
+      "joinUnavailable": "Cannot join yet: the server has no API to enrol by class code.",
+      "joinSuccess": "Successfully joined course!",
+      "joinErrorInvalid": "Invalid or non-existent invite code. Please check again.",
+      "joinErrorExpired": "Invite code has expired. Please contact your lecturer for a new code.",
+      "joinErrorAlreadyJoined": "You are already enrolled in this course.",
+      "joinErrorGeneric": "Could not join course. Please try again later.",
+      "joinLoading": "Validating invite code...",
+      "publishedCases": "Published cases",
+      "activeCases": "Active tasks",
+      "enrolledSummary": "{{count}} enrolled courses",
+      "viewCases": "View case study",
+      "noPublishedCases": "No published cases in this course yet.",
+      "errorTitle": "Could not load courses",
+      "retry": "Retry",
+      "courseCode": "Course code: {{code}}",
+      "lecturer": "Lecturer: {{name}}"
     }
   }
 }

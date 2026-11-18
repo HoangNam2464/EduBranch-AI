@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "npx tsx --test src/utils/navigation.spec.ts src/stores/authStore.spec.ts src/services/apiClient.spec.ts src/services/mappers/course.spec.ts src/services/mappers/case.spec.ts src/pages/cases/caseTree.spec.ts src/services/mappers/material.spec.ts src/services/mappers/adminHealth.spec.ts src/routes/guards.spec.ts src/routes/paths.spec.ts src/layouts/shell/shellRoutes.spec.ts src/components/feedback/states.spec.ts src/pages/courses/CoursesPage.spec.ts src/qa/qa-matrix.spec.ts src/qa/material-upload-qa.spec.ts src/services/mappers/branchingAttempt.spec.ts src/services/mappers/user.spec.ts",
+    "test": "npx tsx --test src/utils/navigation.spec.ts src/stores/authStore.spec.ts src/services/apiClient.spec.ts src/services/mappers/course.spec.ts src/services/mappers/case.spec.ts src/pages/cases/caseTree.spec.ts src/services/mappers/material.spec.ts src/services/mappers/adminHealth.spec.ts src/routes/guards.spec.ts src/routes/paths.spec.ts src/layouts/shell/shellRoutes.spec.ts src/components/feedback/states.spec.ts src/pages/courses/CoursesPage.spec.ts src/qa/qa-matrix.spec.ts src/qa/material-upload-qa.spec.ts src/services/mappers/branchingAttempt.spec.ts src/services/mappers/user.spec.ts src/pages/courses/StudentCoursesPage.spec.ts",
     "test:visual": "playwright test -c tests/visual/playwright.config.ts",
     "test:e2e": "playwright test -c tests/e2e/playwright.config.ts"
   },
