@@ -7,13 +7,12 @@
 
 import axios from "axios";
 import type { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from "axios";
-import { useAuthStore } from "../stores/authStore";
-
-const BASE_URL: string = import.meta.env?.VITE_API_BASE_URL || "http://localhost:8080/api/v1";
+import { useAuthStore } from "@/stores/authStore";
+import { API_CONFIG } from "@/config/api";
 
 const apiClient: AxiosInstance = axios.create({
-  baseURL: BASE_URL,
-  timeout: 30000,
+  baseURL: API_CONFIG.baseURL,
+  timeout: API_CONFIG.timeout,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -30,11 +29,13 @@ apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
   async (error) => {
     const originalRequest = error.config;
-    // Handle 401 Unauthorized according to current auth contract
+    // 401 while signed in: the backend has no refresh endpoint, so the session is over.
+    // Flag it instead of signing out silently — the app shell shows the
+    // "Phiên đăng nhập đã hết hạn" dialog (Figma 01.6) over the current screen,
+    // and "Đăng nhập lại" clears the session and opens the login page.
     if (error.response?.status === 401 && !originalRequest?._retry) {
-      originalRequest._retry = true;
-      // Do not attempt refresh if backend does not provide a refresh endpoint
-      useAuthStore.getState().logout();
+      if (originalRequest) originalRequest._retry = true;
+      useAuthStore.getState().markSessionExpired();
     }
     return Promise.reject(error);
   }

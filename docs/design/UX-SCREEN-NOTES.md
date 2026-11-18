@@ -52,9 +52,9 @@
 - Dải vòng đời: Bản nháp → Đã rà soát → Đã phê duyệt → (ổ khóa "Mở cho lớp") → Đã xuất bản. Thẻ cuối nền trắng, nhãn "Sinh viên thấy từ đây".
 - FAQ: tìm kiếm, chủ đề phổ biến, 4 nhóm câu hỏi dạng lưới 2 cột rộng bằng nhau (hai thẻ cùng hàng cao bằng nhau), khối liên hệ email hỗ trợ rộng bằng lưới.
 
-**00.3 Đăng nhập** — bố cục 50/50: bên trái ảnh minh họa sản phẩm, bên phải form email + mật khẩu. Có "Tiếp tục với Google" và "Tiếp tục với Microsoft" (component `EB/Social Sign-in`, MVP theo PSD-09). "Quên mật khẩu?" là Phase 2 nên không hiện. Liên kết "Đăng ký ngay" được nhấn mạnh.
+**00.3 Đăng nhập** — bố cục 50/50 bọc trong `max-w-7xl mx-auto`: bên trái thẻ minh họa sản phẩm (Product preview theo Figma page 08), bên phải form email + mật khẩu giới hạn `max-w-[440px]`. Có "Tiếp tục với Google" và "Tiếp tục với Microsoft" (component `EB/Social Sign-in`, MVP theo PSD-09). Có liên kết "Quên mật khẩu?" dẫn đến `/forgot-password`. Đã dọn sạch các nút demo giả lập. Liên kết "Đăng ký ngay" được nhấn mạnh.
 
-**00.4 Đăng ký · Sinh viên / 00.5 Đăng ký · Giảng viên** — một form, chọn vai trò bằng hai nút "Sinh viên" / "Giảng viên" (nhãn "Vai trò"). Sinh viên có ô Mã số sinh viên; giảng viên có ô "Khoa / Đơn vị công tác". Có đăng ký bằng Google/Microsoft. 00.5 có khối lưu ý kích hoạt tài khoản giảng viên — còn chờ **OPD-008**.
+**00.4 Đăng ký · Sinh viên / 00.5 Đăng ký · Giảng viên** — một form bọc trong `max-w-7xl mx-auto`, form giới hạn `max-w-[480px]`, chọn vai trò bằng hai nút "Sinh viên" / "Giảng viên" (nhãn "Vai trò"). Sinh viên có ô Mã số sinh viên; giảng viên có ô dropdown tùy chọn "Khoa / Đơn vị công tác" với khoảng đệm chuẩn `px-4` (16px), tích hợp thanh tìm kiếm thông minh và 29 khoa chuẩn chia theo 7 khối ngành đào tạo đại học kèm tùy chọn "Đơn vị / Khoa khác...". Có đăng ký bằng Google/Microsoft. 00.5 có khối lưu ý kích hoạt tài khoản giảng viên — còn chờ **OPD-008**.
 
 ### 01 · Trạng thái dùng chung
 Xem mục 1.3. Các màn 01.1–01.3 và 01.8 dựng trên màn Quản lý khóa học; 01.6 là hộp thoại đè lên màn đó.

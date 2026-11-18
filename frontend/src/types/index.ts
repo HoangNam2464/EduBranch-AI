@@ -69,7 +69,10 @@ export interface TeachingMaterial {
   courseId: string;
   processingStatus: ProcessingStatus;
   chunkCount?: number;
+  /** Reason stored by the backend when AI ingestion failed (`processing_error`). */
+  processingError?: string;
   uploadedAt: string;
+  updatedAt?: string;
 }
 
 // ============================================================================
@@ -82,28 +85,25 @@ export type LearningMode = "BRANCHING_STUDY" | "REVIEW_STUDY";
 // ============================================================================
 export type CaseStatus = "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED";
 
+/**
+ * A case as the lecturer/student case endpoints return it (backend/src/modules/case).
+ * Mapped from the snake_case SQL row in services/mappers/case.ts.
+ */
 export interface Case {
   id: string;
   title: string;
   description?: string;
-  courseId?: string;
-  course_id?: string;
-  courseName?: string;
-  course_name?: string;
-  learningMode?: LearningMode;
-  learning_mode?: LearningMode;
+  courseId: string;
+  /** Lecturer who created the case (absent in the student projection). */
+  createdBy?: string;
+  learningMode: LearningMode;
   contextText?: string;    // REVIEW_STUDY only
-  context_text?: string;
   problemText?: string;    // REVIEW_STUDY only
-  problem_text?: string;
   status: CaseStatus;
   version?: number;
   rootNodeId?: string;     // BRANCHING_STUDY only
-  root_node_id?: string;
-  createdAt?: string;
-  created_at?: string;
-  updatedAt?: string;
-  updated_at?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface CaseNode {
@@ -120,7 +120,13 @@ export interface CaseOption {
   nodeId: string;
   text: string;
   consequence: string;
+  /** Null/absent = the option ends the journey. */
   nextNodeId?: string;
+}
+
+/** Lecturer view of a case: metadata plus the full decision tree (GET /cases/:id). */
+export interface CaseDetail extends Case {
+  nodes: CaseNode[];
 }
 
 // ============================================================================
@@ -153,6 +159,72 @@ export interface StudentReasoning {
   selectedOptionId: string;  // always set in Branching Study
   reasoningText?: string;    // captured retrospectively in REVIEW phase
   submittedAt: string;
+}
+
+/** One attempt in a student's list for a case (GET /cases/:caseId/attempts). */
+export interface AttemptSummary {
+  id: string;
+  attemptNumber: number;
+  completed: boolean;
+  reflectionStatus: ReflectionStatus;
+  startedAt: string;
+  completedAt?: string;
+}
+
+/** An option as a student sees it: text only (no consequence, no next node). */
+export interface AttemptOption {
+  id: string;
+  text: string;
+}
+
+/** The decision point a student is at during Phase 1 (Experience). */
+export interface AttemptCurrentNode {
+  id: string;
+  situation: string;
+  isTerminal: boolean;
+  nodeIndex?: number;
+  options: AttemptOption[];
+}
+
+/** A decision taken in an attempt. Consequence / alternatives are only present once the attempt is completed. */
+export interface AttemptStep {
+  nodeId: string;
+  situation: string;
+  selectedOptionId: string;
+  selectedOptionText: string;
+  consequence?: string;
+  reasoningId: string;
+  reasoningText?: string;
+  submittedAt: string;
+  otherOptions: AttemptOption[];
+}
+
+/** Terminal node reached by a completed attempt. */
+export interface AttemptOutcome {
+  id: string;
+  situation: string;
+  nodeIndex?: number;
+}
+
+/** Full attempt as GET /branching-attempts/:id returns it to its owner. */
+export interface AttemptDetail {
+  id: string;
+  caseId: string;
+  caseTitle: string;
+  caseDescription?: string;
+  attemptNumber: number;
+  currentNodeId?: string;
+  outcomeNodeId?: string;
+  outcome?: AttemptOutcome;
+  completed: boolean;
+  reflectionText?: string;
+  reflectionStatus: ReflectionStatus;
+  reflectionSubmittedAt?: string;
+  startedAt: string;
+  completedAt?: string;
+  /** Present only while the attempt is in progress. */
+  currentNode?: AttemptCurrentNode;
+  steps: AttemptStep[];
 }
 
 // ============================================================================

@@ -1,0 +1,73 @@
+{
+  "states": {
+    "loading": {
+      "label": "Loading…",
+      "courseList": "Loading your courses…"
+    },
+    "empty": {
+      "courses": {
+        "title": "No courses yet",
+        "description": "Create a course to upload course materials and build case studies.",
+        "action": "Create course"
+      }
+    },
+    "error": {
+      "title": "Couldn't load the data",
+      "description": "Check your network connection and try again.",
+      "retry": "Try again",
+      "codeLine": "Error code {{code}} · {{time}} — if this keeps happening, send this code to ",
+      "codeLineNoTime": "Error code {{code}} — if this keeps happening, send this code to ",
+      "courses": {
+        "title": "Couldn't load your courses",
+        "description": "Check your network connection and try again. Your existing courses are not affected."
+      }
+    },
+    "noResults": {
+      "title": "No matching results",
+      "description": "Nothing matches “{{keyword}}”. Try another keyword or clear the filters.",
+      "clear": "Clear search",
+      "courses": {
+        "title": "No matching courses",
+        "description": "No courses match “{{keyword}}”. Try another keyword or clear the filters."
+      }
+    },
+    "forbidden": {
+      "code": "403",
+      "title": "You don't have access to this page",
+      "description": "The account you're signed in with can't view this page.",
+      "descriptionWithRole": "The {{page}} page is only for {{allowedRole}}. You're signed in as {{currentRole}}.",
+      "switchAccount": "Sign in with another account",
+      "home": "Go to my home page",
+      "helpBefore": "If you think this is a mistake, contact your lecturer or ",
+      "helpAfter": ".",
+      "roleFor": {
+        "lecturer": "lecturers",
+        "student": "students",
+        "admin": "administrators"
+      }
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Page not found",
+      "description": "The link may be wrong or the page may have been removed. Check the address or go back to the home page.",
+      "path": "Path: {{path}}",
+      "back": "Go back",
+      "home": "Go to home page",
+      "helpBefore": "Need help? Contact "
+    },
+    "serverError": {
+      "code": "500",
+      "title": "Something went wrong on our side",
+      "description": "Your request wasn't processed. Your saved data is not affected. Please try again in a few minutes.",
+      "incident": "Incident ID: {{id}} · {{time}}",
+      "incidentNoTime": "Incident ID: {{id}}",
+      "home": "Go to home page",
+      "reload": "Reload page"
+    },
+    "sessionExpired": {
+      "title": "Your session has expired",
+      "description": "For security reasons, please sign in again to continue. Unsaved changes on this page may be lost.",
+      "signIn": "Sign in again"
+    }
+  }
+}

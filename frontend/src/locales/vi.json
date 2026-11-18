@@ -1,0 +1,126 @@
+{
+  "common": {
+    "appName": "EduBranch AI",
+    "logout": "Đăng xuất",
+    "reload": "Tải lại trang",
+    "backHome": "Về trang chủ"
+  },
+  "nav": {
+    "lecturer": {
+      "courses": "Khóa học",
+      "cases": "Case Study",
+      "feedback": "Phản hồi sinh viên",
+      "statistics": "Thống kê học tập"
+    },
+    "student": {
+      "desk": "Bàn học",
+      "courses": "Khóa học của tôi",
+      "joinClass": "Tham gia lớp học"
+    },
+    "admin": {
+      "dashboard": "Bảng điều khiển",
+      "users": "Người dùng",
+      "courses": "Khóa học",
+      "cases": "Case Study",
+      "rubric": "Nghiên cứu & Rubric",
+      "logs": "Nhật ký hệ thống",
+      "aiService": "Dịch vụ AI",
+      "settings": "Cài đặt hệ thống"
+    },
+    "studentCase": {
+      "case": "Tình huống",
+      "history": "Lịch sử lần làm",
+      "journey": "Journey Review",
+      "journeyUnavailable": "Mở Journey Review từ một lần làm đã hoàn thành"
+    },
+    "studentReview": {
+      "work": "Bài làm",
+      "feedback": "Phản hồi",
+      "feedbackUnavailable": "Phản hồi xuất hiện sau khi bạn nộp bài và giảng viên nhận xét"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Không tìm thấy trang yêu cầu",
+      "description": "Đường dẫn bạn đang truy cập không tồn tại hoặc đã bị di chuyển. Vui lòng kiểm tra lại liên kết hoặc quay về giao diện chính của hệ thống."
+    },
+    "route": {
+      "titleNotFound": "Không tìm thấy nội dung",
+      "titleGeneric": "Đã xảy ra lỗi hệ thống",
+      "defaultMessage": "Đã xảy ra sự cố không mong muốn trong quá trình xử lý yêu cầu."
+    },
+    "portal": {
+      "login": "Quay lại trang Đăng nhập",
+      "lecturer": "Quay về Portal Giảng viên",
+      "student": "Quay về Portal Sinh viên",
+      "admin": "Quay về Portal Quản trị"
+    }
+  },
+  "shell": {
+    "sidebar": "Thanh điều hướng",
+    "mainNav": "Điều hướng chính",
+    "skipToContent": "Bỏ qua tới nội dung chính",
+    "collapse": "Thu gọn",
+    "expand": "Mở rộng thanh điều hướng",
+    "workspace": {
+      "lecturer": "Không gian giảng viên",
+      "student": "Không gian sinh viên",
+      "admin": "Quản trị hệ thống"
+    },
+    "roles": {
+      "lecturer": "Giảng viên",
+      "student": "Sinh viên",
+      "admin": "Quản trị hệ thống"
+    },
+    "search": {
+      "lecturer": "Tìm khóa học, case, sinh viên…",
+      "student": "Tìm case, khóa học…",
+      "admin": "Tìm người dùng, khóa học, case…"
+    },
+    "searchLabel": "Tìm kiếm",
+    "language": "Ngôn ngữ giao diện",
+    "themeSoon": "Giao diện tối (sắp có)",
+    "notifications": "Thông báo",
+    "notificationsUnread": "Thông báo, {{count}} chưa đọc",
+    "settings": "Cài đặt",
+    "account": "Tài khoản của tôi",
+    "titles": {
+      "lecturerDashboard": "Tổng quan · Lịch hạn nộp",
+      "courses": "Quản lý khóa học",
+      "courseDetail": "Chi tiết khóa học",
+      "materialSources": "Đoạn trích của tài liệu",
+      "cases": "Quản lý Case Study",
+      "aiStudio": "AI Studio",
+      "caseEditor": "Trình chỉnh sửa Case Study",
+      "rubric": "Rubric nghiên cứu chất lượng tình huống",
+      "feedbackQueue": "Hàng đợi Review và phản hồi lập luận",
+      "feedbackDetail": "Chi tiết phản hồi lập luận sinh viên",
+      "statistics": "Thống kê luồng học tập",
+      "profile": "Hồ sơ tài khoản",
+      "desk": "Bàn học",
+      "myCourses": "Khóa học của tôi",
+      "joinClass": "Tham gia lớp học",
+      "attemptHistory": "Lịch sử lần làm bài",
+      "case": "Tình huống",
+      "journeyReview": "Journey Review — Xem lại hành trình quyết định",
+      "reflection": "Suy ngẫm & đúc kết bài học",
+      "reviewStudy": "Review Study",
+      "adminDashboard": "Bảng điều khiển",
+      "adminUsers": "Quản lý người dùng",
+      "adminCourses": "Khóa học toàn hệ thống",
+      "adminCases": "Case Study toàn hệ thống",
+      "adminRubric": "Nghiên cứu & Rubric",
+      "adminLogs": "Nhật ký hệ thống",
+      "adminAiService": "Dịch vụ AI",
+      "adminSettings": "Cài đặt hệ thống"
+    },
+    "footer": {
+      "copyright": "© 2026 EduBranch AI",
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản sử dụng",
+      "supportEmail": "support@edubranch.ai",
+      "project": "Đồ án C1SE.65 · Trường Đại học Duy Tân"
+    }
+  }
+}

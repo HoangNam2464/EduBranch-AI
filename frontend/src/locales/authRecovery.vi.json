@@ -1,0 +1,22 @@
+{
+  "authRecovery": {
+    "backToLogin": "Quay lại đăng nhập",
+    "unavailable": "Chức năng khôi phục mật khẩu chưa khả dụng. Vui lòng liên hệ quản trị viên.",
+    "forgot": {
+      "title": "Đặt lại mật khẩu",
+      "subtitle": "Nhập email đăng ký để nhận liên kết khôi phục.",
+      "emailLabel": "Email của bạn",
+      "emailPlaceholder": "name@duytan.edu.vn",
+      "submit": "Gửi liên kết đặt lại mật khẩu"
+    },
+    "reset": {
+      "title": "Thiết lập mật khẩu mới",
+      "subtitle": "Mật khẩu tối thiểu 6 ký tự.",
+      "passwordLabel": "Mật khẩu mới",
+      "passwordPlaceholder": "Tối thiểu 6 ký tự",
+      "confirmLabel": "Xác nhận mật khẩu mới",
+      "confirmPlaceholder": "Nhập lại mật khẩu mới",
+      "submit": "Lưu mật khẩu mới"
+    }
+  }
+}

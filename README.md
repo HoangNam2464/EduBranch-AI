@@ -252,12 +252,14 @@ EduBranch-AI/
 │
 ├── frontend/                        ← React 19 + TypeScript + Vite Client
 │   ├── src/
-│   │   ├── app/router.tsx           ← React Router configuration
-│   │   ├── components/              ← UI primitives & decision tree components
-│   │   ├── layouts/                 ← PublicLayout, LecturerLayout, StudentLayout
-│   │   ├── pages/                   ← Route view shells (Lecturer / Student)
-│   │   ├── services/apiClient.ts    ← Centralized Axios API client
-│   │   ├── stores/authStore.ts      ← Zustand authentication state
+│   │   ├── routes/                  ← paths.ts (route SSOT), AppRoutes.tsx, PrivateRoute.tsx
+│   │   ├── layouts/                 ← Public, Lecturer, Student, Admin layouts
+│   │   ├── pages/<feature>/         ← Screens grouped by feature (auth, courses, cases, branching…)
+│   │   ├── components/              ← ui/ primitives + feature components
+│   │   ├── services/                ← apiClient.ts (single Axios client) + one service per feature
+│   │   ├── stores/                  ← Zustand state (auth, case study)
+│   │   ├── config/ · providers/     ← API config · app-wide providers
+│   │   ├── lib/i18n.ts · locales/   ← i18n setup · vi.json / en.json (Vietnamese default)
 │   │   └── types/index.ts           ← Shared domain TypeScript declarations
 │   └── package.json
 │

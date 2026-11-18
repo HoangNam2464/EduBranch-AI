@@ -1,0 +1,126 @@
+{
+  "common": {
+    "appName": "EduBranch AI",
+    "logout": "Sign out",
+    "reload": "Reload page",
+    "backHome": "Back to home"
+  },
+  "nav": {
+    "lecturer": {
+      "courses": "Courses",
+      "cases": "Case Studies",
+      "feedback": "Student feedback",
+      "statistics": "Learning statistics"
+    },
+    "student": {
+      "desk": "My desk",
+      "courses": "My courses",
+      "joinClass": "Join a class"
+    },
+    "admin": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "courses": "Courses",
+      "cases": "Case Studies",
+      "rubric": "Research & Rubric",
+      "logs": "System logs",
+      "aiService": "AI service",
+      "settings": "System settings"
+    },
+    "studentCase": {
+      "case": "Case",
+      "history": "Attempt history",
+      "journey": "Journey Review",
+      "journeyUnavailable": "Open Journey Review from a completed attempt"
+    },
+    "studentReview": {
+      "work": "My work",
+      "feedback": "Feedback",
+      "feedbackUnavailable": "Feedback appears after you submit and the lecturer reviews it"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Page not found",
+      "description": "The link you opened does not exist or has moved. Check the link or go back to the main workspace."
+    },
+    "route": {
+      "titleNotFound": "Content not found",
+      "titleGeneric": "Something went wrong",
+      "defaultMessage": "An unexpected problem occurred while handling your request."
+    },
+    "portal": {
+      "login": "Back to sign in",
+      "lecturer": "Back to the lecturer portal",
+      "student": "Back to the student portal",
+      "admin": "Back to the admin portal"
+    }
+  },
+  "shell": {
+    "sidebar": "Sidebar",
+    "mainNav": "Main navigation",
+    "skipToContent": "Skip to main content",
+    "collapse": "Collapse",
+    "expand": "Expand sidebar",
+    "workspace": {
+      "lecturer": "Lecturer workspace",
+      "student": "Student workspace",
+      "admin": "System administration"
+    },
+    "roles": {
+      "lecturer": "Lecturer",
+      "student": "Student",
+      "admin": "System administrator"
+    },
+    "search": {
+      "lecturer": "Search courses, cases, students…",
+      "student": "Search cases, courses…",
+      "admin": "Search users, courses, cases…"
+    },
+    "searchLabel": "Search",
+    "language": "Interface language",
+    "themeSoon": "Dark theme (coming soon)",
+    "notifications": "Notifications",
+    "notificationsUnread": "Notifications, {{count}} unread",
+    "settings": "Settings",
+    "account": "My account",
+    "titles": {
+      "lecturerDashboard": "Overview · Due dates",
+      "courses": "Course management",
+      "courseDetail": "Course details",
+      "materialSources": "Document excerpts",
+      "cases": "Case Study management",
+      "aiStudio": "AI Studio",
+      "caseEditor": "Case Study editor",
+      "rubric": "Case quality research rubric",
+      "feedbackQueue": "Review queue and reasoning feedback",
+      "feedbackDetail": "Student reasoning feedback",
+      "statistics": "Learning flow statistics",
+      "profile": "Account profile",
+      "desk": "My desk",
+      "myCourses": "My courses",
+      "joinClass": "Join a class",
+      "attemptHistory": "Attempt history",
+      "case": "Case",
+      "journeyReview": "Journey Review — Revisit your decisions",
+      "reflection": "Reflection & key lessons",
+      "reviewStudy": "Review Study",
+      "adminDashboard": "Dashboard",
+      "adminUsers": "User management",
+      "adminCourses": "All courses",
+      "adminCases": "All Case Studies",
+      "adminRubric": "Research & Rubric",
+      "adminLogs": "System logs",
+      "adminAiService": "AI service",
+      "adminSettings": "System settings"
+    },
+    "footer": {
+      "copyright": "© 2026 EduBranch AI",
+      "privacy": "Privacy policy",
+      "terms": "Terms of use",
+      "supportEmail": "support@edubranch.ai",
+      "project": "Capstone C1SE.65 · Duy Tan University"
+    }
+  }
+}

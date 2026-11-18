@@ -1,0 +1,95 @@
+{
+  "g6": {
+    "noData": {
+      "title": "No data yet",
+      "description": "This section appears once the server provides admin data."
+    },
+    "dashboard": {
+      "activity": {
+        "title": "Weekly learning activity",
+        "subtitle": "Branching Study attempts and Review Study submissions across the system"
+      },
+      "usersByRole": {
+        "title": "Users by role",
+        "subtitle": "Active accounts"
+      },
+      "health": {
+        "title": "System status",
+        "updatedAt": "Updated at {{time}}",
+        "appServer": "Application server",
+        "database": "Database",
+        "up": "Stable",
+        "down": "Disrupted",
+        "loading": "Checking system status…",
+        "errorTitle": "Status check failed"
+      },
+      "casesByCourse": {
+        "title": "Cases by course",
+        "subtitle": "Published and draft cases in each course"
+      },
+      "recentLog": {
+        "title": "Recent log",
+        "subtitle": "Today"
+      }
+    },
+    "users": {
+      "emptyTitle": "No user data yet",
+      "emptyDescription": "Accounts appear once the server provides user administration data."
+    },
+    "courses": {
+      "title": "All courses",
+      "emptyTitle": "No course data yet",
+      "emptyDescription": "System-wide courses appear once the server provides course administration data."
+    },
+    "cases": {
+      "byStatus": "Case Studies by status",
+      "byMode": "Learning mode per case",
+      "library": "Case Study library",
+      "emptyTitle": "No Case Study data yet",
+      "emptyDescription": "System-wide Case Studies appear once the server provides Case Study administration data."
+    },
+    "aiService": {
+      "recent": {
+        "title": "Recent case generations",
+        "subtitle": "Each generation creates a draft for the lecturer to review"
+      },
+      "indexing": {
+        "title": "Document indexing status",
+        "subtitle": "Documents are chunked and indexed so the AI can cite them when generating cases"
+      },
+      "config": {
+        "title": "Current configuration",
+        "providerLabel": "AI provider",
+        "providerValue": "Fixed in the server configuration",
+        "modelLabel": "Model",
+        "modelValue": "Set by the engineering team"
+      },
+      "change": {
+        "title": "Changing the configuration",
+        "body": "The AI provider and model are fixed in the server environment file (OPD-013). This screen is for monitoring only; it has no action to change the configuration."
+      }
+    },
+    "rubric": {
+      "title": "Case quality evaluation",
+      "description": "1–5 scale for each criterion. This rates case quality for research; it is not a student grade.",
+      "saved": "Saved evaluation forms",
+      "emptyTitle": "No evaluation data yet",
+      "emptyDescription": "Evaluation forms appear once the server provides Case Study evaluation data."
+    },
+    "logs": {
+      "emptyTitle": "No log data yet",
+      "emptyDescription": "The system log appears once the server provides activity log data."
+    },
+    "settings": {
+      "platform": "Platform information",
+      "platformEmpty": "Platform name, operator, sign-in notice and support email appear once the server provides settings data.",
+      "limits": "Limits & registration",
+      "ai": {
+        "title": "AI service",
+        "provider": "Provider: fixed in the server configuration",
+        "monitor": "Monitor its status under AI service",
+        "note": "The AI configuration is not edited in the interface (OPD-013)."
+      }
+    }
+  }
+}

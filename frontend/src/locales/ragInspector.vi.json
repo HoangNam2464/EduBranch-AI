@@ -1,0 +1,58 @@
+{
+  "ragInspector": {
+    "loading": "Đang tải thông tin tài liệu…",
+    "retry": "Thử lại",
+    "error": {
+      "title": "Không tải được thông tin tài liệu",
+      "description": "Kiểm tra kết nối mạng rồi thử lại."
+    },
+    "metrics": {
+      "chunks": "Đoạn trích",
+      "chunksHint": {
+        "PENDING": "Đang chờ lập chỉ mục",
+        "PROCESSING": "Đang lập chỉ mục",
+        "COMPLETED": "Sẵn sàng để AI trích dẫn",
+        "FAILED": "Lập chỉ mục thất bại"
+      },
+      "pages": "Số trang",
+      "pagesUnavailable": "Hệ thống chưa ghi nhận số trang",
+      "size": "Dung lượng",
+      "sizeHint": "{{type}} · giới hạn 50 MB mỗi tệp"
+    },
+    "chunks": {
+      "title": "Đoạn trích đã lập chỉ mục",
+      "subtitle": "Nguồn AI dùng để trích dẫn khi sinh case",
+      "unavailableTitle": "Chưa xem được nội dung đoạn trích",
+      "unavailableDescription": "Chưa có API xem đoạn trích của tài liệu."
+    },
+    "others": {
+      "title": "Tài liệu khác trong khóa ({{count}})",
+      "titleNoCount": "Tài liệu khác trong khóa",
+      "loading": "Đang tải tài liệu khác trong khóa…",
+      "errorTitle": "Không tải được tài liệu khác trong khóa",
+      "empty": "Khóa học chưa có tài liệu nào khác"
+    },
+    "courseLoading": "Đang tải khóa học…",
+    "courseError": "Không tải được khóa học",
+    "courseErrorWithCode": "Không tải được khóa học (mã {{code}})",
+    "info": {
+      "title": "Thông tin tài liệu",
+      "file": "Tệp",
+      "course": "Khóa học",
+      "uploadedAt": "Tải lên",
+      "processingError": "Lỗi xử lý",
+      "processingErrorUnknown": "Hệ thống không ghi lại lý do lỗi."
+    },
+    "status": {
+      "PENDING": "Đang chờ",
+      "PROCESSING": "Đang xử lý",
+      "COMPLETED": "Hoàn tất",
+      "FAILED": "Thất bại"
+    },
+    "howAiUses": {
+      "title": "Cách AI dùng nguồn",
+      "description": "Mỗi tình huống AI sinh ra phải trích dẫn đoạn nguồn tương ứng. Giảng viên kiểm tra trích dẫn trước khi phê duyệt case.",
+      "badge": "AI Draft"
+    }
+  }
+}

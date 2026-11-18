@@ -1,0 +1,143 @@
+{
+  "caseReview": {
+    "back": "Quay lại danh sách case",
+    "breadcrumb": "Case Study",
+    "editor": "Trình chỉnh sửa",
+    "editorReview": "Trình chỉnh sửa Review Study",
+    "mode": {
+      "BRANCHING_STUDY": "Branching Study",
+      "REVIEW_STUDY": "Review Study",
+      "lockedHint": "Chế độ học được chọn khi tạo case và không đổi được tại đây."
+    },
+    "status": {
+      "DRAFT": "Bản nháp",
+      "REVIEWED": "Đã rà soát",
+      "APPROVED": "Đã phê duyệt",
+      "PUBLISHED": "Đã xuất bản"
+    },
+    "load": {
+      "loading": "Đang tải case…",
+      "notFoundTitle": "Không tìm thấy case",
+      "notFoundDescription": "Case này không tồn tại hoặc đã bị xóa.",
+      "forbiddenTitle": "Bạn không có quyền xem case này",
+      "forbiddenDescription": "Tài khoản hiện tại không được phép mở case này.",
+      "errorTitle": "Không tải được case",
+      "errorDescription": "Kiểm tra kết nối mạng rồi thử lại."
+    },
+    "readOnlyNotice": "Case đã phê duyệt hoặc đã xuất bản không chỉnh sửa trực tiếp được. Trả về bản nháp để chỉnh sửa.",
+    "unsupportedHint": "Hệ thống chưa hỗ trợ lưu trường này.",
+    "required": "Bắt buộc",
+    "branching": {
+      "situationCard": "Tình huống",
+      "outcomeCard": "Kết quả",
+      "aiDraft": "AI Draft",
+      "situationTitle": "Tiêu đề tình huống",
+      "promptQuestion": "Câu hỏi gợi ý lựa chọn",
+      "keyDecision": "Đánh dấu là quyết định then chốt",
+      "keyDecisionHelp": "Quyết định này được làm nổi bật trong Journey Review. Sinh viên được khuyến khích viết lập luận cho bước này; phản biện cùng AI là tùy chọn.",
+      "situationContent": "Nội dung tình huống chi tiết",
+      "outcomeContent": "Nội dung kết quả",
+      "optionsTitle": "Các phương án lựa chọn ({{count}})",
+      "optionsHelp": "Mỗi phương án dẫn tới một tình huống tiếp theo và chứa hậu quả tương ứng",
+      "noOptions": "Nút kết quả kết thúc hành trình nên không có phương án lựa chọn.",
+      "optionLabel": "Phương án {{n}}",
+      "deleteOption": "Xóa phương án",
+      "optionText": "Tiêu đề nhãn lựa chọn",
+      "optionDescription": "Mô tả hành động của phương án",
+      "nextNode": "Tình huống tiếp theo khi chọn phương án này",
+      "endsJourney": "Kết thúc hành trình",
+      "consequence": "Hậu quả (do giảng viên xác định)",
+      "consequenceHelp": "Chỉ hiển thị cho sinh viên trong Journey Review, không hiển thị khi đang làm bài",
+      "addOption": "+ Thêm phương án",
+      "nodeList": "Danh sách tình huống ({{count}})",
+      "editingNode": "Đang chỉnh sửa · Bước {{step}}",
+      "rootTag": "Nút gốc",
+      "branches": "Nhánh đi tiếp:",
+      "branchItem": "{{option}} → {{target}}",
+      "nodeSituation": "Tình huống {{n}}",
+      "nodeOutcome": "Kết quả {{n}}",
+      "nodeLabel": "{{label}}: {{text}}",
+      "deleteNode": "Xóa tình huống",
+      "addNode": "+ Thêm tình huống",
+      "noNodes": "Case chưa có nút nào trong cây quyết định.",
+      "treeCheck": "Kiểm tra cây quyết định",
+      "topology": "Cấu trúc: {{nodes}} nút · {{situations}} tình huống · {{outcomes}} kết quả",
+      "treeOk": "Kiểm tra cây: 0 lỗi cấu trúc",
+      "treeIssues": "Kiểm tra cây: {{count}} lỗi cấu trúc",
+      "issue": {
+        "noRoot": "Case chưa có nút gốc.",
+        "danglingNext": "Có phương án trỏ tới nút không tồn tại.",
+        "cycle": "Cây có vòng lặp.",
+        "orphan": "Có nút không đi tới được từ nút gốc.",
+        "optionCount": "Mỗi tình huống cần 2–4 phương án.",
+        "noTerminal": "Cây chưa có nút kết quả."
+      }
+    },
+    "review": {
+      "contentCard": "Nội dung Review Study",
+      "title": "Tiêu đề case",
+      "shortDesc": "Mô tả ngắn",
+      "context": "Bối cảnh & số liệu",
+      "problem": "Vấn đề cần phân tích",
+      "infoCard": "Thông tin case",
+      "modeLabel": "Chế độ:",
+      "courseLabel": "Khóa học:",
+      "statusLabel": "Trạng thái:",
+      "versionLabel": "Phiên bản:",
+      "version": "v{{version}}",
+      "structureLabel": "Cấu trúc:",
+      "noTree": "Không dùng cây quyết định",
+      "unknown": "—",
+      "studentAnswers": "Sinh viên sẽ trả lời",
+      "answerSolution": "1. Đề xuất phương án / kế hoạch giải quyết",
+      "answerReasoning": "2. Lập luận căn cứ (dựa trên số liệu và kiến thức học phần)"
+    },
+    "validation": {
+      "title": "Chưa lưu được",
+      "titleRequired": "Tiêu đề case không được để trống.",
+      "situationRequired": "Nội dung tình huống không được để trống.",
+      "optionRequired": "Mỗi phương án cần tiêu đề nhãn và hậu quả."
+    },
+    "toast": {
+      "close": "Đóng thông báo",
+      "savedTitle": "Đã lưu thay đổi",
+      "saveFailedTitle": "Không lưu được thay đổi",
+      "statusChangedTitle": "Đã chuyển trạng thái",
+      "statusChangedMessage": "Case hiện ở trạng thái “{{status}}”.",
+      "statusFailedTitle": "Không chuyển được trạng thái",
+      "genericError": "Đã có lỗi xảy ra. Vui lòng thử lại."
+    },
+    "bar": {
+      "saving": "Đang lưu...",
+      "saveAndReview": "Lưu & đánh dấu đã rà soát",
+      "saveChanges": "Lưu thay đổi",
+      "revertToDraft": "Trả về bản nháp",
+      "openForStudents": "Đang mở cho sinh viên tham gia",
+      "approve": "Phê duyệt",
+      "approveNeedsSave": "Lưu thay đổi trước khi phê duyệt.",
+      "publish": "Xuất bản",
+      "publishForStudents": "Xuất bản cho sinh viên",
+      "copyLink": "Sao chép đường dẫn",
+      "copied": "Đã sao chép đường dẫn bài làm của sinh viên!",
+      "copyFailed": "Không sao chép được đường dẫn. Hãy chọn và sao chép thủ công.",
+      "subtitle": {
+        "DRAFT": "{{mode}} · Phiên bản {{version}} · Chưa rà soát",
+        "REVIEWED": "{{mode}} · Phiên bản {{version}} · Chờ phê duyệt",
+        "APPROVED": "{{mode}} · Phiên bản {{version}} · Sẵn sàng xuất bản",
+        "PUBLISHED": "{{mode}} · Phiên bản {{version}} · Sinh viên đã truy cập được"
+      }
+    },
+    "publishModal": {
+      "title": "Xuất bản Case Study",
+      "description": "Sau khi xuất bản, sinh viên mở được tình huống này qua đường dẫn bên dưới. Gửi đường dẫn cho lớp qua LMS, email hoặc trên lớp.",
+      "close": "Đóng",
+      "linkLabel": "Đường dẫn cho sinh viên",
+      "copy": "Sao chép",
+      "deadline": "Hạn hoàn thành (không bắt buộc)",
+      "notify": "Gửi thông báo in-app và email cho sinh viên trong lớp",
+      "cancel": "Hủy bỏ",
+      "confirm": "Xác nhận xuất bản",
+      "publishing": "Đang xuất bản..."
+    }
+  }
+}

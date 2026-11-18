@@ -1,10 +1,105 @@
 ﻿@import "tailwindcss";
+@import "@fontsource/roboto/400.css";
+@import "@fontsource/roboto/500.css";
+@import "@fontsource/roboto/700.css";
+/* Public landing headings only (GDS §3 "EduBranch/Public *" text styles); app screens never use it. */
+@import "@fontsource/be-vietnam-pro/500.css";
+@import "@fontsource/be-vietnam-pro/600.css";
+
+/*
+ * EduBranch design tokens — mirrors the "EduBranch" variable collections of
+ * Figma file 6CtSgJPKo4jCIbB7WwCaWw (page 08 is the approved UI).
+ * Utilities: bg-canvas, text-ink, border-line, bg-primary, text-accent, ...
+ * Existing Tailwind palette classes keep working for screens not yet reworked.
+ */
+@theme {
+  --font-sans: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Be Vietnam Pro", "Roboto", system-ui, sans-serif; /* public landing headings only */
+
+  /* Surfaces */
+  --color-page: #FFFFFF;            /* bg/page */
+  --color-canvas: #F3F6FC;          /* bg/canvas */
+  --color-surface: #FFFFFF;         /* bg/surface */
+  --color-surface-muted: #EEF2F9;   /* bg/surface-muted */
+  --color-surface-hover: #E8EDF6;   /* bg/surface-hover */
+  --color-selected: #DFEDF9;        /* bg/selected */
+
+  /* Text */
+  --color-ink: #202124;             /* text/primary */
+  --color-ink-secondary: #696A70;   /* text/secondary */
+  --color-ink-muted: #909198;       /* text/muted */
+  --color-ink-inverse: #FFFFFF;     /* text/inverse */
+  --color-link: #2A4E7F;            /* text/link */
+
+  /* Borders */
+  --color-line: #E1E8F5;            /* border/default */
+  --color-line-soft: #E8EDF6;       /* account divider in Navigation/Sidebar */
+  --color-line-strong: #D1D9E8;     /* border/strong */
+  --color-focus: #2A4E7F;           /* border/focus */
+
+  /* Actions */
+  --color-primary: #2A4E7F;         /* action/primary (navy/600) */
+  --color-primary-hover: #223F68;   /* action/primary-hover */
+  --color-primary-active: #1B3253;  /* action/primary-active */
+  --color-primary-disabled: #94A7C0;
+  --color-primary-subtle: #DFEDF9;  /* action/primary-subtle */
+  --color-primary-subtle-hover: #D1E4F5;
+  --color-accent: #00A5F5;          /* action/accent (sky/500) */
+  --color-danger: #D11F1F;          /* action/danger */
+  --color-danger-hover: #B01818;
+
+  /* Semantic */
+  --color-success: #00B343;
+  --color-success-text: #007A2D;
+  --color-success-bg: #E1F7E9;
+  --color-success-border: #B3E8C7;
+  --color-warning: #F58A00;
+  --color-warning-text: #9A5700;
+  --color-warning-bg: #FFF1DE;
+  --color-warning-border: #FFD9A8;
+  --color-error: #FF3535;
+  --color-error-text: #D11F1F;
+  --color-error-bg: #FFE5E5;
+  --color-error-border: #FFBCBC;
+  --color-info: #2A4E7F;
+  --color-info-bg: #DFEDF9;
+
+  /* Brand */
+  --color-brand-start: #2A4E7F;
+  --color-brand-end: #1B3253;
+
+  /* Radius (radius/sm..xl) */
+  --radius-eb-sm: 6px;
+  --radius-eb-md: 8px;
+  --radius-eb-lg: 12px;
+  --radius-eb-xl: 18px;
+
+  /* Design-system components (frontend/src/components/ds). Values measured on
+   * Figma page 02 component sets as instanced on page 08. */
+  --color-mode-review-bg: #E6F6FE;      /* mode/review-bg (sky/50) */
+  --color-mode-review-border: #B3E4FC;  /* mode/review-border (sky/200) */
+  --color-mode-review-text: #0087C9;    /* mode/review-text (sky/600) */
+  --color-status-approved-text: #B86800;  /* status/approved-text (orange/700) */
+  --color-status-published-text: #008A33; /* status/published-text (green/700) */
+  --shadow-eb-dialog: 0 16px 40px 0 rgb(32 33 36 / 0.16);  /* Overlays/Dialog */
+  --shadow-eb-toast: 0 8px 24px 0 rgb(42 78 127 / 0.16);   /* Feedback/Toast */
+  --shadow-eb-focus: 0 0 0 3px rgb(0 165 245 / 0.18);      /* Forms/Field focus glow */
+  /* Resting card on bg/canvas: 1px border/default @80% (inset, no layout change, = Figma inside stroke)
+     + EduBranch/Elevation/Card. Hover on clickable cards: EduBranch/Elevation/Hover. PO 2026-11-17. */
+  --shadow-eb-card: inset 0 0 0 1px rgb(225 232 245 / 0.8), 0 1px 2px 0 rgb(32 33 36 / 0.05), 0 1px 3px 0 rgb(32 33 36 / 0.06);
+  --shadow-eb-hover: inset 0 0 0 1px rgb(225 232 245 / 0.8), 0 2px 8px 0 rgb(32 33 36 / 0.06);
+  /* Shared page patterns (components/ds) — colours resolved on page 08 that have no token above. */
+  --color-control-icon: #4B5563;        /* "Expand" chevron of Filter control / Dropdown / Pagination (02.1, 03.1, 05.9) */
+  --color-result-count: #73807F;        /* "Hiển thị … trên N" labels of Result count (01.2, 02.1, 05.9) */
+  --color-back-icon: #808080;           /* "Back to courses" arrow-left (02.4, 05.1) */
+  --color-note-info: #00699E;           /* Course Card status note, mode/review-text as resolved on 02.1 */
+}
 
 @layer base {
   body {
-    font-family: system-ui, sans-serif;
-    background-color: #f9fafb;
-    color: #111827;
+    font-family: var(--font-sans);
+    background-color: var(--color-page);
+    color: var(--color-ink);
   }
 
   h1, h2, h3, h4, h5, h6 {
