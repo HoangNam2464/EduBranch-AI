@@ -316,7 +316,14 @@ export class BranchingAttemptService {
       let isTerminalTransition = false;
 
       if (!nextNodeId) {
-        // If next_node_id is null, current node is terminal for this path
+        // A null edge is valid only when the current node itself is terminal.
+        const currentNodeRes = await client.query(
+          "SELECT is_terminal FROM case_nodes WHERE id = $1 AND case_id = $2",
+          [dto.nodeId, attempt.case_id],
+        );
+        if (currentNodeRes.rows.length === 0 || !currentNodeRes.rows[0].is_terminal) {
+          throw new BadRequestException("Selected option does not lead to a valid terminal node");
+        }
         isTerminalTransition = true;
       } else {
         const nextNodeRes = await client.query(

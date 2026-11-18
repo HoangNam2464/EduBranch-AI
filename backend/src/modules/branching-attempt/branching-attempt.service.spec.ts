@@ -256,6 +256,22 @@ describe('BranchingAttemptService', () => {
       expect(result.steps[0].consequence).toBe('Revealed consequence');
       expect(result.steps[0].otherOptions.length).toBe(1);
     });
+
+    it('does not reveal Journey Review to a student who does not own the completed attempt', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ student_id: 'owner-student', status: 'PUBLISHED' }] });
+
+      await expect(service.getAttempt('completed-attempt', 'intruder-student')).rejects.toThrow(
+        ForbiddenException,
+      );
+      expect(mockDbService.query).not.toHaveBeenCalledWith(
+        expect.stringContaining('student_reasoning'), expect.any(Array),
+      );
+      expect(mockDbService.query).not.toHaveBeenCalledWith(
+        expect.stringContaining('case_nodes'), expect.any(Array),
+      );
+    });
   });
 
   describe('chooseOption (P0-DATA-04 with FOR UPDATE transaction)', () => {
@@ -336,6 +352,25 @@ describe('BranchingAttemptService', () => {
       );
     });
 
+    it('does not complete an attempt for a null edge unless the current node is terminal', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'opt-1', next_node_id: null }] })
+        .mockResolvedValueOnce({}) // reasoning insert, rolled back
+        .mockResolvedValueOnce({ rows: [{ is_terminal: false }] })
+        .mockResolvedValueOnce({});
+
+      await expect(service.chooseOption('att-1', 'student-1', {
+        nodeId: 'n-1', selectedOptionId: 'opt-1',
+      })).rejects.toThrow(BadRequestException);
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(
+        expect.stringContaining('UPDATE branching_attempts'), expect.any(Array),
+      );
+    });
+
     it('rolls back the selected option if its target node is invalid for the Case', async () => {
       mockDbClient.query
         .mockResolvedValueOnce({})
@@ -398,6 +433,60 @@ describe('BranchingAttemptService', () => {
         expect.stringContaining('reasoning_text = NULL'),
         expect.arrayContaining([expect.any(String), 'att-1', 'n-1', 'opt-1']),
       );
+    });
+
+    it('completes the attempt and records the validated terminal outcome', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'opt-1', next_node_id: 'terminal-1' }] })
+        .mockResolvedValueOnce({}) // persist option selection
+        .mockResolvedValueOnce({ rows: [{ is_terminal: true }] }) // validated same-Case destination
+        .mockResolvedValueOnce({}) // persist outcome and completion timestamp
+        .mockResolvedValueOnce({}); // COMMIT
+
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', student_id: 'student-1', case_id: 'case-1', current_node_id: 'terminal-1', outcome_node_id: 'terminal-1', is_completed: true, completed_at: '2026-11-19T00:00:00.000Z' }] })
+        .mockResolvedValueOnce({ rows: [{ reasoning_id: 'reason-1', node_id: 'n-1', selected_option_id: 'opt-1', option_text: 'Finish', consequence: 'Journey outcome', next_node_id: 'terminal-1', situation: 'Decision' }] })
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: 'terminal-1', situation: 'Terminal outcome', is_terminal: true }] });
+
+      const result = await service.chooseOption('att-1', 'student-1', {
+        nodeId: 'n-1', selectedOptionId: 'opt-1',
+      });
+
+      const completionUpdate = mockDbClient.query.mock.calls.find(([sql]) =>
+        typeof sql === 'string' && sql.includes('outcome_node_id = $1') && sql.includes('is_completed = TRUE'),
+      );
+      expect(completionUpdate).toBeDefined();
+      expect(completionUpdate[1]).toEqual(['terminal-1', 'att-1']);
+      expect(completionUpdate[0]).toContain('completed_at = NOW()');
+      expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(result.isCompleted).toBe(true);
+      expect(result.outcomeNodeId).toBe('terminal-1');
+      expect(result.completedAt).toBe('2026-11-19T00:00:00.000Z');
+      expect(result.outcomeNode.id).toBe('terminal-1');
+      // The completed owner's ordinary attempt read unlocks Journey Review content.
+      expect(mockDbService.query.mock.calls[1][0]).toContain('consequence');
+    });
+
+    it('rolls back and does not complete when outcome persistence fails', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'opt-1', next_node_id: 'terminal-1' }] })
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ is_terminal: true }] })
+        .mockRejectedValueOnce(new Error('outcome update failed'))
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.chooseOption('att-1', 'student-1', {
+        nodeId: 'n-1', selectedOptionId: 'opt-1',
+      })).rejects.toThrow('outcome update failed');
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+      expect(mockDbService.query).not.toHaveBeenCalled();
     });
   });
 
