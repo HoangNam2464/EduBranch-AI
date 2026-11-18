@@ -45,4 +45,14 @@ describe("analyzeTree (FND §5 display checks)", () => {
     const ordered = orderNodes(nodes, "root");
     assert.deepEqual(ordered.map((n) => n.id), ["root", "n1", "n2"]);
   });
+
+  it("validates graph mutation option re-linking against cycle formation (FE-010)", () => {
+    // Relinking an option in a DAG can introduce a cycle
+    const baseNodes = [node("r", ["a", "b"]), node("a", ["t1", "t2"]), node("b", ["t1", "t2"]), node("t1", []), node("t2", [])];
+    assert.deepEqual(analyzeTree(baseNodes, "r").issues, []);
+
+    // Mutating edge from 't1' back to 'r' introduces a cycle
+    const mutatedNodes = [node("r", ["a", "b"]), node("a", ["t1", "t2"]), node("b", ["t1", "t2"]), node("t1", ["r", "b"]), node("t2", [])];
+    assert.ok(analyzeTree(mutatedNodes, "r").issues.includes("cycle"));
+  });
 });
