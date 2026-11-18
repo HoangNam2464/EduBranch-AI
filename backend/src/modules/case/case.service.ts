@@ -50,6 +50,7 @@ export class CaseService {
     });
 
     const client = await this.db.getClient();
+    let transactionCommitted = false;
     try {
       await client.query("BEGIN");
 
@@ -64,6 +65,33 @@ export class CaseService {
       );
 
       const nodes = aiResponse.nodes || [];
+      if (!Array.isArray(nodes) || nodes.length === 0) {
+        throw new BadRequestException("Generated decision tree must contain at least one node");
+      }
+
+      const rootIndex = aiResponse.root_node_index ?? 0;
+      if (!Number.isInteger(rootIndex) || rootIndex < 0 || rootIndex >= nodes.length) {
+        throw new BadRequestException(`Invalid root node index: ${rootIndex}`);
+      }
+
+      // Validate every temporary edge before writing nodes/options. This prevents
+      // dangling references from being silently persisted as terminal options.
+      for (let sourceIndex = 0; sourceIndex < nodes.length; sourceIndex++) {
+        const node = nodes[sourceIndex];
+        if (!node || typeof node.situation !== "string" || !node.situation.trim()) {
+          throw new BadRequestException(`Node ${sourceIndex} has no valid situation`);
+        }
+        if (node.options != null && !Array.isArray(node.options)) {
+          throw new BadRequestException(`Node ${sourceIndex} options must be an array`);
+        }
+        for (const option of node.options || []) {
+          if (option.next_node_index != null &&
+              (!Number.isInteger(option.next_node_index) || option.next_node_index < 0 || option.next_node_index >= nodes.length)) {
+            throw new BadRequestException(`Option on node ${sourceIndex} references invalid node index ${option.next_node_index}`);
+          }
+        }
+      }
+
       const nodeMap = new Map<number, string>();
       for (let i = 0; i < nodes.length; i++) {
         nodeMap.set(i, randomUUID());
@@ -82,8 +110,10 @@ export class CaseService {
 
         if (node.options && Array.isArray(node.options)) {
           for (const opt of node.options) {
-            const nextNodeId =
-              opt.next_node_index != null ? nodeMap.get(opt.next_node_index) || null : null;
+            const nextNodeId = opt.next_node_index != null ? nodeMap.get(opt.next_node_index) : null;
+            if (opt.next_node_index != null && !nextNodeId) {
+              throw new BadRequestException(`Option references unmapped node index ${opt.next_node_index}`);
+            }
             const optionText = opt.text || opt.option_text || "Choose Option";
             const consequence = opt.consequence || "Consequence recorded.";
 
@@ -96,17 +126,43 @@ export class CaseService {
         }
       }
 
-      const rootIndex = aiResponse.root_node_index ?? 0;
       const rootNodeId = nodeMap.get(rootIndex);
-      if (rootNodeId) {
-        await client.query(`UPDATE cases SET root_node_id = $1 WHERE id = $2`, [rootNodeId, caseId]);
+      if (!rootNodeId) {
+        throw new BadRequestException(`Root node index ${rootIndex} was not persisted`);
+      }
+      await client.query(`UPDATE cases SET root_node_id = $1 WHERE id = $2`, [rootNodeId, caseId]);
+
+      // Confirm persisted references and root linkage before allowing the commit.
+      const referencesRes = await client.query(
+        `SELECT
+           (SELECT COUNT(*) FROM case_nodes WHERE case_id = $1) AS node_count,
+           (SELECT COUNT(*) FROM cases c JOIN case_nodes n ON n.id = c.root_node_id
+             WHERE c.id = $1 AND n.case_id = c.id) AS root_count,
+           (SELECT COUNT(*) FROM case_options o
+             JOIN case_nodes source ON source.id = o.node_id
+             LEFT JOIN case_nodes target ON target.id = o.next_node_id
+             WHERE source.case_id = $1 AND (target.id IS NULL OR target.case_id = $1 OR o.next_node_id IS NULL)) AS valid_option_count,
+           (SELECT COUNT(*) FROM case_options o JOIN case_nodes source ON source.id = o.node_id
+             LEFT JOIN case_nodes target ON target.id = o.next_node_id
+             WHERE source.case_id = $1 AND o.next_node_id IS NOT NULL AND target.id IS NULL) AS invalid_target_count`,
+        [caseId],
+      );
+      const refs = referencesRes.rows[0];
+      const expectedOptionCount = nodes.reduce((count, node) => count + (node.options?.length || 0), 0);
+      const persistedOptionCount = Number(refs.valid_option_count);
+      if (Number(refs.node_count) !== nodes.length || Number(refs.root_count) !== 1 ||
+          persistedOptionCount !== expectedOptionCount || Number(refs.invalid_target_count) !== 0) {
+        throw new BadRequestException("Persisted decision tree contains invalid node or option references");
       }
 
       await client.query("COMMIT");
+      transactionCommitted = true;
 
       return this.getCaseById(caseId, "LECTURER", lecturerId);
     } catch (e) {
-      await client.query("ROLLBACK");
+      if (!transactionCommitted) {
+        await client.query("ROLLBACK");
+      }
       this.logger.error("Failed to persist generated case:", e);
       throw e;
     } finally {

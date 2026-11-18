@@ -34,7 +34,12 @@ describe('CaseService', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
+    jest.restoreAllMocks();
+    mockDbClient.query.mockReset();
+    mockDbClient.release.mockReset();
+    mockDbService.query.mockReset();
+    mockDbService.getClient.mockReset().mockResolvedValue(mockDbClient);
+    mockAiClientService.generateCase.mockReset();
   });
 
   it('should be defined', () => {
@@ -61,6 +66,12 @@ describe('CaseService', () => {
         .mockResolvedValueOnce({ rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }] }) // getCaseById caseRes
         .mockResolvedValueOnce({ rows: [{ id: 'node-1', node_index: 0 }] }) // getCaseById nodesRes
         .mockResolvedValueOnce({ rows: [{ id: 'opt-1', node_id: 'node-1' }] }); // getCaseById optionsRes
+      mockDbClient.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('SELECT') && sql.includes('node_count')) {
+          return { rows: [{ node_count: '1', root_count: '1', valid_option_count: '1', invalid_target_count: '0' }] };
+        }
+        return { rows: [] };
+      });
 
       const result = await service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] });
 
@@ -70,6 +81,71 @@ describe('CaseService', () => {
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET root_node_id'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_options'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('node_count'), expect.any(Array));
+    });
+
+    it('rolls back the complete transaction when node insertion fails', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'course-1' }] });
+      mockAiClientService.generateCase.mockResolvedValue({
+        root_node_index: 0,
+        nodes: [{ situation: 'Root', options: [] }],
+      });
+      mockDbClient.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('SELECT is_active')) return { rows: [{ is_active: true }] };
+        if (sql.includes('INSERT INTO case_nodes')) throw new Error('node insert failed');
+        return { rows: [] };
+      });
+
+      await expect(service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }))
+        .rejects.toThrow('node insert failed');
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.release).toHaveBeenCalled();
+    });
+
+    it('rolls back the complete transaction when option insertion fails', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'course-1' }] });
+      mockAiClientService.generateCase.mockResolvedValue({
+        root_node_index: 0,
+        nodes: [{ situation: 'Root', options: [{ text: 'Next', next_node_index: null }] }],
+      });
+      mockDbClient.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('SELECT is_active')) return { rows: [{ is_active: true }] };
+        if (sql.includes('INSERT INTO case_options')) throw new Error('option insert failed');
+        return { rows: [] };
+      });
+
+      await expect(service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }))
+        .rejects.toThrow('option insert failed');
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.release).toHaveBeenCalled();
+    });
+
+    it('rejects invalid root and option node references and rolls back', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'course-1' }] });
+      mockAiClientService.generateCase.mockResolvedValue({
+        root_node_index: 5,
+        nodes: [{ situation: 'Root', options: [{ next_node_index: 8 }] }],
+      });
+      mockDbClient.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('SELECT is_active')) return { rows: [{ is_active: true }] };
+        return { rows: [] };
+      });
+
+      await expect(service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }))
+        .rejects.toThrow(BadRequestException);
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_nodes'), expect.any(Array));
     });
   });
 
