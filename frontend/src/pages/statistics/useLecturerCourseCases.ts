@@ -35,22 +35,29 @@ let globalCache: {
   timestamp: number;
 } | null = null;
 
+function getFreshCache(key: string): CourseWithCases[] | null {
+  if (globalCache && globalCache.key === key && Date.now() - globalCache.timestamp < CACHE_TTL_MS) {
+    return globalCache.data;
+  }
+  return null;
+}
+
 export function useLecturerCourseCases({ withMaterials = false }: { withMaterials?: boolean } = {}) {
   const cacheKey = withMaterials ? "with-mat" : "no-mat";
-  const isFresh = globalCache && globalCache.key === cacheKey && Date.now() - globalCache.timestamp < CACHE_TTL_MS;
 
-  const [state, setState] = useState<LoadState<CourseWithCases[]>>(() =>
-    isFresh ? { status: "ready", data: globalCache!.data } : { status: "loading" },
-  );
+  const [state, setState] = useState<LoadState<CourseWithCases[]>>(() => {
+    const cached = getFreshCache(cacheKey);
+    return cached ? { status: "ready", data: cached } : { status: "loading" };
+  });
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      // If we don't have fresh cache or this is a retry attempt, mark loading
-      if (!isFresh || attempt > 0) {
-        if (!isFresh) setState({ status: "loading" });
+      const cached = getFreshCache(cacheKey);
+      if (!cached || attempt > 0) {
+        if (!cached) setState({ status: "loading" });
       }
 
       try {
@@ -89,7 +96,7 @@ export function useLecturerCourseCases({ withMaterials = false }: { withMaterial
     return () => {
       cancelled = true;
     };
-  }, [withMaterials, attempt, cacheKey, isFresh]);
+  }, [withMaterials, attempt, cacheKey]);
 
   const retry = useCallback(() => {
     setState({ status: "loading" });

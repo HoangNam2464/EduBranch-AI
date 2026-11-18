@@ -1,7 +1,7 @@
-import { useState, type ReactNode } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, ChevronRight, Compass, GitBranch, Sparkles, ShieldCheck, GraduationCap } from "lucide-react";
+import { Check, Compass, GitBranch, Sparkles, ShieldCheck, GraduationCap } from "lucide-react";
 import { PublicButton, cx, publicButtonClassName } from "@/components/ds";
 import { PATHS } from "@/routes/paths";
 import { DISPLAY_FONT, LANDING_ANCHORS } from "@/pages/landing/landingConstants";

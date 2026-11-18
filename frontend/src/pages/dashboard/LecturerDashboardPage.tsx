@@ -205,23 +205,7 @@ export function LecturerDashboardPage() {
   const [mode, setMode] = useState("ALL");
   const [course, setCourse] = useState("ALL");
 
-  if (state.status === "error") {
-    return (
-      <div className="flex flex-1 flex-col pb-5">
-        <ErrorState title={t("g4.dashboard.loadError")} onRetry={retry} errorCode={state.code} occurredAt={state.at} />
-      </div>
-    );
-  }
-
   const ready = state.status === "ready" ? state.data : null;
-  const metricValue = (value: number | null) => (value === null ? <SkeletonLine width={16} /> : value);
-  const metrics = [
-    { icon: BookOpen, stroke: 1.7, label: t("g4.dashboard.metrics.courses"), value: metricValue(ready ? ready.length : null) },
-    { icon: CircleCheck, stroke: 0.85, label: t("g4.dashboard.metrics.published"), value: metricValue(ready ? countCases(ready, ["PUBLISHED"]) : null) },
-    { icon: SquarePen, stroke: 1.5, label: t("g4.dashboard.metrics.drafts"), value: metricValue(ready ? countCases(ready, ["DRAFT", "REVIEWED"]) : null) },
-    // No lecturer submissions endpoint yet: the count is unknown, never 0.
-    { icon: MessageSquare, stroke: 1.36, label: t("g4.dashboard.metrics.pending"), value: t("g4.common.unknownValue") },
-  ];
 
   // Cases filtered by selected course and learning mode for the calendar
   const filteredCases = useMemo(() => {
@@ -231,6 +215,23 @@ export function LecturerDashboardPage() {
       .flatMap(({ cases }) => cases)
       .filter((c) => mode === "ALL" || c.learningMode === mode);
   }, [ready, course, mode]);
+
+  if (state.status === "error") {
+    return (
+      <div className="flex flex-1 flex-col pb-5">
+        <ErrorState title={t("g4.dashboard.loadError")} onRetry={retry} errorCode={state.code} occurredAt={state.at} />
+      </div>
+    );
+  }
+
+  const metricValue = (value: number | null) => (value === null ? <SkeletonLine width={16} /> : value);
+  const metrics = [
+    { icon: BookOpen, stroke: 1.7, label: t("g4.dashboard.metrics.courses"), value: metricValue(ready ? ready.length : null) },
+    { icon: CircleCheck, stroke: 0.85, label: t("g4.dashboard.metrics.published"), value: metricValue(ready ? countCases(ready, ["PUBLISHED"]) : null) },
+    { icon: SquarePen, stroke: 1.5, label: t("g4.dashboard.metrics.drafts"), value: metricValue(ready ? countCases(ready, ["DRAFT", "REVIEWED"]) : null) },
+    // No lecturer submissions endpoint yet: the count is unknown, never 0.
+    { icon: MessageSquare, stroke: 1.36, label: t("g4.dashboard.metrics.pending"), value: t("g4.common.unknownValue") },
+  ];
 
   const publishedCount = ready ? countCases(ready, ["PUBLISHED"]) : 0;
 
