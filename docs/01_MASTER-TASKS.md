@@ -86,7 +86,7 @@
 | **EBA-214** | `OPS-003` | `[OPS-003] Implement Document Chunks Persistence & HNSW Vector Indexing` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-213 | IN PROGRESS |
 | **EBA-215** | `BE-012` | `[BE-012] Implement Grounded Vector Retrieval with Course Isolation & <sources> Wrapping` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-214 | IN PROGRESS |
 | **EBA-216** | `BE-013` | `[BE-013] Fix Material Controller Spec Mock Data for Ownership Regression` | Flow 1 | Bug | High | 2 | is blocked by Master Task EBA-208 | IN PROGRESS |
-| **EBA-217** | `QA-003` | `[QA-003] Test Suite for Material Upload Validation, File Types & Size Bounds` | Flow 1 | Task | High | 3 | is blocked by Master Task EBA-204, EBA-208 | TO DO |
+| **EBA-217** | `QA-003` | `[QA-003] Test Suite for Material Upload Validation, File Types & Size Bounds` | Flow 1 | Task | High | 3 | is blocked by Master Task EBA-204, EBA-208 | IN PROGRESS |
 | **EBA-218** | `QA-004` | `[QA-004] Security & Authorization Tests for Material Storage & Tenant Isolation` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-208, EBA-209 | TO DO |
 | **EBA-219** | `QA-005` | `[QA-005] Integration Test Suite for End-to-End Ingestion Pipeline (Upload to pgvector)` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-214 | TO DO |
 | **EBA-220** | `QA-006` | `[QA-006] Vector Retrieval Relevance & Prompt Injection Boundary Testing` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-215 | TO DO |
