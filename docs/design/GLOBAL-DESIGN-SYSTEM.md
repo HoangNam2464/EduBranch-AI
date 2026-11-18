@@ -224,13 +224,21 @@ Rules:
 
 Surface ladder (max 3 levels below the shell): `bg-page` → `bg-canvas` panel → `bg-surface` card → one `bg-surface-muted` inset block. No bordered card inside a card; no tinted block inside a tinted block.
 
+> **Card Depth & Elevation Update (PO Decision 2026-11-17, "Sửa Figma rồi code")**:
+> Replaces the former flat "no border, no shadow" interim rule. Cards at rest on canvas use 1px `border-default` at 80% (inside stroke) + Figma effect style `EduBranch/Elevation/Card` = code token `shadow-eb-card` (`inset 0 0 0 1px rgb(225 232 245 / 0.8), 0 1px 2px rgb(32 33 36 / 0.05), 0 1px 3px rgb(32 33 36 / 0.06)`).
+
 | Token | Value | Usage |
 |---|---|---|
-| `elevation-0` | none, no border | Cards on canvas (the canvas tint separates them) |
-| `elevation-hover` | `0 2px 8px rgba(32,33,36,0.06)` | Clickable cards on hover |
-| `elevation-1` | `0 4px 16px rgba(32,33,36,0.08)` | Dropdowns, popovers |
+| `shadow-eb-card` | `inset 0 0 0 1px rgb(225 232 245 / .8), 0 1px 2px rgb(32 33 36 / .05), 0 1px 3px rgb(32 33 36 / .06)` | Standard cards at rest on the canvas panel |
+| `shadow-eb-hover` | `0 2px 8px rgba(32,33,36,0.06)` | Clickable/interactive cards on hover |
+| `elevation-1` | `0 4px 16px rgba(32,33,36,0.08)` | Dropdowns, popovers, select menus |
 | `elevation-2` | `0 12px 32px rgba(32,33,36,0.16)` | Modals, dialogs |
 | `elevation-toast` | `0 4px 16px rgba(32,33,36,0.12)` | Toast notifications |
+
+### 4.4. Container Widths & Responsive Gutters (Centered Container Mandate)
+- **Wide Screens (PO Decision 2026-11-17)**: Canvas workspace content (header, main content, footer) is capped at `max-w-7xl` (1280px) and centered horizontally (`mx-auto`). This prevents cards from stretching unnaturally on 1920/2K/4K monitors while keeping generous side gutters.
+- **Floating Workspace**: App canvas panel floats with 12px margins (`min-h-[calc(100vh-24px)] my-2 mr-2 sm:my-3 sm:mr-3 rounded-[18px] bg-canvas`).
+- **Auth Screens**: `AuthSplitLayout` centers in `max-w-7xl mx-auto px-6 sm:px-8 lg:px-12`. Auth forms are capped at `max-w-[440px]` (`max-w-[480px]` for 2-column register) instead of raw 562px slabs, with product preview device mockup shown on the brand panel.
 
 ---
 
@@ -245,13 +253,16 @@ Surface ladder (max 3 levels below the shell): `bg-page` → `bg-canvas` panel �
 - Shape: rectangular `radius-sm`, never a pill.
 
 ### 5.2. Input / Select / Textarea
-- White, `border-default`, `radius-sm`, height 40px (input/select) or min-height 120px (long-form textarea).
+- White, `border-default`, `radius-sm`, height 40px (input/select) or min-height 120px (long-form textarea). Height 44px for auth inputs (`AuthTextField`, `AuthSelectField`, `AuthPasswordField`).
 - Focus: `border-focus` + 3px `#00A5F5` ring at 30%.
 - Error state: `semantic-error` border, helper text below in `#D11F1F` at `text-caption`.
 - Placeholder: `text-muted`.
+- **Select Dropdowns (`AuthSelectField`)**: Custom dropdown popover with generous 16px left padding (`px-4`), real-time search filter at top, and category grouping for academic disciplines (Engineering, Business, Law, Medicine, Humanities, Basic Sciences, International Institutes).
 
 ### 5.3. Card
-- White, **no border, no shadow**, `radius-lg`, padding 20–24px, sitting on the `bg-canvas` panel. `elevation-hover` only if the whole card is clickable.
+- White, `radius-lg`, padding 20–24px, sitting on the `bg-canvas` panel.
+- At rest: `shadow-eb-card` (1px inside border at 80% + soft dual shadow per PO decision 2026-11-17).
+- Clickable/interactive on hover: `shadow-eb-hover` (`0 2px 8px rgba(32,33,36,0.06)`). No translate or scale on hover.
 
 ### 5.4. Focus / Interaction States (all interactive elements)
 - **Hover**: `bg-surface-hover` for rows/cards, one step darker for buttons/links.

@@ -1,7 +1,7 @@
 # Feature: AI Reasoning & Challenge Support
 
 > **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
-> **Target Package / Module**: AI Service `challenge_support/` · Backend `challenge-support/` · Frontend `pages/student/ChallengeSupportPage.tsx`
+> **Target Package / Module**: AI Service `challenge_support/` · Backend `challenge-support/` · Frontend `pages/challenge/ChallengeSupportPage.tsx`
 
 ---
 
