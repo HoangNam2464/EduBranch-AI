@@ -132,9 +132,9 @@ function StepCard({ index, step, state, onSelect }: { index: number; step: StepC
       aria-current={active ? "step" : undefined}
       aria-label={t("g1.landing.how.goToStep", { n: index + 1, title: step.title })}
       className={cx(
-        "flex min-w-0 flex-1 cursor-pointer flex-col gap-3 rounded-[20px] bg-surface p-5 text-left transition-[opacity,box-shadow,border-color]",
-        active ? "border-2 border-accent shadow-[0_10px_24px_-6px_rgb(41_79_128/0.14)]" : "border border-line",
-        state === "next" && "opacity-55",
+        "flex min-w-0 flex-1 cursor-pointer flex-col gap-3 rounded-[20px] bg-surface p-5 text-left transition-all duration-200",
+        active ? "border-2 border-accent shadow-[0_10px_24px_-6px_rgb(41_79_128/0.14)]" : "border border-line hover:border-line-strong hover:shadow-eb-hover",
+        state === "next" && "opacity-75 hover:opacity-100",
         FOCUS_RING,
       )}
     >

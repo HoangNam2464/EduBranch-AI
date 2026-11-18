@@ -27,13 +27,32 @@ export function httpStatusOf(error: unknown): number | undefined {
   return typeof status === "number" ? status : undefined;
 }
 
+// In-memory cache to prevent repeated roundtrips when navigating between tabs
+const CACHE_TTL_MS = 60000; // 60 seconds
+let globalCache: {
+  key: string;
+  data: CourseWithCases[];
+  timestamp: number;
+} | null = null;
+
 export function useLecturerCourseCases({ withMaterials = false }: { withMaterials?: boolean } = {}) {
-  const [state, setState] = useState<LoadState<CourseWithCases[]>>({ status: "loading" });
+  const cacheKey = withMaterials ? "with-mat" : "no-mat";
+  const isFresh = globalCache && globalCache.key === cacheKey && Date.now() - globalCache.timestamp < CACHE_TTL_MS;
+
+  const [state, setState] = useState<LoadState<CourseWithCases[]>>(() =>
+    isFresh ? { status: "ready", data: globalCache!.data } : { status: "loading" },
+  );
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+
     (async () => {
+      // If we don't have fresh cache or this is a retry attempt, mark loading
+      if (!isFresh || attempt > 0) {
+        if (!isFresh) setState({ status: "loading" });
+      }
+
       try {
         const courses = await courseService.getMyCourses();
         const data = await Promise.all(
@@ -45,15 +64,32 @@ export function useLecturerCourseCases({ withMaterials = false }: { withMaterial
             return { course, cases, materials };
           }),
         );
-        if (!cancelled) setState({ status: "ready", data });
+
+        globalCache = {
+          key: cacheKey,
+          data,
+          timestamp: Date.now(),
+        };
+
+        if (!cancelled) {
+          setState({ status: "ready", data });
+        }
       } catch (error) {
-        if (!cancelled) setState({ status: "error", code: httpStatusOf(error), at: new Date() });
+        if (!cancelled) {
+          // If we already have fresh cached data, keep displaying it rather than crashing to error state
+          if (globalCache && globalCache.key === cacheKey) {
+            setState({ status: "ready", data: globalCache.data });
+          } else {
+            setState({ status: "error", code: httpStatusOf(error), at: new Date() });
+          }
+        }
       }
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [withMaterials, attempt]);
+  }, [withMaterials, attempt, cacheKey, isFresh]);
 
   const retry = useCallback(() => {
     setState({ status: "loading" });

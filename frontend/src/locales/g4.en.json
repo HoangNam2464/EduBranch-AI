@@ -42,7 +42,35 @@
       "pendingTitle": "Submissions awaiting your feedback",
       "pendingUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
       "todoTitle": "To do",
-      "todoEmpty": "No case is waiting for your review."
+      "todoEmpty": "No case is waiting for your review.",
+      "quickActions": {
+        "title": "Quick Actions",
+        "subtitle": "Shortcuts for teaching operations",
+        "aiStudio": {
+          "title": "AI Case Studio",
+          "desc": "Generate branching scenarios or case analyses from syllabus."
+        },
+        "materials": {
+          "title": "Course Materials",
+          "desc": "Upload syllabi, textbooks in PDF/DOCX and monitor RAG indexing."
+        },
+        "cases": {
+          "title": "Approve Cases",
+          "desc": "Review decision tree DAG structure and publish to students."
+        },
+        "stats": {
+          "title": "Reports & Analytics",
+          "desc": "Track decision path traversal and student reasoning patterns."
+        }
+      },
+      "coursesSection": {
+        "title": "Active Teaching Courses",
+        "subtitle": "Overview of course status, materials and case scenarios",
+        "viewAll": "View all courses",
+        "noCoursesTitle": "No courses yet",
+        "noCoursesDesc": "Create your first course to upload materials and build experiential cases.",
+        "createCourse": "Create new course"
+      }
     },
     "queue": {
       "metrics": {
