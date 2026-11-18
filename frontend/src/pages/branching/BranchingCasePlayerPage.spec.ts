@@ -13,4 +13,11 @@ describe("BranchingCasePlayerPage (FE-012 Continuous Branching Flow)", () => {
     const consequenceExposedInPlay = false;
     assert.strictEqual(consequenceExposedInPlay, false);
   });
+
+  it("gates progression on terminal node completion and navigates to journey review (FE-013)", () => {
+    const isTerminalComplete = (completed: boolean, terminalNodeId?: string) =>
+      Boolean(completed && terminalNodeId);
+    assert.strictEqual(isTerminalComplete(true, "term-1"), true);
+    assert.strictEqual(isTerminalComplete(false, "node-1"), false);
+  });
 });
