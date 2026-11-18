@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Check, Compass, GitBranch, Sparkles, ShieldCheck, GraduationCap } from "lucide-react";
@@ -7,20 +7,21 @@ import { PATHS } from "@/routes/paths";
 import { DISPLAY_FONT, LANDING_ANCHORS } from "@/pages/landing/landingConstants";
 
 /**
- * 00.2 Hero Section — High-Engagement Interactive Academic Case Preview.
- * Aligned with Figma Page 08 visual system and modern template UX.
+ * 00.2 Hero Section — High-Engagement Interactive Branching Decision Tree Diagram.
+ * Faithfully implements the exact Figma Page 08 / Image 2 diagram layout with
+ * live animated paths, energy particle flow, multi-branch switching, and consequence reveal.
  */
 export function HeroSection() {
   const { t } = useTranslation();
 
   return (
     <section className="relative w-full overflow-hidden">
-      <div className="mx-auto flex min-h-[760px] max-w-7xl flex-col items-center justify-between gap-12 px-6 pt-16 pb-20 lg:flex-row lg:px-12">
+      <div className="mx-auto flex min-h-[760px] max-w-7xl flex-col items-center justify-between gap-12 px-6 pt-14 pb-20 lg:flex-row lg:px-12">
         {/* Left Column: Hero Copy & Value Props */}
         <motion.div
-          initial={{ opacity: 0, x: -24 }}
+          initial={{ opacity: 0, x: -28 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           className="flex min-w-0 flex-1 flex-col gap-6"
         >
           {/* Category Chip */}
@@ -69,181 +70,292 @@ export function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Right Column: Interactive Branching Case Preview */}
+        {/* Right Column: Live Animated Branching Diagram (Image 2) */}
         <motion.div
-          initial={{ opacity: 0, x: 24 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          className="w-full shrink-0 lg:w-[580px]"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="shrink-0"
         >
-          <InteractiveCaseCard />
+          <AnimatedBranchingDiagram />
         </motion.div>
       </div>
     </section>
   );
 }
 
-/**
- * Interactive Live Simulation Card demonstrating Branching Study flow
- * (Decision -> Consequence -> Retrospective Review).
- */
-function InteractiveCaseCard() {
-  const [selectedOption, setSelectedOption] = useState<"A" | "B">("B");
+type OptionKey = "A" | "B" | "C";
 
-  const optionDetails = {
+interface OptionData {
+  label: string;
+  title: string;
+  consequence: string;
+}
+
+/**
+ * Animated Branching Decision Tree Diagram matching Image 2 exactly.
+ * Dimension: 616x600, navy bg `#2A4E7F`, radius 28px.
+ * Features:
+ * - Dynamic branch line highlights based on active option
+ * - Interactive option card selection (A / B / C)
+ * - Auto-rotation with hover pause
+ * - Smooth consequence transition with AnimatePresence
+ * - Flowing particle animations along the decision tree
+ */
+function AnimatedBranchingDiagram() {
+  const { t } = useTranslation();
+  const [activeOption, setActiveOption] = useState<OptionKey>("B");
+  const [isHovered, setIsHovered] = useState(false);
+
+  const k = (key: string) => t(`g1.landing.hero.diagram.${key}`);
+
+  const options: Record<OptionKey, OptionData> = {
     A: {
-      title: "Chấm dứt hợp đồng ngay lập tức",
-      tag: "Biện pháp mạnh",
+      label: k("optionA"),
+      title: k("optionAText"),
       consequence:
-        "Hệ quả Journey Review: Nhà máy đóng cửa đột ngột khiến hàng trăm công nhân mất việc. Làn sóng chỉ trích từ các tổ chức lao động bùng phát, đặt ra thử thách khủng hoảng truyền thông.",
+        "Không đơn hàng nào bị hủy, nhưng chi phí máy chủ mở rộng khẩn cấp tăng vọt 300%. Vẫn còn 5% người dùng bị nghẽn ở cổng ngân hàng liên kết.",
     },
     B: {
-      title: "Cử đoàn kiểm toán độc lập & khắc phục tại chỗ",
-      tag: "Hợp tác minh bạch (Được khuyến nghị)",
+      label: k("chosen"),
+      title: k("optionBText"),
+      consequence: k("consequence"),
+    },
+    C: {
+      label: k("optionC"),
+      title: k("optionCText"),
       consequence:
-        "Hệ quả Journey Review: Doanh nghiệp giữ quyền chủ động điều tra và minh bạch thông tin với báo chí, bảo vệ uy tín lâu dài nhưng chịu áp lực chi phí giám sát ngắn hạn.",
+        "Cổng thanh toán hạ nhiệt ngay lập tức, nhưng doanh thu giờ vàng sụt giảm 35% do khách hàng hủy đơn khi thấy thông báo kết thúc ưu đãi.",
     },
   };
 
+  // Auto-cycle through options every 4.5s unless hovered
+  useEffect(() => {
+    if (isHovered) return;
+    const order: OptionKey[] = ["B", "A", "C"];
+    const interval = setInterval(() => {
+      setActiveOption((curr) => {
+        const nextIdx = (order.indexOf(curr) + 1) % order.length;
+        return order[nextIdx];
+      });
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [isHovered]);
+
   return (
-    <div className="relative overflow-hidden rounded-[24px] bg-primary p-6 text-white shadow-2xl sm:p-7">
-      {/* Card Header */}
-      <div className="flex items-center justify-between border-b border-white/12 pb-4">
-        <div className="flex items-center gap-2">
-          <span className="flex h-7 items-center rounded-full bg-white/15 px-3 text-[12px] font-medium tracking-wide text-white">
-            BUS402 · Quản trị Chiến lược
-          </span>
-          <span className="flex h-7 items-center gap-1.5 rounded-full bg-[#E1F7E9] px-2.5 text-[11px] font-medium text-[#007A2D]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#00B343]" />
-            PUBLISHED
-          </span>
+    <figure
+      aria-label={k("ariaLabel")}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative h-[600px] w-[616px] overflow-hidden rounded-[28px] bg-primary shadow-2xl shadow-primary/20 border border-white/10"
+    >
+      {/* Background Subtle Grid & Flow Particle Paths */}
+      <svg
+        aria-hidden="true"
+        width="616"
+        height="600"
+        viewBox="0 0 616 600"
+        fill="none"
+        className="absolute inset-0 pointer-events-none"
+      >
+        <defs>
+          <linearGradient id="beamGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stopColor="#00A5F5" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#00A5F5" stopOpacity="1" />
+          </linearGradient>
+          <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
+
+        {/* Path to Option A (Left: 112, 236) */}
+        <path
+          d="M 308 148 C 308 190 112 190 112 236"
+          stroke={activeOption === "A" ? "var(--color-accent)" : "#FFFFFF"}
+          strokeOpacity={activeOption === "A" ? 1 : 0.28}
+          strokeWidth={activeOption === "A" ? 3 : 2}
+          strokeDasharray={activeOption === "A" ? undefined : "4 6"}
+          className="transition-all duration-300"
+        />
+
+        {/* Path from Option A down to Consequence (308, 420) */}
+        <path
+          d="M 112 368 C 112 400 308 385 308 420"
+          stroke={activeOption === "A" ? "var(--color-accent)" : "#FFFFFF"}
+          strokeOpacity={activeOption === "A" ? 1 : 0.2}
+          strokeWidth={activeOption === "A" ? 3 : 2}
+          strokeDasharray={activeOption === "A" ? undefined : "4 6"}
+          className="transition-all duration-300"
+        />
+
+        {/* Path to Option B (Center: 308, 236) */}
+        <path
+          d="M 308 148 L 308 236"
+          stroke={activeOption === "B" ? "var(--color-accent)" : "#FFFFFF"}
+          strokeOpacity={activeOption === "B" ? 1 : 0.28}
+          strokeWidth={activeOption === "B" ? 3 : 2}
+          strokeDasharray={activeOption === "B" ? undefined : "4 6"}
+          className="transition-all duration-300"
+        />
+
+        {/* Path from Option B down to Consequence (308, 420) */}
+        <path
+          d="M 308 368 L 308 420"
+          stroke={activeOption === "B" ? "var(--color-accent)" : "#FFFFFF"}
+          strokeOpacity={activeOption === "B" ? 1 : 0.2}
+          strokeWidth={activeOption === "B" ? 3 : 2}
+          strokeDasharray={activeOption === "B" ? undefined : "4 6"}
+          className="transition-all duration-300"
+        />
+
+        {/* Path to Option C (Right: 504, 236) */}
+        <path
+          d="M 308 148 C 308 190 504 190 504 236"
+          stroke={activeOption === "C" ? "var(--color-accent)" : "#FFFFFF"}
+          strokeOpacity={activeOption === "C" ? 1 : 0.28}
+          strokeWidth={activeOption === "C" ? 3 : 2}
+          strokeDasharray={activeOption === "C" ? undefined : "4 6"}
+          className="transition-all duration-300"
+        />
+
+        {/* Path from Option C down to Consequence (308, 420) */}
+        <path
+          d="M 504 368 C 504 400 308 385 308 420"
+          stroke={activeOption === "C" ? "var(--color-accent)" : "#FFFFFF"}
+          strokeOpacity={activeOption === "C" ? 1 : 0.2}
+          strokeWidth={activeOption === "C" ? 3 : 2}
+          strokeDasharray={activeOption === "C" ? undefined : "4 6"}
+          className="transition-all duration-300"
+        />
+
+        {/* Split Source Node Dot */}
+        <circle cx="308" cy="148" r="6" fill="var(--color-accent)" filter="url(#glow)" />
+        <circle cx="308" cy="148" r="12" stroke="var(--color-accent)" strokeWidth="1.5" strokeOpacity="0.4" className="animate-ping" style={{ transformOrigin: "308px 148px" }} />
+
+        {/* Connection joint to Consequence box */}
+        <circle cx="308" cy="420" r="5" fill="var(--color-accent)" />
+      </svg>
+
+      {/* TOP BOX: Tình huống (Situation) */}
+      <div className="absolute top-9 left-[128px] w-[360px] rounded-[16px] border border-white/20 bg-white/10 p-4 backdrop-blur-sm shadow-lg">
+        <p className="text-[12px] leading-4 font-medium text-white/70">{k("situationLabel")}</p>
+        <p className="mt-1 text-[15.5px] leading-6 font-medium text-ink-inverse">{k("situation")}</p>
+      </div>
+
+      {/* MIDDLE ROW: 3 Option Cards (A, B, C) */}
+      {/* Option A (Left) */}
+      <button
+        type="button"
+        onClick={() => setActiveOption("A")}
+        aria-label="Chọn lựa chọn A"
+        className={cx(
+          "absolute top-[236px] left-6 min-h-[132px] w-[176px] cursor-pointer rounded-[16px] p-4 text-left transition-all duration-200",
+          activeOption === "A"
+            ? "border-[3px] border-accent bg-surface shadow-2xl scale-[1.03] z-10"
+            : "border border-white/16 bg-white/8 text-white hover:bg-white/14 hover:border-white/30",
+        )}
+      >
+        <div className="flex items-center justify-between">
+          <p className={cx("text-[12px] leading-4 font-semibold", activeOption === "A" ? "text-[#00699E]" : "text-white/60")}>
+            {activeOption === "A" ? k("chosen") : k("optionA")}
+          </p>
+          {activeOption === "A" && (
+            <span className="flex size-4 items-center justify-center rounded-full bg-accent text-white">
+              <Check size={11} strokeWidth={2.5} />
+            </span>
+          )}
         </div>
-        <span className="flex items-center gap-1 text-[11px] font-medium text-white/70">
-          <Sparkles className="h-3.5 w-3.5 text-accent" />
-          Interactive Demo
-        </span>
-      </div>
-
-      {/* Case Situation */}
-      <div className="mt-4.5 flex flex-col gap-1.5">
-        <span className="text-[11px] font-medium tracking-wider uppercase text-white/60">
-          Tình huống Quyết định (Node 0)
-        </span>
-        <h3 className="text-[17px] font-semibold text-white sm:text-[18px]">
-          Khủng hoảng đạo đức chuỗi cung ứng quốc tế
-        </h3>
-        <p className="mt-1 text-[13.5px] leading-5.5 text-white/80">
-          Một báo cáo độc lập vừa phát hiện nhà cung ứng cấp 2 tại nước ngoài có dấu hiệu vi phạm điều kiện lao động. Phóng viên chuẩn bị đăng bài điều tra vào sáng mai. Bạn sẽ quyết định ra sao?
+        <p className={cx("mt-1.5 text-[13.5px] leading-5", activeOption === "A" ? "font-medium text-ink" : "text-white/80")}>
+          {k("optionAText")}
         </p>
-      </div>
+      </button>
 
-      {/* Interactive Options */}
-      <div className="mt-5 flex flex-col gap-2.5">
-        <span className="text-[11px] font-medium uppercase text-white/60">
-          Chọn phương án xử lý (Click để trải nghiệm rẽ nhánh):
-        </span>
-
-        {/* Option A */}
-        <button
-          type="button"
-          onClick={() => setSelectedOption("A")}
-          className={cx(
-            "group relative flex flex-col items-start rounded-[14px] border p-3.5 text-left transition-all",
-            selectedOption === "A"
-              ? "border-accent bg-surface text-ink shadow-lg ring-2 ring-accent/30"
-              : "border-white/14 bg-white/6 text-white hover:border-white/25 hover:bg-white/10",
-          )}
-        >
-          <div className="flex w-full items-center justify-between">
-            <span
-              className={cx(
-                "text-[12px] font-semibold tracking-wide uppercase",
-                selectedOption === "A" ? "text-accent" : "text-white/60",
-              )}
-            >
-              Phương án A · {optionDetails.A.tag}
+      {/* Option B (Center) */}
+      <button
+        type="button"
+        onClick={() => setActiveOption("B")}
+        aria-label="Chọn lựa chọn B"
+        className={cx(
+          "absolute top-[236px] left-[220px] min-h-[132px] w-[176px] cursor-pointer rounded-[16px] p-4 text-left transition-all duration-200",
+          activeOption === "B"
+            ? "border-[3px] border-accent bg-surface shadow-2xl scale-[1.03] z-10"
+            : "border border-white/16 bg-white/8 text-white hover:bg-white/14 hover:border-white/30",
+        )}
+      >
+        <div className="flex items-center justify-between">
+          <p className={cx("text-[12px] leading-4 font-semibold", activeOption === "B" ? "text-[#00699E]" : "text-white/60")}>
+            {activeOption === "B" ? k("chosen") : "Lựa chọn B"}
+          </p>
+          {activeOption === "B" && (
+            <span className="flex size-4 items-center justify-center rounded-full bg-accent text-white">
+              <Check size={11} strokeWidth={2.5} />
             </span>
-            {selectedOption === "A" && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-white">
-                <Check className="h-3.5 w-3.5" />
-              </span>
-            )}
-          </div>
-          <p
-            className={cx(
-              "mt-1 text-[14px] font-medium leading-5",
-              selectedOption === "A" ? "text-ink" : "text-white/90",
-            )}
-          >
-            {optionDetails.A.title}
-          </p>
-        </button>
-
-        {/* Option B */}
-        <button
-          type="button"
-          onClick={() => setSelectedOption("B")}
-          className={cx(
-            "group relative flex flex-col items-start rounded-[14px] border p-3.5 text-left transition-all",
-            selectedOption === "B"
-              ? "border-accent bg-surface text-ink shadow-lg ring-2 ring-accent/30"
-              : "border-white/14 bg-white/6 text-white hover:border-white/25 hover:bg-white/10",
           )}
-        >
-          <div className="flex w-full items-center justify-between">
-            <span
-              className={cx(
-                "text-[12px] font-semibold tracking-wide uppercase",
-                selectedOption === "B" ? "text-accent" : "text-white/60",
-              )}
-            >
-              Phương án B · {optionDetails.B.tag}
+        </div>
+        <p className={cx("mt-1.5 text-[13.5px] leading-5", activeOption === "B" ? "font-medium text-ink" : "text-white/80")}>
+          {k("optionBText")}
+        </p>
+      </button>
+
+      {/* Option C (Right) */}
+      <button
+        type="button"
+        onClick={() => setActiveOption("C")}
+        aria-label="Chọn lựa chọn C"
+        className={cx(
+          "absolute top-[236px] left-[416px] min-h-[132px] w-[176px] cursor-pointer rounded-[16px] p-4 text-left transition-all duration-200",
+          activeOption === "C"
+            ? "border-[3px] border-accent bg-surface shadow-2xl scale-[1.03] z-10"
+            : "border border-white/16 bg-white/8 text-white hover:bg-white/14 hover:border-white/30",
+        )}
+      >
+        <div className="flex items-center justify-between">
+          <p className={cx("text-[12px] leading-4 font-semibold", activeOption === "C" ? "text-[#00699E]" : "text-white/60")}>
+            {activeOption === "C" ? k("chosen") : k("optionC")}
+          </p>
+          {activeOption === "C" && (
+            <span className="flex size-4 items-center justify-center rounded-full bg-accent text-white">
+              <Check size={11} strokeWidth={2.5} />
             </span>
-            {selectedOption === "B" && (
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-white">
-                <Check className="h-3.5 w-3.5" />
-              </span>
-            )}
-          </div>
-          <p
-            className={cx(
-              "mt-1 text-[14px] font-medium leading-5",
-              selectedOption === "B" ? "text-ink" : "text-white/90",
-            )}
+          )}
+        </div>
+        <p className={cx("mt-1.5 text-[13.5px] leading-5", activeOption === "C" ? "font-medium text-ink" : "text-white/80")}>
+          {k("optionCText")}
+        </p>
+      </button>
+
+      {/* BOTTOM BOX: Hệ quả (Consequence) */}
+      <div className="absolute top-[420px] left-[128px] w-[360px] rounded-[16px] border border-accent/60 bg-accent/20 p-4 backdrop-blur-sm shadow-xl">
+        <div className="flex items-center justify-between">
+          <p className="flex items-center gap-1.5 text-[12px] leading-4 font-semibold text-white/90">
+            <Compass size={13} className="text-accent" />
+            <span>{k("consequenceLabel")}</span>
+          </p>
+          <span className="text-[11px] font-medium text-accent">Nhánh lựa chọn {activeOption}</span>
+        </div>
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={activeOption}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+            className="mt-1.5 text-[13.5px] leading-5 text-ink-inverse"
           >
-            {optionDetails.B.title}
-          </p>
-        </button>
+            {options[activeOption].consequence}
+          </motion.p>
+        </AnimatePresence>
       </div>
 
-      {/* Dynamic Consequence Banner */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={selectedOption}
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
-          className="mt-4 rounded-[14px] border border-accent/40 bg-accent/15 p-3.5 text-white/90"
-        >
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold tracking-wide uppercase text-accent">
-            <Compass className="h-3.5 w-3.5" />
-            <span>Hồi cứu Hệ quả (Giai đoạn Journey Review)</span>
-          </div>
-          <p className="mt-1 text-[13px] leading-5 text-white">
-            {optionDetails[selectedOption].consequence}
-          </p>
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Footer Flow Indicator */}
-      <div className="mt-4.5 flex items-center justify-between border-t border-white/12 pt-3 text-[11px] text-white/60">
-        <span className="flex items-center gap-1">
-          <GitBranch className="h-3.5 w-3.5 text-accent" />
-          Tiến vào Node 1 theo nhánh bạn đã chọn
+      {/* CAPTION & INTERACTIVE HINT */}
+      <figcaption className="absolute top-[554px] left-8 right-8 flex items-center justify-between text-[12px] leading-4 text-white/65">
+        <span>{k("caption")}</span>
+        <span className="inline-flex items-center gap-1 text-accent/90">
+          <Sparkles size={13} />
+          Nhấp vào lựa chọn để xem rẽ nhánh
         </span>
-        <span className="font-medium text-white/80">3 Nhánh Kết Thúc (Terminal Nodes)</span>
-      </div>
-    </div>
+      </figcaption>
+    </figure>
   );
 }

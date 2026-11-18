@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import { PublicFooter, PublicNav } from "@/components/ds";
 import { PATHS } from "@/routes/paths";
 import { LANDING_ANCHORS } from "@/pages/landing/landingConstants";
@@ -79,14 +80,62 @@ export function LandingPage() {
         secondaryAction={{ label: t("g1.landing.nav.login"), to: PATHS.AUTH.LOGIN }}
         primaryAction={{ label: t("g1.landing.nav.register"), to: PATHS.AUTH.REGISTER }}
       />
-      <main>
+      <main className="flex flex-col">
         <HeroSection />
-        <HowItWorksSection />
-        <LearningModesSection />
-        <LifecycleSection />
-        <RolesSection />
-        <FaqSection />
-        <CtaSection />
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <HowItWorksSection />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <LearningModesSection />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <LifecycleSection />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <RolesSection />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <FaqSection />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 36 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.12 }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <CtaSection />
+        </motion.div>
       </main>
       <PublicFooter
         brandName={t("g1.brand")}
