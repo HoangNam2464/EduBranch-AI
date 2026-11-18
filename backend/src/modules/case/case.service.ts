@@ -3,11 +3,13 @@ import {
   ForbiddenException,
   NotFoundException,
   BadRequestException,
+  ConflictException,
   Logger,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
+import { CaseStatus } from "./dto/update-case-status.dto";
 import { randomUUID } from "crypto";
 
 @Injectable()
@@ -514,70 +516,92 @@ export class CaseService {
   async updateCaseStatus(
     caseId: string,
     lecturerId: string,
-    newStatus: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED",
+    newStatus: CaseStatus,
   ) {
-    // P0-DATA-03: Verify course ownership
-    const caseRes = await this.db.query(
-      `SELECT c.id, c.status, c.learning_mode, c.root_node_id, c.context_text, c.problem_text, co.lecturer_id
-       FROM cases c
-       JOIN courses co ON c.course_id = co.id
-       WHERE c.id = $1`,
-      [caseId],
-    );
-    if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
-    const caseRow = caseRes.rows[0];
-
-    if (caseRow.lecturer_id !== lecturerId) {
-      throw new ForbiddenException("You can only change the status of cases in your own courses");
-    }
-
-    // P0-DATA-03: Enforce valid state machine transitions (DRAFT -> REVIEWED -> APPROVED -> PUBLISHED)
-    const ALLOWED_TRANSITIONS: Record<string, string[]> = {
+    const allowedTransitions: Record<CaseStatus, readonly CaseStatus[]> = {
       DRAFT: ["REVIEWED"],
       REVIEWED: ["APPROVED", "DRAFT"],
       APPROVED: ["PUBLISHED", "DRAFT"],
       PUBLISHED: ["DRAFT"],
     };
 
-    const currentStatus = caseRow.status;
-    if (currentStatus !== newStatus) {
-      const allowed = ALLOWED_TRANSITIONS[currentStatus];
-      if (!allowed || !allowed.includes(newStatus)) {
+    const client = await this.db.getClient();
+    let transactionCommitted = false;
+    try {
+      await client.query("BEGIN");
+      // Serialize transitions for this case so two concurrent requests cannot
+      // both validate against the same stale status.
+      const caseRes = await client.query(
+        `SELECT c.id, c.status, c.learning_mode, c.root_node_id, c.context_text, c.problem_text, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1
+         FOR UPDATE OF c`,
+        [caseId],
+      );
+      if (caseRes.rows.length === 0) {
+        throw new NotFoundException(`Case ${caseId} not found`);
+      }
+      const caseRow = caseRes.rows[0];
+      if (caseRow.lecturer_id !== lecturerId) {
+        throw new ForbiddenException("You can only change the status of cases in your own courses");
+      }
+
+      const currentStatus = caseRow.status as CaseStatus;
+      if (currentStatus !== newStatus && !allowedTransitions[currentStatus]?.includes(newStatus)) {
+        const allowed = allowedTransitions[currentStatus] || [];
         throw new BadRequestException(
-          `Invalid status transition from ${currentStatus} to ${newStatus}. Permitted transitions: ${allowed ? allowed.join(", ") : "none"}`
+          `Invalid status transition from ${currentStatus} to ${newStatus}. Permitted transitions: ${allowed.length ? allowed.join(", ") : "none"}`,
         );
       }
-    }
 
-    // P0-DATA-03: Publishing gates differentiated by learning_mode (Proposal V1.2 & INV-02/INV-03)
-    if (newStatus === "PUBLISHED") {
-      const mode = caseRow.learning_mode || "BRANCHING_STUDY";
+      if (currentStatus === newStatus) {
+        await client.query("COMMIT");
+        transactionCommitted = true;
+        return { id: caseId, status: currentStatus };
+      }
 
-      if (mode === "REVIEW_STUDY") {
-        if (!caseRow.context_text || !caseRow.context_text.trim()) {
-          throw new BadRequestException("Cannot publish Review Study case: Context text must be provided");
-        }
-        if (!caseRow.problem_text || !caseRow.problem_text.trim()) {
-          throw new BadRequestException("Cannot publish Review Study case: Problem text must be provided");
-        }
-      } else {
-        // BRANCHING_STUDY requires root node and at least one terminal node
-        if (!caseRow.root_node_id) {
-          throw new ForbiddenException("Cannot publish case without a designated root node");
-        }
-
-        const terminalRes = await this.db.query(
-          "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
-          [caseId],
-        );
-        const terminalCount = parseInt(terminalRes.rows[0]?.count || "0", 10);
-        if (terminalCount === 0) {
-          throw new BadRequestException("Cannot publish case: The decision tree must contain at least one terminal node");
+      if (newStatus === "PUBLISHED") {
+        const mode = caseRow.learning_mode || "BRANCHING_STUDY";
+        if (mode === "REVIEW_STUDY") {
+          if (!caseRow.context_text || !caseRow.context_text.trim()) {
+            throw new BadRequestException("Cannot publish Review Study case: Context text must be provided");
+          }
+          if (!caseRow.problem_text || !caseRow.problem_text.trim()) {
+            throw new BadRequestException("Cannot publish Review Study case: Problem text must be provided");
+          }
+        } else {
+          if (!caseRow.root_node_id) {
+            throw new ForbiddenException("Cannot publish case without a designated root node");
+          }
+          const terminalRes = await client.query(
+            "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
+            [caseId],
+          );
+          if (parseInt(terminalRes.rows[0]?.count || "0", 10) === 0) {
+            throw new BadRequestException("Cannot publish case: The decision tree must contain at least one terminal node");
+          }
         }
       }
-    }
 
-    await this.db.query("UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2", [newStatus, caseId]);
-    return { id: caseId, status: newStatus };
+      const updateRes = await client.query(
+        "UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2 AND status = $3",
+        [newStatus, caseId, currentStatus],
+      );
+      if (updateRes.rowCount !== 1) {
+        throw new ConflictException("Case status changed before the transition could be saved");
+      }
+
+      await client.query("COMMIT");
+      transactionCommitted = true;
+      return { id: caseId, status: newStatus };
+    } catch (error) {
+      if (!transactionCommitted) {
+        await client.query("ROLLBACK");
+      }
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 }

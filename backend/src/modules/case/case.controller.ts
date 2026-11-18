@@ -14,6 +14,7 @@ import { CaseService } from "./case.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
+import { UpdateCaseStatusDto } from "./dto/update-case-status.dto";
 
 /**
  * CaseController — Flow 2: AI Case Generation & Lecturer Review Lifecycle
@@ -112,7 +113,7 @@ export class CaseController {
   @Patch("cases/:id/status")
   async updateCaseStatus(
     @Param("id") id: string,
-    @Body() body: { status: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED" },
+    @Body() body: UpdateCaseStatusDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
     if (user.role !== "LECTURER") {

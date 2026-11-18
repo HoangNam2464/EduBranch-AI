@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CaseService } from './case.service';
 import { DatabaseService } from '../../common/database/database.service';
 import { AiClientService } from '../../common/ai-client/ai-client.service';
-import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 
 describe('CaseService', () => {
   let service: CaseService;
@@ -77,6 +77,7 @@ describe('CaseService', () => {
 
       expect(mockDbClient.query).toHaveBeenCalledWith('BEGIN');
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO cases'), expect.any(Array));
+      expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining("'DRAFT'"), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_nodes'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET root_node_id'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_options'), expect.any(Array));
@@ -288,131 +289,116 @@ describe('CaseService', () => {
     });
   });
 
-  describe('lifecycle status transitions (P0-DATA-03)', () => {
-    it('should reject status change if lecturer does not own the course', async () => {
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'other-lecturer' }],
-      });
+  describe('lifecycle status transitions (BE-018)', () => {
+    const baseCase = {
+      id: 'case-1', status: 'DRAFT', learning_mode: 'BRANCHING_STUDY',
+      root_node_id: 'root-1', context_text: null, problem_text: null,
+      lecturer_id: 'lecturer-1',
+    };
 
-      await expect(
-        service.updateCaseStatus('case-1', 'lecturer-1', 'REVIEWED'),
-      ).rejects.toThrow(ForbiddenException);
+    function mockLifecycleTransaction(caseRow: any, terminalCount = 1, updateRowCount = 1) {
+      mockDbClient.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('FROM cases c') && sql.includes('FOR UPDATE OF c')) {
+          return { rows: [caseRow] };
+        }
+        if (sql.includes('SELECT COUNT(*)')) return { rows: [{ count: String(terminalCount) }] };
+        if (sql.startsWith('UPDATE cases SET status')) return { rowCount: updateRowCount, rows: [] };
+        return { rows: [] };
+      });
+    }
+
+    it.each([
+      ['DRAFT', 'REVIEWED'],
+      ['REVIEWED', 'APPROVED'],
+      ['APPROVED', 'PUBLISHED'],
+    ])('accepts the ordered transition %s -> %s', async (currentStatus, targetStatus) => {
+      const caseRow = { ...baseCase, status: currentStatus };
+      mockLifecycleTransaction(caseRow, 2);
+
+      const result = await service.updateCaseStatus('case-1', 'lecturer-1', targetStatus as any);
+
+      expect(result).toEqual({ id: 'case-1', status: targetStatus });
+      expect(mockDbClient.query).toHaveBeenCalledWith('BEGIN');
+      expect(mockDbClient.query).toHaveBeenCalledWith(
+        'UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2 AND status = $3',
+        [targetStatus, 'case-1', currentStatus],
+      );
+      expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
     });
 
-    it('should reject invalid transition jumping from DRAFT to PUBLISHED', async () => {
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }],
-      });
+    it.each([
+      ['DRAFT', 'APPROVED'],
+      ['DRAFT', 'PUBLISHED'],
+      ['REVIEWED', 'PUBLISHED'],
+    ])('rejects skipped transition %s -> %s without persistence', async (currentStatus, targetStatus) => {
+      mockLifecycleTransaction({ ...baseCase, status: currentStatus });
 
-      await expect(
-        service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', targetStatus as any))
+        .rejects.toThrow(BadRequestException);
+
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET status'), expect.any(Array));
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
     });
 
-    it('should enforce publishing with root node and at least one terminal node for BRANCHING_STUDY', async () => {
-      // 1. Missing root node
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{
-          id: 'case-1',
-          status: 'APPROVED',
-          learning_mode: 'BRANCHING_STUDY',
-          root_node_id: null,
-          lecturer_id: 'lecturer-1',
-        }],
-      });
-      await expect(
-        service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED'),
-      ).rejects.toThrow(ForbiddenException);
+    it('rejects a lecturer who does not own the course without changing status', async () => {
+      mockLifecycleTransaction({ ...baseCase, lecturer_id: 'another-lecturer' });
 
-      // 2. Has root node but 0 terminal nodes
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{
-            id: 'case-1',
-            status: 'APPROVED',
-            learning_mode: 'BRANCHING_STUDY',
-            root_node_id: 'node-1',
-            lecturer_id: 'lecturer-1',
-          }],
-        })
-        .mockResolvedValueOnce({ rows: [{ count: '0' }] }); // terminal count = 0
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'REVIEWED'))
+        .rejects.toThrow(ForbiddenException);
 
-      await expect(
-        service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED'),
-      ).rejects.toThrow(BadRequestException);
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET status'), expect.any(Array));
     });
 
-    it('should allow valid transition from APPROVED to PUBLISHED for BRANCHING_STUDY with terminal node', async () => {
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{
-            id: 'case-1',
-            status: 'APPROVED',
-            learning_mode: 'BRANCHING_STUDY',
-            root_node_id: 'node-1',
-            lecturer_id: 'lecturer-1',
-          }],
-        })
-        .mockResolvedValueOnce({ rows: [{ count: '2' }] }) // terminal count = 2
-        .mockResolvedValueOnce({ rows: [] }); // update
+    it('rejects publishing a Branching Study without a root or terminal node', async () => {
+      mockLifecycleTransaction({ ...baseCase, status: 'APPROVED', root_node_id: null });
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED'))
+        .rejects.toThrow(ForbiddenException);
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET status'), expect.any(Array));
 
+      mockLifecycleTransaction({ ...baseCase, status: 'APPROVED' }, 0);
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED'))
+        .rejects.toThrow(BadRequestException);
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET status'), expect.any(Array));
+    });
+
+    it('allows publishing Review Study only when context and problem are present', async () => {
+      mockLifecycleTransaction({
+        ...baseCase, status: 'APPROVED', learning_mode: 'REVIEW_STUDY', root_node_id: null,
+        context_text: 'Context', problem_text: 'Problem',
+      });
       const result = await service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED');
       expect(result).toEqual({ id: 'case-1', status: 'PUBLISHED' });
+      mockDbClient.query.mockClear();
+
+      mockLifecycleTransaction({
+        ...baseCase, status: 'APPROVED', learning_mode: 'REVIEW_STUDY', root_node_id: null,
+        context_text: '', problem_text: 'Problem',
+      });
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED'))
+        .rejects.toThrow(BadRequestException);
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET status'), expect.any(Array));
     });
 
-    it('should allow valid transition to PUBLISHED for REVIEW_STUDY case without root node when context and problem exist', async () => {
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{
-            id: 'case-review-1',
-            status: 'APPROVED',
-            learning_mode: 'REVIEW_STUDY',
-            root_node_id: null, // No root node for Review Study
-            context_text: 'Comprehensive business case context and market data',
-            problem_text: 'What turnaround strategy should the executive committee adopt?',
-            lecturer_id: 'lecturer-1',
-          }],
-        })
-        .mockResolvedValueOnce({ rows: [] }); // update
+    it('keeps an idempotent request unchanged and commits no status update', async () => {
+      mockLifecycleTransaction({ ...baseCase, status: 'REVIEWED' });
 
-      const result = await service.updateCaseStatus('case-review-1', 'lecturer-1', 'PUBLISHED');
-      expect(result).toEqual({ id: 'case-review-1', status: 'PUBLISHED' });
+      const result = await service.updateCaseStatus('case-1', 'lecturer-1', 'REVIEWED');
+
+      expect(result).toEqual({ id: 'case-1', status: 'REVIEWED' });
+      expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases SET status'), expect.any(Array));
     });
 
-    it('should reject publishing REVIEW_STUDY case if context_text or problem_text is missing', async () => {
-      // Missing context_text
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{
-          id: 'case-review-1',
-          status: 'APPROVED',
-          learning_mode: 'REVIEW_STUDY',
-          root_node_id: null,
-          context_text: '',
-          problem_text: 'Some problem',
-          lecturer_id: 'lecturer-1',
-        }],
-      });
+    it('rolls back if the status changed before the conditional update is persisted', async () => {
+      mockLifecycleTransaction({ ...baseCase }, 1, 0);
 
-      await expect(
-        service.updateCaseStatus('case-review-1', 'lecturer-1', 'PUBLISHED'),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'REVIEWED'))
+        .rejects.toThrow(ConflictException);
 
-      // Missing problem_text
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{
-          id: 'case-review-1',
-          status: 'APPROVED',
-          learning_mode: 'REVIEW_STUDY',
-          root_node_id: null,
-          context_text: 'Some context',
-          problem_text: null,
-          lecturer_id: 'lecturer-1',
-        }],
-      });
-
-      await expect(
-        service.updateCaseStatus('case-review-1', 'lecturer-1', 'PUBLISHED'),
-      ).rejects.toThrow(BadRequestException);
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
     });
   });
 
