@@ -49,6 +49,8 @@
       "consequence": "Hậu quả (do giảng viên xác định)",
       "consequenceHelp": "Chỉ hiển thị cho sinh viên trong Journey Review, không hiển thị khi đang làm bài",
       "addOption": "+ Thêm phương án",
+      "selectNextNode": "Chọn tình huống tiếp theo",
+      "maxOptions": "Mỗi tình huống có tối đa {{max}} phương án",
       "nodeList": "Danh sách tình huống ({{count}})",
       "editingNode": "Đang chỉnh sửa · Bước {{step}}",
       "rootTag": "Nút gốc",
@@ -61,7 +63,7 @@
       "addNode": "+ Thêm tình huống",
       "noNodes": "Case chưa có nút nào trong cây quyết định.",
       "treeCheck": "Kiểm tra cây quyết định",
-      "topology": "Cấu trúc: {{nodes}} nút · {{situations}} tình huống · {{outcomes}} kết quả",
+      "topology": "{{nodes}} nút · {{situations}} tình huống · {{outcomes}} kết quả",
       "treeOk": "Kiểm tra cây: 0 lỗi cấu trúc",
       "treeIssues": "Kiểm tra cây: {{count}} lỗi cấu trúc",
       "issue": {
@@ -71,7 +73,20 @@
         "orphan": "Có nút không đi tới được từ nút gốc.",
         "optionCount": "Mỗi tình huống cần 2–4 phương án.",
         "noTerminal": "Cây chưa có nút kết quả."
-      }
+      },
+      "treeTitle": "Cây quyết định",
+      "nodeCount": "{{count}} nút",
+      "treeValid": "Hợp lệ · mọi nhánh dẫn tới kết cục",
+      "treeInvalid": "{{count}} lỗi cấu trúc cần sửa",
+      "badgeStart": "Bắt đầu",
+      "badgeOutcome": "Kết cục",
+      "badgePoint": "Điểm {{n}}",
+      "treeHint": "Chọn một nút để sửa nội dung ở cột trái.",
+      "topologyLabel": "Topology:",
+      "checkLabel": "Kiểm tra cây:",
+      "issueCount": "{{count}} lỗi cấu trúc",
+      "optionSummary": "Phương án {{n}} · {{text}} → {{target}}",
+      "expandOption": "Mở phương án {{n}}"
     },
     "review": {
       "contentCard": "Nội dung Review Study",
@@ -90,13 +105,15 @@
       "unknown": "—",
       "studentAnswers": "Sinh viên sẽ trả lời",
       "answerSolution": "1. Đề xuất phương án / kế hoạch giải quyết",
-      "answerReasoning": "2. Lập luận căn cứ (dựa trên số liệu và kiến thức học phần)"
+      "answerReasoning": "2. Lập luận căn cứ (dựa trên số liệu và kiến thức học phần)",
+      "answersHint": "Mỗi sinh viên nộp một lần. Bạn phản hồi bằng nhận xét, không chấm điểm."
     },
     "validation": {
       "title": "Chưa lưu được",
       "titleRequired": "Tiêu đề case không được để trống.",
       "situationRequired": "Nội dung tình huống không được để trống.",
-      "optionRequired": "Mỗi phương án cần tiêu đề nhãn và hậu quả."
+      "optionRequired": "Mỗi phương án cần tiêu đề nhãn và hậu quả.",
+      "nextRequired": "Mỗi phương án của {{node}} cần chọn tình huống tiếp theo."
     },
     "toast": {
       "close": "Đóng thông báo",
@@ -125,11 +142,19 @@
         "REVIEWED": "{{mode}} · Phiên bản {{version}} · Chờ phê duyệt",
         "APPROVED": "{{mode}} · Phiên bản {{version}} · Sẵn sàng xuất bản",
         "PUBLISHED": "{{mode}} · Phiên bản {{version}} · Sinh viên đã truy cập được"
+      },
+      "label": "Thanh duyệt case",
+      "stepper": "Tiến độ duyệt case",
+      "locked": {
+        "DRAFT": "Phê duyệt và Xuất bản bị khóa cho đến khi case được đánh dấu đã rà soát.",
+        "REVIEWED": "Có thể phê duyệt; Xuất bản vẫn khóa.",
+        "APPROVED": "Nội dung đã chốt. Có thể xuất bản cho sinh viên hoặc trả về bản nháp để sửa tiếp.",
+        "PUBLISHED": "Sinh viên trong khóa đã thấy case. Chỉ còn sao chép đường dẫn gửi lớp."
       }
     },
     "publishModal": {
       "title": "Xuất bản Case Study",
-      "description": "Sau khi xuất bản, sinh viên mở được tình huống này qua đường dẫn bên dưới. Gửi đường dẫn cho lớp qua LMS, email hoặc trên lớp.",
+      "description": "Sau khi xuất bản, sinh viên trong khóa {{course}} có thể mở và làm case này.",
       "close": "Đóng",
       "linkLabel": "Đường dẫn cho sinh viên",
       "copy": "Sao chép",
@@ -137,7 +162,31 @@
       "notify": "Gửi thông báo in-app và email cho sinh viên trong lớp",
       "cancel": "Hủy bỏ",
       "confirm": "Xác nhận xuất bản",
-      "publishing": "Đang xuất bản..."
+      "publishing": "Đang xuất bản...",
+      "descriptionNoCourse": "Sau khi xuất bản, sinh viên trong khóa có thể mở và làm case này.",
+      "points": "{{count}} điểm quyết định",
+      "outcomes": "{{count}} kết cục",
+      "checkTree": "Cây quyết định hợp lệ, mọi nhánh đều dẫn tới kết cục",
+      "checkConsequences": "Mọi phương án đều có hậu quả",
+      "checkApproved": "Đã rà soát và phê duyệt",
+      "checkContext": "Đã có bối cảnh & số liệu",
+      "checkProblem": "Đã có vấn đề cần phân tích",
+      "checkOk": "Đạt",
+      "checkFailed": "Chưa đạt",
+      "warning": "Sau khi xuất bản, nội dung case không chỉnh sửa được."
+    },
+    "errors": {
+      "detail": "Chi tiết: {{detail}}",
+      "invalid": "Dữ liệu chưa hợp lệ. Hãy kiểm tra lại các trường đã sửa.",
+      "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+      "notFound": "Không tìm thấy case hoặc nội dung cần lưu.",
+      "conflict": "Thao tác xung đột với dữ liệu hiện tại.",
+      "network": "Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.",
+      "generic": "Đã có lỗi xảy ra. Vui lòng thử lại."
+    },
+    "sources": {
+      "title": "Đoạn nguồn được trích",
+      "unavailable": "Hệ thống chưa trả về đoạn nguồn được trích cho case này."
     }
   }
 }

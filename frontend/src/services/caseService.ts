@@ -6,6 +6,7 @@
  *   GET   /courses/:courseId/cases      LECTURER | STUDENT (students: PUBLISHED only)
  *   GET   /cases/:id                    lecturer: full tree · student: published metadata
  *   PUT   /cases/:id                    LECTURER owner, DRAFT/REVIEWED only
+ *   PUT   /cases/:id/nodes/:nodeId      LECTURER owner, DRAFT/REVIEWED only; tree checked (BE-017)
  *   PATCH /cases/:id/status             LECTURER owner, DRAFT→REVIEWED→APPROVED→PUBLISHED (+ back to DRAFT)
  */
 
@@ -32,6 +33,15 @@ export interface UpdateCaseRequest {
     situation?: string;
     options?: Array<{ id: string; option_text: string; consequence: string }>;
   }>;
+}
+
+/**
+ * Body of `PUT /cases/:id/nodes/:nodeId` (BE-017): the node's situation and its full option list.
+ * An option with `id` is kept, one without is created, a missing one is deleted. No options = ending node.
+ */
+export interface UpdateCaseNodeRequest {
+  situation: string;
+  options: Array<{ id?: string; text: string; consequence: string; nextNodeId: string }>;
 }
 
 export const caseService = {
@@ -63,6 +73,12 @@ export const caseService = {
 
   async updateCase(caseId: string, data: UpdateCaseRequest): Promise<CaseDetail> {
     const res = await apiClient.put<Envelope<CaseDetailRow>>(`/cases/${caseId}`, data);
+    invalidateLecturerCourseCases();
+    return toCaseDetail(res.data.data);
+  },
+
+  async updateNode(caseId: string, nodeId: string, data: UpdateCaseNodeRequest): Promise<CaseDetail> {
+    const res = await apiClient.put<Envelope<CaseDetailRow>>(`/cases/${caseId}/nodes/${nodeId}`, data);
     invalidateLecturerCourseCases();
     return toCaseDetail(res.data.data);
   },

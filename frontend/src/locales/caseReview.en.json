@@ -49,6 +49,8 @@
       "consequence": "Consequence (set by the lecturer)",
       "consequenceHelp": "Shown to students only in Journey Review, not while they play",
       "addOption": "+ Add option",
+      "selectNextNode": "Choose the next situation",
+      "maxOptions": "A situation has at most {{max}} options",
       "nodeList": "Situations ({{count}})",
       "editingNode": "Editing · Step {{step}}",
       "rootTag": "Root",
@@ -61,7 +63,7 @@
       "addNode": "+ Add situation",
       "noNodes": "This case has no nodes in its decision tree yet.",
       "treeCheck": "Decision tree check",
-      "topology": "Structure: {{nodes}} nodes · {{situations}} situations · {{outcomes}} outcomes",
+      "topology": "{{nodes}} nodes · {{situations}} situations · {{outcomes}} outcomes",
       "treeOk": "Tree check: 0 structural errors",
       "treeIssues": "Tree check: {{count}} structural errors",
       "issue": {
@@ -71,7 +73,20 @@
         "orphan": "Some nodes cannot be reached from the root.",
         "optionCount": "Each situation needs 2–4 options.",
         "noTerminal": "The tree has no outcome node."
-      }
+      },
+      "treeTitle": "Decision tree",
+      "nodeCount": "{{count}} nodes",
+      "treeValid": "Valid · every branch reaches an outcome",
+      "treeInvalid": "{{count}} structure issues to fix",
+      "badgeStart": "Start",
+      "badgeOutcome": "Outcome",
+      "badgePoint": "Point {{n}}",
+      "treeHint": "Select a node to edit its content in the left column.",
+      "topologyLabel": "Topology:",
+      "checkLabel": "Tree check:",
+      "issueCount": "{{count}} structure issues",
+      "optionSummary": "Option {{n}} · {{text}} → {{target}}",
+      "expandOption": "Open option {{n}}"
     },
     "review": {
       "contentCard": "Review Study content",
@@ -90,13 +105,15 @@
       "unknown": "—",
       "studentAnswers": "Students will answer",
       "answerSolution": "1. Proposed solution / action plan",
-      "answerReasoning": "2. Supporting reasoning (based on the data and course knowledge)"
+      "answerReasoning": "2. Supporting reasoning (based on the data and course knowledge)",
+      "answersHint": "Each student submits once. You respond with comments, not grades."
     },
     "validation": {
       "title": "Not saved",
       "titleRequired": "The case title cannot be empty.",
       "situationRequired": "The situation details cannot be empty.",
-      "optionRequired": "Each option needs a label and a consequence."
+      "optionRequired": "Each option needs a label and a consequence.",
+      "nextRequired": "Each option of {{node}} needs a next situation."
     },
     "toast": {
       "close": "Close notification",
@@ -125,11 +142,19 @@
         "REVIEWED": "{{mode}} · Version {{version}} · Awaiting approval",
         "APPROVED": "{{mode}} · Version {{version}} · Ready to publish",
         "PUBLISHED": "{{mode}} · Version {{version}} · Available to students"
+      },
+      "label": "Case review bar",
+      "stepper": "Case review progress",
+      "locked": {
+        "DRAFT": "Approve and Publish stay locked until the case is marked as reviewed.",
+        "REVIEWED": "You can approve now; Publish stays locked.",
+        "APPROVED": "The content is final. Publish it for students or return it to draft to keep editing.",
+        "PUBLISHED": "Students in the course can see the case. Only copying the class link remains."
       }
     },
     "publishModal": {
       "title": "Publish case study",
-      "description": "Once published, students can open this case through the link below. Share it with the class via the LMS, email or in class.",
+      "description": "Once published, students in {{course}} can open and work on this case.",
       "close": "Close",
       "linkLabel": "Student link",
       "copy": "Copy",
@@ -137,7 +162,31 @@
       "notify": "Send in-app and email notifications to students in the class",
       "cancel": "Cancel",
       "confirm": "Confirm publishing",
-      "publishing": "Publishing..."
+      "publishing": "Publishing...",
+      "descriptionNoCourse": "Once published, students in the course can open and work on this case.",
+      "points": "{{count}} decision points",
+      "outcomes": "{{count}} outcomes",
+      "checkTree": "The decision tree is valid and every branch reaches an outcome",
+      "checkConsequences": "Every option has a consequence",
+      "checkApproved": "Reviewed and approved",
+      "checkContext": "Context and data are filled in",
+      "checkProblem": "The problem to analyse is filled in",
+      "checkOk": "Passed",
+      "checkFailed": "Not passed",
+      "warning": "After publishing, the case content can no longer be edited."
+    },
+    "errors": {
+      "detail": "Details: {{detail}}",
+      "invalid": "Some data is not valid. Check the fields you changed.",
+      "forbidden": "You do not have permission for this action.",
+      "notFound": "The case or the content to save was not found.",
+      "conflict": "This action conflicts with the current data.",
+      "network": "Cannot reach the server. Check your connection and try again.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "sources": {
+      "title": "Cited source passages",
+      "unavailable": "The system does not return cited source passages for this case yet."
     }
   }
 }
