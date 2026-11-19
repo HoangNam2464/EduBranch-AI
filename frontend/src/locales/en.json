@@ -1363,7 +1363,23 @@
       "progressUnavailable": "No learning progress data yet.",
       "studentTodoUnavailable": "Nothing to do yet.",
       "myCoursesTitle": "My courses",
-      "myCoursesUnavailable": "The system does not provide the student's course list yet."
+      "myCoursesUnavailable": "The system does not provide the student's course list yet.",
+      "editProfile": "Edit Profile",
+      "editProfileTitle": "Update Account Profile",
+      "editProfileDesc": "View and update personal details and UI language preference.",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Enter your full name...",
+      "fullNameRequired": "Full name cannot be empty.",
+      "emailImmutable": "Account email is fixed and cannot be changed.",
+      "language": "Interface language",
+      "languageDesc": "Select system-wide display language.",
+      "languageVi": "Tiếng Việt",
+      "languageEn": "English",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "saveSuccess": "Profile updated successfully.",
+      "saveError": "Failed to update profile, please try again.",
+      "cancel": "Cancel"
     }
   },
   "g5": {

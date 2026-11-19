@@ -1363,7 +1363,23 @@
       "progressUnavailable": "Chưa có dữ liệu tiến độ học tập.",
       "studentTodoUnavailable": "Chưa có việc cần làm.",
       "myCoursesTitle": "Khóa học của tôi",
-      "myCoursesUnavailable": "Hệ thống chưa cung cấp danh sách khóa học của sinh viên."
+      "myCoursesUnavailable": "Hệ thống chưa cung cấp danh sách khóa học của sinh viên.",
+      "editProfile": "Chỉnh sửa hồ sơ",
+      "editProfileTitle": "Cập nhật hồ sơ tài khoản",
+      "editProfileDesc": "Xem và cập nhật thông tin cá nhân cùng tùy chọn ngôn ngữ giao diện.",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên...",
+      "fullNameRequired": "Họ và tên không được để trống.",
+      "emailImmutable": "Email tài khoản cố định, không thể thay đổi.",
+      "language": "Ngôn ngữ giao diện",
+      "languageDesc": "Lựa chọn ngôn ngữ hiển thị trên toàn bộ hệ thống.",
+      "languageVi": "Tiếng Việt",
+      "languageEn": "English",
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "saveSuccess": "Cập nhật hồ sơ thành công.",
+      "saveError": "Không thể cập nhật hồ sơ, vui lòng thử lại.",
+      "cancel": "Hủy"
     }
   },
   "g5": {
