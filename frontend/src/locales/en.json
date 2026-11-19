@@ -1648,15 +1648,33 @@
       "mode": "Mode",
       "format": "Format",
       "formatValue": "Written submission",
+      "status": "Status",
+      "submittedStatus": "Submitted (SUBMITTED)",
+      "submittedBadge": "Submitted",
+      "submittedNotice": "Your submission has been recorded and is awaiting lecturer review. Review Study permits exactly one submission per case.",
+      "submittedAt": "Submitted at: {{time}}",
+      "submittedAnalysisTitle": "Submitted analysis",
+      "submittedSolutionTitle": "Submitted proposed solution",
+      "submittedReasoningTitle": "Submitted reasoning",
+      "emptyAnalysis": "No analysis provided",
       "requirementsTitle": "Submission requirements",
       "requirement": {
-        "solution": "1. Propose a solution / plan to solve the problem",
-        "reasoning": "2. Reasoning based on the data"
+        "solution": "1. Propose a solution / plan to solve the problem (min 10 chars)",
+        "reasoning": "2. Reasoning based on the data (min 10 chars)"
       },
       "back": "Back",
       "finalNote": "Your submission is final and cannot be edited after you submit.",
       "submit": "Submit",
-      "submitUnavailable": "Cannot submit yet: the server has no Review Study submission API."
+      "submitting": "Submitting…",
+      "submitSuccess": "Submission submitted successfully!",
+      "submitFailed": "Failed to submit: {{error}}",
+      "submitFailedGeneric": "Failed to submit. Please try again.",
+      "duplicateSubmission": "You already have a submission for this case. Exactly one submission is allowed.",
+      "submitUnavailable": "Cannot submit yet: the server has no Review Study submission API.",
+      "validation": {
+        "solutionMin": "Proposed solution must contain at least 10 characters.",
+        "reasoningMin": "Reasoning must contain at least 10 characters."
+      }
     },
     "feedback": {
       "unavailableTitle": "Feedback cannot be shown yet",

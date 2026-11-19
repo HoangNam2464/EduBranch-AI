@@ -1648,15 +1648,33 @@
       "mode": "Chế độ",
       "format": "Hình thức",
       "formatValue": "Bài nộp tự luận",
+      "status": "Trạng thái",
+      "submittedStatus": "Đã nộp bài (SUBMITTED)",
+      "submittedBadge": "Đã nộp",
+      "submittedNotice": "Bài nộp của bạn đã được ghi nhận và đang chờ giảng viên đánh giá. Chế độ Review Study cho phép nộp một lần duy nhất.",
+      "submittedAt": "Thời gian nộp: {{time}}",
+      "submittedAnalysisTitle": "Bài phân tích đã nộp",
+      "submittedSolutionTitle": "Phương án giải pháp đã nộp",
+      "submittedReasoningTitle": "Lập luận căn cứ đã nộp",
+      "emptyAnalysis": "Không có nội dung phân tích",
       "requirementsTitle": "Yêu cầu bài nộp",
       "requirement": {
-        "solution": "1. Đề xuất phương án / kế hoạch giải quyết",
-        "reasoning": "2. Lập luận căn cứ dựa trên số liệu"
+        "solution": "1. Đề xuất phương án / kế hoạch giải quyết (tối thiểu 10 ký tự)",
+        "reasoning": "2. Lập luận căn cứ dựa trên số liệu (tối thiểu 10 ký tự)"
       },
       "back": "Quay lại",
       "finalNote": "Bài nộp là bản cuối, không chỉnh sửa được sau khi nộp.",
       "submit": "Nộp bài",
-      "submitUnavailable": "Chưa thể nộp bài: máy chủ chưa có API nộp bài Review Study."
+      "submitting": "Đang gửi bài nộp…",
+      "submitSuccess": "Bài nộp đã được gửi thành công!",
+      "submitFailed": "Không thể nộp bài: {{error}}",
+      "submitFailedGeneric": "Gửi bài nộp thất bại. Vui lòng thử lại.",
+      "duplicateSubmission": "Bạn đã có bài nộp cho tình huống này. Hệ thống chỉ cho phép nộp 1 lần duy nhất.",
+      "submitUnavailable": "Chưa thể nộp bài: máy chủ chưa có API nộp bài Review Study.",
+      "validation": {
+        "solutionMin": "Phương án giải pháp phải có ít nhất 10 ký tự.",
+        "reasoningMin": "Lập luận căn cứ phải có ít nhất 10 ký tự."
+      }
     },
     "feedback": {
       "unavailableTitle": "Chưa xem được phản hồi",
