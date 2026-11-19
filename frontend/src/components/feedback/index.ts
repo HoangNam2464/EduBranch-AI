@@ -1,6 +1,6 @@
 /**
  * Shared feedback states — Figma page EduBranch AI – Screens, frames 01.1–01.8 (Jira FE-025).
- * Strings live under the `states` namespace key (locales/states.*.json).
+ * Strings live under the `states` namespace key in `locales/vi.json` and `locales/en.json`.
  */
 export { StateButton, SupportEmailLink } from "@/components/feedback/StateButton";
 export type {
