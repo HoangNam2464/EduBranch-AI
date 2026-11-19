@@ -1687,18 +1687,39 @@
       "description": "This section appears once the server provides admin data."
     },
     "dashboard": {
+      "attentionTitle": "{{count}} items need attention",
+      "viewDetails": "View details",
+      "kpi": {
+        "users": "Users",
+        "openCourses": "Active courses",
+        "publishedCases": "Published cases",
+        "aiGenerations": "AI case generations",
+        "growthThisMonth": "+{{count}} in month {{month}}",
+        "aiErrors": "{{count}} failed generations",
+        "noAiErrors": "No errors"
+      },
       "activity": {
         "title": "Weekly learning activity",
-        "subtitle": "Branching Study attempts and Review Study submissions across the system"
+        "subtitle": "Branching Study attempts and Review Study submissions across the system",
+        "filter8Weeks": "8 weeks",
+        "branchingAttempts": "Study attempts",
+        "reviewSubmissions": "Review submissions"
       },
       "usersByRole": {
         "title": "Users by role",
-        "subtitle": "Active accounts"
+        "subtitle": "Active accounts",
+        "students": "Students",
+        "lecturers": "Lecturers",
+        "admins": "Administrators",
+        "totalUsers": "{{count}} users"
       },
       "health": {
         "title": "System status",
         "updatedAt": "Updated at {{time}}",
         "appServer": "Application server",
+        "aiService": "AI service",
+        "indexing": "Document indexing",
+        "indexingProcessing": "{{count}} files processing",
         "database": "Database",
         "up": "Stable",
         "down": "Disrupted",
@@ -1707,12 +1728,17 @@
       },
       "casesByCourse": {
         "title": "Cases by course",
-        "subtitle": "Published and draft cases in each course"
+        "subtitle": "Published and draft cases in each course",
+        "filterAll": "All courses",
+        "published": "Published",
+        "draft": "Draft",
+        "noCases": "No cases yet"
       },
       "recentLog": {
         "title": "Recent log",
         "subtitle": "Today"
-      }
+      },
+      "loadError": "Failed to load dashboard overview data"
     },
     "users": {
       "emptyTitle": "No user data yet",
