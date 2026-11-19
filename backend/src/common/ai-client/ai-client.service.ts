@@ -14,6 +14,23 @@ export interface ProcessIngestionResult {
   chunk_count: number;
 }
 
+export interface GenerateChallengePayload {
+  session_id: string;
+  reasoning_id?: string;
+  review_submission_id?: string;
+  student_reasoning: string;
+  case_context: string;
+  round_number: number;
+  retrieved_context?: string;
+  previous_exchange?: Array<{ role: string; content: string }>;
+}
+
+export interface GenerateChallengeResult {
+  counter_question: string;
+  round_number: number;
+  is_final_round: boolean;
+}
+
 @Injectable()
 export class AiClientService {
   private readonly logger = new Logger(AiClientService.name);
@@ -137,5 +154,102 @@ export class AiClientService {
     }
 
     return response.json();
+  }
+
+  async generateChallenge(
+    payload: GenerateChallengePayload,
+  ): Promise<GenerateChallengeResult> {
+    const url = `${this.baseUrl}/internal/v1/challenge-support/generate`;
+    this.logger.log(
+      `Invoking AI Service challenge support: ${url} for session ${payload.session_id} (round ${payload.round_number})`,
+    );
+
+    const rawTimeout = this.configService.get<string | number>(
+      "CHALLENGE_SUPPORT_TIMEOUT_MS",
+      this.configService.get<string | number>("AI_SERVICE_TIMEOUT_MS", 30000),
+    );
+    const parsedTimeout = Number(rawTimeout);
+    const timeoutMs =
+      !isNaN(parsedTimeout) && parsedTimeout > 0 ? parsedTimeout : 30000;
+
+    const maxRetries = 2; // 1 initial + up to 2 retries = 3 attempts total
+    let attempt = 0;
+    let lastError: Error | null = null;
+
+    while (attempt <= maxRetries) {
+      attempt++;
+      const controller = new AbortController();
+      const timeoutHandle = setTimeout(() => controller.abort(), timeoutMs);
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Internal-API-Key": this.apiKey,
+          },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          const status = response.status;
+          const errText = await response.text();
+
+          // 5xx status codes are transient, eligible for retry
+          if (status >= 500 && status < 600) {
+            this.logger.warn(
+              `AI Service challenge support failed with transient HTTP ${status} (attempt ${attempt}/${maxRetries + 1}): ${errText}`,
+            );
+            lastError = new Error(`AI Service transient error (${status}): ${errText}`);
+            if (attempt <= maxRetries) {
+              continue;
+            }
+          } else {
+            // 4xx status codes are client errors, do not retry
+            this.logger.error(
+              `AI Service challenge support failed with non-transient HTTP ${status}: ${errText}`,
+            );
+            throw new Error(`AI Service non-transient error (${status}): ${errText}`);
+          }
+        } else {
+          const data = (await response.json()) as GenerateChallengeResult;
+          this.logger.log(
+            `AI Service challenge support succeeded for session ${payload.session_id} (round ${data.round_number})`,
+          );
+          return data;
+        }
+      } catch (err: any) {
+        if (err.name === "AbortError") {
+          this.logger.warn(
+            `AI Service challenge support timed out after ${timeoutMs}ms (attempt ${attempt}/${maxRetries + 1})`,
+          );
+          lastError = new Error(`AI Service challenge support timed out after ${timeoutMs}ms`);
+          if (attempt <= maxRetries) {
+            continue;
+          }
+        } else if (err.message && err.message.startsWith("AI Service non-transient error")) {
+          throw err;
+        } else {
+          // Network errors (e.g. fetch failed) are transient
+          this.logger.warn(
+            `AI Service challenge support network/transient error (attempt ${attempt}/${maxRetries + 1}): ${err.message}`,
+          );
+          lastError = err;
+          if (attempt <= maxRetries) {
+            continue;
+          }
+        }
+      } finally {
+        clearTimeout(timeoutHandle);
+      }
+    }
+
+    this.logger.error(
+      `AI Service challenge support exhausted all ${maxRetries + 1} attempts for session ${payload.session_id}`,
+    );
+    throw new Error(
+      `AI Service challenge generation failed after ${maxRetries + 1} attempts: ${lastError?.message}`,
+    );
   }
 }
