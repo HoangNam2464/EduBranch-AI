@@ -24,7 +24,18 @@ import { challengeSupportService } from "@/services/challengeSupportService";
 import type { ChallengeSession } from "@/services/mappers/challengeSupport";
 
 /** Maximum length of a student's challenge reply in Figma 05.5 ("0 / 1000 ký tự"). */
-const REPLY_MAX = 1000;
+export const REPLY_MAX = 1000;
+
+export interface ChallengeDialogProps {
+  open: boolean;
+  onClose: () => void;
+  stepNumber: number;
+  decision: string;
+  reasoningId?: string;
+  reasoning?: string;
+  reviewSubmissionId?: string;
+  caseContext?: string;
+}
 
 /** Maps API error status/code to localized user-friendly message (AGENTS rule 12, R1-M3) */
 function getChallengeErrorMessage(err: any, t: (key: string) => string): string {
@@ -52,13 +63,8 @@ export function ChallengeDialog({
   stepNumber,
   decision,
   reasoningId,
-}: {
-  open: boolean;
-  onClose: () => void;
-  stepNumber: number;
-  decision: string;
-  reasoningId?: string;
-}) {
+  reasoning = "",
+}: ChallengeDialogProps) {
   const { t } = useTranslation();
   const [session, setSession] = useState<ChallengeSession | null>(null);
   const [loading, setLoading] = useState(false);
@@ -227,6 +233,11 @@ export function ChallengeDialog({
             {t("g5.challenge.decisionAt", { n: stepNumber })}
           </span>
           <p className="text-[14px] leading-5 text-ink">{decision}</p>
+          {reasoning && (
+            <p className="text-[13px] leading-4 text-ink-secondary mt-1 whitespace-pre-line border-t border-border/50 pt-2">
+              {reasoning}
+            </p>
+          )}
         </div>
 
         {/* Loading state */}

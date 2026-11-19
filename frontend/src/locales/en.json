@@ -1538,6 +1538,9 @@
     "challenge": {
       "title": "AI Challenge Support",
       "description": "Round 1/2 · Answer the challenge questions to clarify your reasoning. Up to 2 rounds, not graded.",
+      "roundIndicator": "Round {{round}}/2",
+      "roundCompleted": "Completed 2 rounds",
+      "completedBanner": "The challenge session completed 2 dialogue rounds. Your points have been recorded.",
       "decisionAt": "Your decision at step {{n}}",
       "unavailableTitle": "AI challenge is not available",
       "unavailableBody": "Save your reasoning before opening the AI challenge. You can still continue Journey Review.",
@@ -1545,6 +1548,7 @@
       "replyPlaceholder": "Defend your decision or describe an extra fallback mechanism...",
       "skip": "Skip",
       "send": "Send round {{round}} response",
+      "close": "Close",
       "roundLabel": "Round {{round}}",
       "counterQuestionLabel": "AI counter-question",
       "completedSubtitle": "Round 2/2 · Completed. The challenge session concluded after 2 rounds. Your answer is saved alongside your reasoning at step {{n}}. No score is assigned.",

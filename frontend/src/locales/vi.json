@@ -1538,6 +1538,9 @@
     "challenge": {
       "title": "AI Challenge Support",
       "description": "Vòng 1/2 · Trả lời câu hỏi phản biện để làm rõ lập luận của bạn. Tối đa 2 vòng, không chấm điểm.",
+      "roundIndicator": "Vòng {{round}}/2",
+      "roundCompleted": "Đã hoàn thành 2 vòng",
+      "completedBanner": "Phiên phản biện đã hoàn tất 2 vòng đối thoại. Luận điểm của bạn đã được ghi nhận.",
       "decisionAt": "Quyết định của bạn tại bước {{n}}",
       "unavailableTitle": "Phản biện AI chưa khả dụng",
       "unavailableBody": "Lưu lập luận trước khi mở phản biện AI. Bạn vẫn có thể tiếp tục Journey Review.",
@@ -1545,6 +1548,7 @@
       "replyPlaceholder": "Trình bày luận điểm bảo vệ quyết định hoặc cơ chế dự phòng bổ sung...",
       "skip": "Bỏ qua",
       "send": "Gửi phản hồi vòng {{round}}",
+      "close": "Đóng",
       "roundLabel": "Vòng {{round}}",
       "counterQuestionLabel": "Câu hỏi phản biện từ AI",
       "completedSubtitle": "Vòng 2/2 · Đã hoàn tất. Phiên phản biện đã kết thúc sau 2 vòng. Câu trả lời của bạn được lưu cùng lập luận ở bước {{n}}. Không có điểm số.",

@@ -202,6 +202,8 @@ function ReviewContent({
           stepNumber={challengeStep + 1}
           decision={steps[challengeStep].selectedOptionText}
           reasoningId={steps[challengeStep].reasoningId}
+          reasoning={steps[challengeStep].reasoningText ?? ""}
+          caseContext={steps[challengeStep].situation}
         />
       )}
     </div>
