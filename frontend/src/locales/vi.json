@@ -1540,11 +1540,31 @@
       "description": "Vòng 1/2 · Trả lời câu hỏi phản biện để làm rõ lập luận của bạn. Tối đa 2 vòng, không chấm điểm.",
       "decisionAt": "Quyết định của bạn tại bước {{n}}",
       "unavailableTitle": "Phản biện AI chưa khả dụng",
-      "unavailableBody": "Máy chủ chưa có API Challenge Support nên chưa thể tạo câu hỏi phản biện. Bạn vẫn có thể tiếp tục Journey Review.",
+      "unavailableBody": "Lưu lập luận trước khi mở phản biện AI. Bạn vẫn có thể tiếp tục Journey Review.",
       "replyLabel": "Luận điểm phản hồi của bạn",
       "replyPlaceholder": "Trình bày luận điểm bảo vệ quyết định hoặc cơ chế dự phòng bổ sung...",
       "skip": "Bỏ qua",
-      "send": "Gửi phản hồi vòng {{round}}"
+      "send": "Gửi phản hồi vòng {{round}}",
+      "roundLabel": "Vòng {{round}}",
+      "counterQuestionLabel": "Câu hỏi phản biện từ AI",
+      "completedSubtitle": "Vòng 2/2 · Đã hoàn tất. Phiên phản biện đã kết thúc sau 2 vòng. Câu trả lời của bạn được lưu cùng lập luận ở bước {{n}}. Không có điểm số.",
+      "r1Question": "Vòng 1 · Câu hỏi phản biện từ AI",
+      "r1Answer": "Vòng 1 · Câu trả lời của bạn",
+      "r2Question": "Vòng 2 · Câu hỏi phản biện từ AI",
+      "completedFooter": "Vòng 2 / 2 · Đã hoàn tất · Không chấm điểm",
+      "backToReview": "Quay lại Journey Review",
+      "loading": "Đang tải phiên phản biện AI...",
+      "generating": "AI đang chuẩn bị câu hỏi phản biện...",
+      "sending": "Đang gửi phản hồi...",
+      "errorTitle": "Không thể tải phản biện AI",
+      "retry": "Thử lại",
+      "errors": {
+        "maxRoundsReached": "Phiên phản biện đã hoàn tất 2 vòng tối đa. Không thể gửi thêm câu trả lời.",
+        "aiUnavailable": "Dịch vụ AI tạm thời không phản hồi. Vui lòng thử lại sau ít phút.",
+        "forbidden": "Bạn không có quyền truy cập phiên phản biện này.",
+        "notFound": "Không tìm thấy dữ liệu phiên phản biện.",
+        "generic": "Đã xảy ra lỗi trong quá trình phản biện. Vui lòng thử lại."
+      }
     },
     "reflection": {
       "pageTitle": "Suy ngẫm & đúc kết bài học",

@@ -34,7 +34,7 @@ import {
   SubPanel,
 } from "@/pages/branching/components/parts";
 import { errorCode, formatAttemptTime, loadAttempt, useLoad } from "@/pages/branching/components/useStudentCase";
-import { ActionError, PlayerError } from "@/pages/branching/BranchingCasePlayerPage";
+import { PlayerError } from "@/pages/branching/BranchingCasePlayerPage";
 import { ChallengeDialog } from "@/pages/challenge/ChallengeSupportPage";
 
 export function BranchingReviewPage() {
@@ -201,6 +201,7 @@ function ReviewContent({
           onClose={() => setChallengeStep(null)}
           stepNumber={challengeStep + 1}
           decision={steps[challengeStep].selectedOptionText}
+          reasoningId={steps[challengeStep].reasoningId}
         />
       )}
     </div>
