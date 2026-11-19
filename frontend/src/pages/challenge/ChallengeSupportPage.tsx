@@ -1,33 +1,29 @@
 /**
  * EduBranch AI — AI Reasoning / Challenge Support (Figma 05.5 / 05.6: modal on Journey Review).
  *
- * NON-NEGOTIABLE (FND §6.1, Proposal V1.2):
- * - Socratic counter-questions only (probing assumptions & trade-offs)
- * - 1–2 rounds hard cap enforced by server gateway and PostgreSQL schema
- * - The AI never grades, scores, or judges correctness
+ * NON-NEGOTIABLE (feature-challenge-support.md, FND §6.1, Proposal V1.2):
+ *   - Socratic counter-questions only (probing assumptions & trade-offs)
+ *   - 1–2 rounds hard cap enforced by server gateway and PostgreSQL schema
+ *   - The AI never grades, scores, or judges correctness
  *
- * STATUS (FND §6, CLAUDE.md):
- * The backend gateway does not have a Challenge Support endpoint yet (controller is an empty skeleton;
- * the AI service route is internal and called exclusively by the gateway).
- * Per PO directive, the UI strictly maintains an honest "unavailable / in-progress" state rather
- * than fabricating fake AI counter-questions or holding round state in client-side memory.
+ * Real Gateway Integration (FE-021 + BE-027):
+ *   - Round 1 (05.5): fetches or creates session via POST /api/v1/challenge-support/sessions,
+ *     displays AI counter-question, allows 1 student reply (up to 1000 chars).
+ *   - Round 2 (05.6): sends student reply via POST /api/v1/challenge-support/sessions/:id/replies,
+ *     displays Round 1 exchange and final Round 2 counter-question.
+ *   - After Round 2: session is completed; no reply box in Round 2; subsequent attempts rejected with 409.
+ *   - Never simulates successful answers. Real loading and error states with retry capability.
  */
-
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CircleAlert, MessageSquare, X } from "lucide-react";
-import {
-  AiOriginBadge,
-  Button,
-  Dialog,
-  Field,
-  StatusPill,
-  cx,
-  FOCUS_RING,
-} from "@/components/ds";
+import { CircleAlert, Loader2, MessageSquare, X } from "lucide-react";
+import { AiOriginBadge, Button, Dialog, Field, cx, FOCUS_RING } from "@/components/ds";
 import { ErrorState } from "@/components/feedback";
 import { useShellTitle } from "@/layouts/shell/ShellTitleContext";
 import { PATHS, buildPath } from "@/routes/paths";
+import { challengeSupportService } from "@/services/challengeSupportService";
+import type { ChallengeSession } from "@/services/mappers/challengeSupport";
 
 /** Maximum length of a student's challenge reply in Figma 05.5 ("0 / 1000 ký tự"). */
 export const REPLY_MAX = 1000;
@@ -37,10 +33,30 @@ export interface ChallengeDialogProps {
   onClose: () => void;
   stepNumber: number;
   decision: string;
-  reasoning?: string;
   reasoningId?: string;
+  reasoning?: string;
   reviewSubmissionId?: string;
   caseContext?: string;
+}
+
+/** Maps API error status/code to localized user-friendly message (AGENTS rule 12, R1-M3) */
+function getChallengeErrorMessage(err: any, t: (key: string) => string): string {
+  const status = err?.response?.status;
+  const code = err?.response?.data?.code;
+
+  if (status === 409 || code === "MAX_ROUNDS_REACHED") {
+    return t("g5.challenge.errors.maxRoundsReached");
+  }
+  if (status === 502 || code === "AI_SERVICE_UNAVAILABLE") {
+    return t("g5.challenge.errors.aiUnavailable");
+  }
+  if (status === 403) {
+    return t("g5.challenge.errors.forbidden");
+  }
+  if (status === 404) {
+    return t("g5.challenge.errors.notFound");
+  }
+  return t("g5.challenge.errors.generic");
 }
 
 export function ChallengeDialog({
@@ -48,26 +64,133 @@ export function ChallengeDialog({
   onClose,
   stepNumber,
   decision,
+  reasoningId,
   reasoning = "",
 }: ChallengeDialogProps) {
   const { t } = useTranslation();
+  const [session, setSession] = useState<ChallengeSession | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+
+  const loadSession = useCallback(async () => {
+    if (!reasoningId) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await challengeSupportService.createOrGetSession(reasoningId);
+      setSession(data);
+    } catch (err: any) {
+      setError(getChallengeErrorMessage(err, t));
+    } finally {
+      setLoading(false);
+    }
+  }, [reasoningId, t]);
+
+  useEffect(() => {
+    if (open && reasoningId) {
+      loadSession();
+    } else if (!open) {
+      setSession(null);
+      setError(null);
+      setReplyText("");
+    }
+  }, [open, reasoningId, loadSession]);
+
+  const handleSendReply = async () => {
+    if (!session || !replyText.trim()) return;
+    setSending(true);
+    setError(null);
+    try {
+      const updated = await challengeSupportService.sendReply(
+        session.id,
+        replyText.trim(),
+      );
+      setSession(updated);
+      setReplyText("");
+    } catch (err: any) {
+      const status = err?.response?.status;
+      const code = err?.response?.data?.code;
+      // Over the limit or completed (R1-M3): reload session so completed view is rendered
+      if (status === 409 || code === "MAX_ROUNDS_REACHED") {
+        try {
+          const reloaded = await challengeSupportService.getSession(session.id);
+          setSession(reloaded);
+        } catch {
+          setSession((prev) =>
+            prev ? { ...prev, isCompleted: true, currentRound: 2 } : null,
+          );
+        }
+      }
+      setError(getChallengeErrorMessage(err, t));
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const q1 = session?.messages.find(
+    (m) => m.roundNumber === 1 && m.role === "CHALLENGE_SUPPORT",
+  );
+  const a1 = session?.messages.find(
+    (m) => m.roundNumber === 1 && m.role === "STUDENT",
+  );
+  const q2 = session?.messages.find(
+    (m) => m.roundNumber === 2 && m.role === "CHALLENGE_SUPPORT",
+  );
+
+  const isCompleted = Boolean(
+    session && (session.isCompleted || session.currentRound >= 2 || (a1 && q2)),
+  );
+
+  const subtitle = isCompleted
+    ? t("g5.challenge.completedSubtitle", { n: stepNumber })
+    : t("g5.challenge.description");
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
-      width={600}
       title={t("g5.challenge.title")}
-      description={t("g5.challenge.description")}
-      actions={
-        <>
-          <Button variant="secondary" size="md" onClick={onClose}>
-            {t("g5.challenge.skip")}
-          </Button>
-          <Button size="md" disabled>
-            {t("g5.challenge.send", { round: 1 })}
-          </Button>
-        </>
+      subtitle={subtitle}
+      maxWidth="max-w-2xl"
+      footer={
+        isCompleted ? (
+          <div className="flex w-full items-center justify-between">
+            <span className="text-[12px] font-medium text-ink-secondary">
+              {t("g5.challenge.completedFooter")}
+            </span>
+            <Button variant="secondary" onClick={onClose}>
+              {t("g5.challenge.backToReview")}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex w-full items-center justify-end gap-3">
+            <Button variant="ghost" onClick={onClose} disabled={sending}>
+              {t("g5.challenge.skip")}
+            </Button>
+            <Button
+              variant="primary"
+              onClick={handleSendReply}
+              disabled={
+                !session ||
+                !replyText.trim() ||
+                sending ||
+                loading ||
+                isCompleted
+              }
+            >
+              {sending ? (
+                <span className="flex items-center gap-1.5">
+                  <Loader2 className="animate-spin" size={14} />
+                  {t("g5.challenge.sending")}
+                </span>
+              ) : (
+                t("g5.challenge.send", { round: session?.currentRound ?? 1 })
+              )}
+            </Button>
+          </div>
+        )
       }
     >
       <button
@@ -83,72 +206,221 @@ export function ChallengeDialog({
       </button>
 
       <div className="flex flex-col gap-3 pt-3">
-        {/* Round status indicator & AI Badge */}
-        <div className="flex items-center justify-between">
-          <AiOriginBadge type="assisted" className="self-start">
-            {t("g5.common.aiAssisted")}
-          </AiOriginBadge>
-          <StatusPill tone="info">
-            {t("g5.challenge.roundIndicator", { round: 1 })}
-          </StatusPill>
-        </div>
+        {/* Origin Badge */}
+        <AiOriginBadge type="assisted" className="self-start">
+          {t("g5.common.aiAssisted")}
+        </AiOriginBadge>
 
-        {/* Student decision & reasoning context */}
-        <div className="flex flex-col gap-1.5 rounded-eb-lg bg-canvas px-4 py-3.5 border border-line-soft">
-          <span className="text-[12px] leading-4 font-medium text-ink-secondary">
+        {/* Student Decision */}
+        <div className="flex flex-col gap-1.5 rounded-eb-lg bg-canvas px-4 py-3.5">
+          <span className="text-[12px] font-medium leading-4 text-ink-secondary">
             {t("g5.challenge.decisionAt", { n: stepNumber })}
           </span>
-          <p className="text-[14px] leading-5 font-medium text-ink">{decision}</p>
+          <p className="text-[14px] leading-5 text-ink">{decision}</p>
           {reasoning && (
-            <p className="text-[13px] leading-4 text-ink-secondary mt-1 whitespace-pre-line border-t border-line-soft pt-2">
+            <p className="text-[13px] leading-4 text-ink-secondary mt-1 whitespace-pre-line border-t border-border/50 pt-2">
               {reasoning}
             </p>
           )}
         </div>
 
-        {/* Honest unavailable notice (PO directive: no fake AI data) */}
-        <div
-          role="alert"
-          className="flex flex-col gap-1.5 rounded-eb-lg bg-error-bg px-4 py-3.5 border border-line-soft"
-        >
-          <span className="flex items-center gap-1.5 text-[12px] leading-4 font-medium text-error-text">
-            <CircleAlert aria-hidden="true" size={14} absoluteStrokeWidth strokeWidth={1.5} />
-            {t("g5.challenge.unavailableTitle")}
-          </span>
-          <p className="text-[14px] leading-5 text-ink">{t("g5.challenge.unavailableBody")}</p>
-        </div>
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center gap-2 rounded-eb-lg bg-canvas p-6">
+            <Loader2 className="animate-spin text-link" size={20} />
+            <span className="text-[13px] font-medium text-ink-secondary">
+              {t("g5.challenge.generating")}
+            </span>
+          </div>
+        )}
 
-        {/* Reply field — disabled while gateway endpoint is pending */}
-        <Field
-          multiline
-          disabled
-          label={t("g5.challenge.replyLabel")}
-          placeholder={t("g5.challenge.replyPlaceholder")}
-          helper={t("g5.common.charCount", { count: 0, max: REPLY_MAX })}
-          maxLength={REPLY_MAX}
-        />
+        {/* Error State */}
+        {error && !loading && (
+          <div
+            role="alert"
+            className="flex flex-col gap-1.5 rounded-eb-lg bg-error-bg px-4 py-3.5"
+          >
+            <span className="flex items-center gap-1.5 text-[12px] font-medium leading-4 text-error-text">
+              <CircleAlert
+                aria-hidden="true"
+                size={14}
+                absoluteStrokeWidth
+                strokeWidth={1.5}
+              />
+              {t("g5.challenge.unavailableTitle")}
+            </span>
+            <p className="text-[14px] leading-5 text-ink">{error}</p>
+            {reasoningId && (
+              <div className="pt-1">
+                <Button variant="ghost" size="sm" onClick={loadSession}>
+                  {t("g5.challenge.retry")}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Active Flow: Round 1 (Figma 05.5) */}
+        {session && !isCompleted && !loading && (
+          <>
+            {/* AI Socratic Counter-Question */}
+            {q1 && (
+              <div className="flex flex-col gap-1.5 rounded-eb-lg bg-selected px-4 py-3.5">
+                <span className="text-[12px] font-medium leading-4 text-link">
+                  {t("g5.challenge.r1Question")}
+                </span>
+                <p className="text-[14px] leading-5 text-ink">
+                  "{q1.content}"
+                </p>
+              </div>
+            )}
+
+            {/* Student Reply Field */}
+            <Field
+              multiline
+              label={t("g5.challenge.replyLabel")}
+              placeholder={t("g5.challenge.replyPlaceholder")}
+              value={replyText}
+              onChange={(e) => setReplyText(e.target.value)}
+              helper={t("g5.common.charCount", {
+                count: replyText.length,
+                max: REPLY_MAX,
+              })}
+              maxLength={REPLY_MAX}
+              disabled={sending}
+            />
+          </>
+        )}
+
+        {/* Completed Flow: Round 2 (Figma 05.6) */}
+        {session && isCompleted && !loading && (
+          <div className="flex flex-col gap-3">
+            {/* Round 1 AI Counter-Question */}
+            {q1 && (
+              <div className="flex flex-col gap-1.5 rounded-eb-lg bg-selected px-4 py-3.5">
+                <span className="text-[12px] font-medium leading-4 text-link">
+                  {t("g5.challenge.r1Question")}
+                </span>
+                <p className="text-[14px] leading-5 text-ink">
+                  "{q1.content}"
+                </p>
+              </div>
+            )}
+
+            {/* Round 1 Student Reply */}
+            {a1 && (
+              <div className="flex flex-col gap-1.5 rounded-eb-lg bg-canvas px-4 py-3.5">
+                <span className="text-[12px] font-medium leading-4 text-ink-secondary">
+                  {t("g5.challenge.r1Answer")}
+                </span>
+                <p className="text-[14px] leading-5 text-ink whitespace-pre-line">
+                  {a1.content}
+                </p>
+              </div>
+            )}
+
+            {/* Round 2 AI Counter-Question */}
+            {q2 && (
+              <div className="flex flex-col gap-1.5 rounded-eb-lg bg-selected px-4 py-3.5">
+                <span className="text-[12px] font-medium leading-4 text-link">
+                  {t("g5.challenge.r2Question")}
+                </span>
+                <p className="text-[14px] leading-5 text-ink">
+                  "{q2.content}"
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </Dialog>
   );
 }
 
-/** Standalone route PATHS.STUDENT.CHALLENGE: /student/cases/:caseId/challenge/:sessionId */
+/** Standalone route PATHS.STUDENT.CHALLENGE — retrieves existing session by sessionId */
 export function ChallengeSupportPage() {
   const { t } = useTranslation();
-  const { caseId = "" } = useParams();
+  const { caseId = "", sessionId = "" } = useParams();
+  const [session, setSession] = useState<ChallengeSession | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   useShellTitle(t("g5.challenge.title"));
 
+  useEffect(() => {
+    if (!sessionId) {
+      setLoading(false);
+      return;
+    }
+
+    challengeSupportService
+      .getSession(sessionId)
+      .then((data) => {
+        setSession(data);
+      })
+      .catch((err: any) => {
+        setError(getChallengeErrorMessage(err, t));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [sessionId, t]);
+
+  if (loading) {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center gap-2 p-8">
+        <Loader2 className="animate-spin text-link" size={32} />
+        <span className="text-[14px] font-medium text-ink-secondary">
+          {t("g5.challenge.loading")}
+        </span>
+      </div>
+    );
+  }
+
+  if (error || !session) {
+    return (
+      <div className="flex flex-1 flex-col items-center gap-4">
+        <ErrorState
+          icon={MessageSquare}
+          title={error ? t("g5.challenge.errorTitle") : t("g5.challenge.unavailableTitle")}
+          description={error || t("g5.challenge.unavailableBody")}
+          className="self-stretch"
+        />
+        <Button variant="secondary" to={buildPath(PATHS.STUDENT.BRANCHING_PLAY, { caseId })}>
+          {t("g5.review.backToCase")}
+        </Button>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-1 flex-col items-center gap-4">
-      <ErrorState
-        icon={MessageSquare}
-        title={t("g5.challenge.unavailableTitle")}
-        description={t("g5.challenge.unavailableBody")}
-        className="self-stretch"
-      />
-      <Button variant="secondary" to={buildPath(PATHS.STUDENT.BRANCHING_PLAY, { caseId })}>
-        {t("g5.review.backToCase")}
-      </Button>
+    <div className="mx-auto flex max-w-2xl flex-col gap-4 p-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-[20px] font-semibold text-ink">{t("g5.challenge.title")}</h1>
+        <AiOriginBadge type="assisted">{t("g5.common.aiAssisted")}</AiOriginBadge>
+      </div>
+
+      <div className="flex flex-col gap-3 rounded-eb-lg bg-canvas p-4">
+        {session.messages.map((m) => (
+          <div key={m.id} className="flex flex-col gap-1 border-b border-border/50 pb-2 last:border-b-0">
+            <span className="text-[12px] font-medium text-ink-secondary">
+              {m.role === "CHALLENGE_SUPPORT"
+                ? t("g5.challenge.counterQuestionLabel")
+                : t("g5.challenge.replyLabel")}{" "}
+              ({t("g5.challenge.roundLabel", { round: m.roundNumber })})
+            </span>
+            <p className={cx("text-[14px] leading-5", m.role === "CHALLENGE_SUPPORT" && "text-ink")}>
+              {m.content}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex justify-end pt-2">
+        <Button variant="secondary" to={buildPath(PATHS.STUDENT.BRANCHING_PLAY, { caseId })}>
+          {t("g5.review.backToCase")}
+        </Button>
+      </div>
     </div>
   );
 }

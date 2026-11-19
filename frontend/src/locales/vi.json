@@ -1363,7 +1363,23 @@
       "progressUnavailable": "Chưa có dữ liệu tiến độ học tập.",
       "studentTodoUnavailable": "Chưa có việc cần làm.",
       "myCoursesTitle": "Khóa học của tôi",
-      "myCoursesUnavailable": "Hệ thống chưa cung cấp danh sách khóa học của sinh viên."
+      "myCoursesUnavailable": "Hệ thống chưa cung cấp danh sách khóa học của sinh viên.",
+      "editProfile": "Chỉnh sửa hồ sơ",
+      "editProfileTitle": "Cập nhật hồ sơ tài khoản",
+      "editProfileDesc": "Xem và cập nhật thông tin cá nhân cùng tùy chọn ngôn ngữ giao diện.",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên...",
+      "fullNameRequired": "Họ và tên không được để trống.",
+      "emailImmutable": "Email tài khoản cố định, không thể thay đổi.",
+      "language": "Ngôn ngữ giao diện",
+      "languageDesc": "Lựa chọn ngôn ngữ hiển thị trên toàn bộ hệ thống.",
+      "languageVi": "Tiếng Việt",
+      "languageEn": "English",
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "saveSuccess": "Cập nhật hồ sơ thành công.",
+      "saveError": "Không thể cập nhật hồ sơ, vui lòng thử lại.",
+      "cancel": "Hủy"
     }
   },
   "g5": {
@@ -1521,21 +1537,38 @@
     },
     "challenge": {
       "title": "AI Challenge Support",
-      "description": "Trả lời câu hỏi phản biện để làm rõ lập luận của bạn. Tối đa 2 vòng, không chấm điểm.",
+      "description": "Vòng 1/2 · Trả lời câu hỏi phản biện để làm rõ lập luận của bạn. Tối đa 2 vòng, không chấm điểm.",
       "roundIndicator": "Vòng {{round}}/2",
       "roundCompleted": "Đã hoàn thành 2 vòng",
       "completedBanner": "Phiên phản biện đã hoàn tất 2 vòng đối thoại. Luận điểm của bạn đã được ghi nhận.",
       "decisionAt": "Quyết định của bạn tại bước {{n}}",
-      "generating": "AI đang phân tích lập luận và tạo câu hỏi phản biện...",
-      "sending": "Đang gửi phản hồi...",
       "unavailableTitle": "Phản biện AI chưa khả dụng",
-      "unavailableBody": "Không thể kết nối máy chủ AI Challenge Support. Bạn vẫn có thể tiếp tục xem lại hành trình.",
+      "unavailableBody": "Lưu lập luận trước khi mở phản biện AI. Bạn vẫn có thể tiếp tục Journey Review.",
       "replyLabel": "Luận điểm phản hồi của bạn",
       "replyPlaceholder": "Trình bày luận điểm bảo vệ quyết định hoặc cơ chế dự phòng bổ sung...",
       "skip": "Bỏ qua",
       "send": "Gửi phản hồi vòng {{round}}",
       "close": "Đóng",
-      "backToReview": "Quay lại tổng kết hành trình"
+      "roundLabel": "Vòng {{round}}",
+      "counterQuestionLabel": "Câu hỏi phản biện từ AI",
+      "completedSubtitle": "Vòng 2/2 · Đã hoàn tất. Phiên phản biện đã kết thúc sau 2 vòng. Câu trả lời của bạn được lưu cùng lập luận ở bước {{n}}. Không có điểm số.",
+      "r1Question": "Vòng 1 · Câu hỏi phản biện từ AI",
+      "r1Answer": "Vòng 1 · Câu trả lời của bạn",
+      "r2Question": "Vòng 2 · Câu hỏi phản biện từ AI",
+      "completedFooter": "Vòng 2 / 2 · Đã hoàn tất · Không chấm điểm",
+      "backToReview": "Quay lại Journey Review",
+      "loading": "Đang tải phiên phản biện AI...",
+      "generating": "AI đang chuẩn bị câu hỏi phản biện...",
+      "sending": "Đang gửi phản hồi...",
+      "errorTitle": "Không thể tải phản biện AI",
+      "retry": "Thử lại",
+      "errors": {
+        "maxRoundsReached": "Phiên phản biện đã hoàn tất 2 vòng tối đa. Không thể gửi thêm câu trả lời.",
+        "aiUnavailable": "Dịch vụ AI tạm thời không phản hồi. Vui lòng thử lại sau ít phút.",
+        "forbidden": "Bạn không có quyền truy cập phiên phản biện này.",
+        "notFound": "Không tìm thấy dữ liệu phiên phản biện.",
+        "generic": "Đã xảy ra lỗi trong quá trình phản biện. Vui lòng thử lại."
+      }
     },
     "reflection": {
       "pageTitle": "Suy ngẫm & đúc kết bài học",
@@ -1619,15 +1652,33 @@
       "mode": "Chế độ",
       "format": "Hình thức",
       "formatValue": "Bài nộp tự luận",
+      "status": "Trạng thái",
+      "submittedStatus": "Đã nộp bài (SUBMITTED)",
+      "submittedBadge": "Đã nộp",
+      "submittedNotice": "Bài nộp của bạn đã được ghi nhận và đang chờ giảng viên đánh giá. Chế độ Review Study cho phép nộp một lần duy nhất.",
+      "submittedAt": "Thời gian nộp: {{time}}",
+      "submittedAnalysisTitle": "Bài phân tích đã nộp",
+      "submittedSolutionTitle": "Phương án giải pháp đã nộp",
+      "submittedReasoningTitle": "Lập luận căn cứ đã nộp",
+      "emptyAnalysis": "Không có nội dung phân tích",
       "requirementsTitle": "Yêu cầu bài nộp",
       "requirement": {
-        "solution": "1. Đề xuất phương án / kế hoạch giải quyết",
-        "reasoning": "2. Lập luận căn cứ dựa trên số liệu"
+        "solution": "1. Đề xuất phương án / kế hoạch giải quyết (tối thiểu 10 ký tự)",
+        "reasoning": "2. Lập luận căn cứ dựa trên số liệu (tối thiểu 10 ký tự)"
       },
       "back": "Quay lại",
       "finalNote": "Bài nộp là bản cuối, không chỉnh sửa được sau khi nộp.",
       "submit": "Nộp bài",
-      "submitUnavailable": "Chưa thể nộp bài: máy chủ chưa có API nộp bài Review Study."
+      "submitting": "Đang gửi bài nộp…",
+      "submitSuccess": "Bài nộp đã được gửi thành công!",
+      "submitFailed": "Không thể nộp bài: {{error}}",
+      "submitFailedGeneric": "Gửi bài nộp thất bại. Vui lòng thử lại.",
+      "duplicateSubmission": "Bạn đã có bài nộp cho tình huống này. Hệ thống chỉ cho phép nộp 1 lần duy nhất.",
+      "submitUnavailable": "Chưa thể nộp bài: máy chủ chưa có API nộp bài Review Study.",
+      "validation": {
+        "solutionMin": "Phương án giải pháp phải có ít nhất 10 ký tự.",
+        "reasoningMin": "Lập luận căn cứ phải có ít nhất 10 ký tự."
+      }
     },
     "feedback": {
       "unavailableTitle": "Chưa xem được phản hồi",
@@ -1694,18 +1745,39 @@
       "description": "Mục này hiển thị khi máy chủ cung cấp dữ liệu quản trị."
     },
     "dashboard": {
+      "attentionTitle": "{{count}} mục cần chú ý",
+      "viewDetails": "Xem chi tiết",
+      "kpi": {
+        "users": "Người dùng",
+        "openCourses": "Khóa học đang mở",
+        "publishedCases": "Case đã xuất bản",
+        "aiGenerations": "Lượt sinh case AI",
+        "growthThisMonth": "+{{count}} trong tháng {{month}}",
+        "aiErrors": "{{count}} lần sinh lỗi",
+        "noAiErrors": "Không có lỗi"
+      },
       "activity": {
         "title": "Hoạt động học tập theo tuần",
-        "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống"
+        "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống",
+        "filter8Weeks": "8 tuần",
+        "branchingAttempts": "Lượt làm bài",
+        "reviewSubmissions": "Bài nộp Review Study"
       },
       "usersByRole": {
         "title": "Người dùng theo vai trò",
-        "subtitle": "Tài khoản đang hoạt động"
+        "subtitle": "Tài khoản đang hoạt động",
+        "students": "Sinh viên",
+        "lecturers": "Giảng viên",
+        "admins": "Quản trị viên",
+        "totalUsers": "{{count}} người dùng"
       },
       "health": {
         "title": "Tình trạng hệ thống",
         "updatedAt": "Cập nhật lúc {{time}}",
         "appServer": "Máy chủ ứng dụng",
+        "aiService": "Dịch vụ AI",
+        "indexing": "Lập chỉ mục tài liệu",
+        "indexingProcessing": "{{count}} tệp đang xử lý",
         "database": "Cơ sở dữ liệu",
         "up": "Ổn định",
         "down": "Gián đoạn",
@@ -1714,12 +1786,17 @@
       },
       "casesByCourse": {
         "title": "Case theo khóa học",
-        "subtitle": "Số case đã xuất bản và bản nháp ở mỗi khóa"
+        "subtitle": "Số case đã xuất bản và bản nháp ở mỗi khóa",
+        "filterAll": "Mọi khóa học",
+        "published": "Đã xuất bản",
+        "draft": "Bản nháp",
+        "noCases": "Chưa có case"
       },
       "recentLog": {
         "title": "Nhật ký gần đây",
         "subtitle": "Hôm nay"
-      }
+      },
+      "loadError": "Không tải được dữ liệu tổng quan"
     },
     "users": {
       "emptyTitle": "Chưa có dữ liệu người dùng",

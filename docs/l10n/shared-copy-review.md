@@ -148,3 +148,22 @@
 | `g5.courses.error.alreadyEnrolled` | Bạn đã tham gia lớp học phần này rồi. | You have already joined this class. | PROPOSED | — | — | FE-028/BE-029 |
 | `g5.courses.error.disabled` | Mã lớp này đã hết hạn hoặc bị giảng viên vô hiệu hóa. | This class code has expired or was disabled by the lecturer. | PROPOSED | — | — | FE-028/BE-029 |
 | `g5.courses.error.generic` | Không thể tham gia lớp học. Vui lòng thử lại sau. | Could not join class. Please try again later. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.challenge.counterQuestionLabel` | Câu hỏi phản biện từ AI | AI counter-question | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.completedSubtitle` | Vòng 2/2 · Đã hoàn tất. Phiên phản biện đã kết thúc sau 2 vòng. Câu trả lời của bạn được lưu cùng lập luận ở bước {{n}}. Không có điểm số. | Round 2/2 · Completed. The challenge session concluded after 2 rounds. Your answer is saved alongside your reasoning at step {{n}}. No score is assigned. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.r1Question` | Vòng 1 · Câu hỏi phản biện từ AI | Round 1 · AI counter-question | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.r1Answer` | Vòng 1 · Câu trả lời của bạn | Round 1 · Your response | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.r2Question` | Vòng 2 · Câu hỏi phản biện từ AI | Round 2 · AI counter-question | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.completedFooter` | Vòng 2 / 2 · Đã hoàn tất · Không chấm điểm | Round 2 / 2 · Completed · Not graded | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.backToReview` | Quay lại Journey Review | Back to Journey Review | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.loading` | Đang tải phiên phản biện AI... | Loading AI challenge session... | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.generating` | AI đang chuẩn bị câu hỏi phản biện... | AI is generating counter-question... | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.sending` | Đang gửi phản hồi... | Sending response... | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.errorTitle` | Không thể tải phản biện AI | Unable to load AI challenge | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.retry` | Thử lại | Retry | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.roundLabel` | Vòng {{round}} | Round {{round}} | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.unavailableBody` | Lưu lập luận trước khi mở phản biện AI. Bạn vẫn có thể tiếp tục Journey Review. | Save your reasoning before opening the AI challenge. You can still continue Journey Review. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.errors.maxRoundsReached` | Phiên phản biện đã hoàn tất 2 vòng tối đa. Không thể gửi thêm câu trả lời. | Challenge support session has reached the maximum of 2 rounds. No further replies can be submitted. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.errors.aiUnavailable` | Dịch vụ AI tạm thời không phản hồi. Vui lòng thử lại sau ít phút. | AI Challenge Support service is temporarily unavailable. Please retry shortly. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.errors.forbidden` | Bạn không có quyền truy cập phiên phản biện này. | You do not have permission to access this challenge session. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.errors.notFound` | Không tìm thấy dữ liệu phiên phản biện. | Challenge support session not found. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.challenge.errors.generic` | Đã xảy ra lỗi trong quá trình phản biện. Vui lòng thử lại. | An error occurred during challenge support. Please retry. | PROPOSED | — | — | FE-021/BE-027 |

@@ -1363,7 +1363,23 @@
       "progressUnavailable": "No learning progress data yet.",
       "studentTodoUnavailable": "Nothing to do yet.",
       "myCoursesTitle": "My courses",
-      "myCoursesUnavailable": "The system does not provide the student's course list yet."
+      "myCoursesUnavailable": "The system does not provide the student's course list yet.",
+      "editProfile": "Edit Profile",
+      "editProfileTitle": "Update Account Profile",
+      "editProfileDesc": "View and update personal details and UI language preference.",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Enter your full name...",
+      "fullNameRequired": "Full name cannot be empty.",
+      "emailImmutable": "Account email is fixed and cannot be changed.",
+      "language": "Interface language",
+      "languageDesc": "Select system-wide display language.",
+      "languageVi": "Tiếng Việt",
+      "languageEn": "English",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "saveSuccess": "Profile updated successfully.",
+      "saveError": "Failed to update profile, please try again.",
+      "cancel": "Cancel"
     }
   },
   "g5": {
@@ -1521,21 +1537,38 @@
     },
     "challenge": {
       "title": "AI Challenge Support",
-      "description": "Answer the challenge questions to clarify your reasoning. Up to 2 rounds, not graded.",
+      "description": "Round 1/2 · Answer the challenge questions to clarify your reasoning. Up to 2 rounds, not graded.",
       "roundIndicator": "Round {{round}}/2",
-      "roundCompleted": "2 rounds completed",
-      "completedBanner": "Challenge session completed (2 rounds). Your arguments have been recorded.",
+      "roundCompleted": "Completed 2 rounds",
+      "completedBanner": "The challenge session completed 2 dialogue rounds. Your points have been recorded.",
       "decisionAt": "Your decision at step {{n}}",
-      "generating": "AI is analyzing reasoning and preparing counter-question...",
-      "sending": "Sending response...",
       "unavailableTitle": "AI challenge is not available",
-      "unavailableBody": "Cannot connect to AI Challenge Support server. You can still continue journey review.",
+      "unavailableBody": "Save your reasoning before opening the AI challenge. You can still continue Journey Review.",
       "replyLabel": "Your response",
       "replyPlaceholder": "Defend your decision or describe an extra fallback mechanism...",
       "skip": "Skip",
       "send": "Send round {{round}} response",
       "close": "Close",
-      "backToReview": "Back to Journey Review"
+      "roundLabel": "Round {{round}}",
+      "counterQuestionLabel": "AI counter-question",
+      "completedSubtitle": "Round 2/2 · Completed. The challenge session concluded after 2 rounds. Your answer is saved alongside your reasoning at step {{n}}. No score is assigned.",
+      "r1Question": "Round 1 · AI counter-question",
+      "r1Answer": "Round 1 · Your response",
+      "r2Question": "Round 2 · AI counter-question",
+      "completedFooter": "Round 2 / 2 · Completed · Not graded",
+      "backToReview": "Back to Journey Review",
+      "loading": "Loading AI challenge session...",
+      "generating": "AI is generating counter-question...",
+      "sending": "Sending response...",
+      "errorTitle": "Unable to load AI challenge",
+      "retry": "Retry",
+      "errors": {
+        "maxRoundsReached": "Challenge support session has reached the maximum of 2 rounds. No further replies can be submitted.",
+        "aiUnavailable": "AI Challenge Support service is temporarily unavailable. Please retry shortly.",
+        "forbidden": "You do not have permission to access this challenge session.",
+        "notFound": "Challenge support session not found.",
+        "generic": "An error occurred during challenge support. Please retry."
+      }
     },
     "reflection": {
       "pageTitle": "Reflect & capture the lessons",
@@ -1619,15 +1652,33 @@
       "mode": "Mode",
       "format": "Format",
       "formatValue": "Written submission",
+      "status": "Status",
+      "submittedStatus": "Submitted (SUBMITTED)",
+      "submittedBadge": "Submitted",
+      "submittedNotice": "Your submission has been recorded and is awaiting lecturer review. Review Study permits exactly one submission per case.",
+      "submittedAt": "Submitted at: {{time}}",
+      "submittedAnalysisTitle": "Submitted analysis",
+      "submittedSolutionTitle": "Submitted proposed solution",
+      "submittedReasoningTitle": "Submitted reasoning",
+      "emptyAnalysis": "No analysis provided",
       "requirementsTitle": "Submission requirements",
       "requirement": {
-        "solution": "1. Propose a solution / plan to solve the problem",
-        "reasoning": "2. Reasoning based on the data"
+        "solution": "1. Propose a solution / plan to solve the problem (min 10 chars)",
+        "reasoning": "2. Reasoning based on the data (min 10 chars)"
       },
       "back": "Back",
       "finalNote": "Your submission is final and cannot be edited after you submit.",
       "submit": "Submit",
-      "submitUnavailable": "Cannot submit yet: the server has no Review Study submission API."
+      "submitting": "Submitting…",
+      "submitSuccess": "Submission submitted successfully!",
+      "submitFailed": "Failed to submit: {{error}}",
+      "submitFailedGeneric": "Failed to submit. Please try again.",
+      "duplicateSubmission": "You already have a submission for this case. Exactly one submission is allowed.",
+      "submitUnavailable": "Cannot submit yet: the server has no Review Study submission API.",
+      "validation": {
+        "solutionMin": "Proposed solution must contain at least 10 characters.",
+        "reasoningMin": "Reasoning must contain at least 10 characters."
+      }
     },
     "feedback": {
       "unavailableTitle": "Feedback cannot be shown yet",
@@ -1694,18 +1745,39 @@
       "description": "This section appears once the server provides admin data."
     },
     "dashboard": {
+      "attentionTitle": "{{count}} items need attention",
+      "viewDetails": "View details",
+      "kpi": {
+        "users": "Users",
+        "openCourses": "Active courses",
+        "publishedCases": "Published cases",
+        "aiGenerations": "AI case generations",
+        "growthThisMonth": "+{{count}} in month {{month}}",
+        "aiErrors": "{{count}} failed generations",
+        "noAiErrors": "No errors"
+      },
       "activity": {
         "title": "Weekly learning activity",
-        "subtitle": "Branching Study attempts and Review Study submissions across the system"
+        "subtitle": "Branching Study attempts and Review Study submissions across the system",
+        "filter8Weeks": "8 weeks",
+        "branchingAttempts": "Study attempts",
+        "reviewSubmissions": "Review submissions"
       },
       "usersByRole": {
         "title": "Users by role",
-        "subtitle": "Active accounts"
+        "subtitle": "Active accounts",
+        "students": "Students",
+        "lecturers": "Lecturers",
+        "admins": "Administrators",
+        "totalUsers": "{{count}} users"
       },
       "health": {
         "title": "System status",
         "updatedAt": "Updated at {{time}}",
         "appServer": "Application server",
+        "aiService": "AI service",
+        "indexing": "Document indexing",
+        "indexingProcessing": "{{count}} files processing",
         "database": "Database",
         "up": "Stable",
         "down": "Disrupted",
@@ -1714,12 +1786,17 @@
       },
       "casesByCourse": {
         "title": "Cases by course",
-        "subtitle": "Published and draft cases in each course"
+        "subtitle": "Published and draft cases in each course",
+        "filterAll": "All courses",
+        "published": "Published",
+        "draft": "Draft",
+        "noCases": "No cases yet"
       },
       "recentLog": {
         "title": "Recent log",
         "subtitle": "Today"
-      }
+      },
+      "loadError": "Failed to load dashboard overview data"
     },
     "users": {
       "emptyTitle": "No user data yet",
