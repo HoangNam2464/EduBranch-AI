@@ -1521,14 +1521,21 @@
     },
     "challenge": {
       "title": "AI Challenge Support",
-      "description": "Round 1/2 · Answer the challenge questions to clarify your reasoning. Up to 2 rounds, not graded.",
+      "description": "Answer the challenge questions to clarify your reasoning. Up to 2 rounds, not graded.",
+      "roundIndicator": "Round {{round}}/2",
+      "roundCompleted": "2 rounds completed",
+      "completedBanner": "Challenge session completed (2 rounds). Your arguments have been recorded.",
       "decisionAt": "Your decision at step {{n}}",
+      "generating": "AI is analyzing reasoning and preparing counter-question...",
+      "sending": "Sending response...",
       "unavailableTitle": "AI challenge is not available",
-      "unavailableBody": "The server has no Challenge Support API yet, so challenge questions cannot be created. You can still continue Journey Review.",
+      "unavailableBody": "Cannot connect to AI Challenge Support server. You can still continue journey review.",
       "replyLabel": "Your response",
       "replyPlaceholder": "Defend your decision or describe an extra fallback mechanism...",
       "skip": "Skip",
-      "send": "Send round {{round}} response"
+      "send": "Send round {{round}} response",
+      "close": "Close",
+      "backToReview": "Back to Journey Review"
     },
     "reflection": {
       "pageTitle": "Reflect & capture the lessons",
