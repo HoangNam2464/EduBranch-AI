@@ -1524,11 +1524,31 @@
       "description": "Round 1/2 · Answer the challenge questions to clarify your reasoning. Up to 2 rounds, not graded.",
       "decisionAt": "Your decision at step {{n}}",
       "unavailableTitle": "AI challenge is not available",
-      "unavailableBody": "The server has no Challenge Support API yet, so challenge questions cannot be created. You can still continue Journey Review.",
+      "unavailableBody": "Save your reasoning before opening the AI challenge. You can still continue Journey Review.",
       "replyLabel": "Your response",
       "replyPlaceholder": "Defend your decision or describe an extra fallback mechanism...",
       "skip": "Skip",
-      "send": "Send round {{round}} response"
+      "send": "Send round {{round}} response",
+      "roundLabel": "Round {{round}}",
+      "counterQuestionLabel": "AI counter-question",
+      "completedSubtitle": "Round 2/2 · Completed. The challenge session concluded after 2 rounds. Your answer is saved alongside your reasoning at step {{n}}. No score is assigned.",
+      "r1Question": "Round 1 · AI counter-question",
+      "r1Answer": "Round 1 · Your response",
+      "r2Question": "Round 2 · AI counter-question",
+      "completedFooter": "Round 2 / 2 · Completed · Not graded",
+      "backToReview": "Back to Journey Review",
+      "loading": "Loading AI challenge session...",
+      "generating": "AI is generating counter-question...",
+      "sending": "Sending response...",
+      "errorTitle": "Unable to load AI challenge",
+      "retry": "Retry",
+      "errors": {
+        "maxRoundsReached": "Challenge support session has reached the maximum of 2 rounds. No further replies can be submitted.",
+        "aiUnavailable": "AI Challenge Support service is temporarily unavailable. Please retry shortly.",
+        "forbidden": "You do not have permission to access this challenge session.",
+        "notFound": "Challenge support session not found.",
+        "generic": "An error occurred during challenge support. Please retry."
+      }
     },
     "reflection": {
       "pageTitle": "Reflect & capture the lessons",
