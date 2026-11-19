@@ -62,7 +62,22 @@
         "materials": "Tài liệu môn học",
         "materialsSummary": "{{total}} tệp · {{ready}} sẵn sàng, {{failed}} lỗi",
         "cases": "Case Study",
-        "casesSummary": "{{total}} case · {{published}} xuất bản, {{drafts}} nháp"
+        "casesSummary": "{{total}} case · {{published}} xuất bản, {{drafts}} nháp",
+        "inviteCode": "Mã mời sinh viên",
+        "inviteCodeHelp": "Sinh viên dùng mã này để tham gia lớp học trên Bàn học của mình.",
+        "copyCode": "Sao chép mã",
+        "codeCopied": "Đã sao chép mã mời vào bộ nhớ tạm",
+        "rotateCode": "Đổi mã mới",
+        "createCode": "Tạo mã mời",
+        "noCodeYet": "Chưa tạo mã mời",
+        "disableCode": "Vô hiệu hóa",
+        "enableCode": "Cấp lại mã",
+        "codeDisabled": "Mã mời đã bị vô hiệu hóa",
+        "copyError": "Không thể sao chép mã mời vào bộ nhớ tạm",
+        "createError": "Không thể tạo mã mời sinh viên",
+        "rotateError": "Không thể đổi mã mời mới",
+        "disableError": "Không thể vô hiệu hóa mã mời",
+        "loadError": "Không thể tải thông tin mã mời"
       },
       "createDialog": {
         "title": "Khởi tạo khóa học mới",

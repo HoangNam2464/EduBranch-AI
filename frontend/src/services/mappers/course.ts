@@ -14,11 +14,20 @@ export interface CourseRow {
   lecturer_id: string;
   active?: boolean;
   is_active?: boolean;
+  invite_code?: string | null;
+  invite_code_active?: boolean;
+  enrolled_at?: string;
   created_at: string;
   updated_at: string;
 }
 
-export function toCourse(row: CourseRow): Course {
+export interface EnrolledCourse extends Course {
+  inviteCode?: string;
+  inviteCodeActive?: boolean;
+  enrolledAt?: string;
+}
+
+export function toCourse(row: CourseRow): EnrolledCourse {
   return {
     id: row.id,
     name: row.name,
@@ -26,6 +35,9 @@ export function toCourse(row: CourseRow): Course {
     courseCode: row.course_code ?? undefined,
     lecturerId: row.lecturer_id,
     active: row.active ?? row.is_active ?? false,
+    inviteCode: row.invite_code ?? undefined,
+    inviteCodeActive: row.invite_code_active ?? undefined,
+    enrolledAt: row.enrolled_at ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

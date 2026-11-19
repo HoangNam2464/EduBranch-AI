@@ -261,9 +261,20 @@
       "backToWork": "Quay lại bài làm"
     },
     "desk": {
-      "emptyTitle": "Chưa có dữ liệu học tập",
-      "emptyBody": "Tiến độ, case được giao và thông báo sẽ hiện ở đây khi hệ thống hỗ trợ ghi danh lớp học phần.",
-      "toCourses": "Khóa học của tôi",
+      "title": "Bàn học",
+      "emptyTitle": "Chưa có bài học hoặc khóa học nào",
+      "emptyBody": "Tham gia lớp học phần bằng mã mời để bắt đầu giải quyết các tình huống thực tế.",
+      "toCourses": "Khám phá khóa học của tôi",
+      "stats": {
+        "enrolledCourses": "Lớp học đã tham gia",
+        "activeCases": "Bài làm đang dở",
+        "publishedCases": "Case study khả dụng"
+      },
+      "activeCasesTitle": "Tiếp tục bài làm dở",
+      "continueCase": "Làm tiếp",
+      "myCoursesTitle": "Học phần của tôi",
+      "noActiveCases": "Không có case nào đang làm dở.",
+      "noEnrolledCourses": "Chưa tham gia khóa học nào.",
       "calendar": "Lịch",
       "month": "Tháng {{month}}, {{year}}",
       "previousMonth": "Tháng trước",
@@ -276,13 +287,23 @@
       "listTitle": "Danh sách lớp học phần",
       "join": "Tham gia lớp học",
       "emptyTitle": "Bạn chưa tham gia lớp học phần nào",
-      "emptyBody": "Danh sách lớp học phần sẽ hiện ở đây khi hệ thống hỗ trợ ghi danh.",
+      "emptyBody": "Nhập mã lớp do giảng viên cung cấp để bắt đầu trải nghiệm các case study.",
       "joinTitle": "Tham gia lớp học mới",
       "joinDescription": "Nhập mã lớp do giảng viên cung cấp để truy cập các case study của môn.",
       "codeLabel": "Mã lớp *",
       "codePlaceholder": "Ví dụ: SEC7A2",
       "joinSubmit": "Tham gia lớp",
-      "joinUnavailable": "Chưa thể tham gia: máy chủ chưa có API ghi danh bằng mã lớp."
+      "joinSuccess": "Tham gia lớp học thành công!",
+      "enrolledAt": "Đã tham gia: {{date}}",
+      "viewCases": "Vào học",
+      "error": {
+        "invalidCode": "Mã lớp không hợp lệ hoặc để trống.",
+        "notFound": "Mã lớp không tồn tại. Vui lòng kiểm tra lại.",
+        "archived": "Khóa học này đã được lưu trữ, không thể tham gia.",
+        "alreadyEnrolled": "Bạn đã tham gia lớp học phần này rồi.",
+        "disabled": "Mã lớp này đã hết hạn hoặc bị giảng viên vô hiệu hóa.",
+        "generic": "Không thể tham gia lớp học. Vui lòng thử lại sau."
+      }
     }
   }
 }

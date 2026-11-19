@@ -115,3 +115,36 @@
 | `caseReview.errors.conflict` | Thao tác xung đột với dữ liệu hiện tại. | This action conflicts with the current data. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
 | `caseReview.errors.network` | Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại. | Cannot reach the server. Check your connection and try again. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
 | `caseReview.errors.generic` | Đã có lỗi xảy ra. Vui lòng thử lại. | Something went wrong. Please try again. | PROPOSED | — | — | FE-009/FE-010 node editor (missing keys on develop) |
+| `g2.courses.details.inviteCode` | Mã mời sinh viên | Student invite code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.inviteCodeHelp` | Sinh viên dùng mã này để tham gia lớp học trên Bàn học của mình. | Students use this code to join the class on their Student Desk. | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.copyCode` | Sao chép mã | Copy code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.codeCopied` | Đã sao chép mã mời vào bộ nhớ tạm | Invite code copied to clipboard | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.rotateCode` | Đổi mã mới | Rotate code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.createCode` | Tạo mã mời | Create invite code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.noCodeYet` | Chưa tạo mã mời | No invite code yet | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.disableCode` | Vô hiệu hóa | Disable code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.enableCode` | Cấp lại mã | Re-enable code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.codeDisabled` | Mã mời đã bị vô hiệu hóa | Invite code is disabled | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.copyError` | Không thể sao chép mã mời vào bộ nhớ tạm | Unable to copy invite code to clipboard | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.createError` | Không thể tạo mã mời sinh viên | Unable to create student invite code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.rotateError` | Không thể đổi mã mời mới | Unable to rotate invite code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.disableError` | Không thể vô hiệu hóa mã mời | Unable to disable invite code | PROPOSED | — | — | FE-028/BE-029 |
+| `g2.courses.details.loadError` | Không thể tải thông tin mã mời | Unable to load invite code information | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.title` | Bàn học | Student Desk | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.stats.enrolledCourses` | Lớp học đã tham gia | Enrolled classes | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.stats.activeCases` | Bài làm đang dở | In-progress attempts | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.stats.publishedCases` | Case study khả dụng | Available cases | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.activeCasesTitle` | Tiếp tục bài làm dở | Continue in-progress cases | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.continueCase` | Làm tiếp | Resume | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.myCoursesTitle` | Học phần của tôi | My Courses | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.noActiveCases` | Không có case nào đang làm dở. | No cases in progress. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.desk.noEnrolledCourses` | Chưa tham gia khóa học nào. | You have not enrolled in any course yet. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.joinSuccess` | Tham gia lớp học thành công! | Successfully joined class! | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.enrolledAt` | Đã tham gia: {{date}} | Enrolled on: {{date}} | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.viewCases` | Vào học | View cases | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.error.invalidCode` | Mã lớp không hợp lệ hoặc để trống. | Invalid or empty class code. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.error.notFound` | Mã lớp không tồn tại. Vui lòng kiểm tra lại. | Class code does not exist. Please check again. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.error.archived` | Khóa học này đã được lưu trữ, không thể tham gia. | This course has been archived and cannot be joined. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.error.alreadyEnrolled` | Bạn đã tham gia lớp học phần này rồi. | You have already joined this class. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.error.disabled` | Mã lớp này đã hết hạn hoặc bị giảng viên vô hiệu hóa. | This class code has expired or was disabled by the lecturer. | PROPOSED | — | — | FE-028/BE-029 |
+| `g5.courses.error.generic` | Không thể tham gia lớp học. Vui lòng thử lại sau. | Could not join class. Please try again later. | PROPOSED | — | — | FE-028/BE-029 |

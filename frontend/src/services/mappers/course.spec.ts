@@ -23,9 +23,24 @@ describe("toCourse (backend snake_case row → Course)", () => {
       courseCode: "CS402",
       lecturerId: "u1",
       active: true,
+      inviteCode: undefined,
+      inviteCodeActive: undefined,
+      enrolledAt: undefined,
       createdAt: "2026-11-14T15:07:14.474Z",
       updatedAt: "2026-11-14T15:07:14.474Z",
     });
+  });
+
+  it("maps invite_code, invite_code_active, and enrolled_at when present", () => {
+    const course = toCourse({
+      ...row,
+      invite_code: "ABC12345",
+      invite_code_active: true,
+      enrolled_at: "2026-11-19T00:00:00.000Z",
+    });
+    assert.equal(course.inviteCode, "ABC12345");
+    assert.equal(course.inviteCodeActive, true);
+    assert.equal(course.enrolledAt, "2026-11-19T00:00:00.000Z");
   });
 
   it("falls back to is_active and treats null course_code as absent", () => {

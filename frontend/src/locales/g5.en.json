@@ -261,9 +261,20 @@
       "backToWork": "Back to my work"
     },
     "desk": {
-      "emptyTitle": "No learning data yet",
-      "emptyBody": "Progress, assigned cases and notifications will appear here once the system supports class enrolment.",
-      "toCourses": "My courses",
+      "title": "Student Desk",
+      "emptyTitle": "No courses or lessons yet",
+      "emptyBody": "Join a class using an invite code to start solving experiential case studies.",
+      "toCourses": "Explore my courses",
+      "stats": {
+        "enrolledCourses": "Enrolled classes",
+        "activeCases": "In-progress attempts",
+        "publishedCases": "Available cases"
+      },
+      "activeCasesTitle": "Continue in-progress cases",
+      "continueCase": "Resume",
+      "myCoursesTitle": "My Courses",
+      "noActiveCases": "No cases in progress.",
+      "noEnrolledCourses": "You have not enrolled in any course yet.",
       "calendar": "Calendar",
       "month": "{{month}}/{{year}}",
       "previousMonth": "Previous month",
@@ -276,13 +287,23 @@
       "listTitle": "Class list",
       "join": "Join a class",
       "emptyTitle": "You have not joined any class yet",
-      "emptyBody": "Your classes will appear here once the system supports enrolment.",
+      "emptyBody": "Enter the class code provided by your lecturer to access case studies.",
       "joinTitle": "Join a new class",
       "joinDescription": "Enter the class code from your lecturer to access the case studies of the course.",
       "codeLabel": "Class code *",
       "codePlaceholder": "e.g. SEC7A2",
       "joinSubmit": "Join class",
-      "joinUnavailable": "Cannot join yet: the server has no API to enrol by class code."
+      "joinSuccess": "Successfully joined class!",
+      "enrolledAt": "Enrolled on: {{date}}",
+      "viewCases": "View cases",
+      "error": {
+        "invalidCode": "Invalid or empty class code.",
+        "notFound": "Class code does not exist. Please check again.",
+        "archived": "This course has been archived and cannot be joined.",
+        "alreadyEnrolled": "You have already joined this class.",
+        "disabled": "This class code has expired or was disabled by the lecturer.",
+        "generic": "Could not join class. Please try again later."
+      }
     }
   }
 }

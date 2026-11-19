@@ -12,7 +12,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
-import { Archive, BookOpen, ChevronRight, CircleAlert, CircleCheck, Clock, FileText, GitBranch, Plus, X, type LucideIcon } from "lucide-react";
+import { Archive, Ban, BookOpen, Check, ChevronRight, CircleAlert, CircleCheck, Clock, Copy, FileText, GitBranch, Plus, RotateCw, X, type LucideIcon } from "lucide-react";
 import {
   Button,
   CourseCard,
@@ -110,6 +110,190 @@ function ChevronLink({ to, label }: { to: string; label: string }) {
     >
       <ChevronRight aria-hidden="true" size={16} absoluteStrokeWidth strokeWidth={1.33} />
     </Link>
+  );
+}
+
+function InviteCodeSection({ courseId, active }: { courseId: string; active: boolean }) {
+  const { t } = useTranslation();
+  const [code, setCode] = useState<string | null>(null);
+  const [isActive, setIsActive] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [copied, setCopied] = useState<boolean>(false);
+  const [actionLoading, setActionLoading] = useState<boolean>(false);
+  const [errorToast, setErrorToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!errorToast) return;
+    const timer = window.setTimeout(() => setErrorToast(null), 5000);
+    return () => window.clearTimeout(timer);
+  }, [errorToast]);
+
+  useEffect(() => {
+    let unmounted = false;
+    setLoading(true);
+    courseService
+      .getInviteCode(courseId)
+      .then((res) => {
+        if (!unmounted) {
+          setCode(res.inviteCode);
+          setIsActive(res.isActive);
+        }
+      })
+      .catch(() => {
+        if (!unmounted) {
+          setErrorToast(t("g2.courses.details.loadError"));
+        }
+      })
+      .finally(() => {
+        if (!unmounted) setLoading(false);
+      });
+    return () => {
+      unmounted = true;
+    };
+  }, [courseId, t]);
+
+  const handleCopy = async () => {
+    if (!code) return;
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setErrorToast(t("g2.courses.details.copyError"));
+    }
+  };
+
+  const handleRotate = async () => {
+    setActionLoading(true);
+    try {
+      const res = await courseService.rotateInviteCode(courseId);
+      setCode(res.inviteCode);
+      setIsActive(res.isActive);
+    } catch {
+      setErrorToast(t(code ? "g2.courses.details.rotateError" : "g2.courses.details.createError"));
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDisable = async () => {
+    setActionLoading(true);
+    try {
+      const res = await courseService.disableInviteCode(courseId);
+      setCode(res.inviteCode);
+      setIsActive(res.isActive);
+    } catch {
+      setErrorToast(t("g2.courses.details.disableError"));
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  return (
+    <section className="flex flex-col gap-2.5 rounded-[14px] bg-canvas p-4">
+      <div className="flex items-center justify-between">
+        <h4 className="text-[14px] leading-5 font-normal text-ink">{t("g2.courses.details.inviteCode")}</h4>
+        {code && !isActive && (
+          <span className="rounded-full bg-warning-bg px-2 py-0.5 text-[11px] font-medium text-warning-text">
+            {t("g2.courses.details.codeDisabled")}
+          </span>
+        )}
+      </div>
+      <p className="text-[12px] leading-4 text-ink-secondary">{t("g2.courses.details.inviteCodeHelp")}</p>
+
+      {loading ? (
+        <div className="h-10 animate-pulse rounded-eb-sm bg-surface-muted" />
+      ) : (
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center justify-between rounded-eb-sm border border-line bg-surface px-3 py-2">
+            <span
+              className={cx(
+                "font-mono text-[16px] tracking-wider",
+                code
+                  ? isActive
+                    ? "font-semibold text-primary"
+                    : "text-ink-muted line-through"
+                  : "text-[13px] text-ink-muted italic font-normal",
+              )}
+            >
+              {code ?? t("g2.courses.details.noCodeYet")}
+            </span>
+            {isActive && code && (
+              <button
+                type="button"
+                onClick={handleCopy}
+                disabled={!isActive}
+                className={cx("flex items-center gap-1 rounded-eb-xs px-2 py-1 text-[12px] text-link hover:underline", FOCUS_RING)}
+                aria-label={t("g2.courses.details.copyCode")}
+              >
+                {copied ? (
+                  <>
+                    <Check size={14} className="text-accent" />
+                    <span>{t("g2.courses.details.codeCopied")}</span>
+                  </>
+                ) : (
+                  <>
+                    <Copy size={14} />
+                    <span>{t("g2.courses.details.copyCode")}</span>
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+
+          {active && (
+            <div className="flex items-center gap-2 pt-1">
+              {!code ? (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leadingIcon={Plus}
+                  onClick={handleRotate}
+                  disabled={actionLoading}
+                >
+                  {t("g2.courses.details.createCode")}
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    leadingIcon={RotateCw}
+                    onClick={handleRotate}
+                    disabled={actionLoading}
+                  >
+                    {t(isActive ? "g2.courses.details.rotateCode" : "g2.courses.details.enableCode")}
+                  </Button>
+                  {isActive && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      leadingIcon={Ban}
+                      onClick={handleDisable}
+                      disabled={actionLoading}
+                    >
+                      {t("g2.courses.details.disableCode")}
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {errorToast && (
+        <ToastRegion>
+          <Toast
+            type="error"
+            title={t("g2.common.error", "Lỗi")}
+            message={errorToast}
+            onClose={() => setErrorToast(null)}
+            closeLabel={t("g2.courses.archiveDialog.closeToast")}
+          />
+        </ToastRegion>
+      )}
+    </section>
   );
 }
 
@@ -261,6 +445,8 @@ function CourseDetails({
               ))}
           </ul>
         </section>
+
+        <InviteCodeSection courseId={course.id} active={course.active} />
 
         <section className="flex flex-col gap-3 rounded-[14px] bg-canvas p-4">
           <h4 className="text-[14px] leading-5 font-normal text-ink">{t("g2.courses.details.goTo")}</h4>

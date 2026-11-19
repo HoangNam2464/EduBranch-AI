@@ -62,7 +62,22 @@
         "materials": "Course materials",
         "materialsSummary": "{{total}} files · {{ready}} ready, {{failed}} failed",
         "cases": "Case Study",
-        "casesSummary": "{{total}} cases · {{published}} published, {{drafts}} drafts"
+        "casesSummary": "{{total}} cases · {{published}} published, {{drafts}} drafts",
+        "inviteCode": "Student invite code",
+        "inviteCodeHelp": "Students use this code to join the class on their Student Desk.",
+        "copyCode": "Copy code",
+        "codeCopied": "Invite code copied to clipboard",
+        "rotateCode": "Rotate code",
+        "createCode": "Create invite code",
+        "noCodeYet": "No invite code yet",
+        "disableCode": "Disable code",
+        "enableCode": "Re-enable code",
+        "codeDisabled": "Invite code is disabled",
+        "copyError": "Unable to copy invite code to clipboard",
+        "createError": "Unable to create student invite code",
+        "rotateError": "Unable to rotate invite code",
+        "disableError": "Unable to disable invite code",
+        "loadError": "Unable to load invite code information"
       },
       "createDialog": {
         "title": "Create a new course",
