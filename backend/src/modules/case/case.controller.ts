@@ -9,10 +9,12 @@ import {
   HttpCode,
   HttpStatus,
   ForbiddenException,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { CaseService } from "./case.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
+import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
 
 /**
  * CaseController — Flow 2: AI Case Generation & Lecturer Review Lifecycle
@@ -22,6 +24,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
  *   GET   /api/v1/courses/:courseId/cases (Lecturer or Student)
  *   GET   /api/v1/cases/:id              (Lecturer: full tree; Student: published metadata only)
  *   PUT   /api/v1/cases/:id              (Lecturer course owner only)
+ *   PUT   /api/v1/cases/:id/nodes/:nodeId (Lecturer course owner only; BE-017)
  *   PATCH /api/v1/cases/:id/status       (Lecturer course owner only)
  */
 @Controller()
@@ -87,6 +90,24 @@ export class CaseController {
       throw new ForbiddenException("Only lecturers can edit cases");
     }
     const updated = await this.caseService.updateCase(id, user.id, body);
+    return {
+      status: "SUCCESS",
+      data: updated,
+    };
+  }
+
+  @Roles("LECTURER")
+  @Put("cases/:id/nodes/:nodeId")
+  async updateCaseNode(
+    @Param("id", ParseUUIDPipe) id: string,
+    @Param("nodeId", ParseUUIDPipe) nodeId: string,
+    @Body() body: UpdateCaseNodeDto,
+    @CurrentUser() user: { id: string; role: string },
+  ) {
+    if (user.role !== "LECTURER") {
+      throw new ForbiddenException("Only lecturers can edit cases");
+    }
+    const updated = await this.caseService.updateCaseNode(id, nodeId, user.id, body);
     return {
       status: "SUCCESS",
       data: updated,

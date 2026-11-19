@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { PATHS, ROLE_HOME, ROLE_ROOT, buildPath, withQuery } from "@/routes/paths";
 import vi from "@/locales/vi.json";
 import en from "@/locales/en.json";
-import { readdirSync, readFileSync } from "node:fs";
+import { readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 /** Collects every leaf string of the PATHS dictionary. */
@@ -82,26 +82,10 @@ describe("locales", () => {
     assert.deepEqual(keysOf(vi).sort(), keysOf(en).sort());
   });
 
-  // Feature locale files (locales/<feature>.vi.json + .en.json) are merged by lib/i18n.ts.
-  const dir = fileURLToPath(new URL("../locales/", import.meta.url));
-  const featureFiles = readdirSync(dir).filter((f) => /^[\w-]+\.vi\.json$/.test(f));
-  const read = (f: string) => JSON.parse(readFileSync(dir + f, "utf8")) as Record<string, unknown>;
-
-  it("every feature locale has a matching English file with the same keys", () => {
-    for (const f of featureFiles) {
-      const enFile = f.replace(".vi.json", ".en.json");
-      assert.deepEqual(keysOf(read(f)).sort(), keysOf(read(enFile)).sort(), f);
-    }
-  });
-
-  it("feature locales use their own top-level keys (no collisions)", () => {
-    const seen = new Set(Object.keys(vi));
-    for (const f of featureFiles) {
-      for (const key of Object.keys(read(f))) {
-        assert.ok(!seen.has(key), `duplicate top-level key "${key}" in ${f}`);
-        seen.add(key);
-      }
-    }
+  it("locales directory contains only vi.json and en.json", () => {
+    const dir = fileURLToPath(new URL("../locales/", import.meta.url));
+    const files = readdirSync(dir).sort();
+    assert.deepEqual(files, ["en.json", "vi.json"]);
   });
 
   it("have a label for every portal the error pages can return", () => {

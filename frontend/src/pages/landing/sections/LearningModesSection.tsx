@@ -48,23 +48,40 @@ function Mode({ copy, visual }: { copy: ModeCopy; visual: ReactNode }) {
 
 /** "Path visual": white 180px card; the 520x180 "Decision path" drawing sits 32px in. */
 function DecisionPathVisual() {
+  const { t } = useTranslation();
   return (
-    <div aria-hidden="true" className="relative h-[180px] w-full rounded-[20px] bg-surface shadow-eb-card">
-      <svg width="520" height="180" viewBox="0 0 520 180" fill="none" className="absolute top-0 left-8">
+    <div aria-hidden="true" className="relative flex h-[180px] w-full items-center overflow-hidden rounded-[20px] bg-surface p-5 shadow-eb-card border border-line-soft hover:shadow-eb-hover transition-shadow">
+      <svg width="520" height="180" viewBox="0 0 520 180" fill="none" className="w-full h-full max-w-lg mx-auto">
         <path d="M 60 90 L 180 90" stroke="var(--color-primary)" strokeWidth="3" strokeLinecap="round" />
         <path d="M 180 90 C 220 90 220 40 260 40" stroke="#B8C6DA" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 6" />
         <path d="M 180 90 L 300 90" stroke="var(--color-primary)" strokeWidth="3" strokeLinecap="round" />
         <path d="M 180 90 C 220 90 220 140 260 140" stroke="#B8C6DA" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 6" />
         <path d="M 300 90 C 340 90 340 50 380 50" stroke="#B8C6DA" strokeWidth="2" strokeLinecap="round" strokeDasharray="4 6" />
         <path d="M 300 90 L 440 90" stroke="var(--color-accent)" strokeWidth="3" strokeLinecap="round" />
+        
+        {/* Nodes */}
         <circle cx="60" cy="90" r="12" fill="var(--color-primary)" />
         <circle cx="180" cy="90" r="12" fill="var(--color-primary)" />
         <circle cx="300" cy="90" r="12" fill="var(--color-primary)" />
         <circle cx="440" cy="90" r="14" fill="var(--color-accent)" />
-        <circle cx="440" cy="90" r="22" stroke="var(--color-accent)" strokeWidth="2" />
+        <circle cx="440" cy="90" r="22" stroke="var(--color-accent)" strokeWidth="2" opacity="0.6" />
         <circle cx="260" cy="40" r="7" fill="#D6DFEC" />
         <circle cx="260" cy="140" r="7" fill="#D6DFEC" />
         <circle cx="380" cy="50" r="7" fill="#D6DFEC" />
+
+        {/* Node labels */}
+        <text x="60" y="125" textAnchor="middle" fill="var(--color-ink-secondary)" fontSize="11" fontWeight="500">
+          {t("g1.landing.modes.branching.diagram.init")}
+        </text>
+        <text x="180" y="125" textAnchor="middle" fill="var(--color-ink-secondary)" fontSize="11" fontWeight="500">
+          {t("g1.landing.modes.branching.diagram.option1")}
+        </text>
+        <text x="300" y="125" textAnchor="middle" fill="var(--color-ink-secondary)" fontSize="11" fontWeight="500">
+          {t("g1.landing.modes.branching.diagram.option2")}
+        </text>
+        <text x="440" y="130" textAnchor="middle" fill="var(--color-accent)" fontSize="11" fontWeight="600">
+          {t("g1.landing.modes.branching.diagram.outcome")}
+        </text>
       </svg>
     </div>
   );
@@ -74,17 +91,27 @@ function DecisionPathVisual() {
 function SubmissionVisual() {
   const { t } = useTranslation();
   return (
-    <div aria-hidden="true" className="flex h-[180px] w-full flex-col gap-3 rounded-[20px] bg-surface p-6 shadow-eb-card">
-      <div className="flex flex-col gap-2 rounded-eb-lg bg-surface p-4">
-        <p className="text-[12px] leading-4 font-medium text-ink-secondary">{t("g1.landing.modes.review.answerLabel")}</p>
-        <span className="h-2 w-[380px] rounded-[4px] bg-line" />
-        <span className="h-2 w-[327px] rounded-[4px] bg-line" />
-        <span className="h-2 w-[228px] rounded-[4px] bg-line" />
+    <div aria-hidden="true" className="flex h-[180px] w-full flex-col justify-between rounded-[20px] bg-surface p-5 shadow-eb-card border border-line-soft hover:shadow-eb-hover transition-shadow">
+      <div className="flex flex-col gap-2.5 rounded-eb-lg bg-canvas p-4 border border-line-soft">
+        <div className="flex items-center justify-between">
+          <p className="text-[12px] leading-4 font-medium text-ink-secondary">{t("g1.landing.modes.review.answerLabel")}</p>
+          <span className="text-[11px] font-medium text-success-text bg-success-bg px-2 py-0.5 rounded-full border border-success-border">
+            {t("g1.landing.modes.review.completed")}
+          </span>
+        </div>
+        <span className="h-2 w-full max-w-[340px] rounded-[4px] bg-line-strong/60" />
+        <span className="h-2 w-full max-w-[280px] rounded-[4px] bg-line-strong/60" />
+        <span className="h-2 w-full max-w-[200px] rounded-[4px] bg-line-strong/60" />
       </div>
-      <p className="flex items-center gap-2 text-[12px] leading-4 text-ink-secondary">
-        <span className="size-2 rounded-full bg-accent" />
-        {t("g1.landing.modes.review.sent")}
-      </p>
+      <div className="flex items-center justify-between px-1">
+        <p className="flex items-center gap-2 text-[12px] leading-4 text-ink-secondary">
+          <span className="size-2 rounded-full bg-accent animate-pulse" />
+          {t("g1.landing.modes.review.sent")}
+        </p>
+        <span className="text-[11px] text-primary font-medium">
+          {t("g1.landing.modes.review.receiveFeedback")}
+        </span>
+      </div>
     </div>
   );
 }

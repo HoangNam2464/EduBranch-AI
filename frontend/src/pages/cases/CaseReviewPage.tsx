@@ -9,10 +9,12 @@
  * The case title is shown in the shell header (useShellTitle).
  * Route: /lecturer/cases/:caseId/review
  *
- * Data: GET /cases/:id (lecturer projection with nodes + options). PUT /cases/:id persists only the
- * case title/description, each node's `situation` and each option's text + consequence, and only the
- * fields that changed are sent. Fields the backend cannot store keep their Figma slot, read-only, with
- * a hint (tooltip + aria-describedby). Nothing is simulated.
+ * Data: GET /cases/:id (lecturer projection with nodes + options). PUT /cases/:id saves the case
+ * title/description; PUT /cases/:id/nodes/:nodeId (BE-017, FE-009/FE-010) saves each changed node —
+ * situation, options (add / remove / text / consequence) and the next node of each option — and the
+ * backend rejects loops, orphan nodes and option counts outside 2–4 (FND §5). The case status does
+ * not change on save (PO 2026-11-19). Creating new nodes has no API yet (PO 2026-11-19: relink to
+ * existing nodes only). Fields the backend cannot store keep their Figma slot, read-only, with a hint.
  */
 import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useParams } from "react-router-dom";
@@ -29,6 +31,7 @@ import { PATHS, buildPath } from "@/routes/paths";
 import { useShellTitle } from "@/layouts/shell/ShellTitleContext";
 import { analyzeTree } from "@/pages/cases/caseTree";
 import { isEditable } from "@/pages/cases/caseUi";
+import { MAX_OPTIONS, NEW_OPTION_PREFIX, changedNodes, toNodeRequest } from "@/pages/cases/caseEdits";
 import {
   CAPTION,
   CARD_TITLE,
@@ -53,7 +56,11 @@ interface ToastState {
   message?: ReactNode;
 }
 
-type InvalidField = { kind: "titleRequired" } | { kind: "situationRequired"; nodeId: string } | { kind: "optionRequired"; nodeId: string; optionId: string };
+type InvalidField =
+  | { kind: "titleRequired" }
+  | { kind: "situationRequired"; nodeId: string }
+  | { kind: "optionRequired"; nodeId: string; optionId: string }
+  | { kind: "nextRequired"; nodeId: string; optionId: string };
 
 function httpStatus(error: unknown): number | string | undefined {
   if (isAxiosError(error)) return error.response?.status ?? error.code;
@@ -88,42 +95,29 @@ function errorKind(error: unknown): "invalid" | "forbidden" | "notFound" | "conf
 }
 
 /**
- * Body of PUT /cases/:id with only what changed between the saved case and the draft,
- * or null when nothing changed. Options are sent whole (the backend writes text and consequence together).
+ * Body of PUT /cases/:id with the case-level fields that changed (title, description), or null.
+ * Node changes go through PUT /cases/:id/nodes/:nodeId (see changedNodes).
  */
 function buildUpdate(saved: CaseDetail, draft: CaseDetail): UpdateCaseRequest | null {
   const body: UpdateCaseRequest = {};
   if (draft.title !== saved.title) body.title = draft.title;
   if ((draft.description ?? "") !== (saved.description ?? "")) body.description = draft.description ?? "";
-  const savedNodes = new Map(saved.nodes.map((n) => [n.id, n]));
-  const nodes: NonNullable<UpdateCaseRequest["nodes"]> = [];
-  for (const node of draft.nodes) {
-    const before = savedNodes.get(node.id);
-    if (!before) continue;
-    const savedOptions = new Map(before.options.map((o) => [o.id, o]));
-    const options = node.options
-      .filter((o) => {
-        const prev = savedOptions.get(o.id);
-        return prev && (prev.text !== o.text || prev.consequence !== o.consequence);
-      })
-      .map((o) => ({ id: o.id, option_text: o.text, consequence: o.consequence }));
-    const situationChanged = node.situation !== before.situation;
-    if (situationChanged || options.length > 0) {
-      nodes.push({ id: node.id, ...(situationChanged ? { situation: node.situation } : {}), ...(options.length > 0 ? { options } : {}) });
-    }
-  }
-  if (nodes.length > 0) body.nodes = nodes;
   return Object.keys(body).length > 0 ? body : null;
 }
 
 /** First field PUT /cases/:id would otherwise skip or null out. */
-function findInvalid(c: CaseDetail, order: CaseNode[]): InvalidField | null {
+function findInvalid(c: CaseDetail, order: CaseNode[], changedIds: Set<string>): InvalidField | null {
   if (!c.title.trim()) return { kind: "titleRequired" };
   if (c.learningMode !== "BRANCHING_STUDY") return null;
   for (const n of order) {
     if (!n.situation.trim()) return { kind: "situationRequired", nodeId: n.id };
     const bad = n.options.find((o) => !o.text.trim() || !o.consequence.trim());
     if (bad) return { kind: "optionRequired", nodeId: n.id, optionId: bad.id };
+    // FND §5: an option leads to a node. Checked only on nodes being saved, so an older tree
+    // with an option that has no next node still lets the lecturer save other nodes (the backend
+    // applies the per-node rules to the saved node only, too).
+    const noNext = changedIds.has(n.id) ? n.options.find((o) => !o.nextNodeId) : undefined;
+    if (noNext) return { kind: "nextRequired", nodeId: n.id, optionId: noNext.id };
   }
   return null;
 }
@@ -154,6 +148,8 @@ function CaseEditor({ caseId }: { caseId: string }) {
   const [pending, setPending] = useState(false);
   const [toast, setToast] = useState<ToastState | null>(null);
   const mounted = useRef(true);
+  /** Counter for local ids of options added and not saved yet. */
+  const newOptionSeq = useRef(0);
 
   useEffect(() => {
     mounted.current = true;
@@ -238,10 +234,11 @@ function CaseEditor({ caseId }: { caseId: string }) {
   const status = saved.status;
   const editable = isEditable(status);
   const fieldsDisabled = !editable || pending;
-  const update = buildUpdate(saved, draft);
-  const dirty = update !== null;
-
   const order = orderNodes(draft.nodes, draft.rootNodeId);
+  const update = buildUpdate(saved, draft);
+  const nodeChanges = changedNodes(saved, draft, order);
+  const dirty = update !== null || nodeChanges.length > 0;
+
   const tree = analyzeTree(draft.nodes, draft.rootNodeId);
   const pointNo = new Map<string, number>();
   const outcomeNo = new Map<string, number>();
@@ -258,12 +255,15 @@ function CaseEditor({ caseId }: { caseId: string }) {
 
   async function saveContent(): Promise<boolean> {
     if (!draft || !saved) return false;
-    const invalid = findInvalid(draft, order);
+    const toSave = changedNodes(saved, draft, order);
+    const invalid = findInvalid(draft, order, new Set(toSave.map((n) => n.id)));
     if (invalid) {
       const node = invalid.kind === "titleRequired" ? undefined : nodeById.get(invalid.nodeId);
       if (node) {
         setSelectedNodeId(node.id);
-        setExpandedOptionId(invalid.kind === "optionRequired" ? invalid.optionId : (node.options[0]?.id ?? null));
+        setExpandedOptionId(
+          invalid.kind === "optionRequired" || invalid.kind === "nextRequired" ? invalid.optionId : (node.options[0]?.id ?? null),
+        );
       }
       setToast({
         type: "error",
@@ -272,18 +272,71 @@ function CaseEditor({ caseId }: { caseId: string }) {
       });
       return false;
     }
+    // FND §5 checked here first so the lecturer gets the translated reason; the backend checks again.
+    // Only issues the draft introduces block the save (a flaw already in the saved tree does not).
+    const savedIssues = new Set(analyzeTree(saved.nodes, saved.rootNodeId).issues);
+    const newIssues = tree.issues.filter((issue) => !savedIssues.has(issue));
+    if (toSave.length > 0 && newIssues.length > 0) {
+      setToast({
+        type: "error",
+        title: t("caseReview.validation.title"),
+        message: newIssues.map((issue) => t(`caseReview.branching.issue.${issue}`)).join(" "),
+      });
+      return false;
+    }
     const body = buildUpdate(saved, draft);
-    if (!body) return true;
+    if (!body && toSave.length === 0) return true;
     setPending(true);
+    let latest: CaseDetail | null = null;
+    const savedIds = new Set<string>();
     try {
-      const updated = await caseService.updateCase(caseId, body);
+      if (body) latest = await caseService.updateCase(caseId, body);
+      // One request per changed node; the backend checks the tree after each one (FND §5). A node
+      // rejected only because another changed node is not saved yet (e.g. a target still orphaned)
+      // is retried after the others, until a pass saves nothing more.
+      let remaining = toSave;
+      let lastRejection: unknown = null;
+      while (remaining.length > 0) {
+        const rejected: CaseNode[] = [];
+        for (const node of remaining) {
+          try {
+            latest = await caseService.updateNode(caseId, node.id, toNodeRequest(node));
+            savedIds.add(node.id);
+          } catch (error) {
+            if (!isAxiosError(error) || error.response?.status !== 400) throw error;
+            rejected.push(node);
+            lastRejection = error;
+          }
+        }
+        if (rejected.length === remaining.length) throw lastRejection;
+        remaining = rejected;
+      }
       if (!mounted.current) return false;
-      setSaved(updated);
-      setDraft(updated);
+      if (latest) {
+        setSaved(latest);
+        setDraft(latest);
+      }
       setToast({ type: "success", title: t("caseReview.toast.savedTitle") });
       return true;
     } catch (error) {
-      if (mounted.current) showError(t("caseReview.toast.saveFailedTitle"), describeError(error));
+      if (!mounted.current) return false;
+      // Keep what the backend already accepted; the rest of the draft stays as typed.
+      if (latest) {
+        const confirmed = latest;
+        setSaved(confirmed);
+        setDraft((prev) =>
+          prev
+            ? {
+                ...prev,
+                status: confirmed.status,
+                title: body?.title !== undefined ? confirmed.title : prev.title,
+                description: body?.description !== undefined ? confirmed.description : prev.description,
+                nodes: prev.nodes.map((n) => (savedIds.has(n.id) ? (confirmed.nodes.find((c) => c.id === n.id) ?? n) : n)),
+              }
+            : prev,
+        );
+      }
+      showError(t("caseReview.toast.saveFailedTitle"), describeError(error));
       return false;
     } finally {
       if (mounted.current) setPending(false);
@@ -339,6 +392,19 @@ function CaseEditor({ caseId }: { caseId: string }) {
   }
   function updateOption(nodeId: string, optionId: string, field: "text" | "consequence", value: string) {
     updateNode(nodeId, (n) => ({ ...n, options: n.options.map((o) => (o.id === optionId ? { ...o, [field]: value } : o)) }));
+  }
+  function setNext(nodeId: string, optionId: string, nextNodeId: string) {
+    updateNode(nodeId, (n) => ({ ...n, options: n.options.map((o) => (o.id === optionId ? { ...o, nextNodeId: nextNodeId || undefined } : o)) }));
+  }
+  function addOption(nodeId: string) {
+    newOptionSeq.current += 1;
+    const id = `${NEW_OPTION_PREFIX}${newOptionSeq.current}`;
+    updateNode(nodeId, (n) => ({ ...n, options: [...n.options, { id, nodeId, text: "", consequence: "", nextNodeId: undefined }] }));
+    setExpandedOptionId(id);
+  }
+  function removeOption(nodeId: string, optionId: string) {
+    updateNode(nodeId, (n) => ({ ...n, options: n.options.filter((o) => o.id !== optionId) }));
+    if (expandedOptionId === optionId) setExpandedOptionId(null);
   }
   function selectNode(nodeId: string) {
     setSelectedNodeId(nodeId);
@@ -436,12 +502,14 @@ function CaseEditor({ caseId }: { caseId: string }) {
                             uid={uid}
                             index={index}
                             option={option}
-                            target={option.nextNodeId ? nodeById.get(option.nextNodeId) : undefined}
+                            targets={order.filter((n) => n.id !== selectedNode.id)}
                             targetTag={nodeTag}
                             disabled={fieldsDisabled}
                             unsupportedId={unsupportedId}
                             unsupported={unsupported}
                             onChange={(field, value) => updateOption(selectedNode.id, option.id, field, value)}
+                            onNextChange={(next) => setNext(selectedNode.id, option.id, next)}
+                            onDelete={() => removeOption(selectedNode.id, option.id)}
                           />
                         ) : (
                           <OptionCollapsed
@@ -453,9 +521,9 @@ function CaseEditor({ caseId }: { caseId: string }) {
                             })}
                             expandLabel={t("caseReview.branching.expandOption", { n: index + 1 })}
                             deleteLabel={t("caseReview.branching.deleteOption")}
-                            unsupportedId={unsupportedId}
-                            unsupported={unsupported}
+                            disabled={fieldsDisabled}
                             onExpand={() => setExpandedOptionId(option.id)}
+                            onDelete={() => removeOption(selectedNode.id, option.id)}
                           />
                         ),
                       )}
@@ -464,9 +532,9 @@ function CaseEditor({ caseId }: { caseId: string }) {
                           variant="secondary"
                           size="sm"
                           leadingIcon={Plus}
-                          disabled
-                          aria-describedby={unsupportedId}
-                          title={unsupported}
+                          disabled={fieldsDisabled || selectedNode.options.length >= MAX_OPTIONS}
+                          title={selectedNode.options.length >= MAX_OPTIONS ? t("caseReview.branching.maxOptions", { max: MAX_OPTIONS }) : undefined}
+                          onClick={() => addOption(selectedNode.id)}
                           className="self-start"
                         >
                           {t("caseReview.branching.addOption")}
@@ -768,22 +836,27 @@ function OptionEditor({
   uid,
   index,
   option,
-  target,
+  targets,
   targetTag,
   disabled,
   unsupportedId,
   unsupported,
   onChange,
+  onNextChange,
+  onDelete,
 }: {
   uid: string;
   index: number;
   option: CaseOption;
-  target?: CaseNode;
+  /** Nodes the option may lead to (every node of the case except the one being edited). */
+  targets: CaseNode[];
   targetTag: (n: CaseNode) => string;
   disabled: boolean;
   unsupportedId: string;
   unsupported: string;
   onChange: (field: "text" | "consequence", value: string) => void;
+  onNextChange: (nextNodeId: string) => void;
+  onDelete: () => void;
 }) {
   const { t } = useTranslation();
   const base = `${uid}-opt-${option.id}`;
@@ -793,7 +866,7 @@ function OptionEditor({
         <h3 id={`${base}-h`} className="min-w-0 flex-1 text-[14px] leading-5 font-medium text-ink">
           {t("caseReview.branching.optionLabel", { n: index + 1 })}
         </h3>
-        <DeleteIcon label={t("caseReview.branching.deleteOption")} unsupportedId={unsupportedId} unsupported={unsupported} />
+        <DeleteIcon label={t("caseReview.branching.deleteOption")} disabled={disabled} onDelete={onDelete} />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -828,27 +901,32 @@ function OptionEditor({
       </div>
 
       <div className="flex flex-col gap-2">
-        <span id={`${base}-next-l`} className={FIELD_LABEL}>
+        <label htmlFor={`${base}-next`} className={FIELD_LABEL}>
           {t("caseReview.branching.nextNode")} *
-        </span>
-        <div
-          role="group"
-          aria-labelledby={`${base}-next-l`}
-          aria-describedby={unsupportedId}
-          title={unsupported}
-          className="flex h-9 items-center gap-2.5 border-b border-line-soft py-2 text-[14px] leading-5"
-        >
-          <span className="min-w-0 flex-1 truncate">
-            {target ? (
-              <>
-                <span className="text-ink-muted">{targetTag(target)}: </span>
-                <span className="text-ink">{target.situation}</span>
-              </>
-            ) : (
-              <span className="text-ink">{t("caseReview.branching.endsJourney")}</span>
+        </label>
+        <div className="relative flex h-9 items-center border-b border-line-soft">
+          <select
+            id={`${base}-next`}
+            value={option.nextNodeId ?? ""}
+            disabled={disabled}
+            aria-required="true"
+            aria-invalid={!option.nextNodeId || undefined}
+            onChange={(e) => onNextChange(e.target.value)}
+            className={cx(
+              "h-full w-full min-w-0 cursor-pointer appearance-none truncate bg-transparent py-2 pr-6 text-[14px] leading-5 text-ink disabled:cursor-not-allowed",
+              FOCUS_RING,
             )}
-          </span>
-          <ChevronDown aria-hidden="true" size={16} absoluteStrokeWidth strokeWidth={1.7} className="shrink-0 text-control-icon" />
+          >
+            <option value="" disabled>
+              {t("caseReview.branching.selectNextNode")}
+            </option>
+            {targets.map((n) => (
+              <option key={n.id} value={n.id}>
+                {`${targetTag(n)}: ${n.situation}`}
+              </option>
+            ))}
+          </select>
+          <ChevronDown aria-hidden="true" size={16} absoluteStrokeWidth strokeWidth={1.7} className="pointer-events-none absolute right-0 shrink-0 text-control-icon" />
         </div>
       </div>
 
@@ -878,16 +956,16 @@ function OptionCollapsed({
   label,
   expandLabel,
   deleteLabel,
-  unsupportedId,
-  unsupported,
+  disabled,
   onExpand,
+  onDelete,
 }: {
   label: string;
   expandLabel: string;
   deleteLabel: string;
-  unsupportedId: string;
-  unsupported: string;
+  disabled: boolean;
   onExpand: () => void;
+  onDelete: () => void;
 }) {
   return (
     <div className="flex items-center gap-2 rounded-eb-lg bg-canvas p-4">
@@ -901,21 +979,24 @@ function OptionCollapsed({
         <span className="min-w-0 flex-1 truncate text-[14px] leading-5 font-medium text-ink">{label}</span>
         <ChevronRight aria-hidden="true" size={16} absoluteStrokeWidth strokeWidth={1.333} className="shrink-0 text-ink-secondary" />
       </button>
-      <DeleteIcon label={deleteLabel} unsupportedId={unsupportedId} unsupported={unsupported} />
+      <DeleteIcon label={deleteLabel} disabled={disabled} onDelete={onDelete} />
     </div>
   );
 }
 
-/** Icon/trash-2 (16, stroke 1.511) — deleting options is not supported by PUT /cases/:id. */
-function DeleteIcon({ label, unsupportedId, unsupported }: { label: string; unsupportedId: string; unsupported: string }) {
+/** Icon/trash-2 (16, stroke 1.511) — removes the option from the draft; saved with the node (BE-017). */
+function DeleteIcon({ label, disabled, onDelete }: { label: string; disabled: boolean; onDelete: () => void }) {
   return (
     <button
       type="button"
-      disabled
+      disabled={disabled}
+      onClick={onDelete}
       aria-label={label}
-      aria-describedby={unsupportedId}
-      title={`${label} — ${unsupported}`}
-      className="flex size-4 shrink-0 cursor-not-allowed items-center justify-center text-ink-secondary"
+      title={label}
+      className={cx(
+        "flex size-4 shrink-0 cursor-pointer items-center justify-center rounded-eb-sm text-ink-secondary hover:text-error-text disabled:cursor-not-allowed disabled:hover:text-ink-secondary",
+        FOCUS_RING,
+      )}
     >
       <Trash2 aria-hidden="true" size={16} absoluteStrokeWidth strokeWidth={1.511} />
     </button>

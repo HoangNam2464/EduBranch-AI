@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Bell, Moon, Search, SlidersHorizontal } from "lucide-react";
-import { SUPPORTED_LANGUAGES, type AppLanguage } from "@/lib/i18n";
+import { Bell, Search, SlidersHorizontal } from "lucide-react";
+import { LanguageSwitcher, ThemeToggle } from "@/components/ds";
 
 /*
  * Figma: `EB/Header Actions` (762×40, gap 12) — shared by the three roles.
@@ -36,7 +36,7 @@ export function HeaderActions({
   settingsPath,
   unreadCount = 0,
 }: HeaderActionsProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,8 +74,6 @@ export function HeaderActions({
     navigate({ pathname: location.pathname, search: qs ? `?${qs}` : "" });
   }
 
-  const currentLang = (i18n.resolvedLanguage ?? "vi") as AppLanguage;
-
   return (
     <div className="flex h-10 items-center gap-3">
       <form role="search" onSubmit={onSubmit} className="h-10 w-80">
@@ -98,33 +96,9 @@ export function HeaderActions({
         </label>
       </form>
 
-      <div
-        role="group"
-        aria-label={t("shell.language")}
-        className="flex h-10 items-center gap-0.5 rounded-[10px] border border-line bg-surface-muted p-[3px]"
-      >
-        {SUPPORTED_LANGUAGES.map((lang) => {
-          const active = lang === currentLang;
-          return (
-            <button
-              key={lang}
-              type="button"
-              lang={lang}
-              aria-pressed={active}
-              onClick={() => void i18n.changeLanguage(lang)}
-              className={`flex h-8 w-[34px] items-center justify-center rounded-eb-md text-xs leading-4 font-medium ${FOCUS} ${
-                active ? "bg-primary text-ink-inverse" : "text-ink-secondary hover:text-ink"
-              }`}
-            >
-              {lang.toUpperCase()}
-            </button>
-          );
-        })}
-      </div>
+      <LanguageSwitcher />
 
-      <button type="button" className={ICON_BUTTON} aria-label={t("shell.themeSoon")} title={t("shell.themeSoon")}>
-        <Moon size={18} strokeWidth={2.67} aria-hidden="true" />
-      </button>
+      <ThemeToggle className={ICON_BUTTON} />
 
       <button
         type="button"
