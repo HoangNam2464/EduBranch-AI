@@ -1723,18 +1723,39 @@
       "description": "Mục này hiển thị khi máy chủ cung cấp dữ liệu quản trị."
     },
     "dashboard": {
+      "attentionTitle": "{{count}} mục cần chú ý",
+      "viewDetails": "Xem chi tiết",
+      "kpi": {
+        "users": "Người dùng",
+        "openCourses": "Khóa học đang mở",
+        "publishedCases": "Case đã xuất bản",
+        "aiGenerations": "Lượt sinh case AI",
+        "growthThisMonth": "+{{count}} trong tháng {{month}}",
+        "aiErrors": "{{count}} lần sinh lỗi",
+        "noAiErrors": "Không có lỗi"
+      },
       "activity": {
         "title": "Hoạt động học tập theo tuần",
-        "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống"
+        "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống",
+        "filter8Weeks": "8 tuần",
+        "branchingAttempts": "Lượt làm bài",
+        "reviewSubmissions": "Bài nộp Review Study"
       },
       "usersByRole": {
         "title": "Người dùng theo vai trò",
-        "subtitle": "Tài khoản đang hoạt động"
+        "subtitle": "Tài khoản đang hoạt động",
+        "students": "Sinh viên",
+        "lecturers": "Giảng viên",
+        "admins": "Quản trị viên",
+        "totalUsers": "{{count}} người dùng"
       },
       "health": {
         "title": "Tình trạng hệ thống",
         "updatedAt": "Cập nhật lúc {{time}}",
         "appServer": "Máy chủ ứng dụng",
+        "aiService": "Dịch vụ AI",
+        "indexing": "Lập chỉ mục tài liệu",
+        "indexingProcessing": "{{count}} tệp đang xử lý",
         "database": "Cơ sở dữ liệu",
         "up": "Ổn định",
         "down": "Gián đoạn",
@@ -1743,12 +1764,17 @@
       },
       "casesByCourse": {
         "title": "Case theo khóa học",
-        "subtitle": "Số case đã xuất bản và bản nháp ở mỗi khóa"
+        "subtitle": "Số case đã xuất bản và bản nháp ở mỗi khóa",
+        "filterAll": "Mọi khóa học",
+        "published": "Đã xuất bản",
+        "draft": "Bản nháp",
+        "noCases": "Chưa có case"
       },
       "recentLog": {
         "title": "Nhật ký gần đây",
         "subtitle": "Hôm nay"
-      }
+      },
+      "loadError": "Không tải được dữ liệu tổng quan"
     },
     "users": {
       "emptyTitle": "Chưa có dữ liệu người dùng",
