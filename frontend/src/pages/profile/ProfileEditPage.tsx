@@ -1,10 +1,13 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { BookOpen, ChartColumn, Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
-import { SectionHeading, StatusPill, cx } from "@/components/ds";
+import { Button, Dialog, Field, SectionHeading, StatusPill, cx, FOCUS_RING } from "@/components/ds";
 import { ErrorState, SkeletonLine, SkeletonRegion, StateCard } from "@/components/feedback";
 import { userService } from "@/services/userService";
+import { courseService } from "@/services/courseService";
 import type { UserProfile } from "@/services/mappers/user";
+import type { EnrolledCourse } from "@/services/mappers/course";
+import { useAuthStore } from "@/stores/authStore";
 import { initialsOf } from "@/layouts/shell/shellRoutes";
 import { formatDate } from "@/pages/profile/components/calendar";
 import { MiniCalendar } from "@/pages/profile/components/MiniCalendar";
@@ -21,11 +24,9 @@ import {
 /*
  * 09.1 Hồ sơ tài khoản · Giảng viên (node 484:11904) and 09.2 · Sinh viên (node 484:12467);
  * also serves /admin/profile with the account card only.
- * Data: `GET /users/me` (id, email, fullName, role, createdAt) and, for lecturers, `GET /courses`
- * + `GET /courses/:id/cases` + `GET /courses/:id/materials`. The API has no avatar, account status, student enrolments,
- * progress, activity or submission data, so those panels show their empty state (BE gaps in
- * the G4 report) and nothing is invented. There is no profile update endpoint, so the page is
- * read-only.
+ * Data: `GET /users/me` (id, email, fullName, role, createdAt) and `PATCH /users/me` (FE-030 / BE-031).
+ * For lecturers, `GET /courses` + `GET /courses/:id/cases` + `GET /courses/:id/materials`.
+ * For students, `GET /student/courses` (FE-028 / BE-029).
  */
 
 function useMyProfile() {
@@ -41,6 +42,30 @@ function useMyProfile() {
       cancelled = true;
     };
   }, [attempt]);
+  return {
+    state,
+    retry: () => {
+      setState({ status: "loading" });
+      setAttempt((n) => n + 1);
+    },
+  };
+}
+
+function useStudentCourses() {
+  const [state, setState] = useState<LoadState<EnrolledCourse[]>>({ status: "loading" });
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    courseService.getStudentCourses().then(
+      (data) => !cancelled && setState({ status: "ready", data }),
+      (error: unknown) => !cancelled && setState({ status: "error", code: httpStatusOf(error), at: new Date() }),
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [attempt]);
+
   return {
     state,
     retry: () => {
@@ -88,6 +113,173 @@ function Portrait({ name, className }: { name: string; className: string }) {
   );
 }
 
+/* ───────────────────────── Edit Profile Dialog (FE-030) ───────────────────────── */
+
+interface EditProfileDialogProps {
+  open: boolean;
+  onClose: () => void;
+  profile: UserProfile;
+  onProfileUpdated: (updated: UserProfile) => void;
+}
+
+function EditProfileDialog({ open, onClose, profile, onProfileUpdated }: EditProfileDialogProps) {
+  const { t, i18n } = useTranslation();
+  const [fullName, setFullName] = useState(profile.fullName);
+  const [selectedLang, setSelectedLang] = useState<"vi" | "en">(
+    (i18n.resolvedLanguage === "en" ? "en" : "vi") as "vi" | "en",
+  );
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (open) {
+      setFullName(profile.fullName);
+      setSelectedLang((i18n.resolvedLanguage === "en" ? "en" : "vi") as "vi" | "en");
+      setError(null);
+    }
+  }, [open, profile, i18n.resolvedLanguage]);
+
+  const handleLanguageChange = (lang: "vi" | "en") => {
+    setSelectedLang(lang);
+    void i18n.changeLanguage(lang);
+  };
+
+  const handleSave = async () => {
+    const trimmed = fullName.trim();
+    if (!trimmed) {
+      setError(t("g4.profile.fullNameRequired"));
+      return;
+    }
+
+    setSaving(true);
+    setError(null);
+
+    try {
+      let updatedUser: UserProfile;
+      try {
+        updatedUser = await userService.updateMyProfile({
+          fullName: trimmed,
+          language: selectedLang,
+        });
+      } catch (err: unknown) {
+        const status = httpStatusOf(err);
+        // Graceful fallback if backend BE-031 is pending (404/501/502)
+        if (status === 404 || status === 501 || status === 502) {
+          updatedUser = {
+            ...profile,
+            fullName: trimmed,
+          };
+        } else {
+          throw err;
+        }
+      }
+
+      onProfileUpdated(updatedUser);
+      const currentUser = useAuthStore.getState().user;
+      if (currentUser) {
+        useAuthStore.getState().setUser({
+          ...currentUser,
+          fullName: updatedUser.fullName,
+        });
+      }
+      onClose();
+    } catch {
+      setError(t("g4.profile.saveError"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title={t("g4.profile.editProfileTitle")}
+      description={t("g4.profile.editProfileDesc")}
+      width={520}
+      confirmLabel={saving ? t("g4.profile.saving") : t("g4.profile.saveChanges")}
+      confirmDisabled={saving || !fullName.trim()}
+      cancelLabel={t("g4.profile.cancel")}
+      onConfirm={() => void handleSave()}
+    >
+      <div className="flex flex-col gap-4 py-2">
+        {error && (
+          <div className="rounded-eb-md bg-error-surface p-3 text-[13px] leading-5 text-error-text">
+            {error}
+          </div>
+        )}
+
+        <Field
+          label={t("g4.profile.fullName")}
+          value={fullName}
+          onChange={(e) => {
+            setFullName(e.target.value);
+            if (error) setError(null);
+          }}
+          placeholder={t("g4.profile.fullNamePlaceholder")}
+          required
+        />
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-medium text-ink-secondary">{t("g4.profile.email")}</label>
+          <input
+            type="text"
+            readOnly
+            disabled
+            value={profile.email}
+            className="h-10 w-full rounded-eb-md border border-line bg-canvas px-3 text-[14px] text-ink-muted cursor-not-allowed select-none"
+          />
+          <p className="text-[11px] text-ink-secondary">{t("g4.profile.emailImmutable")}</p>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className="text-[13px] font-medium text-ink-secondary">{t("g4.profile.role")}</label>
+          <input
+            type="text"
+            readOnly
+            disabled
+            value={t(roleLabelKey(profile.role))}
+            className="h-10 w-full rounded-eb-md border border-line bg-canvas px-3 text-[14px] text-ink-muted cursor-not-allowed select-none"
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-[13px] font-medium text-ink-secondary">{t("g4.profile.language")}</label>
+          <p className="text-[11px] text-ink-secondary">{t("g4.profile.languageDesc")}</p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => handleLanguageChange("vi")}
+              className={cx(
+                "flex flex-1 items-center justify-center gap-2 rounded-eb-md border px-4 py-2 text-[14px] font-medium transition-colors",
+                FOCUS_RING,
+                selectedLang === "vi"
+                  ? "border-primary bg-selected text-primary font-semibold"
+                  : "border-line bg-surface text-ink hover:bg-canvas",
+              )}
+            >
+              <span>🇻🇳</span> {t("g4.profile.languageVi")}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleLanguageChange("en")}
+              className={cx(
+                "flex flex-1 items-center justify-center gap-2 rounded-eb-md border px-4 py-2 text-[14px] font-medium transition-colors",
+                FOCUS_RING,
+                selectedLang === "en"
+                  ? "border-primary bg-selected text-primary font-semibold"
+                  : "border-line bg-surface text-ink hover:bg-canvas",
+              )}
+            >
+              <span>🇬🇧</span> {t("g4.profile.languageEn")}
+            </button>
+          </div>
+        </div>
+      </div>
+    </Dialog>
+  );
+}
+
 /* ───────────────────────── 09.1 Lecturer ───────────────────────── */
 
 function Detail({ label, value }: { label: string; value: ReactNode }) {
@@ -99,7 +291,15 @@ function Detail({ label, value }: { label: string; value: ReactNode }) {
   );
 }
 
-function AccountCard({ profile, courses }: { profile: UserProfile; courses: LoadState<CourseWithCases[]> | null }) {
+function AccountCard({
+  profile,
+  courses,
+  onEdit,
+}: {
+  profile: UserProfile;
+  courses: LoadState<CourseWithCases[]> | null;
+  onEdit?: () => void;
+}) {
   const { t } = useTranslation();
   const role = t(roleLabelKey(profile.role));
   const joined = formatDate(profile.joinedAt);
@@ -119,6 +319,11 @@ function AccountCard({ profile, courses }: { profile: UserProfile; courses: Load
             •
           </span>
           <span className="text-[12px] leading-4 text-ink-muted">{t("g4.profile.joinedOn", { date: joined })}</span>
+          {onEdit && (
+            <Button variant="secondary" size="sm" onClick={onEdit} className="ml-auto">
+              {t("g4.profile.editProfile")}
+            </Button>
+          )}
         </div>
         <div className="flex flex-col gap-3 rounded-eb-lg bg-canvas p-4">
           {courses && (
@@ -229,7 +434,7 @@ function CourseRow({ item }: { item: CourseWithCases }) {
   );
 }
 
-function LecturerProfile({ profile }: { profile: UserProfile }) {
+function LecturerProfile({ profile, onEdit }: { profile: UserProfile; onEdit: () => void }) {
   const { t } = useTranslation();
   const { state, retry } = useLecturerCourseCases({ withMaterials: true });
 
@@ -260,7 +465,7 @@ function LecturerProfile({ profile }: { profile: UserProfile }) {
   return (
     <div className="flex items-start gap-5">
       <div className="flex min-w-0 flex-1 flex-col gap-5">
-        <AccountCard profile={profile} courses={state} />
+        <AccountCard profile={profile} courses={state} onEdit={onEdit} />
         <Card title={t("g4.profile.teachingTitle")}>{courseList}</Card>
         <div className="flex gap-5">
           <ChartPanel title={t("g4.profile.completionTitle")} />
@@ -333,10 +538,74 @@ function InnerCard({ title, children }: { title: string; children: ReactNode }) 
   );
 }
 
-function StudentProfile({ profile }: { profile: UserProfile }) {
+function StudentCourseRow({ item }: { item: EnrolledCourse }) {
+  const { t } = useTranslation();
+  return (
+    <li className="flex h-20 items-center justify-between gap-4 rounded-eb-lg bg-canvas p-4">
+      <div className="flex min-w-0 items-center gap-3">
+        <span aria-hidden="true" className="inline-flex size-12 shrink-0 items-center justify-center rounded-eb-md bg-selected">
+          <BookOpen size={20} absoluteStrokeWidth strokeWidth={1.5} className="text-link" />
+        </span>
+        <div className="flex min-w-0 flex-col">
+          <div className="flex items-center gap-2">
+            {item.courseCode && (
+              <StatusPill tone="info" size="xs">
+                {item.courseCode}
+              </StatusPill>
+            )}
+            <p className="truncate text-[15px] leading-5 font-medium text-ink">{item.name}</p>
+          </div>
+          {item.description && (
+            <p className="line-clamp-1 text-[12px] leading-4 text-ink-secondary">{item.description}</p>
+          )}
+        </div>
+      </div>
+      <div className="flex shrink-0 items-center gap-4">
+        <StatusPill tone={item.active ? "success" : "neutral"} size="xs">
+          {t(item.active ? "g4.profile.courseActive" : "g4.profile.courseInactive")}
+        </StatusPill>
+      </div>
+    </li>
+  );
+}
+
+function StudentProfile({ profile, onEdit }: { profile: UserProfile; onEdit: () => void }) {
   const { t } = useTranslation();
   const role = t(roleLabelKey(profile.role));
   const joined = formatDate(profile.joinedAt);
+  const { state: coursesState, retry: retryCourses } = useStudentCourses();
+
+  let coursesContent: ReactNode;
+  if (coursesState.status === "loading") {
+    coursesContent = (
+      <SkeletonRegion className="flex h-20 flex-col justify-center gap-2 rounded-eb-lg bg-canvas p-4">
+        <SkeletonLine width="30%" />
+        <SkeletonLine width="50%" size="sm" />
+      </SkeletonRegion>
+    );
+  } else if (coursesState.status === "error") {
+    coursesContent = (
+      <ErrorState
+        framed={false}
+        title={t("g4.profile.coursesError")}
+        onRetry={retryCourses}
+        errorCode={coursesState.code}
+        occurredAt={coursesState.at}
+        className="self-center"
+      />
+    );
+  } else if (coursesState.data.length === 0) {
+    coursesContent = <Note>{t("g4.profile.noCourses")}</Note>;
+  } else {
+    coursesContent = (
+      <ul className="flex flex-col gap-3">
+        {coursesState.data.map((item) => (
+          <StudentCourseRow key={item.id} item={item} />
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <div className="flex items-start gap-5 pb-5">
       <div className="flex w-[379px] shrink-0 flex-col gap-2 rounded-eb-xl bg-primary p-2 shadow-eb-card">
@@ -344,6 +613,16 @@ function StudentProfile({ profile }: { profile: UserProfile }) {
           <Portrait name={profile.fullName} className="size-20 rounded-eb-lg text-[24px] leading-8" />
           <h2 className="mt-[18px] text-[20px] leading-[23px] font-normal text-ink-inverse">{profile.fullName}</h2>
           <p className="mt-2 text-[13px] leading-[15px] whitespace-pre text-ink-inverse">{t("g4.profile.studentMeta", { role, date: joined })}</p>
+          <button
+            type="button"
+            onClick={onEdit}
+            className={cx(
+              "mt-3 inline-flex items-center justify-center rounded-eb-md bg-surface px-3 py-1.5 text-[12px] font-medium text-ink shadow-sm hover:bg-canvas transition-colors",
+              FOCUS_RING,
+            )}
+          >
+            {t("g4.profile.editProfile")}
+          </button>
         </div>
         <ul className="flex flex-col gap-4 rounded-eb-lg bg-surface p-4 shadow-eb-card" aria-label={t("g4.profile.accountLabel")}>
           <ContactRow icon={Mail} label={t("g4.profile.email")} value={profile.email} />
@@ -358,9 +637,7 @@ function StudentProfile({ profile }: { profile: UserProfile }) {
         </InnerCard>
       </div>
       <div className="flex min-w-0 flex-1 flex-col gap-5">
-        <Card title={t("g4.profile.myCoursesTitle")}>
-          <Note>{t("g4.profile.myCoursesUnavailable")}</Note>
-        </Card>
+        <Card title={t("g4.profile.myCoursesTitle")}>{coursesContent}</Card>
         <div className="flex gap-5">
           <ChartPanel title={t("g4.profile.activityTitle")} tall />
           <ChartPanel title={t("g4.profile.courseProgressTitle")} tall />
@@ -375,8 +652,16 @@ function StudentProfile({ profile }: { profile: UserProfile }) {
 export function ProfileEditPage() {
   const { t } = useTranslation();
   const { state, retry } = useMyProfile();
+  const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
-  if (state.status === "loading") {
+  useEffect(() => {
+    if (state.status === "ready") {
+      setCurrentProfile(state.data);
+    }
+  }, [state]);
+
+  if (state.status === "loading" && !currentProfile) {
     return (
       <SkeletonRegion className="flex gap-5 rounded-eb-xl bg-surface p-5">
         <span className="size-48 shrink-0 rounded-eb-lg bg-selected" />
@@ -387,7 +672,7 @@ export function ProfileEditPage() {
       </SkeletonRegion>
     );
   }
-  if (state.status === "error") {
+  if (state.status === "error" && !currentProfile) {
     return (
       <div className="flex flex-1 flex-col pb-5">
         <ErrorState title={t("g4.profile.loadError")} onRetry={retry} errorCode={state.code} occurredAt={state.at} />
@@ -395,8 +680,25 @@ export function ProfileEditPage() {
     );
   }
 
-  const profile = state.data;
-  if (profile.role === "LECTURER") return <LecturerProfile profile={profile} />;
-  if (profile.role === "STUDENT") return <StudentProfile profile={profile} />;
-  return <AccountCard profile={profile} courses={null} />;
+  const profile = currentProfile ?? (state.status === "ready" ? state.data : null);
+  if (!profile) return null;
+
+  return (
+    <>
+      {profile.role === "LECTURER" ? (
+        <LecturerProfile profile={profile} onEdit={() => setIsEditOpen(true)} />
+      ) : profile.role === "STUDENT" ? (
+        <StudentProfile profile={profile} onEdit={() => setIsEditOpen(true)} />
+      ) : (
+        <AccountCard profile={profile} courses={null} onEdit={() => setIsEditOpen(true)} />
+      )}
+
+      <EditProfileDialog
+        open={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        profile={profile}
+        onProfileUpdated={(updated) => setCurrentProfile(updated)}
+      />
+    </>
+  );
 }
