@@ -13,6 +13,11 @@ describe("CourseController", () => {
     getCourseById: jest.fn(),
     updateCourse: jest.fn(),
     archiveCourse: jest.fn(),
+    enrollStudentByInviteCode: jest.fn(),
+    getInviteCode: jest.fn(),
+    getOrGenerateInviteCode: jest.fn(),
+    rotateInviteCode: jest.fn(),
+    disableInviteCode: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -140,6 +145,84 @@ describe("CourseController", () => {
 
     it("exposes no delete handler (C1-B: no DELETE /courses/:courseId)", () => {
       expect((controller as unknown as Record<string, unknown>).deleteCourse).toBeUndefined();
+    });
+  });
+
+  describe("POST /api/v1/courses/enroll (enrollCourse)", () => {
+    it("should enroll student using invite code and return SUCCESS envelope", async () => {
+      const dto = { inviteCode: "ABC12345" };
+      const mockCourse = { id: "c-1", name: "Enrolled Course" };
+      mockCourseService.enrollStudentByInviteCode.mockResolvedValueOnce(mockCourse);
+
+      const response = await controller.enrollCourse(dto, {
+        id: "student-1",
+        role: "STUDENT",
+      });
+
+      expect(mockCourseService.enrollStudentByInviteCode).toHaveBeenCalledWith(
+        "student-1",
+        "ABC12345",
+      );
+      expect(response).toEqual({
+        status: "SUCCESS",
+        data: mockCourse,
+      });
+    });
+  });
+
+  describe("Invite Code Management (Lecturer)", () => {
+    it("GET :courseId/invite-code returns invite code", async () => {
+      mockCourseService.getInviteCode.mockResolvedValueOnce({
+        inviteCode: "CODE1234",
+        isActive: true,
+      });
+
+      const response = await controller.getInviteCode("c-1", {
+        id: "lecturer-1",
+        role: "LECTURER",
+      });
+
+      expect(mockCourseService.getInviteCode).toHaveBeenCalledWith("c-1", "lecturer-1");
+      expect(response).toEqual({
+        status: "SUCCESS",
+        data: { inviteCode: "CODE1234", isActive: true },
+      });
+    });
+
+    it("POST :courseId/invite-code rotates invite code", async () => {
+      mockCourseService.rotateInviteCode.mockResolvedValueOnce({
+        inviteCode: "NEWCODE1",
+        isActive: true,
+      });
+
+      const response = await controller.rotateInviteCode("c-1", {
+        id: "lecturer-1",
+        role: "LECTURER",
+      });
+
+      expect(mockCourseService.rotateInviteCode).toHaveBeenCalledWith("c-1", "lecturer-1");
+      expect(response).toEqual({
+        status: "SUCCESS",
+        data: { inviteCode: "NEWCODE1", isActive: true },
+      });
+    });
+
+    it("DELETE :courseId/invite-code disables invite code", async () => {
+      mockCourseService.disableInviteCode.mockResolvedValueOnce({
+        inviteCode: "OLDCODE1",
+        isActive: false,
+      });
+
+      const response = await controller.disableInviteCode("c-1", {
+        id: "lecturer-1",
+        role: "LECTURER",
+      });
+
+      expect(mockCourseService.disableInviteCode).toHaveBeenCalledWith("c-1", "lecturer-1");
+      expect(response).toEqual({
+        status: "SUCCESS",
+        data: { inviteCode: "OLDCODE1", isActive: false },
+      });
     });
   });
 });
