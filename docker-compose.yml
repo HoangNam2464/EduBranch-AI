@@ -161,6 +161,8 @@ services:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-changeme_redis_password}
       JWT_SECRET: ${JWT_SECRET:-changeme_generate_a_strong_random_jwt_secret_min_64_chars}
       JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+      AUTH_RATE_LIMIT_MAX_REQUESTS: ${AUTH_RATE_LIMIT_MAX_REQUESTS:-100}
+      AUTH_RATE_LIMIT_TTL_MS: ${AUTH_RATE_LIMIT_TTL_MS:-60000}
       AI_SERVICE_BASE_URL: ${AI_SERVICE_BASE_URL:-http://ai-service:8000}
       AI_SERVICE_API_KEY: ${AI_SERVICE_API_KEY:-changeme_internal_ai_service_api_key}
       MINIO_HOST: minio
