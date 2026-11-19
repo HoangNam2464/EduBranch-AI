@@ -1,10 +1,8 @@
 /**
  * EduBranch AI — AI Reasoning / Challenge Support (Figma 05.5 / 05.6: modal on Journey Review).
  *
- * NON-NEGOTIABLE (feature-challenge-support.md, FND §6.1, Proposal V1.2):
- *   - Socratic counter-questions only (probing assumptions & trade-offs)
- *   - 1–2 rounds hard cap enforced by server gateway and PostgreSQL schema
- *   - The AI never grades, scores, or judges correctness
+ * NON-NEGOTIABLE (feature-challenge-support.md, FND §6.1): Socratic counter-questions only,
+ * 1–2 rounds hard cap, the AI never grades, scores or judges correctness.
  *
  * Real Gateway Integration (FE-021 + BE-027):
  *   - Round 1 (05.5): fetches or creates session via POST /api/v1/challenge-support/sessions,
@@ -143,55 +141,71 @@ export function ChallengeDialog({
     session && (session.isCompleted || session.currentRound >= 2 || (a1 && q2)),
   );
 
-  const subtitle = isCompleted
-    ? t("g5.challenge.completedSubtitle", { n: stepNumber })
-    : t("g5.challenge.description");
+  // Render actions depending on state
+  const renderActions = () => {
+    if (loading) return null;
+
+    if (error && !session) {
+      return (
+        <div className="flex justify-end gap-2">
+          <Button variant="secondary" size="md" onClick={onClose}>
+            {t("g5.common.close")}
+          </Button>
+          <Button size="md" onClick={loadSession}>
+            {t("g5.challenge.retry")}
+          </Button>
+        </div>
+      );
+    }
+
+    if (isCompleted) {
+      return (
+        <div className="flex w-full items-center justify-between">
+          <span className="text-[12px] leading-4 text-ink-secondary">
+            {t("g5.challenge.completedFooter")}
+          </span>
+          <Button size="md" onClick={onClose}>
+            {t("g5.challenge.backToReview")}
+          </Button>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex justify-end gap-2">
+        <Button variant="secondary" size="md" onClick={onClose} disabled={sending}>
+          {t("g5.challenge.skip")}
+        </Button>
+        <Button
+          size="md"
+          onClick={handleSendReply}
+          disabled={!replyText.trim() || sending}
+        >
+          {sending ? (
+            <span className="flex items-center gap-1.5">
+              <Loader2 className="animate-spin" size={16} />
+              {t("g5.challenge.sending")}
+            </span>
+          ) : (
+            t("g5.challenge.send", { round: 1 })
+          )}
+        </Button>
+      </div>
+    );
+  };
 
   return (
     <Dialog
       open={open}
       onClose={onClose}
+      width={600}
       title={t("g5.challenge.title")}
-      subtitle={subtitle}
-      maxWidth="max-w-2xl"
-      footer={
-        isCompleted ? (
-          <div className="flex w-full items-center justify-between">
-            <span className="text-[12px] font-medium text-ink-secondary">
-              {t("g5.challenge.completedFooter")}
-            </span>
-            <Button variant="secondary" onClick={onClose}>
-              {t("g5.challenge.backToReview")}
-            </Button>
-          </div>
-        ) : (
-          <div className="flex w-full items-center justify-end gap-3">
-            <Button variant="ghost" onClick={onClose} disabled={sending}>
-              {t("g5.challenge.skip")}
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleSendReply}
-              disabled={
-                !session ||
-                !replyText.trim() ||
-                sending ||
-                loading ||
-                isCompleted
-              }
-            >
-              {sending ? (
-                <span className="flex items-center gap-1.5">
-                  <Loader2 className="animate-spin" size={14} />
-                  {t("g5.challenge.sending")}
-                </span>
-              ) : (
-                t("g5.challenge.send", { round: session?.currentRound ?? 1 })
-              )}
-            </Button>
-          </div>
-        )
+      description={
+        isCompleted
+          ? t("g5.challenge.completedSubtitle", { n: stepNumber })
+          : t("g5.challenge.description")
       }
+      actions={renderActions()}
     >
       <button
         type="button"
@@ -206,12 +220,14 @@ export function ChallengeDialog({
       </button>
 
       <div className="flex flex-col gap-3 pt-3">
-        {/* Origin Badge */}
-        <AiOriginBadge type="assisted" className="self-start">
-          {t("g5.common.aiAssisted")}
-        </AiOriginBadge>
+        {/* Figma 05.5 shows the AI-assisted badge; the completed state 05.6 does not. */}
+        {!isCompleted && (
+          <AiOriginBadge type="assisted" className="self-start">
+            {t("g5.common.aiAssisted")}
+          </AiOriginBadge>
+        )}
 
-        {/* Student Decision */}
+        {/* Decision Block */}
         <div className="flex flex-col gap-1.5 rounded-eb-lg bg-canvas px-4 py-3.5">
           <span className="text-[12px] font-medium leading-4 text-ink-secondary">
             {t("g5.challenge.decisionAt", { n: stepNumber })}
@@ -224,35 +240,30 @@ export function ChallengeDialog({
           )}
         </div>
 
-        {/* Loading State */}
+        {/* Loading state */}
         {loading && (
-          <div className="flex items-center justify-center gap-2 rounded-eb-lg bg-canvas p-6">
-            <Loader2 className="animate-spin text-link" size={20} />
-            <span className="text-[13px] font-medium text-ink-secondary">
-              {t("g5.challenge.generating")}
+          <div className="flex flex-col items-center justify-center gap-2 py-8 text-ink-secondary">
+            <Loader2 className="animate-spin text-link" size={28} />
+            <span className="text-[14px] leading-5 font-medium">
+              {t("g5.challenge.loading")}
             </span>
           </div>
         )}
 
-        {/* Error State */}
-        {error && !loading && (
+        {/* Error state */}
+        {error && (
           <div
             role="alert"
-            className="flex flex-col gap-1.5 rounded-eb-lg bg-error-bg px-4 py-3.5"
+            className="flex flex-col gap-2 rounded-eb-lg bg-error-bg px-4 py-3.5"
           >
             <span className="flex items-center gap-1.5 text-[12px] font-medium leading-4 text-error-text">
-              <CircleAlert
-                aria-hidden="true"
-                size={14}
-                absoluteStrokeWidth
-                strokeWidth={1.5}
-              />
-              {t("g5.challenge.unavailableTitle")}
+              <CircleAlert aria-hidden="true" size={14} absoluteStrokeWidth strokeWidth={1.5} />
+              {t("g5.challenge.errorTitle")}
             </span>
             <p className="text-[14px] leading-5 text-ink">{error}</p>
-            {reasoningId && (
-              <div className="pt-1">
-                <Button variant="ghost" size="sm" onClick={loadSession}>
+            {session && (
+              <div className="flex justify-end">
+                <Button size="sm" variant="secondary" onClick={handleSendReply}>
                   {t("g5.challenge.retry")}
                 </Button>
               </div>
@@ -260,14 +271,29 @@ export function ChallengeDialog({
           </div>
         )}
 
+        {/* Missing reasoning error */}
+        {!reasoningId && !loading && !error && (
+          <div
+            role="alert"
+            className="flex flex-col gap-1.5 rounded-eb-lg bg-error-bg px-4 py-3.5"
+          >
+            <span className="flex items-center gap-1.5 text-[12px] font-medium leading-4 text-error-text">
+              <CircleAlert aria-hidden="true" size={14} absoluteStrokeWidth strokeWidth={1.5} />
+              {t("g5.challenge.unavailableTitle")}
+            </span>
+            <p className="text-[14px] leading-5 text-ink">
+              {t("g5.challenge.unavailableBody")}
+            </p>
+          </div>
+        )}
+
         {/* Active Flow: Round 1 (Figma 05.5) */}
         {session && !isCompleted && !loading && (
           <>
-            {/* AI Socratic Counter-Question */}
             {q1 && (
               <div className="flex flex-col gap-1.5 rounded-eb-lg bg-selected px-4 py-3.5">
                 <span className="text-[12px] font-medium leading-4 text-link">
-                  {t("g5.challenge.r1Question")}
+                  {t("g5.challenge.counterQuestionLabel")}
                 </span>
                 <p className="text-[14px] leading-5 text-ink">
                   "{q1.content}"
@@ -275,7 +301,6 @@ export function ChallengeDialog({
               </div>
             )}
 
-            {/* Student Reply Field */}
             <Field
               multiline
               label={t("g5.challenge.replyLabel")}
