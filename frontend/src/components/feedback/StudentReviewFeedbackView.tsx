@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { isAxiosError } from "axios";
 import {
   AlertCircle,
   CheckCircle2,
@@ -12,6 +11,10 @@ import {
 } from "lucide-react";
 import { Button, Field, SubmissionBadge, cx } from "@/components/ds";
 import { formatDateTime } from "@/components/feedback/stateFormat";
+import {
+  canWriteReflection,
+  mapErrorToI18nKey,
+} from "@/pages/feedback/reviewFeedbackLogic";
 import {
   REFLECTION_MAX_LENGTH,
   REFLECTION_MIN_LENGTH,
@@ -27,6 +30,10 @@ export interface StudentReviewFeedbackViewProps {
   courseCode?: string;
   onReflectionSubmitted: (updatedSubmission: ReviewStudySubmission) => void;
   onBack?: () => void;
+  feedbackLoading?: boolean;
+  feedbackError?: boolean;
+  feedbackErrorCode?: string | number;
+  onRetryFeedback?: () => void;
 }
 
 /**
@@ -34,7 +41,7 @@ export interface StudentReviewFeedbackViewProps {
  * Displays:
  * 1. Read-only summary of student's own Review Study submission.
  * 2. Lecturer qualitative feedback block (strictly qualitative, zero scores / AI grading).
- * 3. Lifecycle-gated post-feedback reflection block (locked until REVIEWED, editable in REVIEWED, read-only in REFLECTED).
+ * 3. Lifecycle-gated post-feedback reflection block (locked until REVIEWED with feedback, editable in REVIEWED, read-only in REFLECTED).
  */
 export function StudentReviewFeedbackView({
   submission,
@@ -44,6 +51,10 @@ export function StudentReviewFeedbackView({
   courseCode,
   onReflectionSubmitted,
   onBack,
+  feedbackLoading = false,
+  feedbackError = false,
+  feedbackErrorCode,
+  onRetryFeedback,
 }: StudentReviewFeedbackViewProps) {
   const { t } = useTranslation();
 
@@ -58,8 +69,13 @@ export function StudentReviewFeedbackView({
     submission.submissionStatus === "REFLECTED" || submission.reflectionStatus === "SUBMITTED";
   const isPendingReview = submission.submissionStatus === "SUBMITTED";
 
-  // Reflection form is unlocked ONLY when submission is REVIEWED and not yet REFLECTED
-  const isReflectionUnlocked = isReviewed && !isReflected;
+  // Reflection form is unlocked ONLY when submission is REVIEWED, feedback loaded successfully and non-null, and not yet REFLECTED
+  const isReflectionUnlocked = canWriteReflection(
+    submission.submissionStatus,
+    submission.reflectionStatus,
+    feedback,
+    feedbackError,
+  );
 
   const submittedDate = submission.submittedAt ? new Date(submission.submittedAt) : null;
   const formattedSubmittedDate =
@@ -84,12 +100,8 @@ export function StudentReviewFeedbackView({
       setReflectionText("");
       onReflectionSubmitted(updated);
     } catch (err: unknown) {
-      const errorMsg = isAxiosError(err)
-        ? err.response?.data?.message || err.message
-        : err instanceof Error
-          ? err.message
-          : String(err);
-      setSubmitErrorMessage(t("g5.feedback.reflectionFailed", { error: errorMsg }));
+      const errorKey = mapErrorToI18nKey(err);
+      setSubmitErrorMessage(t(errorKey));
     } finally {
       setIsSubmitting(false);
     }
@@ -243,7 +255,34 @@ export function StudentReviewFeedbackView({
           {t("g5.feedback.lecturerFeedbackNotice")}
         </p>
 
-        {feedback ? (
+        {feedbackLoading ? (
+          <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-canvas/70 p-4 motion-safe:animate-pulse">
+            <div className="h-4 w-3/4 rounded bg-surface" />
+            <div className="h-4 w-1/2 rounded bg-surface" />
+          </div>
+        ) : feedbackError ? (
+          <div className="flex flex-col gap-3 rounded-eb-md border border-error-border bg-error-bg p-4 text-error-text">
+            <div className="flex items-start gap-3">
+              <AlertCircle size={20} className="mt-0.5 shrink-0 text-error" />
+              <div className="flex flex-col gap-1 text-[13px] leading-5">
+                <p className="font-medium">{t("states.error.title")}</p>
+                <p className="opacity-90">{t("states.error.description")}</p>
+                {feedbackErrorCode !== undefined && (
+                  <p className="text-[12px] opacity-75">
+                    {t("states.error.codeLineNoTime", { code: feedbackErrorCode })}
+                  </p>
+                )}
+              </div>
+            </div>
+            {onRetryFeedback && (
+              <div className="self-start pl-8">
+                <Button variant="secondary" size="sm" onClick={onRetryFeedback}>
+                  {t("states.error.retry")}
+                </Button>
+              </div>
+            )}
+          </div>
+        ) : feedback ? (
           <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-canvas/70 p-4">
             <p className="whitespace-pre-wrap text-[14px] leading-6 text-ink">
               {feedback.feedbackText}
@@ -286,8 +325,8 @@ export function StudentReviewFeedbackView({
           )}
         </div>
 
-        {/* Case A: Reflection is locked (submission is SUBMITTED, awaiting lecturer feedback) */}
-        {isPendingReview && (
+        {/* Case A: Reflection is locked (either SUBMITTED or awaiting feedback / error) */}
+        {!isReflected && !isReflectionUnlocked && (
           <div className="flex items-start gap-3 rounded-eb-md border border-default bg-canvas/60 p-4 text-ink-secondary">
             <Lock size={18} className="mt-0.5 shrink-0 text-ink-muted" />
             <div className="flex flex-col gap-1 text-[13px] leading-5">
@@ -297,7 +336,7 @@ export function StudentReviewFeedbackView({
           </div>
         )}
 
-        {/* Case B: Reflection is unlocked (submission is REVIEWED, student can compose reflection) */}
+        {/* Case B: Reflection is unlocked (submission is REVIEWED with feedback, student can compose reflection) */}
         {isReflectionUnlocked && (
           <div className="flex flex-col gap-4">
             <p className="text-[13px] leading-5 text-ink-secondary">
@@ -366,4 +405,3 @@ export function StudentReviewFeedbackView({
     </div>
   );
 }
-

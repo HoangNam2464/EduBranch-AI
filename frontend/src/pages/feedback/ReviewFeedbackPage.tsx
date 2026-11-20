@@ -18,9 +18,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
-import { AlertCircle, ArrowLeft, FileSearch, ShieldAlert } from "lucide-react";
-import { Button } from "@/components/ds";
-import { EmptyState, StudentReviewFeedbackView } from "@/components/feedback";
+import { ArrowLeft, FileSearch, ShieldAlert } from "lucide-react";
+import { EmptyState, ErrorState, StudentReviewFeedbackView } from "@/components/feedback";
 import { useShellTitle } from "@/layouts/shell/ShellTitleContext";
 import { PATHS, buildPath } from "@/routes/paths";
 import { caseService } from "@/services/caseService";
@@ -33,91 +32,148 @@ type PageState =
   | { status: "loading" }
   | { status: "unauthorized" }
   | { status: "notFound" }
-  | { status: "error"; message: string }
+  | { status: "error"; errorCode?: number | string }
   | {
       status: "ready";
       caseData: Case;
       course?: Course;
       submission: ReviewStudySubmission;
       feedback: LecturerFeedback | null;
+      feedbackLoading?: boolean;
+      feedbackError?: boolean;
+      feedbackErrorCode?: number | string;
     };
 
 export function ReviewFeedbackPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { caseId = "", submissionId } = useParams<{ caseId: string; submissionId?: string }>();
-  const currentUser = useAuthStore((s) => s.user);
+  const currentUserId = useAuthStore((s) => s.user?.id);
 
   const [state, setState] = useState<PageState>({ status: "loading" });
+  const [reloadTrigger, setReloadTrigger] = useState(0);
 
-  const loadData = async () => {
-    setState({ status: "loading" });
-    try {
-      // 1. Load Case
-      const caseData = await caseService.getCaseById(caseId);
+  useEffect(() => {
+    let alive = true;
 
-      // 2. Load Course
-      let course: Course | undefined;
+    async function run() {
       try {
-        course = await courseService.getCourseById(caseData.courseId);
-      } catch {
-        // Non-fatal if course metadata fetch fails
-      }
+        // 1. Load Case
+        const caseData = await caseService.getCaseById(caseId);
 
-      // 3. Load Submission
-      let submission: ReviewStudySubmission | null = null;
-      if (submissionId) {
-        submission = await reviewStudyService.getSubmissionById(submissionId);
-      } else {
-        submission = await reviewStudyService.getMySubmission(caseId);
-      }
-
-      if (!submission) {
-        setState({ status: "notFound" });
-        return;
-      }
-
-      // 4. Ownership / Authorization Check (AC: Student cannot view unauthorized feedback)
-      if (currentUser?.id && submission.studentId && submission.studentId !== currentUser.id) {
-        setState({ status: "unauthorized" });
-        return;
-      }
-
-      // 5. Load Feedback (if submission is in REVIEWED or REFLECTED status)
-      let feedback: LecturerFeedback | null = null;
-      try {
-        feedback = await reviewStudyService.getFeedback(submission.id);
-      } catch {
-        feedback = null;
-      }
-
-      setState({
-        status: "ready",
-        caseData,
-        course,
-        submission,
-        feedback,
-      });
-    } catch (err: unknown) {
-      if (isAxiosError(err)) {
-        if (err.response?.status === 403) {
-          setState({ status: "unauthorized" });
-          return;
+        // 2. Load Course
+        let course: Course | undefined;
+        try {
+          course = await courseService.getCourseById(caseData.courseId);
+        } catch {
+          // Non-fatal if course metadata fetch fails
         }
-        if (err.response?.status === 404) {
+
+        // 3. Load Submission
+        const submission = submissionId
+          ? await reviewStudyService.getSubmissionById(submissionId)
+          : await reviewStudyService.getMySubmission(caseId);
+
+        if (!alive) return;
+
+        if (!submission) {
           setState({ status: "notFound" });
           return;
         }
+
+        // 4. Ownership / Authorization Check (AC: Student cannot view unauthorized feedback)
+        if (currentUserId && submission.studentId && submission.studentId !== currentUserId) {
+          setState({ status: "unauthorized" });
+          return;
+        }
+
+        // 5. Load Feedback (do not swallow feedback errors; pass errors to the view)
+        let feedback: LecturerFeedback | null = null;
+        let feedbackError = false;
+        let feedbackErrorCode: number | string | undefined;
+
+        try {
+          feedback = await reviewStudyService.getFeedback(submission.id);
+        } catch (fbErr: unknown) {
+          feedbackError = true;
+          feedbackErrorCode = isAxiosError(fbErr) ? fbErr.response?.status : undefined;
+        }
+
+        if (!alive) return;
+
+        setState({
+          status: "ready",
+          caseData,
+          course,
+          submission,
+          feedback,
+          feedbackError,
+          feedbackErrorCode,
+        });
+      } catch (err: unknown) {
+        if (!alive) return;
+        if (isAxiosError(err)) {
+          if (err.response?.status === 403) {
+            setState({ status: "unauthorized" });
+            return;
+          }
+          if (err.response?.status === 404) {
+            setState({ status: "notFound" });
+            return;
+          }
+        }
+        const code = isAxiosError(err) ? err.response?.status : undefined;
+        setState({ status: "error", errorCode: code });
       }
-      const msg = err instanceof Error ? err.message : String(err);
-      setState({ status: "error", message: msg });
+    }
+
+    void run();
+
+    return () => {
+      alive = false;
+    };
+  }, [caseId, submissionId, currentUserId, reloadTrigger]);
+
+  const handleRetryFeedback = async () => {
+    if (state.status !== "ready") return;
+    const subId = state.submission.id;
+    setState((prev) =>
+      prev.status === "ready"
+        ? { ...prev, feedbackLoading: true, feedbackError: false }
+        : prev,
+    );
+    try {
+      const feedback = await reviewStudyService.getFeedback(subId);
+      setState((prev) =>
+        prev.status === "ready"
+          ? {
+              ...prev,
+              feedback,
+              feedbackLoading: false,
+              feedbackError: false,
+              feedbackErrorCode: undefined,
+            }
+          : prev,
+      );
+    } catch (fbErr: unknown) {
+      const code = isAxiosError(fbErr) ? fbErr.response?.status : undefined;
+      setState((prev) =>
+        prev.status === "ready"
+          ? {
+              ...prev,
+              feedbackLoading: false,
+              feedbackError: true,
+              feedbackErrorCode: code,
+            }
+          : prev,
+      );
     }
   };
 
-  useEffect(() => {
-    void loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caseId, submissionId]);
+  const handleReload = () => {
+    setState({ status: "loading" });
+    setReloadTrigger((n) => n + 1);
+  };
 
   useShellTitle(state.status === "ready" ? state.caseData.title : null);
 
@@ -126,7 +182,7 @@ export function ReviewFeedbackPage() {
     return (
       <div
         role="status"
-        aria-label={t("common.loading", "Đang tải...")}
+        aria-label={t("states.loading.label")}
         className="flex flex-col gap-5"
       >
         <div className="h-28 w-full rounded-eb-xl bg-surface shadow-eb-card motion-safe:animate-pulse" />
@@ -179,17 +235,12 @@ export function ReviewFeedbackPage() {
   // Unexpected Error State
   if (state.status === "error") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-4 py-12">
-        <div className="flex max-w-md flex-col items-center gap-3 rounded-eb-xl border border-error-border bg-error-bg p-6 text-center text-error-text">
-          <AlertCircle size={32} className="text-error" />
-          <p className="text-[15px] font-medium">{t("common.error", "Đã xảy ra lỗi")}</p>
-          <p className="text-[13px] opacity-90">{state.message}</p>
-          <div className="pt-2">
-            <Button variant="secondary" size="sm" onClick={() => void loadData()}>
-              {t("common.retry", "Thử lại")}
-            </Button>
-          </div>
-        </div>
+      <div className="flex flex-1 flex-col items-center justify-center py-12">
+        <ErrorState
+          errorCode={state.errorCode}
+          onRetry={handleReload}
+          className="max-w-md self-center"
+        />
       </div>
     );
   }
@@ -203,6 +254,10 @@ export function ReviewFeedbackPage() {
         caseTitle={state.caseData.title}
         courseName={state.course?.name}
         courseCode={state.course?.courseCode}
+        feedbackLoading={state.feedbackLoading}
+        feedbackError={state.feedbackError}
+        feedbackErrorCode={state.feedbackErrorCode}
+        onRetryFeedback={handleRetryFeedback}
         onReflectionSubmitted={(updated) => {
           setState((prev) => (prev.status === "ready" ? { ...prev, submission: updated } : prev));
         }}

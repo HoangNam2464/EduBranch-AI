@@ -1717,7 +1717,16 @@
       "reflectionSuccess": "Reflection submitted successfully. Submission status transitioned to REFLECTED.",
       "reflectionFailed": "Failed to submit reflection: {{error}}",
       "reflectionSubmittedNotice": "You have completed your post-feedback reflection. Your learning cycle for this case is complete.",
-      "reflectionSubmittedAt": "Reflection submitted at {{time}}"
+      "reflectionSubmittedAt": "Reflection submitted at {{time}}",
+      "errors": {
+        "validation": "Invalid reflection content (must be between 10 and 3000 characters).",
+        "forbidden": "You do not have permission to perform this action.",
+        "notFound": "The submission or learning case could not be found.",
+        "conflict": "The submission is either not yet reviewed or reflection has already been submitted.",
+        "network": "Unable to connect to the server. Please check your connection and try again.",
+        "generic": "An unexpected error occurred. Please try again later.",
+        "loadFeedback": "Unable to load lecturer feedback."
+      }
     },
     "desk": {
       "title": "Student Desk",
