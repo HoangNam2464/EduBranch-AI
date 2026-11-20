@@ -30,6 +30,7 @@ import {
   FEEDBACK_MAX_LENGTH,
   FEEDBACK_MIN_LENGTH,
   lecturerFeedbackService,
+  type LecturerFeedbackDto,
   type SubmissionReviewItem,
 } from "@/services/lecturerFeedbackService";
 import {
@@ -197,7 +198,7 @@ export function LecturerFeedbackPage() {
     setSubmitErrorMessage(null);
   };
 
-  // Submit qualitative feedback (AC-3)
+  // Submit qualitative feedback (AC-3, E6)
   const handleSubmitFeedback = async () => {
     if (!selectedItem) return;
     const trimmed = feedbackText.trim();
@@ -213,8 +214,8 @@ export function LecturerFeedbackPage() {
     try {
       const isReview = selectedItem.targetType === "REVIEW_STUDY";
       const res = await lecturerFeedbackService.submitFeedback({
-        reviewSubmissionId: isReview ? selectedItem.submissionId || selectedItem.id : undefined,
-        branchingAttemptId: !isReview ? selectedItem.attemptId || selectedItem.id : undefined,
+        reviewSubmissionId: isReview ? selectedItem.targetId : undefined,
+        branchingAttemptId: !isReview ? selectedItem.targetId : undefined,
         feedbackText: trimmed,
       });
 
@@ -225,21 +226,28 @@ export function LecturerFeedbackPage() {
           caseId: routeCaseId,
         });
         setSubmissions(refreshed);
-        const updatedItem = refreshed.find((s) => s.id === selectedItem.id);
+        const updatedItem = refreshed.find(
+          (s) => s.targetId === selectedItem.targetId && s.targetType === selectedItem.targetType,
+        );
         if (updatedItem) {
           setSelectedItem(updatedItem);
         } else if (res?.id && res?.createdAt) {
+          const updatedFeedback: LecturerFeedbackDto = {
+            id: res.id,
+            lecturerId: res.lecturerId,
+            branchingAttemptId: res.branchingAttemptId ?? null,
+            reviewSubmissionId: res.reviewSubmissionId ?? null,
+            feedbackText: res.feedbackText || trimmed,
+            createdAt: res.createdAt,
+            updatedAt: res.updatedAt || res.createdAt,
+          };
           setSelectedItem((prev) =>
             prev
               ? {
                   ...prev,
                   feedbackStatus: "REVIEWED" as const,
                   submissionStatus: isReview ? ("REVIEWED" as const) : prev.submissionStatus,
-                  existingFeedback: {
-                    id: res.id,
-                    feedbackText: res.feedbackText || trimmed,
-                    createdAt: res.createdAt,
-                  },
+                  existingFeedback: updatedFeedback,
                 }
               : null,
           );
@@ -247,14 +255,18 @@ export function LecturerFeedbackPage() {
       } catch {
         // Fallback only if server response contains full fields
         if (res?.id && res?.createdAt) {
-          const updatedFeedback = {
+          const updatedFeedback: LecturerFeedbackDto = {
             id: res.id,
+            lecturerId: res.lecturerId,
+            branchingAttemptId: res.branchingAttemptId ?? null,
+            reviewSubmissionId: res.reviewSubmissionId ?? null,
             feedbackText: res.feedbackText || trimmed,
             createdAt: res.createdAt,
+            updatedAt: res.updatedAt || res.createdAt,
           };
           setSubmissions((prev) =>
             prev.map((s) => {
-              if (s.id === selectedItem.id) {
+              if (s.targetId === selectedItem.targetId && s.targetType === selectedItem.targetType) {
                 return {
                   ...s,
                   feedbackStatus: "REVIEWED" as const,
@@ -283,6 +295,25 @@ export function LecturerFeedbackPage() {
     } catch (err: unknown) {
       const errorKey = mapErrorToI18nKey(err);
       setSubmitErrorMessage(t("g4.queue.inspector.feedbackFailed", { error: t(errorKey) }));
+
+      // C2-A: A 409 on submit maps to conflict message and triggers a refetch
+      if (getHttpStatus(err) === 409) {
+        try {
+          const refreshed = await lecturerFeedbackService.getQueueSubmissions({
+            courseId: course !== "ALL" ? course : undefined,
+            caseId: routeCaseId,
+          });
+          setSubmissions(refreshed);
+          const updatedItem = refreshed.find(
+            (s) => s.targetId === selectedItem.targetId && s.targetType === selectedItem.targetType,
+          );
+          if (updatedItem) {
+            setSelectedItem(updatedItem);
+          }
+        } catch {
+          // ignore refetch failure; conflict error message stays visible
+        }
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -395,7 +426,7 @@ export function LecturerFeedbackPage() {
               <div className="flex-1 overflow-y-auto">
                 <SubmissionReviewList
                   items={filteredSubmissions}
-                  selectedId={selectedItem.id}
+                  selectedId={selectedItem.targetId}
                   onSelectItem={handleSelectItem}
                   isLoading={isLoading}
                   compact={true}
@@ -527,39 +558,79 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.journeyTitle")}
                       </span>
-                      <div className="flex items-center gap-4 rounded-eb-md border border-default bg-canvas/60 p-3 text-[13px] text-ink">
-                        {selectedItem.attemptNumber && (
+                      <div className="flex flex-wrap items-center gap-4 rounded-eb-md border border-default bg-canvas/60 p-3 text-[13px] text-ink">
+                        {selectedItem.attemptNumber !== undefined && (
                           <span>
                             {t("g4.queue.inspector.attemptNumber", {
                               n: selectedItem.attemptNumber,
                             })}
                           </span>
                         )}
-                        {selectedItem.stepsCount !== undefined && (
-                          <span>
-                            {t("g4.queue.inspector.stepsCount", {
-                              count: selectedItem.stepsCount,
-                            })}
-                          </span>
-                        )}
-                        {selectedItem.outcomeTitle && (
+                        <span>
+                          {t("g4.queue.inspector.stepsCount", {
+                            count: selectedItem.steps?.length ?? selectedItem.stepsCount ?? 0,
+                          })}
+                        </span>
+                        {selectedItem.outcomeSituation && (
                           <span className="font-medium text-primary">
-                            {t("g4.queue.inspector.outcome")}: {selectedItem.outcomeTitle}
+                            {t("g4.queue.inspector.outcome")}: {selectedItem.outcomeSituation}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    {/* Retrospective Reasoning */}
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-[12px] font-medium text-ink-secondary">
-                        {t("g4.queue.inspector.reasoningTitle")}
-                      </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
-                        {selectedItem.reasoningText || (
-                          <span className="italic text-ink-muted">—</span>
-                        )}
-                      </div>
+                    {/* Journey Steps in Order (Fix 3: situation, chosen option, retrospective reasoning; never consequence) */}
+                    <div className="flex flex-col gap-3">
+                      {selectedItem.steps && selectedItem.steps.length > 0 ? (
+                        selectedItem.steps.map((step, idx) => (
+                          <div
+                            key={step.nodeId || idx}
+                            className="flex flex-col gap-2 rounded-eb-md border border-default bg-canvas/40 p-3.5"
+                          >
+                            <div className="flex items-center justify-between border-b border-default/60 pb-2">
+                              <span className="text-[12px] font-medium text-primary">
+                                {t("g4.queue.inspector.stepNumber", { n: idx + 1 })}
+                              </span>
+                            </div>
+
+                            {/* Situation */}
+                            <div className="text-[13px] leading-5 text-ink">
+                              <span className="font-medium text-ink-secondary">
+                                {t("g4.queue.inspector.situation")}:{" "}
+                              </span>
+                              <span>{step.situation}</span>
+                            </div>
+
+                            {/* Chosen Option */}
+                            <div className="text-[13px] leading-5 text-ink">
+                              <span className="font-medium text-ink-secondary">
+                                {t("g4.queue.inspector.selectedOption")}{" "}
+                              </span>
+                              <span className="font-medium text-link">{step.selectedOptionText}</span>
+                            </div>
+
+                            {/* Retrospective Reasoning */}
+                            <div className="flex flex-col gap-1 pt-1">
+                              <span className="text-[11px] font-medium text-ink-secondary">
+                                {t("g4.queue.inspector.stepReasoningTitle")}
+                              </span>
+                              <div className="rounded-eb-sm border border-default/80 bg-surface p-2.5 text-[13px] leading-5 text-ink">
+                                {step.reasoningText && step.reasoningText.trim() ? (
+                                  step.reasoningText
+                                ) : (
+                                  <span className="italic text-ink-muted">
+                                    {t("g4.queue.inspector.emptyStepReasoning")}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="rounded-eb-md border border-default bg-canvas/40 p-3 text-[13px] text-ink-muted italic">
+                          {t("g4.queue.inspector.emptySteps")}
+                        </div>
+                      )}
                     </div>
 
                     {/* Post-Journey Reflection */}
@@ -579,7 +650,7 @@ export function LecturerFeedbackPage() {
                 )}
               </div>
 
-              {/* Qualitative Feedback Composer (AC-3, Frame 05.3) */}
+              {/* Qualitative Feedback Composer (AC-3, Frame 05.3, Fix 4: C2-A) */}
               <div className="flex flex-col gap-3.5 rounded-eb-lg border border-default bg-surface-muted/50 p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -599,37 +670,65 @@ export function LecturerFeedbackPage() {
                   {t("g4.queue.inspector.composerNotice")}
                 </p>
 
-                {/* Previously sent feedback display */}
-                {selectedItem.existingFeedback && (
-                  <div className="flex flex-col gap-1 rounded-eb-md border border-default bg-surface p-3.5 text-[13px] leading-5">
-                    <span className="text-[11px] font-medium text-ink-secondary">
-                      {t("g4.queue.inspector.previousFeedback")}{" "}
-                      {selectedItem.existingFeedback.createdAt &&
-                        t("g4.queue.inspector.sentAt", {
-                          time: formatDateTime(new Date(selectedItem.existingFeedback.createdAt)),
-                        })}
-                    </span>
-                    <p className="whitespace-pre-wrap text-ink">
+                {/* When existingFeedback is present, show read-only card and hide composer (Fix 4: C2-A) */}
+                {selectedItem.existingFeedback ? (
+                  <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-surface p-4 text-[13px] leading-5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[12px] font-medium text-ink-secondary">
+                        {t("g4.queue.inspector.previousFeedback")}
+                      </span>
+                      {selectedItem.existingFeedback.createdAt && (
+                        <span className="text-[11px] text-ink-muted">
+                          {t("g4.queue.inspector.sentAt", {
+                            time: formatDateTime(new Date(selectedItem.existingFeedback.createdAt)),
+                          })}
+                        </span>
+                      )}
+                    </div>
+                    <p className="whitespace-pre-wrap rounded-eb-sm bg-canvas/60 p-3 text-ink">
                       {selectedItem.existingFeedback.feedbackText}
                     </p>
+                    <p className="text-[11px] text-ink-muted italic">
+                      {t("g4.queue.inspector.alreadyReviewedNotice")}
+                    </p>
                   </div>
-                )}
+                ) : (
+                  <>
+                    {/* Feedback Input Field */}
+                    <Field
+                      multiline
+                      rows={4}
+                      label={t("g4.queue.inspector.feedbackLabel")}
+                      placeholder={t("g4.queue.inspector.feedbackPlaceholder")}
+                      value={feedbackText}
+                      onChange={(e) => {
+                        setFeedbackText(e.target.value);
+                        if (validationError) setValidationError(null);
+                      }}
+                      helper={`${feedbackText.length} / ${FEEDBACK_MAX_LENGTH}`}
+                      error={validationError}
+                      maxLength={FEEDBACK_MAX_LENGTH}
+                    />
 
-                {/* Feedback Input Field */}
-                <Field
-                  multiline
-                  rows={4}
-                  label={t("g4.queue.inspector.feedbackLabel")}
-                  placeholder={t("g4.queue.inspector.feedbackPlaceholder")}
-                  value={feedbackText}
-                  onChange={(e) => {
-                    setFeedbackText(e.target.value);
-                    if (validationError) setValidationError(null);
-                  }}
-                  helper={`${feedbackText.length} / ${FEEDBACK_MAX_LENGTH}`}
-                  error={validationError}
-                  maxLength={FEEDBACK_MAX_LENGTH}
-                />
+                    {/* Submit Button */}
+                    <div className="flex justify-end pt-2">
+                      <Button
+                        variant="primary"
+                        size="md"
+                        onClick={handleSubmitFeedback}
+                        disabled={isSubmitting || feedbackText.trim().length < FEEDBACK_MIN_LENGTH}
+                        className="inline-flex items-center gap-2"
+                      >
+                        <MessageSquareText size={16} />
+                        <span>
+                          {isSubmitting
+                            ? t("g4.queue.inspector.submittingFeedback")
+                            : t("g4.queue.inspector.submitFeedback")}
+                        </span>
+                      </Button>
+                    </div>
+                  </>
+                )}
 
                 {/* Feedback Submission Alerts */}
                 {submitSuccessMessage && (
@@ -644,24 +743,6 @@ export function LecturerFeedbackPage() {
                     <span>{submitErrorMessage}</span>
                   </div>
                 )}
-
-                {/* Submit Button */}
-                <div className="flex justify-end pt-2">
-                  <Button
-                    variant="primary"
-                    size="md"
-                    onClick={handleSubmitFeedback}
-                    disabled={isSubmitting || feedbackText.trim().length < FEEDBACK_MIN_LENGTH}
-                    className="inline-flex items-center gap-2"
-                  >
-                    <MessageSquareText size={16} />
-                    <span>
-                      {isSubmitting
-                        ? t("g4.queue.inspector.submittingFeedback")
-                        : t("g4.queue.inspector.submitFeedback")}
-                    </span>
-                  </Button>
-                </div>
               </div>
             </div>
           </div>

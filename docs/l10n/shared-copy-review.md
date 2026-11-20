@@ -242,3 +242,10 @@
 | `g4.queue.status.reflectionSubmitted` | Đã nộp bài phản tư | Reflection Submitted | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.status.reviewed` | Đã phản hồi | Reviewed | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.statusFilter` | Lọc theo trạng thái | Filter by status | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.alreadyReviewedNotice` | Bài làm này đã có nhận xét định tính (chỉ xem, không thể sửa đổi). | This submission already has qualitative feedback (read-only, cannot be modified). | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.emptyStepReasoning` | Chưa có lập luận hồi cứu | No retrospective reasoning provided | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.emptySteps` | Chưa có bước quyết định nào được ghi nhận | No decision steps recorded | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.selectedOption` | Lựa chọn đã chọn: | Selected option: | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.situation` | Tình huống | Situation | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.stepNumber` | Bước {{n}} | Step {{n}} | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.stepReasoningTitle` | Lập luận hồi cứu của sinh viên | Student retrospective reasoning | PROPOSED | — | — | FE-019 PR #68 |

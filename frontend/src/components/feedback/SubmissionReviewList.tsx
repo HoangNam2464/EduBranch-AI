@@ -71,7 +71,7 @@ export function SubmissionReviewList({
     return (
       <div className="flex flex-col divide-y divide-surface-hover overflow-y-auto" role="list">
         {items.map((item) => {
-          const isSelected = selectedId === item.id;
+          const isSelected = selectedId === item.targetId;
           const isReviewStudy = item.targetType === "REVIEW_STUDY";
           const submittedDate = item.submittedAt ? new Date(item.submittedAt) : null;
           const formattedDate = submittedDate && !Number.isNaN(submittedDate.getTime()) ? formatDateTime(submittedDate) : item.submittedAt;
@@ -79,7 +79,7 @@ export function SubmissionReviewList({
           return (
             <button
               type="button"
-              key={item.id}
+              key={`${item.targetType}-${item.targetId}`}
               onClick={() => onSelectItem(item)}
               className={cx(
                 "flex flex-col gap-1.5 p-3.5 text-left transition-colors border-l-4",
@@ -188,14 +188,14 @@ export function SubmissionReviewList({
         </thead>
         <tbody>
           {items.map((item) => {
-            const isSelected = selectedId === item.id;
+            const isSelected = selectedId === item.targetId;
             const isReviewStudy = item.targetType === "REVIEW_STUDY";
             const submittedDate = item.submittedAt ? new Date(item.submittedAt) : null;
             const formattedDate = submittedDate && !Number.isNaN(submittedDate.getTime()) ? formatDateTime(submittedDate) : item.submittedAt;
 
             return (
               <tr
-                key={item.id}
+                key={`${item.targetType}-${item.targetId}`}
                 onClick={() => onSelectItem(item)}
                 className={cx(
                   "group h-16 cursor-pointer border-b border-surface-hover transition-colors",

@@ -33,9 +33,8 @@ function makeAxiosError(status?: number): AxiosError {
 
 const mockSubmissions: SubmissionReviewItem[] = [
   {
-    id: "item-1",
     targetType: "BRANCHING_STUDY",
-    attemptId: "att-1",
+    targetId: "att-1",
     studentId: "s-1",
     studentName: "Nguyen Van A",
     studentEmail: "nva@university.edu.vn",
@@ -48,12 +47,20 @@ const mockSubmissions: SubmissionReviewItem[] = [
     isCompleted: true,
     reflectionStatus: "SUBMITTED",
     feedbackStatus: "PENDING",
+    existingFeedback: null,
     submittedAt: "2026-11-20T10:00:00Z",
+    steps: [
+      {
+        nodeId: "node-1",
+        situation: "Breach discovered",
+        selectedOptionText: "Issue formal warning",
+        reasoningText: "Mitigate immediate loss",
+      },
+    ],
   },
   {
-    id: "item-2",
     targetType: "BRANCHING_STUDY",
-    attemptId: "att-2",
+    targetId: "att-2",
     studentId: "s-2",
     studentName: "Tran Thi B",
     studentEmail: "ttb@university.edu.vn",
@@ -66,12 +73,20 @@ const mockSubmissions: SubmissionReviewItem[] = [
     isCompleted: false,
     reflectionStatus: "NOT_STARTED",
     feedbackStatus: "REVIEWED",
+    existingFeedback: {
+      id: "fb-1",
+      lecturerId: "lec-1",
+      branchingAttemptId: "att-2",
+      reviewSubmissionId: null,
+      feedbackText: "Good attempt",
+      createdAt: "2026-11-19T15:00:00Z",
+      updatedAt: "2026-11-19T15:00:00Z",
+    },
     submittedAt: "2026-11-19T14:30:00Z",
   },
   {
-    id: "item-3",
     targetType: "REVIEW_STUDY",
-    submissionId: "sub-1",
+    targetId: "sub-1",
     studentId: "s-3",
     studentName: "Le Van C",
     studentEmail: "lvc@university.edu.vn",
@@ -82,12 +97,12 @@ const mockSubmissions: SubmissionReviewItem[] = [
     caseTitle: "Emergency Triage Analysis",
     submissionStatus: "SUBMITTED",
     feedbackStatus: "PENDING",
+    existingFeedback: null,
     submittedAt: "2026-11-20T08:15:00Z",
   },
   {
-    id: "item-4",
     targetType: "REVIEW_STUDY",
-    submissionId: "sub-2",
+    targetId: "sub-2",
     studentId: "s-4",
     studentName: "Pham Thi D",
     studentEmail: "ptd@university.edu.vn",
@@ -98,12 +113,20 @@ const mockSubmissions: SubmissionReviewItem[] = [
     caseTitle: "Emergency Triage Analysis",
     submissionStatus: "REVIEWED",
     feedbackStatus: "REVIEWED",
+    existingFeedback: {
+      id: "fb-2",
+      lecturerId: "lec-1",
+      branchingAttemptId: null,
+      reviewSubmissionId: "sub-2",
+      feedbackText: "Detailed ethical evaluation",
+      createdAt: "2026-11-18T10:00:00Z",
+      updatedAt: "2026-11-18T10:00:00Z",
+    },
     submittedAt: "2026-11-18T09:00:00Z",
   },
   {
-    id: "item-5",
     targetType: "REVIEW_STUDY",
-    submissionId: "sub-3",
+    targetId: "sub-3",
     studentId: "s-5",
     studentName: "Hoang Van E",
     studentEmail: "hve@university.edu.vn",
@@ -114,6 +137,15 @@ const mockSubmissions: SubmissionReviewItem[] = [
     caseTitle: "Emergency Triage Analysis",
     submissionStatus: "REFLECTED",
     feedbackStatus: "REVIEWED",
+    existingFeedback: {
+      id: "fb-3",
+      lecturerId: "lec-1",
+      branchingAttemptId: null,
+      reviewSubmissionId: "sub-3",
+      feedbackText: "Insightful reflection",
+      createdAt: "2026-11-17T12:00:00Z",
+      updatedAt: "2026-11-17T12:00:00Z",
+    },
     submittedAt: "2026-11-17T11:45:00Z",
   },
 ];
@@ -152,21 +184,25 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
       assert.equal(getHttpStatus(err), 409);
     });
 
+    it("maps 500+ to generic error key", () => {
+      const err500 = makeAxiosError(500);
+      assert.equal(mapErrorToI18nKey(err500), "g4.queue.errors.generic");
+      assert.equal(getHttpStatus(err500), 500);
+
+      const err502 = makeAxiosError(502);
+      assert.equal(mapErrorToI18nKey(err502), "g4.queue.errors.generic");
+      assert.equal(getHttpStatus(err502), 502);
+    });
+
     it("maps network error (no response) to network error key", () => {
       const err = makeAxiosError(undefined);
       assert.equal(mapErrorToI18nKey(err), "g4.queue.errors.network");
       assert.equal(getHttpStatus(err), undefined);
     });
 
-    it("maps 500/502/503 to generic error key", () => {
-      assert.equal(mapErrorToI18nKey(makeAxiosError(500)), "g4.queue.errors.generic");
-      assert.equal(mapErrorToI18nKey(makeAxiosError(502)), "g4.queue.errors.generic");
-      assert.equal(mapErrorToI18nKey(makeAxiosError(503)), "g4.queue.errors.generic");
-    });
-
-    it("maps unknown non-Axios error to generic error key", () => {
-      assert.equal(mapErrorToI18nKey(new Error("Unexpected crash")), "g4.queue.errors.generic");
-      assert.equal(mapErrorToI18nKey("raw string error"), "g4.queue.errors.generic");
+    it("maps generic unknown error to generic error key", () => {
+      assert.equal(mapErrorToI18nKey(new Error("Unknown error")), "g4.queue.errors.generic");
+      assert.equal(mapErrorToI18nKey("plain string error"), "g4.queue.errors.generic");
       assert.equal(getHttpStatus(new Error("Crash")), undefined);
     });
   });
@@ -176,8 +212,8 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
       const res = filterSubmissions(mockSubmissions, defaultFilters);
       assert.equal(res.length, 5);
       // Newest first by default
-      assert.equal(res[0].id, "item-1");
-      assert.equal(res[4].id, "item-5");
+      assert.equal(res[0].targetId, "att-1");
+      assert.equal(res[4].targetId, "sub-3");
     });
 
     it("filters by learningMode: BRANCHING_STUDY", () => {
@@ -205,7 +241,7 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         status: "PENDING",
       });
       assert.equal(res.length, 1);
-      assert.equal(res[0].id, "item-3");
+      assert.equal(res[0].targetId, "sub-1");
       assert.equal(res[0].submissionStatus, "SUBMITTED");
     });
 
@@ -216,7 +252,7 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         status: "REVIEWED",
       });
       assert.equal(res.length, 1);
-      assert.equal(res[0].id, "item-4");
+      assert.equal(res[0].targetId, "sub-2");
       assert.equal(res[0].submissionStatus, "REVIEWED");
     });
 
@@ -227,7 +263,7 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         status: "REFLECTED",
       });
       assert.equal(res.length, 1);
-      assert.equal(res[0].id, "item-5");
+      assert.equal(res[0].targetId, "sub-3");
       assert.equal(res[0].submissionStatus, "REFLECTED");
     });
 
@@ -238,7 +274,7 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         status: "COMPLETED",
       });
       assert.equal(res.length, 1);
-      assert.equal(res[0].id, "item-1");
+      assert.equal(res[0].targetId, "att-1");
       assert.equal(res[0].isCompleted, true);
     });
 
@@ -249,7 +285,7 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         status: "REFLECTION_SUBMITTED",
       });
       assert.equal(submitted.length, 1);
-      assert.equal(submitted[0].id, "item-1");
+      assert.equal(submitted[0].targetId, "att-1");
       assert.equal(submitted[0].reflectionStatus, "SUBMITTED");
 
       const pending = filterSubmissions(mockSubmissions, {
@@ -258,7 +294,7 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         status: "REFLECTION_PENDING",
       });
       assert.equal(pending.length, 1);
-      assert.equal(pending[0].id, "item-2");
+      assert.equal(pending[0].targetId, "att-2");
     });
 
     it("filters by course ID", () => {
@@ -276,14 +312,14 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         search: "Nguyen Van A",
       });
       assert.equal(byName.length, 1);
-      assert.equal(byName[0].id, "item-1");
+      assert.equal(byName[0].targetId, "att-1");
 
       const byEmail = filterSubmissions(mockSubmissions, {
         ...defaultFilters,
         search: "ttb@university",
       });
       assert.equal(byEmail.length, 1);
-      assert.equal(byEmail[0].id, "item-2");
+      assert.equal(byEmail[0].targetId, "att-2");
 
       const byCase = filterSubmissions(mockSubmissions, {
         ...defaultFilters,
@@ -298,15 +334,15 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
         ...defaultFilters,
         sort: "OLDEST",
       });
-      assert.equal(oldest[0].id, "item-5"); // 2026-11-17
-      assert.equal(oldest[4].id, "item-1"); // 2026-11-20
+      assert.equal(oldest[0].targetId, "sub-3"); // 2026-11-17
+      assert.equal(oldest[4].targetId, "att-1"); // 2026-11-20
 
       const newest = filterSubmissions(mockSubmissions, {
         ...defaultFilters,
         sort: "NEWEST",
       });
-      assert.equal(newest[0].id, "item-1");
-      assert.equal(newest[4].id, "item-5");
+      assert.equal(newest[0].targetId, "att-1");
+      assert.equal(newest[4].targetId, "sub-3");
     });
   });
 });
