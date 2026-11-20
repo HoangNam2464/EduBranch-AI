@@ -1284,7 +1284,7 @@
       },
       "listLabel": "Submissions",
       "searchLabel": "Search submissions",
-      "searchPlaceholder": "Student name, case title, or course...",
+      "searchPlaceholder": "Student name or case title",
       "courseFilter": "Filter by course",
       "allCourses": "All courses",
       "modeFilter": "Filter by learning mode",
@@ -1298,11 +1298,11 @@
         "all": "All statuses",
         "pending": "Awaiting feedback",
         "reviewed": "Reviewed",
-        "pendingReview": "Awaiting Review (PENDING_REVIEW)",
-        "reflected": "Reflected (REFLECTED)",
-        "completed": "Completed Journey (COMPLETED)",
-        "reflectionSubmitted": "Reflection Submitted",
-        "reflectionPending": "Reflection Pending"
+        "pendingReview": "Awaiting feedback",
+        "reflected": "Reflected",
+        "completed": "Completed journey",
+        "reflectionSubmitted": "Reflection submitted",
+        "reflectionPending": "Reflection pending"
       },
       "sortLabel": "Sort",
       "sort": {
@@ -1316,17 +1316,27 @@
         "case": "Case Study & course",
         "attempt": "Attempt",
         "action": "Action",
-        "status": "Review Status"
+        "status": "Status"
       },
       "actions": {
-        "review": "Inspect & Review",
+        "review": "Assess & review",
+        "viewFeedback": "View feedback",
         "viewDetail": "Details"
       },
       "badges": {
-        "pending": "Pending",
+        "pending": "Awaiting feedback",
         "reviewed": "Reviewed",
         "reflected": "Reflected",
         "completed": "Completed"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "ofTotal": "of {{count}} submissions",
+        "pageSize": "Submissions per page",
+        "nav": "Submissions pagination",
+        "previous": "Previous page",
+        "next": "Next page",
+        "pageN": "Page {{page}}"
       },
       "emptyTitle": "No submissions found",
       "emptyDescription": "No student submissions exist yet or no submissions match the current filter criteria.",

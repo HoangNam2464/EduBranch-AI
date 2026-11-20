@@ -18,6 +18,8 @@ import {
   Field,
   FilterControl,
   MetricCard,
+  Pagination,
+  ResultCount,
   SearchField,
   SubmissionBadge,
   cx,
@@ -34,6 +36,7 @@ import {
   type SubmissionReviewItem,
 } from "@/services/lecturerFeedbackService";
 import {
+  countPendingSubmissions,
   filterSubmissions,
   getHttpStatus,
   mapErrorToI18nKey,
@@ -44,7 +47,7 @@ import {
  * Figma page EduBranch AI – Screens, node 483:14976 & Frame 05.3.
  *
  * AC-1: Display student submissions from both Review Study and completed Branching Study attempts.
- * AC-2: Client-side filtering by Learning Mode (All, Branching, Review) and mode-specific statuses.
+ * AC-2: Client-side filtering by course, status with pending count, and sorting.
  * AC-3: Qualitative feedback composer for lecturers (min 10 chars, strictly no AI grading / scores),
  *       saving feedback, transitioning Review Study status to REVIEWED.
  */
@@ -63,9 +66,12 @@ export function LecturerFeedbackPage() {
   // Filter states
   const [search, setSearch] = useState("");
   const [course, setCourse] = useState("ALL");
-  const [learningMode, setLearningMode] = useState<"ALL" | "BRANCHING_STUDY" | "REVIEW_STUDY">("ALL");
   const [status, setStatus] = useState("ALL");
   const [sort, setSort] = useState<"NEWEST" | "OLDEST">("NEWEST");
+
+  // Pagination states
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   // Selection & Feedback composer states
   const [selectedItem, setSelectedItem] = useState<SubmissionReviewItem | null>(null);
@@ -123,12 +129,12 @@ export function LecturerFeedbackPage() {
     const pending = isLoading
       ? "..."
       : hasData
-        ? String(submissions.filter((s) => s.feedbackStatus === "PENDING").length)
+        ? String(submissions.filter((s) => !s.existingFeedback).length)
         : unknown;
     const reviewed = isLoading
       ? "..."
       : hasData
-        ? String(submissions.filter((s) => s.feedbackStatus === "REVIEWED").length)
+        ? String(submissions.filter((s) => Boolean(s.existingFeedback)).length)
         : unknown;
     const uniqueCases = isLoading
       ? "..."
@@ -144,50 +150,38 @@ export function LecturerFeedbackPage() {
     ];
   }, [submissions, isLoading, unknown, t]);
 
-  // Dynamic status options based on learning mode
+  // Pending count from loaded items for status filter label
+  const pendingCount = useMemo(() => countPendingSubmissions(submissions), [submissions]);
+
+  // Dynamic status options showing pending count from loaded items
   const statusOptions = useMemo(() => {
-    if (learningMode === "REVIEW_STUDY") {
-      return [
-        { value: "ALL", label: t("g4.queue.status.all") },
-        { value: "PENDING", label: t("g4.queue.status.pendingReview") },
-        { value: "REVIEWED", label: t("g4.queue.status.reviewed") },
-        { value: "REFLECTED", label: t("g4.queue.status.reflected") },
-      ];
-    }
-    if (learningMode === "BRANCHING_STUDY") {
-      return [
-        { value: "ALL", label: t("g4.queue.status.all") },
-        { value: "PENDING", label: t("g4.queue.status.pending") },
-        { value: "REVIEWED", label: t("g4.queue.status.reviewed") },
-        { value: "COMPLETED", label: t("g4.queue.status.completed") },
-        { value: "REFLECTION_SUBMITTED", label: t("g4.queue.status.reflectionSubmitted") },
-        { value: "REFLECTION_PENDING", label: t("g4.queue.status.reflectionPending") },
-      ];
-    }
     return [
-      { value: "ALL", label: t("g4.queue.status.all") },
+      {
+        value: "ALL",
+        label: `${t("g4.queue.status.pending")} (${pendingCount})`,
+      },
       { value: "PENDING", label: t("g4.queue.status.pending") },
       { value: "REVIEWED", label: t("g4.queue.status.reviewed") },
+      { value: "REFLECTED", label: t("g4.queue.status.reflected") },
     ];
-  }, [learningMode, t]);
-
-  // Reset status filter if invalid for selected learning mode
-  const handleModeChange = (newMode: string) => {
-    const mode = newMode as "ALL" | "BRANCHING_STUDY" | "REVIEW_STUDY";
-    setLearningMode(mode);
-    setStatus("ALL");
-  };
+  }, [pendingCount, t]);
 
   // Filtered and sorted submissions (AC-2)
   const filteredSubmissions = useMemo(() => {
     return filterSubmissions(submissions, {
       search,
       course,
-      learningMode,
       status,
       sort,
     });
-  }, [submissions, search, course, learningMode, status, sort]);
+  }, [submissions, search, course, status, sort]);
+
+  // Pagination calculation
+  const pageCount = Math.max(1, Math.ceil(filteredSubmissions.length / pageSize));
+  const paginatedSubmissions = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredSubmissions.slice(start, start + pageSize);
+  }, [filteredSubmissions, page, pageSize]);
 
   // Select item for inspection & feedback
   const handleSelectItem = (item: SubmissionReviewItem) => {
@@ -346,7 +340,10 @@ export function LecturerFeedbackPage() {
             label={t("g4.queue.searchLabel")}
             placeholder={t("g4.queue.searchPlaceholder")}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
             className="w-[280px]"
           />
           <div className="flex flex-wrap items-center gap-3">
@@ -355,6 +352,7 @@ export function LecturerFeedbackPage() {
               value={course}
               onChange={(e) => {
                 setCourse(e.target.value);
+                setPage(1);
                 setIsLoading(true);
                 setFetchErrorKey(null);
                 setFetchErrorCode(undefined);
@@ -368,26 +366,22 @@ export function LecturerFeedbackPage() {
               ]}
             />
             <FilterControl
-              label={t("g4.queue.modeFilter")}
-              value={learningMode}
-              onChange={(e) => handleModeChange(e.target.value)}
-              options={[
-                { value: "ALL", label: t("g4.queue.modes.all") },
-                { value: "BRANCHING_STUDY", label: t("g4.queue.modes.branching") },
-                { value: "REVIEW_STUDY", label: t("g4.queue.modes.review") },
-              ]}
-            />
-            <FilterControl
               label={t("g4.queue.statusFilter")}
               value={status}
-              onChange={(e) => setStatus(e.target.value)}
+              onChange={(e) => {
+                setStatus(e.target.value);
+                setPage(1);
+              }}
               options={statusOptions}
             />
             <span className="text-[12px] leading-4 text-ink-secondary">{t("g4.queue.sortLabel")}</span>
             <FilterControl
               label={t("g4.queue.sortLabel")}
               value={sort}
-              onChange={(e) => setSort(e.target.value as "NEWEST" | "OLDEST")}
+              onChange={(e) => {
+                setSort(e.target.value as "NEWEST" | "OLDEST");
+                setPage(1);
+              }}
               options={[
                 { value: "NEWEST", label: t("g4.queue.sort.newest") },
                 { value: "OLDEST", label: t("g4.queue.sort.oldest") },
@@ -414,13 +408,6 @@ export function LecturerFeedbackPage() {
               <div className="flex items-center justify-between border-b border-default bg-canvas px-4 py-2.5">
                 <span className="text-[12px] font-medium text-ink-secondary">
                   {t("g4.queue.listLabel")} ({filteredSubmissions.length})
-                </span>
-                <span className="text-[11px] text-ink-muted">
-                  {learningMode === "ALL"
-                    ? t("g4.queue.modes.all")
-                    : learningMode === "BRANCHING_STUDY"
-                      ? t("g4.queue.modes.branching")
-                      : t("g4.queue.modes.review")}
                 </span>
               </div>
               <div className="flex-1 overflow-y-auto">
@@ -579,7 +566,7 @@ export function LecturerFeedbackPage() {
                       </div>
                     </div>
 
-                    {/* Journey Steps in Order (Fix 3: situation, chosen option, retrospective reasoning; never consequence) */}
+                    {/* Journey Steps in Order */}
                     <div className="flex flex-col gap-3">
                       {selectedItem.steps && selectedItem.steps.length > 0 ? (
                         selectedItem.steps.map((step, idx) => (
@@ -670,7 +657,7 @@ export function LecturerFeedbackPage() {
                   {t("g4.queue.inspector.composerNotice")}
                 </p>
 
-                {/* When existingFeedback is present, show read-only card and hide composer (Fix 4: C2-A) */}
+                {/* When existingFeedback is present, show read-only card and hide composer */}
                 {selectedItem.existingFeedback ? (
                   <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-surface p-4 text-[13px] leading-5">
                     <div className="flex items-center justify-between">
@@ -748,13 +735,39 @@ export function LecturerFeedbackPage() {
           </div>
         ) : (
           /* Full Table View (Figma 04.1) */
-          <div className="flex flex-1 flex-col overflow-x-auto">
+          <div className="flex flex-1 flex-col gap-4">
             <SubmissionReviewList
-              items={filteredSubmissions}
+              items={paginatedSubmissions}
               onSelectItem={handleSelectItem}
               isLoading={isLoading}
               compact={false}
             />
+            {!isLoading && filteredSubmissions.length > 0 && (
+              <div className="flex items-center justify-between pt-2">
+                <ResultCount
+                  leadingLabel={t("g4.queue.pagination.showing")}
+                  trailingLabel={t("g4.queue.pagination.ofTotal", { count: filteredSubmissions.length })}
+                  pageSize={pageSize}
+                  pageSizeOptions={[10, 20, 50]}
+                  onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setPage(1);
+                  }}
+                  pageSizeLabel={t("g4.queue.pagination.pageSize")}
+                />
+                <Pagination
+                  page={page}
+                  pageCount={pageCount}
+                  onPageChange={setPage}
+                  labels={{
+                    nav: t("g4.queue.pagination.nav"),
+                    previous: t("g4.queue.pagination.previous"),
+                    next: t("g4.queue.pagination.next"),
+                    page: (n) => t("g4.queue.pagination.pageN", { page: n }),
+                  }}
+                />
+              </div>
+            )}
           </div>
         )}
       </section>

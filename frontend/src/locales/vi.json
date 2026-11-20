@@ -1284,7 +1284,7 @@
       },
       "listLabel": "Danh sách bài nộp",
       "searchLabel": "Tìm bài nộp",
-      "searchPlaceholder": "Tên sinh viên, case hoặc mã lớp...",
+      "searchPlaceholder": "Tên sinh viên hoặc case",
       "courseFilter": "Lọc theo khóa học",
       "allCourses": "Mọi khóa học",
       "modeFilter": "Lọc theo chế độ học",
@@ -1298,9 +1298,9 @@
         "all": "Mọi trạng thái",
         "pending": "Chờ phản hồi",
         "reviewed": "Đã phản hồi",
-        "pendingReview": "Chờ phản hồi (PENDING_REVIEW)",
-        "reflected": "Đã hoàn tất phản tư (REFLECTED)",
-        "completed": "Hành trình hoàn thành (COMPLETED)",
+        "pendingReview": "Chờ phản hồi",
+        "reflected": "Đã suy ngẫm",
+        "completed": "Hành trình hoàn thành",
         "reflectionSubmitted": "Đã nộp bài phản tư",
         "reflectionPending": "Chưa nộp bài phản tư"
       },
@@ -1315,18 +1315,28 @@
         "submittedAt": "Thời gian nộp",
         "case": "Case Study & Khóa học",
         "attempt": "Lần làm",
-        "action": "Thao tác",
-        "status": "Trạng thái xét duyệt"
+        "action": "Hành động",
+        "status": "Trạng thái"
       },
       "actions": {
-        "review": "Xem & Nhận xét",
+        "review": "Đánh giá & nhận xét",
+        "viewFeedback": "Xem phản hồi",
         "viewDetail": "Chi tiết"
       },
       "badges": {
         "pending": "Chờ phản hồi",
         "reviewed": "Đã phản hồi",
-        "reflected": "Đã phản tư",
+        "reflected": "Đã suy ngẫm",
         "completed": "Hoàn thành"
+      },
+      "pagination": {
+        "showing": "Hiển thị",
+        "ofTotal": "trên {{count}} bài làm",
+        "pageSize": "Số bài làm mỗi trang",
+        "nav": "Phân trang bài làm",
+        "previous": "Trang trước",
+        "next": "Trang sau",
+        "pageN": "Trang {{page}}"
       },
       "emptyTitle": "Chưa có bài nộp nào",
       "emptyDescription": "Hiện chưa có sinh viên nào nộp bài hoặc không có bài nộp nào khớp với bộ lọc hiện tại.",

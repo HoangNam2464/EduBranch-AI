@@ -2,8 +2,12 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { AxiosError, AxiosHeaders } from "axios";
 import {
+  countPendingSubmissions,
   filterSubmissions,
+  formatSubmissionDate,
   getHttpStatus,
+  getSubmissionQueueStatus,
+  initialsOf,
   mapErrorToI18nKey,
   type SubmissionFilters,
 } from "./lecturerFeedbackLogic";
@@ -159,6 +163,81 @@ const defaultFilters: SubmissionFilters = {
 };
 
 describe("lecturerFeedbackLogic (FE-019)", () => {
+  describe("getSubmissionQueueStatus (Status Rule)", () => {
+    it("returns PENDING when existingFeedback is null (Branching Study)", () => {
+      assert.equal(getSubmissionQueueStatus(mockSubmissions[0]), "PENDING");
+    });
+
+    it("returns PENDING when existingFeedback is null (Review Study)", () => {
+      assert.equal(getSubmissionQueueStatus(mockSubmissions[2]), "PENDING");
+    });
+
+    it("returns REVIEWED when existingFeedback != null and reflection not submitted", () => {
+      assert.equal(getSubmissionQueueStatus(mockSubmissions[1]), "REVIEWED");
+      assert.equal(getSubmissionQueueStatus(mockSubmissions[3]), "REVIEWED");
+    });
+
+    it("returns REFLECTED when existingFeedback != null and Review Study submissionStatus === REFLECTED", () => {
+      assert.equal(getSubmissionQueueStatus(mockSubmissions[4]), "REFLECTED");
+    });
+
+    it("returns REFLECTED when existingFeedback != null and Branching reflectionStatus === SUBMITTED", () => {
+      const branchingReflected: SubmissionReviewItem = {
+        ...mockSubmissions[1],
+        reflectionStatus: "SUBMITTED",
+      };
+      assert.equal(getSubmissionQueueStatus(branchingReflected), "REFLECTED");
+    });
+  });
+
+  describe("countPendingSubmissions", () => {
+    it("counts submissions with PENDING status in loaded list", () => {
+      assert.equal(countPendingSubmissions(mockSubmissions), 2);
+    });
+
+    it("returns 0 for empty list", () => {
+      assert.equal(countPendingSubmissions([]), 0);
+    });
+
+    it("returns 0 when all submissions have feedback", () => {
+      const allReviewed = [mockSubmissions[1], mockSubmissions[3], mockSubmissions[4]];
+      assert.equal(countPendingSubmissions(allReviewed), 0);
+    });
+  });
+
+  describe("initialsOf", () => {
+    it("extracts first and last initial for Vietnamese names", () => {
+      assert.equal(initialsOf("Nguyễn Minh Anh"), "NA");
+      assert.equal(initialsOf("Trần Quốc Bảo"), "TB");
+      assert.equal(initialsOf("Lê Thu Hà"), "LH");
+      assert.equal(initialsOf("Phạm Gia Huy"), "PH");
+      assert.equal(initialsOf("Võ Ngọc Linh"), "VL");
+      assert.equal(initialsOf("Đặng Đức Minh"), "ĐM");
+    });
+
+    it("ignores academic titles like TS., ThS., PGS.", () => {
+      assert.equal(initialsOf("TS. Nguyễn Văn An"), "NA");
+      assert.equal(initialsOf("ThS Lê Văn C"), "LC");
+    });
+
+    it("handles single-word or short names", () => {
+      assert.equal(initialsOf("Nguyen"), "NG");
+      assert.equal(initialsOf(""), "");
+      assert.equal(initialsOf(null), "");
+    });
+  });
+
+  describe("formatSubmissionDate", () => {
+    it("formats ISO date to DD/MM/YYYY · HH:mm", () => {
+      const formatted = formatSubmissionDate("2026-10-23T09:42:00Z");
+      assert.match(formatted, /^\d{2}\/\d{2}\/\d{4} · \d{2}:\d{2}$/);
+    });
+
+    it("returns raw string if invalid date", () => {
+      assert.equal(formatSubmissionDate("invalid-date"), "invalid-date");
+    });
+  });
+
   describe("mapErrorToI18nKey & getHttpStatus", () => {
     it("maps 400 to validation error key", () => {
       const err = makeAxiosError(400);
@@ -216,6 +295,38 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
       assert.equal(res[4].targetId, "sub-3");
     });
 
+    it("filters by status: PENDING", () => {
+      const res = filterSubmissions(mockSubmissions, {
+        ...defaultFilters,
+        status: "PENDING",
+      });
+      assert.equal(res.length, 2);
+      assert.ok(res.every((s) => getSubmissionQueueStatus(s) === "PENDING"));
+      assert.equal(res[0].targetId, "att-1");
+      assert.equal(res[1].targetId, "sub-1");
+    });
+
+    it("filters by status: REVIEWED", () => {
+      const res = filterSubmissions(mockSubmissions, {
+        ...defaultFilters,
+        status: "REVIEWED",
+      });
+      assert.equal(res.length, 2);
+      assert.ok(res.every((s) => getSubmissionQueueStatus(s) === "REVIEWED"));
+      assert.equal(res[0].targetId, "att-2");
+      assert.equal(res[1].targetId, "sub-2");
+    });
+
+    it("filters by status: REFLECTED", () => {
+      const res = filterSubmissions(mockSubmissions, {
+        ...defaultFilters,
+        status: "REFLECTED",
+      });
+      assert.equal(res.length, 1);
+      assert.equal(res[0].targetId, "sub-3");
+      assert.equal(getSubmissionQueueStatus(res[0]), "REFLECTED");
+    });
+
     it("filters by learningMode: BRANCHING_STUDY", () => {
       const res = filterSubmissions(mockSubmissions, {
         ...defaultFilters,
@@ -232,39 +343,6 @@ describe("lecturerFeedbackLogic (FE-019)", () => {
       });
       assert.equal(res.length, 3);
       assert.ok(res.every((s) => s.targetType === "REVIEW_STUDY"));
-    });
-
-    it("filters Review Study with status PENDING (SUBMITTED shown as pending review)", () => {
-      const res = filterSubmissions(mockSubmissions, {
-        ...defaultFilters,
-        learningMode: "REVIEW_STUDY",
-        status: "PENDING",
-      });
-      assert.equal(res.length, 1);
-      assert.equal(res[0].targetId, "sub-1");
-      assert.equal(res[0].submissionStatus, "SUBMITTED");
-    });
-
-    it("filters Review Study with status REVIEWED", () => {
-      const res = filterSubmissions(mockSubmissions, {
-        ...defaultFilters,
-        learningMode: "REVIEW_STUDY",
-        status: "REVIEWED",
-      });
-      assert.equal(res.length, 1);
-      assert.equal(res[0].targetId, "sub-2");
-      assert.equal(res[0].submissionStatus, "REVIEWED");
-    });
-
-    it("filters Review Study with status REFLECTED", () => {
-      const res = filterSubmissions(mockSubmissions, {
-        ...defaultFilters,
-        learningMode: "REVIEW_STUDY",
-        status: "REFLECTED",
-      });
-      assert.equal(res.length, 1);
-      assert.equal(res[0].targetId, "sub-3");
-      assert.equal(res[0].submissionStatus, "REFLECTED");
     });
 
     it("filters Branching Study by COMPLETED", () => {
