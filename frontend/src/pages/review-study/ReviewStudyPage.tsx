@@ -301,13 +301,13 @@ function Workspace({
         <div className="flex min-w-0 flex-1 flex-col gap-5">
           <Card className="gap-6">
             <CardTitle>{t("g5.reviewStudy.contextTitle")}</CardTitle>
-            <p className="text-[14px] leading-5 whitespace-pre-line text-ink">
+            <p className="max-w-[68ch] text-[14px] leading-5 whitespace-pre-line text-ink">
               {caseData.contextText ?? caseData.description ?? "—"}
             </p>
             {caseData.problemText && (
               <div className="flex flex-col gap-1.5 rounded-eb-lg bg-selected p-4">
                 <span className="text-[12px] leading-4 font-medium text-link">{t("g5.reviewStudy.problem")}</span>
-                <p className="text-[14px] leading-5 whitespace-pre-line text-ink">{caseData.problemText}</p>
+                <p className="max-w-[68ch] text-[14px] leading-5 whitespace-pre-line text-ink">{caseData.problemText}</p>
               </div>
             )}
           </Card>
@@ -363,7 +363,7 @@ function Workspace({
           )}
         </div>
 
-        <div className="flex w-[478px] shrink-0 flex-col gap-5">
+        <div className="flex w-[420px] shrink-0 flex-col gap-5 min-[1440px]:w-[478px]">
           <Card className="gap-[23px]">
             <CardTitle>{t("g5.reviewStudy.infoTitle")}</CardTitle>
             <KeyValueList
@@ -392,7 +392,7 @@ function Workspace({
             <CardTitle>{t("g5.reviewStudy.requirementsTitle")}</CardTitle>
             <ol className="flex flex-col gap-2">
               {(["solution", "reasoning"] as const).map((key) => (
-                <li key={key} className="border-b border-surface-hover py-2 text-[14px] leading-5 text-ink">
+                <li key={key} className="border-b border-surface-hover py-2 text-[14px] leading-5 text-balance text-ink">
                   {t(`g5.reviewStudy.requirement.${key}`)}
                 </li>
               ))}

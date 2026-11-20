@@ -513,9 +513,10 @@ function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse
                 <span className="w-48 shrink-0 truncate text-ink font-normal">
                   {c.courseCode} · {c.courseName}
                 </span>
-                <div className="flex min-w-0 flex-1 items-center">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <div className="flex min-w-0 flex-1 items-center max-w-[480px]">
                   {hasCases ? (
-                    <div className="flex h-3 w-full max-w-[280px] overflow-hidden rounded-full bg-line-soft">
+                    <div className="flex h-3 w-full overflow-hidden rounded-full bg-line-soft">
                       {c.publishedCount > 0 && (
                         <div style={{ width: `${pubPercent}%` }} className="h-full bg-[#2A4E7F]" />
                       )}
@@ -526,8 +527,9 @@ function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse
                   ) : (
                     <span className="text-[12px] text-ink-muted">{t("g6.dashboard.casesByCourse.noCases")}</span>
                   )}
+                  </div>
+                  <span className="w-6 shrink-0 text-right font-medium text-ink">{c.totalCount}</span>
                 </div>
-                <span className="w-6 shrink-0 text-right font-medium text-ink">{c.totalCount}</span>
               </li>
             );
           })}

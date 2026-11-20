@@ -289,7 +289,7 @@ Surface ladder (max 3 levels below the shell): `bg-page` → `bg-canvas` panel �
 - Header: `text-h3` title + close icon. Reserve modals for focused single-purpose interactions.
 
 ### 5.9. Toast
-- Top-right, `radius-md`, `elevation-toast`, white, 20px semantic icon, auto-dismiss ~5s with manual close.
+- Bottom-right, 24px from the viewport edges (full width, 12px from the edges below 640px), newest at the bottom, `radius-md`, `elevation-toast`, white, 20px semantic icon, auto-dismiss ~5–6s with manual close. PO decision 2026-11-21 (spec 006): the former top-right position covered the header and the content being read.
 
 ### 5.10. Confirmation Dialog
 - Required before any destructive action. Modal (§5.8) with a question title, one sentence of consequence in `text-secondary`, "Hủy" secondary + destructive confirm.

@@ -1678,6 +1678,7 @@
       },
       "back": "Back",
       "finalNote": "Your submission is final and cannot be edited after you submit.",
+      "oneSubmissionNote": "Review Study permits exactly one submission per case.",
       "submit": "Submit",
       "submitting": "Submitting…",
       "submitSuccess": "Submission submitted successfully!",
