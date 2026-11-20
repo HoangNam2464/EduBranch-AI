@@ -110,3 +110,10 @@ Chưa bắt đầu (sau G7).
 
 ### Findings outside scope
 - `backend/test/migration.integration.e2e-spec.ts` runs the real migration runner against whatever `POSTGRES_*` points to (locally `edubranch_ai`) and fails on a V1 checksum mismatch; it should use its own temp DB. Report only.
+
+## 8. FE fixes T050–T053 (2026-11-20)
+- PO, chat 2026-11-20, nguyên văn: "Commit, QA sau" — chấp nhận commit các bản sửa FE khi QG3 (Visual QA) chưa chạy và chuỗi tiếng Anh còn PROPOSED; Visual QA (T054) phải xong trước khi merge.
+- Antigravity (song song, 3 worktree): #68 `fdb0a7db-07ad-42bc-b9fa-567a9c8c1eb3`, #69 `0ecb5b6c-e8bf-422f-bd92-a6f0ae609402`, #70 `1a74f766-53a6-4816-add4-77a7d2ff59f7`; build/test bị sandbox chặn, Claude chạy lại.
+- QG2 (Claude): #68 build 0, test 182/182, lint sạch file đã sửa, l10n 1400; #69 build 0, test 180/180, l10n 1422 (Claude thêm: `getFeedback` báo lỗi khi phản hồi sai định dạng, đăng ký 36 key `g5.feedback.*`); #70 build 0, test 176/176, l10n 1407. Mức `develop`: 1424.
+- Commit/push (không force): #68 `3d13f6b` (`feature/lecturer-feedback`), #69 `94f7ef8` (`feature/review-feedback`), #70 `95a8730` (`feature/statistics`).
+- Còn lại: T054 Visual QA, T060 Converge; khi merge sẽ có xung đột ở `frontend/src/components/feedback/index.ts`, `vi.json`/`en.json`, `docs/l10n/shared-copy-review.md` giữa #68/#69/#70 — Claude xử lý khi merge.
