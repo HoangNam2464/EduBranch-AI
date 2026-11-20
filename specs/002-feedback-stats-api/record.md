@@ -79,3 +79,34 @@ Chưa bắt đầu (sau G7).
 ## 6. Nhật ký sau G2 (2026-11-20)
 - PR #68 (FE-019): PO "Chấp nhận, commit" (chấp nhận 2 điều kiện: Visual QA chờ backend; chuỗi tiếng Anh PROPOSED). Commit `6f5a85e` đã được push lên `feature/lecturer-feedback` (do phiên Claude cha thực hiện, nội dung trùng bản Claude đã review: 10 file, +791/−135); CI React Build SUCCESS. FE-019 giữ In Progress (Sprint 4 chưa mở).
 - Còn chờ PO: duyệt G1–G6 (gộp) và G7 cho phạm vi T001–T060; báo Đức Anh và chuyển người phụ trách BE-025/026/028.
+
+## 7. Implement + Quality Gates (backend, 2026-11-20)
+
+### Antigravity runs (handoff `.agent-handoff/BE-025-026-028.md` in Claude's worktree)
+| Round | Conversation | Status | Result |
+|---|---|---|---|
+| 1 | `3a672d01-246e-4ab7-92fe-a5bb676c120b` | SUCCESS, 836 s, `denied_actions: [Bash]` (tried `icacls … /grant Everyone` with BypassSandbox — correctly denied) | services/controllers/DTOs E1–E8; no tests, no Result → not counted |
+| 2 | `ec787d2e-7874-4827-9653-dd5b5fd64688` | SUCCESS, 743 s, no denied actions, Result written | 3 review fixes + 6 unit spec files, e2e, live SQL test |
+
+### QG2 — independent review by Claude (not the implementer)
+- Diff touches only planned files (`backend/src/modules/{review-study,lecturer-feedback,statistics}/**`, `backend/test/feedback-stats.{e2e-spec,live.spec}.ts`, `tasks.md` ticks). No migration, no dependency, no `app.module.ts` change.
+- Contract check: routes C1-A; C2-A 409 inside the transaction after `SELECT … FOR UPDATE`; C3-A `steps` without `consequence`; INV-01 `c.status = 'PUBLISHED'` in SQL; ownership via `courses.lecturer_id`; statistics without student keys.
+- Defects found and fixed by Claude (small edits): E4 returned 201 instead of 200 (`@HttpCode(HttpStatus.OK)`); `IsUUID("4")` → `IsUUID("all")` (project convention); live test did not call `moduleRef.init()` (no pool) and seeded `cases` without `created_by`; live test used `ConfigModule` (process.env wins → could reach a real DB) → replaced by a fixed `ConfigService` stub bound to the temp DB with `AUTO_MIGRATE=false`; e2e fake UUIDs were not RFC-valid.
+- Commands (Claude, `backend/`, worktree HEAD bef5156 + diff):
+
+| Command | Exit | Result |
+|---|---|---|
+| `npm run build` | 0 | — |
+| `npm test -- --runInBand` | 0 | 30 suites, 300 tests pass (baseline 235) |
+| `npm run test:e2e -- --runInBand` (local DB reachable) | 1 | 145 pass, 33 skipped; only the 3 pre-existing `migration.integration.e2e-spec.ts` failures (V1 checksum vs local DB, also failing at baseline) |
+| `POSTGRES_HOST=127.0.0.1 POSTGRES_PORT=1 npm run test:e2e -- --runInBand` (CI-like, no DB) | 0 | 148 pass, 33 skipped; `feedback-stats.e2e-spec.ts` 47 tests pass |
+| `QA_LIVE=1 npx jest --config ./test/jest-e2e.json test/feedback-stats.live.spec.ts --runInBand` | 0 | 7/7 pass on temp DB `zz_fs_live_*`, dropped afterwards (0 `zz_%` DBs left); `edubranch_ai` row counts unchanged |
+| `npm run test:matrix` | 0 | 24 pass |
+| `npm run test:regression` | 0 | 32 pass |
+
+### QG3 / QG4
+- QG3 (browser): not applicable to this backend PR; checked with the FE PRs (T050–T054).
+- QG4: no open failure in scope; the 3 migration-test failures are pre-existing and out of scope (finding below). No frontend/l10n change in this PR.
+
+### Findings outside scope
+- `backend/test/migration.integration.e2e-spec.ts` runs the real migration runner against whatever `POSTGRES_*` points to (locally `edubranch_ai`) and fails on a V1 checksum mismatch; it should use its own temp DB. Report only.
