@@ -175,3 +175,4 @@
 | `g1.register.customDepartmentLabel` | Tên Khoa / Đơn vị công tác cụ thể | Specific Faculty / Department name | PROPOSED | — | — | PR-71-FIX |
 | `g1.register.customDepartmentPlaceholder` | Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao | e.g. Institute of Advanced Technology Research | PROPOSED | — | — | PR-71-FIX |
 | `g1.register.departmentOther` | Đơn vị / Khoa khác... | Other Faculty / Department... | PROPOSED | — | — | PR-71-FIX |
+| `g5.reviewStudy.oneSubmissionNote` | Chế độ Review Study cho phép nộp một lần duy nhất. | Review Study permits exactly one submission per case. | PROPOSED | — | — | FE-025 spec 006 |
