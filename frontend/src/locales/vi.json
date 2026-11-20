@@ -733,6 +733,7 @@
     "common": {
       "cancel": "Hủy bỏ",
       "close": "Đóng",
+      "error": "Lỗi",
       "retry": "Thử lại",
       "fileSize": {
         "b": "{{value}} B",

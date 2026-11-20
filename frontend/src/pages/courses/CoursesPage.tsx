@@ -286,7 +286,7 @@ function InviteCodeSection({ courseId, active }: { courseId: string; active: boo
         <ToastRegion>
           <Toast
             type="error"
-            title={t("g2.common.error", "Lỗi")}
+            title={t("g2.common.error")}
             message={errorToast}
             onClose={() => setErrorToast(null)}
             closeLabel={t("g2.courses.archiveDialog.closeToast")}

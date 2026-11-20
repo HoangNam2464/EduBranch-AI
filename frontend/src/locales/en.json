@@ -733,6 +733,7 @@
     "common": {
       "cancel": "Cancel",
       "close": "Close",
+      "error": "Error",
       "retry": "Retry",
       "fileSize": {
         "b": "{{value}} B",

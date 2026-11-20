@@ -61,7 +61,7 @@ function MaterialRow({
   const status = material.processingStatus;
   const meta =
     status === "FAILED"
-      ? (material.processingError || t("g2.materials.statusFailedReason", "Không đọc được nội dung tệp"))
+      ? (material.processingError || t("g2.materials.statusFailedReason"))
       : status === "COMPLETED" && material.chunkCount !== undefined
         ? `${t("g2.materials.chunks", { count: material.chunkCount })} · ${size}`
         : size;
@@ -87,7 +87,7 @@ function MaterialRow({
   } else if (status === "FAILED") {
     indicator = (
       <Button variant="secondary" size="sm" onClick={onRetry}>
-        {t("g2.materials.retry", "Thử lại")}
+        {t("g2.materials.retry")}
       </Button>
     );
   }
@@ -252,7 +252,7 @@ function UploadDialog({ courseId, onClose, onUploaded }: { courseId: string; onC
                       }
                       className={cx("text-[12px] leading-4 font-medium text-ink hover:underline cursor-pointer", FOCUS_RING)}
                     >
-                      {t("g2.materials.retry", "Thử lại")}
+                      {t("g2.materials.retry")}
                     </button>
                   )}
                   <button
