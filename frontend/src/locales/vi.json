@@ -1250,11 +1250,11 @@
         "aiStudioBadge": "AI Studio",
         "aiStudio": {
           "title": "Sinh Case bằng AI",
-          "desc": "Tạo kịch bản rẽ nhánh hoặc bài phân tích tình huống từ giáo trình."
+          "desc": "Tạo kịch bản nhánh hoặc bài phân tích tình huống từ giáo trình."
         },
         "materials": {
           "title": "Kho tài liệu học phần",
-          "desc": "Tải lên syllabus, giáo trình PDF/DOCX và giám sát vector hóa."
+          "desc": "Tải lên syllabus, giáo trình PDF/DOCX và theo dõi lập chỉ mục."
         },
         "cases": {
           "title": "Phê duyệt tình huống",
@@ -1262,7 +1262,7 @@
         },
         "stats": {
           "title": "Báo cáo & Thống kê",
-          "desc": "Theo dõi lựa chọn rẽ nhánh và phân bố hành vi của người học."
+          "desc": "Theo dõi các nhánh và phản hồi hành vi của người học."
         }
       },
       "coursesSection": {
