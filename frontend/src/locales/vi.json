@@ -1929,6 +1929,7 @@
     },
     "average": {
       "label": "Điểm trung bình",
+      "fromCount": "từ {{count}} tiêu chí",
       "unavailable": "Chưa có điểm"
     },
     "criteria": {
@@ -1947,10 +1948,22 @@
     },
     "scoring": {
       "title": "Đánh giá chất lượng tình huống",
-      "description": "Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
+      "description": "Thang 1 – 5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
       "noScore": "Chưa có điểm",
       "unavailable": "Chưa chấm và lưu được: hệ thống chưa có API rubric.",
-      "save": "Lưu phiếu đánh giá"
+      "save": "Lưu phiếu đánh giá",
+      "update": "Cập nhật phiếu đánh giá",
+      "cancelEdit": "Hủy chỉnh sửa",
+      "saving": "Đang lưu…",
+      "addCriterion": "Thêm tiêu chí",
+      "newCriterionName": "Tên tiêu chí mới",
+      "newCriterionDesc": "Mô tả tiêu chí mới",
+      "emptyCriterionError": "Tên tiêu chí không được để trống.",
+      "duplicateCriterionError": "Tiêu chí này đã tồn tại hoặc bị trùng tên.",
+      "saveSuccess": "Đã lưu phiếu đánh giá thành công.",
+      "updateSuccess": "Đã cập nhật phiếu đánh giá thành công.",
+      "deleteConfirm": "Bạn có chắc chắn muốn xóa phiếu đánh giá này không?",
+      "deleteSuccess": "Đã xóa phiếu đánh giá thành công."
     },
     "note": {
       "label": "Ghi chú (không bắt buộc)",
@@ -1959,8 +1972,14 @@
     },
     "saved": {
       "title": "Phiếu đánh giá đã lưu",
+      "titleWithCount": "Phiếu đánh giá đã lưu ({{count}})",
+      "emptyTitle": "Chưa có phiếu đánh giá nào",
+      "emptyDescription": "Các phiếu đánh giá chất lượng case sau khi lưu sẽ hiển thị tại đây.",
       "unavailableTitle": "Chưa xem được phiếu đánh giá",
-      "unavailableDescription": "Chưa có API đọc các phiếu đánh giá rubric đã lưu."
+      "unavailableDescription": "Chưa có API đọc các phiếu đánh giá rubric đã lưu.",
+      "noteLabel": "Ghi chú:",
+      "edit": "Sửa",
+      "delete": "Xóa"
     }
   },
   "states": {

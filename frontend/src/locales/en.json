@@ -1929,6 +1929,7 @@
     },
     "average": {
       "label": "Average score",
+      "fromCount": "from {{count}} criteria",
       "unavailable": "No score yet"
     },
     "criteria": {
@@ -1950,7 +1951,19 @@
       "description": "Scale 1–5 for each criterion. This rates case quality for research, not student scores.",
       "noScore": "No score yet",
       "unavailable": "Cannot score or save yet: the system has no rubric API.",
-      "save": "Save evaluation"
+      "save": "Save evaluation",
+      "update": "Update evaluation",
+      "cancelEdit": "Cancel edit",
+      "saving": "Saving…",
+      "addCriterion": "Add criterion",
+      "newCriterionName": "New criterion name",
+      "newCriterionDesc": "New criterion description",
+      "emptyCriterionError": "Criterion name cannot be empty.",
+      "duplicateCriterionError": "This criterion already exists or is duplicated.",
+      "saveSuccess": "Rubric evaluation saved successfully.",
+      "updateSuccess": "Rubric evaluation updated successfully.",
+      "deleteConfirm": "Are you sure you want to delete this evaluation?",
+      "deleteSuccess": "Rubric evaluation deleted successfully."
     },
     "note": {
       "label": "Note (optional)",
@@ -1959,8 +1972,14 @@
     },
     "saved": {
       "title": "Saved evaluations",
+      "titleWithCount": "Saved evaluations ({{count}})",
+      "emptyTitle": "No evaluations yet",
+      "emptyDescription": "Saved case quality evaluations will appear here.",
       "unavailableTitle": "Saved evaluations unavailable",
-      "unavailableDescription": "There is no API to read saved rubric evaluations yet."
+      "unavailableDescription": "There is no API to read saved rubric evaluations yet.",
+      "noteLabel": "Note:",
+      "edit": "Edit",
+      "delete": "Delete"
     }
   },
   "states": {

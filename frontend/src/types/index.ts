@@ -282,6 +282,51 @@ export interface LecturerFeedback {
 }
 
 // ============================================================================
+// Rubric & Case Quality Evaluation (Research Boundary, OPD-011 / BE-033)
+// ============================================================================
+export interface RubricCriterionItem {
+  id?: string;
+  name: string;
+  description?: string;
+  score: number;
+  maxScore?: number;
+}
+
+export interface RubricEvaluation {
+  id: string;
+  caseId: string;
+  caseTitle?: string;
+  evaluatorId?: string;
+  evaluatorName?: string;
+  criteria: RubricCriterionItem[];
+  averageScore: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export interface CreateRubricEvaluationDto {
+  caseId: string;
+  criteria: Array<{
+    id?: string;
+    name: string;
+    description?: string;
+    score: number;
+  }>;
+  notes?: string;
+}
+
+export interface UpdateRubricEvaluationDto {
+  criteria?: Array<{
+    id?: string;
+    name: string;
+    description?: string;
+    score: number;
+  }>;
+  notes?: string;
+}
+
+// ============================================================================
 // API Response Wrapper
 // ============================================================================
 export interface ApiResponse<T> {
