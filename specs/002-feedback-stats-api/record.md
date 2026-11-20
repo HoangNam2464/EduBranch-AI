@@ -126,3 +126,28 @@ Chưa bắt đầu (sau G7).
   - 04.3 (`/lecturer/statistics`, node 483:15369) on #70 `53b25b6`: mismatch 6.25 %, no budget → not PASS. Same data gap (no case to select) AND a structural gap: Figma 04.3 shows KPI "Tỷ lệ hoàn thành / Số lần làm trung bình / Đang trong hành trình", branch-choice chart with case dropdown, attempts-distribution curve, outcome donut, "Thời điểm làm bài" heatmap, progress bars, "Lựa chọn phổ biến theo điểm", "Case đang mở", "Bài nộp gần đây"; PR #70 builds a different layout (selector + prompt).
   - #69 (student Review Study feedback): no baseline in `tests/visual/screens.ts`; DB has 0 REVIEW_STUDY cases, 0 submissions → BLOCKED on data.
 - Status: QG3 for #68/#69/#70 = BLOCKED (no QA data for the test lecturer) and failed for 04.3 layout. PO decision needed on seeding QA data.
+
+## 10. PO decision on QA data, local seed (2026-11-21)
+
+- PO (chat, 2026-11-21), quoted: "Cho phép nạp dữ liệu vào PostgreSQL Docker local — DUYỆT CÓ ĐIỀU KIỆN. Cho phép chạy script seed dữ liệu phục vụ Visual QA cho PR #69, #68 và #70, bao gồm học phần CS402, các case Ransomware ngân hàng số, Zero Trust, bài nộp và nhận xét."
+- Conditions:
+  - local Docker Postgres only, never production or a shared environment;
+  - fixture or fully anonymised data, no real personal data or credentials;
+  - the script is idempotent, names its target DB, and deletes nothing outside the seed scope;
+  - the result is verified.
+- Done: `frontend/tests/visual/seed-feedback-stats.{sql,mjs}`, branch `feature/visual-qa-seed` commit `5fc3c39`.
+  - Target: container `edubranch_postgres`, DB `edubranch_ai`. The runner refuses a non-local `POSTGRES_HOST`. It runs in one transaction (`psql -1`).
+  - Fixed ids `5eed0003-*` with `ON CONFLICT DO NOTHING`; no DELETE, and no UPDATE outside that range.
+  - 8 fixture students, `@student.edubranch.test`, with the bcrypt hash of a random secret that is discarded (sign-in impossible).
+  - Branching case "Ransomware tấn công ngân hàng số": 7 nodes, 9 options, 9 attempts (7 completed, 2 in progress), 15 reasoning rows.
+  - Review Study case "Triển khai Zero Trust cho ngân hàng số": 4 submissions (SUBMITTED 2, REVIEWED 1 for the fixture student `minhkhoi`, REFLECTED 1).
+  - 4 qualitative feedbacks.
+- Verification:
+  - run 1: 11/11 link checks PASS (FND §5 tree integrity, terminal outcomes, option∈node, one target per feedback);
+  - run 2 (idempotency): row counts identical (8,9,2,7,9,9,15,4,4), total users 98 and cases 26 unchanged;
+  - UTF-8 text checked.
+- API check on develop `55eb9ef` (port 8081):
+  - E7 queue 200 with 11 items (4 with feedback; steps present, no `consequence`);
+  - E8 Branching 200 (totalAttempts 9, completionRate 77.8) and Review 200 (2/1/1);
+  - E2 student 200 REVIEWED; E5 200 with feedback.
+- Next: Visual QA T054 for 04.1 / 04.2 / 04.2b / 04.3 and the #69 screen.
