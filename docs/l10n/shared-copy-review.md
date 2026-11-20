@@ -249,3 +249,11 @@
 | `g4.queue.inspector.situation` | Tình huống | Situation | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.inspector.stepNumber` | Bước {{n}} | Step {{n}} | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.inspector.stepReasoningTitle` | Lập luận hồi cứu của sinh viên | Student retrospective reasoning | PROPOSED | — | — | FE-019 PR #68 |
+| `g1.select.placeholder` | -- Chọn một mục -- | -- Select an item -- | PROPOSED | — | — | PR-71-FIX |
+| `g1.select.searchPlaceholder` | Tìm nhanh khoa hoặc đơn vị... | Search faculty or department... | PROPOSED | — | — | PR-71-FIX |
+| `g1.select.noResults` | Không tìm thấy khoa phù hợp. Bạn có thể chọn mục "Đơn vị / Khoa khác..." ở dưới cùng. | No matching faculty found. You can select "Other Faculty / Department..." at the bottom. | PROPOSED | — | — | PR-71-FIX |
+| `g1.select.otherCategory` | Khác | Other | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.departmentSelectPlaceholder` | -- Chọn Khoa / Đơn vị công tác -- | -- Select Faculty / Department -- | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.customDepartmentLabel` | Tên Khoa / Đơn vị công tác cụ thể | Specific Faculty / Department name | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.customDepartmentPlaceholder` | Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao | e.g. Institute of Advanced Technology Research | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.departmentOther` | Đơn vị / Khoa khác... | Other Faculty / Department... | PROPOSED | — | — | PR-71-FIX |

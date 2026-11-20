@@ -46,7 +46,7 @@ function ProviderButton({ logo, children, onClick, disabled }: { logo: ReactNode
       onClick={onClick}
       disabled={disabled}
       className={cx(
-        "flex min-w-0 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-eb-md bg-canvas px-4 py-2.5 text-[14px] leading-5 font-normal text-ink transition-colors",
+        "flex h-11 min-w-0 flex-1 cursor-pointer items-center justify-center gap-2.5 rounded-eb-md bg-canvas px-4 text-[14px] leading-5 font-normal text-ink transition-colors",
         "hover:bg-surface-muted disabled:cursor-not-allowed disabled:opacity-60",
         FOCUS_RING,
       )}

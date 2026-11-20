@@ -140,11 +140,13 @@ export function AuthSelectField({
   options,
   value,
   onChange,
-  placeholder = "-- Chọn một mục --",
+  placeholder,
   required,
   name,
   disabled,
 }: AuthSelectProps) {
+  const { t } = useTranslation();
+  const effectivePlaceholder = placeholder ?? t("g1.select.placeholder");
   const autoId = useId();
   const inputId = id ?? `auth-select-${autoId}`;
   const [open, setOpen] = useState(false);
@@ -192,7 +194,7 @@ export function AuthSelectField({
   const grouped: { [cat: string]: AuthSelectOption[] } = {};
   if (hasCategories && !query.trim()) {
     normalizedOptions.forEach((opt) => {
-      const cat = opt.category || "Khác";
+      const cat = opt.category || t("g1.select.otherCategory");
       if (!grouped[cat]) grouped[cat] = [];
       grouped[cat].push(opt);
     });
@@ -240,7 +242,7 @@ export function AuthSelectField({
             selectedOption ? "font-normal text-ink" : "text-ink-muted",
           )}
         >
-          {selectedOption ? selectedOption.label : placeholder}
+          {selectedOption ? selectedOption.label : effectivePlaceholder}
         </span>
         <ChevronDown
           size={16}
@@ -267,7 +269,7 @@ export function AuthSelectField({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Tìm nhanh khoa hoặc đơn vị..."
+              placeholder={t("g1.select.searchPlaceholder")}
               className="w-full bg-transparent text-[13.5px] text-ink outline-none placeholder:text-ink-muted"
             />
           </div>
@@ -276,7 +278,7 @@ export function AuthSelectField({
           <div className="max-h-[280px] overflow-y-auto py-1.5 scrollbar-thin">
             {filtered.length === 0 ? (
               <div className="px-4 py-4 text-center text-[13px] text-ink-muted">
-                Không tìm thấy khoa phù hợp. Bạn có thể chọn mục <strong>"Đơn vị / Khoa khác..."</strong> ở dưới cùng.
+                {t("g1.select.noResults")}
               </div>
             ) : hasCategories && !query.trim() ? (
               Object.entries(grouped).map(([category, items]) => (

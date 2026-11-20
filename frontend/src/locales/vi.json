@@ -339,6 +339,12 @@
   },
   "g1": {
     "brand": "EduBranch AI",
+    "select": {
+      "placeholder": "-- Chọn một mục --",
+      "searchPlaceholder": "Tìm nhanh khoa hoặc đơn vị...",
+      "noResults": "Không tìm thấy khoa phù hợp. Bạn có thể chọn mục \"Đơn vị / Khoa khác...\" ở dưới cùng.",
+      "otherCategory": "Khác"
+    },
     "showcase": {
       "title": "Nền tảng học tập tình huống thực nghiệm",
       "subtitle": "Giảng viên xây dựng Case Study từ tài liệu môn học; sinh viên ra quyết định, lập luận và suy ngẫm trên từng nhánh tình huống."
@@ -379,6 +385,10 @@
       "studentIdPlaceholder": "Ví dụ: 21020451",
       "department": "Khoa / Đơn vị công tác",
       "departmentPlaceholder": "Ví dụ: Khoa Công nghệ Thông tin",
+      "departmentSelectPlaceholder": "-- Chọn Khoa / Đơn vị công tác --",
+      "customDepartmentLabel": "Tên Khoa / Đơn vị công tác cụ thể",
+      "customDepartmentPlaceholder": "Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao",
+      "departmentOther": "Đơn vị / Khoa khác...",
       "passwordPlaceholder": "Tối thiểu 8 ký tự",
       "confirmPassword": "Xác nhận mật khẩu",
       "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
