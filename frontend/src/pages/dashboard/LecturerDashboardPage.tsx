@@ -21,6 +21,7 @@ import { PATHS, buildPath } from "@/routes/paths";
 import { addMonths, buildMonthWeeks, startOfMonth } from "@/pages/profile/components/calendar";
 import { MonthStepper } from "@/pages/profile/components/MonthStepper";
 import { countCases, describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo } from "@/pages/statistics/useLecturerCourseCases";
+import { groupCasesByDay } from "./calendarGrouping";
 import { usePrefersReducedMotion } from "@/pages/landing/usePrefersReducedMotion";
 import type { Case } from "@/types";
 
@@ -101,19 +102,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
   const weekdays = t("g4.calendar.weekdays", { returnObjects: true }) as string[];
 
   // Group cases by ISO date key (YYYY-M-D)
-  const casesByDay = useMemo(() => {
-    const map = new Map<string, Case[]>();
-    for (const c of cases) {
-      if (!c.createdAt) continue;
-      const date = new Date(c.createdAt);
-      if (Number.isNaN(date.getTime())) continue;
-      const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-      const list = map.get(key) ?? [];
-      list.push(c);
-      map.set(key, list);
-    }
-    return map;
-  }, [cases]);
+  const casesByDay = useMemo(() => groupCasesByDay(cases), [cases]);
 
   return (
     <div className="min-w-0 flex-1 rounded-eb-lg bg-canvas px-2 pb-2 ring-1 ring-line-soft ring-inset">
@@ -167,12 +156,11 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                               "group flex flex-col gap-0.5 rounded px-2 py-1 text-[11px] leading-tight font-medium truncate transition-all duration-150",
                               c.status === "PUBLISHED"
                                 ? "bg-primary text-white hover:bg-primary-hover"
-                                : "bg-sky-600 text-white hover:bg-sky-700",
+                                : "bg-accent text-white hover:bg-accent/90",
                             )}
                             title={`${c.title} (${c.status})`}
                           >
                             <span className="truncate">{c.title}</span>
-                            <span className="text-[9px] opacity-90">{t("g4.dashboard.dueTime")}</span>
                           </Link>
                         ))}
                         {dayCases.length > 2 && (

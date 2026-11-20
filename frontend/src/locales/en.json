@@ -1229,7 +1229,6 @@
       "courseFilter": "Filter by course",
       "filter": "Filter",
       "createCase": "New case",
-      "dueTime": "Due: 23:59",
       "moreCases": "+{{count}} other cases",
       "pendingTitle": "Submissions awaiting your feedback",
       "pendingUnavailable": "No submission data: the system does not provide student work to lecturers yet.",

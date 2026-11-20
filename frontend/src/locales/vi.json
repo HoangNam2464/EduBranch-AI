@@ -1229,7 +1229,6 @@
       "courseFilter": "Lọc theo khóa học",
       "filter": "Lọc",
       "createCase": "Tạo Case mới",
-      "dueTime": "Hạn nộp: 23:59",
       "moreCases": "+{{count}} case khác",
       "pendingTitle": "Bài nộp chờ bạn phản hồi",
       "pendingUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên.",
