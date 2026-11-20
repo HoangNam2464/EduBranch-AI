@@ -13,7 +13,6 @@ import {
   X,
   User,
 } from "lucide-react";
-import { isAxiosError } from "axios";
 import {
   Button,
   Field,
@@ -24,6 +23,7 @@ import {
   cx,
 } from "@/components/ds";
 import { SubmissionReviewList } from "@/components/feedback";
+import { ErrorState } from "@/components/feedback/ErrorState";
 import { formatDateTime } from "@/components/feedback/stateFormat";
 import { useLecturerCourseCases } from "@/pages/statistics/useLecturerCourseCases";
 import {
@@ -32,6 +32,11 @@ import {
   lecturerFeedbackService,
   type SubmissionReviewItem,
 } from "@/services/lecturerFeedbackService";
+import {
+  filterSubmissions,
+  getHttpStatus,
+  mapErrorToI18nKey,
+} from "./lecturerFeedbackLogic";
 
 /**
  * 04.1 Hàng đợi Review và phản hồi lập luận & 05.3 Lecturer Student Submissions & Qualitative Feedback Workspace
@@ -50,7 +55,9 @@ export function LecturerFeedbackPage() {
   // Data states
   const [submissions, setSubmissions] = useState<SubmissionReviewItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [fetchErrorKey, setFetchErrorKey] = useState<string | null>(null);
+  const [fetchErrorCode, setFetchErrorCode] = useState<number | undefined>(undefined);
+  const [reloadCounter, setReloadCounter] = useState(0);
 
   // Filter states
   const [search, setSearch] = useState("");
@@ -81,17 +88,15 @@ export function LecturerFeedbackPage() {
       .then((data) => {
         if (isMounted) {
           setSubmissions(data);
+          setFetchErrorKey(null);
+          setFetchErrorCode(undefined);
           setIsLoading(false);
         }
       })
       .catch((err: unknown) => {
         if (isMounted) {
-          const msg = isAxiosError(err)
-            ? err.response?.data?.message || err.message
-            : err instanceof Error
-              ? err.message
-              : String(err);
-          setFetchError(msg);
+          setFetchErrorKey(mapErrorToI18nKey(err));
+          setFetchErrorCode(getHttpStatus(err));
           setSubmissions([]);
           setIsLoading(false);
         }
@@ -100,7 +105,14 @@ export function LecturerFeedbackPage() {
     return () => {
       isMounted = false;
     };
-  }, [course, routeCaseId]);
+  }, [course, routeCaseId, reloadCounter]);
+
+  const handleRetry = () => {
+    setIsLoading(true);
+    setFetchErrorKey(null);
+    setFetchErrorCode(undefined);
+    setReloadCounter((prev) => prev + 1);
+  };
 
   // Compute metrics dynamically from loaded submissions
   const unknown = t("g4.common.unknownValue");
@@ -167,59 +179,13 @@ export function LecturerFeedbackPage() {
 
   // Filtered and sorted submissions (AC-2)
   const filteredSubmissions = useMemo(() => {
-    return submissions
-      .filter((item) => {
-        // Search filter
-        if (search.trim()) {
-          const q = search.trim().toLowerCase();
-          const matchesStudent =
-            item.studentName.toLowerCase().includes(q) ||
-            (item.studentEmail?.toLowerCase().includes(q) ?? false);
-          const matchesCase = item.caseTitle.toLowerCase().includes(q);
-          const matchesCourse =
-            item.courseName.toLowerCase().includes(q) ||
-            (item.courseCode?.toLowerCase().includes(q) ?? false);
-          if (!matchesStudent && !matchesCase && !matchesCourse) {
-            return false;
-          }
-        }
-
-        // Course filter
-        if (course !== "ALL" && item.courseId !== course) {
-          return false;
-        }
-
-        // Learning mode filter
-        if (learningMode !== "ALL" && item.targetType !== learningMode) {
-          return false;
-        }
-
-        // Status filter
-        if (status !== "ALL") {
-          if (learningMode === "REVIEW_STUDY") {
-            if (status === "PENDING" && item.submissionStatus !== "SUBMITTED") return false;
-            if (status === "REVIEWED" && item.submissionStatus !== "REVIEWED") return false;
-            if (status === "REFLECTED" && item.submissionStatus !== "REFLECTED") return false;
-          } else if (learningMode === "BRANCHING_STUDY") {
-            if (status === "PENDING" && item.feedbackStatus !== "PENDING") return false;
-            if (status === "REVIEWED" && item.feedbackStatus !== "REVIEWED") return false;
-            if (status === "COMPLETED" && !item.isCompleted) return false;
-            if (status === "REFLECTION_SUBMITTED" && item.reflectionStatus !== "SUBMITTED") return false;
-            if (status === "REFLECTION_PENDING" && item.reflectionStatus === "SUBMITTED") return false;
-          } else {
-            // Mode ALL
-            if (status === "PENDING" && item.feedbackStatus !== "PENDING") return false;
-            if (status === "REVIEWED" && item.feedbackStatus !== "REVIEWED") return false;
-          }
-        }
-
-        return true;
-      })
-      .sort((a, b) => {
-        const timeA = new Date(a.submittedAt).getTime() || 0;
-        const timeB = new Date(b.submittedAt).getTime() || 0;
-        return sort === "NEWEST" ? timeB - timeA : timeA - timeB;
-      });
+    return filterSubmissions(submissions, {
+      search,
+      course,
+      learningMode,
+      status,
+      sort,
+    });
   }, [submissions, search, course, learningMode, status, sort]);
 
   // Select item for inspection & feedback
@@ -252,47 +218,71 @@ export function LecturerFeedbackPage() {
         feedbackText: trimmed,
       });
 
-      const updatedFeedback = {
-        id: res.id || `fb-${Date.now()}`,
-        feedbackText: res.feedbackText || trimmed,
-        createdAt: res.createdAt || new Date().toISOString(),
-      };
-
-      // Update local state
-      setSubmissions((prev) =>
-        prev.map((s) => {
-          if (s.id === selectedItem.id) {
-            return {
-              ...s,
-              feedbackStatus: "REVIEWED" as const,
-              submissionStatus: isReview ? ("REVIEWED" as const) : s.submissionStatus,
-              existingFeedback: updatedFeedback,
-            };
-          }
-          return s;
-        }),
-      );
-
-      setSelectedItem((prev) =>
-        prev
-          ? {
-              ...prev,
-              feedbackStatus: "REVIEWED" as const,
-              submissionStatus: isReview ? ("REVIEWED" as const) : prev.submissionStatus,
-              existingFeedback: updatedFeedback,
-            }
-          : null,
-      );
+      // Refetch queue submissions to guarantee real server data without synthesis
+      try {
+        const refreshed = await lecturerFeedbackService.getQueueSubmissions({
+          courseId: course !== "ALL" ? course : undefined,
+          caseId: routeCaseId,
+        });
+        setSubmissions(refreshed);
+        const updatedItem = refreshed.find((s) => s.id === selectedItem.id);
+        if (updatedItem) {
+          setSelectedItem(updatedItem);
+        } else if (res?.id && res?.createdAt) {
+          setSelectedItem((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  feedbackStatus: "REVIEWED" as const,
+                  submissionStatus: isReview ? ("REVIEWED" as const) : prev.submissionStatus,
+                  existingFeedback: {
+                    id: res.id,
+                    feedbackText: res.feedbackText || trimmed,
+                    createdAt: res.createdAt,
+                  },
+                }
+              : null,
+          );
+        }
+      } catch {
+        // Fallback only if server response contains full fields
+        if (res?.id && res?.createdAt) {
+          const updatedFeedback = {
+            id: res.id,
+            feedbackText: res.feedbackText || trimmed,
+            createdAt: res.createdAt,
+          };
+          setSubmissions((prev) =>
+            prev.map((s) => {
+              if (s.id === selectedItem.id) {
+                return {
+                  ...s,
+                  feedbackStatus: "REVIEWED" as const,
+                  submissionStatus: isReview ? ("REVIEWED" as const) : s.submissionStatus,
+                  existingFeedback: updatedFeedback,
+                };
+              }
+              return s;
+            }),
+          );
+          setSelectedItem((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  feedbackStatus: "REVIEWED" as const,
+                  submissionStatus: isReview ? ("REVIEWED" as const) : prev.submissionStatus,
+                  existingFeedback: updatedFeedback,
+                }
+              : null,
+          );
+        }
+      }
 
       setSubmitSuccessMessage(t("g4.queue.inspector.feedbackSuccess"));
       setFeedbackText("");
     } catch (err: unknown) {
-      const errorMsg = isAxiosError(err)
-        ? err.response?.data?.message || err.message
-        : err instanceof Error
-          ? err.message
-          : String(err);
-      setSubmitErrorMessage(t("g4.queue.inspector.feedbackFailed", { error: errorMsg }));
+      const errorKey = mapErrorToI18nKey(err);
+      setSubmitErrorMessage(t("g4.queue.inspector.feedbackFailed", { error: t(errorKey) }));
     } finally {
       setIsSubmitting(false);
     }
@@ -335,7 +325,8 @@ export function LecturerFeedbackPage() {
               onChange={(e) => {
                 setCourse(e.target.value);
                 setIsLoading(true);
-                setFetchError(null);
+                setFetchErrorKey(null);
+                setFetchErrorCode(undefined);
               }}
               options={[
                 { value: "ALL", label: t("g4.queue.allCourses") },
@@ -374,16 +365,18 @@ export function LecturerFeedbackPage() {
           </div>
         </div>
 
-        {/* Global Fetch Error if any */}
-        {fetchError && (
-          <div className="flex items-center gap-2 rounded-eb-md border border-error-border bg-error-bg p-3 text-[13px] text-error-text">
-            <AlertCircle size={16} className="shrink-0 text-error" />
-            <span>{fetchError}</span>
+        {/* Content View: Error State, Master-Detail (Figma 05.3), or Full Table (Figma 04.1) */}
+        {fetchErrorKey ? (
+          <div className="flex flex-1 items-center justify-center py-12">
+            <ErrorState
+              framed={false}
+              title={t("g4.queue.errors.loadTitle")}
+              description={t(fetchErrorKey)}
+              errorCode={fetchErrorCode}
+              onRetry={handleRetry}
+            />
           </div>
-        )}
-
-        {/* Content View: Master-Detail (Figma 05.3) or Full Table (Figma 04.1) */}
-        {selectedItem ? (
+        ) : selectedItem ? (
           <div className="flex flex-1 gap-5 overflow-hidden">
             {/* Master List (360px left column) */}
             <div className="flex w-[360px] shrink-0 flex-col overflow-hidden rounded-eb-lg border border-default bg-canvas/40">
@@ -392,7 +385,11 @@ export function LecturerFeedbackPage() {
                   {t("g4.queue.listLabel")} ({filteredSubmissions.length})
                 </span>
                 <span className="text-[11px] text-ink-muted">
-                  {learningMode === "ALL" ? t("g4.queue.modes.all") : learningMode}
+                  {learningMode === "ALL"
+                    ? t("g4.queue.modes.all")
+                    : learningMode === "BRANCHING_STUDY"
+                      ? t("g4.queue.modes.branching")
+                      : t("g4.queue.modes.review")}
                 </span>
               </div>
               <div className="flex-1 overflow-y-auto">
@@ -438,13 +435,13 @@ export function LecturerFeedbackPage() {
                       {selectedItem.targetType === "REVIEW_STUDY" ? (
                         <>
                           <FileCheck2 size={12} />
-                          <span>Review Study</span>
+                          <span>{t("g4.queue.modes.review")}</span>
                         </>
                       ) : (
                         <>
                           <GitBranch size={12} />
                           <span>
-                            Branching Study{" "}
+                            {t("g4.queue.modes.branching")}{" "}
                             {selectedItem.attemptNumber ? `#${selectedItem.attemptNumber}` : ""}
                           </span>
                         </>

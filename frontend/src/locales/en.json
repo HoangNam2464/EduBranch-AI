@@ -3,7 +3,8 @@
     "appName": "EduBranch AI",
     "logout": "Sign out",
     "reload": "Reload page",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "loading": "Loading..."
   },
   "nav": {
     "lecturer": {
@@ -1319,6 +1320,15 @@
       },
       "emptyTitle": "No submissions found",
       "emptyDescription": "No student submissions exist yet or no submissions match the current filter criteria.",
+      "errors": {
+        "validation": "Invalid request data. Please check and try again.",
+        "forbidden": "You do not have permission to perform this action.",
+        "notFound": "Submission or feedback queue data not found.",
+        "conflict": "Data conflict occurred or submission was updated elsewhere.",
+        "network": "Cannot connect to server. Please check your network connection.",
+        "generic": "Something went wrong. Please try again.",
+        "loadTitle": "Unable to load submissions queue"
+      },
       "inspector": {
         "title": "Submission Inspection & Feedback",
         "studentInfo": "Student information",

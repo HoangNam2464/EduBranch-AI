@@ -8,7 +8,6 @@
  *   GET  /lecturer-feedback/submissions   - Queue of student submissions across lecturer's courses
  */
 
-import { isAxiosError } from "axios";
 import apiClient from "@/services/apiClient";
 import type {
   LecturerFeedback,
@@ -81,22 +80,14 @@ export const lecturerFeedbackService = {
 
   /**
    * Fetch submission queue for the lecturer.
-   * Returns empty array if backend endpoint is not yet mounted (404/501).
+   * Propagates any HTTP/network error (404/501 must not be swallowed into empty array).
    */
   async getQueueSubmissions(params?: { courseId?: string; caseId?: string }): Promise<SubmissionReviewItem[]> {
-    try {
-      const res = await apiClient.get<Envelope<SubmissionReviewItem[]> | SubmissionReviewItem[]>(
-        "/lecturer-feedback/submissions",
-        { params },
-      );
-      const data = unwrap(res.data);
-      return Array.isArray(data) ? data : [];
-    } catch (err: unknown) {
-      if (isAxiosError(err) && (err.response?.status === 404 || err.response?.status === 501)) {
-        return [];
-      }
-      throw err;
-    }
+    const res = await apiClient.get<Envelope<SubmissionReviewItem[]> | SubmissionReviewItem[]>(
+      "/lecturer-feedback/submissions",
+      { params },
+    );
+    const data = unwrap(res.data);
+    return Array.isArray(data) ? data : [];
   },
 };
-

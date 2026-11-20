@@ -3,7 +3,8 @@
     "appName": "EduBranch AI",
     "logout": "Đăng xuất",
     "reload": "Tải lại trang",
-    "backHome": "Về trang chủ"
+    "backHome": "Về trang chủ",
+    "loading": "Đang tải..."
   },
   "nav": {
     "lecturer": {
@@ -1319,6 +1320,15 @@
       },
       "emptyTitle": "Chưa có bài nộp nào",
       "emptyDescription": "Hiện chưa có sinh viên nào nộp bài hoặc không có bài nộp nào khớp với bộ lọc hiện tại.",
+      "errors": {
+        "validation": "Dữ liệu yêu cầu chưa hợp lệ. Vui lòng kiểm tra lại.",
+        "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+        "notFound": "Không tìm thấy dữ liệu bài nộp hoặc hàng đợi phản hồi.",
+        "conflict": "Dữ liệu bị xung đột hoặc đã được cập nhật bởi phiên khác.",
+        "network": "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng.",
+        "generic": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+        "loadTitle": "Không thể tải hàng đợi bài nộp"
+      },
       "inspector": {
         "title": "Chi tiết bài nộp & Nhận xét",
         "studentInfo": "Thông tin sinh viên",

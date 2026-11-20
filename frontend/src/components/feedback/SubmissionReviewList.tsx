@@ -38,7 +38,7 @@ export function SubmissionReviewList({
 
   if (isLoading) {
     return (
-      <div className={cx("flex flex-col gap-3", compact ? "p-3" : "p-4")} role="status" aria-label={t("common.loading", "Đang tải...")}>
+      <div className={cx("flex flex-col gap-3", compact ? "p-3" : "p-4")} role="status" aria-label={t("common.loading")}>
         {[1, 2, 3, 4, 5].map((idx) => (
           <div key={idx} className={cx("w-full rounded-eb-md bg-canvas motion-safe:animate-pulse", compact ? "h-16" : "h-14")} />
         ))}
@@ -103,7 +103,7 @@ export function SubmissionReviewList({
                   isReviewStudy ? "bg-sky-50 text-accent border border-accent/20" : "bg-primary/10 text-primary border border-primary/20",
                 )}>
                   {isReviewStudy ? <FileCheck2 size={11} /> : <GitBranch size={11} />}
-                  <span>{isReviewStudy ? "Review" : `Branching ${item.attemptNumber ? `#${item.attemptNumber}` : ""}`}</span>
+                  <span>{isReviewStudy ? t("g4.queue.modes.review") : `${t("g4.queue.modes.branching")} ${item.attemptNumber ? `#${item.attemptNumber}` : ""}`}</span>
                 </span>
                 <span className="truncate text-[12px] leading-4 text-ink-secondary" title={item.caseTitle}>
                   {item.caseTitle}
@@ -232,12 +232,12 @@ export function SubmissionReviewList({
                     {isReviewStudy ? (
                       <>
                         <FileCheck2 size={13} className="shrink-0" />
-                        <span>Review</span>
+                        <span>{t("g4.queue.modes.review")}</span>
                       </>
                     ) : (
                       <>
                         <GitBranch size={13} className="shrink-0" />
-                        <span>Branching</span>
+                        <span>{t("g4.queue.modes.branching")}</span>
                       </>
                     )}
                   </span>
