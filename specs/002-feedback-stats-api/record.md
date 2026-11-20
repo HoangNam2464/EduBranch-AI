@@ -117,3 +117,12 @@ Chưa bắt đầu (sau G7).
 - QG2 (Claude): #68 build 0, test 182/182, lint sạch file đã sửa, l10n 1400; #69 build 0, test 180/180, l10n 1422 (Claude thêm: `getFeedback` báo lỗi khi phản hồi sai định dạng, đăng ký 36 key `g5.feedback.*`); #70 build 0, test 176/176, l10n 1407. Mức `develop`: 1424.
 - Commit/push (không force): #68 `3d13f6b` (`feature/lecturer-feedback`), #69 `94f7ef8` (`feature/review-feedback`), #70 `95a8730` (`feature/statistics`).
 - Còn lại: T054 Visual QA, T060 Converge; khi merge sẽ có xung đột ở `frontend/src/components/feedback/index.ts`, `vi.json`/`en.json`, `docs/l10n/shared-copy-review.md` giữa #68/#69/#70 — Claude xử lý khi merge.
+
+## 9. PR #76 merge, QG7 backend, Visual QA attempt (2026-11-20)
+- PO, chat 2026-11-20, nguyên văn: "Merge PR #76". Admin-merge (`--admin --match-head-commit a218a28`), merge commit `55eb9ef` on `develop`; head CI "Backend CI" SUCCESS.
+- QG7 backend at `55eb9ef` (clean worktree): `npm ci` 0; `npm run build` 0; unit 300/300; e2e CI-like 0 (148 pass); live SQL 7/7 (temp DB dropped). PASS.
+- Visual QA (T054), backend `develop` run locally (AUTO_MIGRATE=false: V1 checksum CRLF mismatch; CORS +5174 because port 5173 is held by another session's dev server), Playwright `test:visual`:
+  - 04.1 (`/lecturer/feedback`, node 483:14976) on #68 `28ce5a0`: mismatch 5.21 %, no accepted budget → not PASS. Structure matches Figma (4 KPI cards, filters, table) but the test lecturer `an.nguyen@duytan.edu.vn` owns 8 courses and 0 PUBLISHED cases → empty queue; Figma shows 6 rows.
+  - 04.3 (`/lecturer/statistics`, node 483:15369) on #70 `53b25b6`: mismatch 6.25 %, no budget → not PASS. Same data gap (no case to select) AND a structural gap: Figma 04.3 shows KPI "Tỷ lệ hoàn thành / Số lần làm trung bình / Đang trong hành trình", branch-choice chart with case dropdown, attempts-distribution curve, outcome donut, "Thời điểm làm bài" heatmap, progress bars, "Lựa chọn phổ biến theo điểm", "Case đang mở", "Bài nộp gần đây"; PR #70 builds a different layout (selector + prompt).
+  - #69 (student Review Study feedback): no baseline in `tests/visual/screens.ts`; DB has 0 REVIEW_STUDY cases, 0 submissions → BLOCKED on data.
+- Status: QG3 for #68/#69/#70 = BLOCKED (no QA data for the test lecturer) and failed for 04.3 layout. PO decision needed on seeding QA data.
