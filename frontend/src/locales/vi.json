@@ -1318,6 +1318,7 @@
         "allCourses": "Mọi khóa học",
         "case": "Lọc theo tình huống",
         "allCases": "Tất cả tình huống",
+        "selectCase": "— Chọn tình huống —",
         "branchingOnly": "Tình huống rẽ nhánh (Branching Study)"
       },
       "panels": {
@@ -1359,7 +1360,37 @@
       "published": "Xuất bản",
       "updatedOn": "Cập nhật ngày {{date}}",
       "recent": "Bài nộp gần đây",
-      "recentUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên."
+      "recentUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên.",
+      "prompt": {
+        "title": "Chọn tình huống để xem thống kê luồng học tập",
+        "description": "Chọn một khóa học và tình huống từ thanh bộ lọc phía trên để theo dõi dữ liệu rẽ nhánh và hành vi của người học."
+      },
+      "emptyCase": {
+        "title": "Chưa có lượt làm nào",
+        "description": "Tình huống này chưa có sinh viên nào tham gia làm bài hoặc gửi kết quả."
+      },
+      "reviewStudy": {
+        "title": "Tiến độ bài phân tích tình huống (Review Study)",
+        "subtitle": "Thống kê bài nộp theo các giai đoạn: Đã nộp bài, Giảng viên đã nhận xét và Sinh viên đã hoàn tất phản tư",
+        "submitted": "Đã nộp bài (chờ nhận xét)",
+        "reviewed": "Giảng viên đã nhận xét",
+        "reflected": "Sinh viên đã phản tư",
+        "totalSubmissions": "Tổng số bài nộp"
+      },
+      "flow": {
+        "title": "Trạng thái luồng học tập",
+        "subtitle": "Phân bổ sinh viên qua các giai đoạn của hành trình học tập",
+        "inProgress": "Đang trong hành trình",
+        "completed": "Đã hoàn thành hành trình",
+        "reflected": "Đã hoàn tất phản tư",
+        "participants": "Sinh viên tham gia"
+      },
+      "errors": {
+        "notFound": "Không tìm thấy dữ liệu thống kê cho tình huống này.",
+        "forbidden": "Bạn không có quyền xem thống kê của tình huống này.",
+        "serverError": "Lỗi máy chủ khi tải thống kê. Vui lòng thử lại sau.",
+        "network": "Không thể kết nối đến máy chủ. Kiểm tra mạng rồi thử lại."
+      }
     },
     "profile": {
       "loadError": "Không tải được hồ sơ tài khoản",

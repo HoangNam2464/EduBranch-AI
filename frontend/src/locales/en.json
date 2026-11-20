@@ -1318,6 +1318,7 @@
         "allCourses": "All courses",
         "case": "Filter by case",
         "allCases": "All cases",
+        "selectCase": "— Select a case study —",
         "branchingOnly": "Branching Study Cases"
       },
       "panels": {
@@ -1359,7 +1360,37 @@
       "published": "Published",
       "updatedOn": "Updated on {{date}}",
       "recent": "Recent submissions",
-      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet."
+      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
+      "prompt": {
+        "title": "Select a case study to view learning analytics",
+        "description": "Select a course and a case study from the filters above to track branching data and student cohort behavior."
+      },
+      "emptyCase": {
+        "title": "No attempts yet",
+        "description": "No students have participated in or submitted work for this case yet."
+      },
+      "reviewStudy": {
+        "title": "Review Study analytical progress",
+        "subtitle": "Submission statistics across stages: Submitted, Lecturer reviewed, and Student reflected",
+        "submitted": "Submitted (awaiting review)",
+        "reviewed": "Lecturer reviewed",
+        "reflected": "Student reflected",
+        "totalSubmissions": "Total submissions"
+      },
+      "flow": {
+        "title": "Learning flow status",
+        "subtitle": "Student distribution across learning journey stages",
+        "inProgress": "In progress",
+        "completed": "Journey completed",
+        "reflected": "Reflection completed",
+        "participants": "Participating students"
+      },
+      "errors": {
+        "notFound": "Statistics data for this case was not found.",
+        "forbidden": "You do not have permission to view statistics for this case.",
+        "serverError": "Server error loading statistics. Please try again later.",
+        "network": "Cannot connect to server. Check your connection and try again."
+      }
     },
     "profile": {
       "loadError": "Could not load your profile",

@@ -1,164 +1,287 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import type {
-  CaseStatistics,
-  NodeBranchStat,
-} from "../../services/statisticsService";
 
-describe("StatisticsPage & BranchStatsChart (FE-022)", () => {
-  const dummyCaseStats: CaseStatistics = {
-    caseId: "case-alpha",
+const { default: apiClient } = await import("@/services/apiClient");
+const { statisticsService } = await import("@/services/statisticsService");
+const {
+  formatPercentage,
+  getOptionBarColor,
+  isCaseStatisticsEmpty,
+  mapStatisticsErrorStatus,
+  truncateSituation,
+} = await import("./statisticsHelpers");
+
+describe("StatisticsPage & statisticsService (FE-022, contract-002 §C E8)", () => {
+  const sampleBranchingStats = {
+    caseId: "case-uuid-001",
     caseTitle: "Khủng hoảng truyền thông doanh nghiệp",
-    totalAttempts: 120,
-    completedAttempts: 96,
-    completionRate: 80.0,
-    singleAttempts: 84,
-    retryAttempts: 36,
-    reflectionsSubmitted: 75,
-    nodeDistributions: [
-      {
-        nodeId: "node-1",
-        nodeTitle: "Quyết định xử lý thông cáo báo chí",
-        totalSelections: 120,
-        options: [
-          {
-            optionId: "opt-1a",
-            text: "Phát ngôn minh bạch và nhận trách nhiệm",
-            count: 72,
-            percentage: 60.0,
-            nextNodeId: "node-2a",
-          },
-          {
-            optionId: "opt-1b",
-            text: "Trì hoãn và kiểm tra nội bộ trước khi phản hồi",
-            count: 48,
-            percentage: 40.0,
-            nextNodeId: "node-2b",
-          },
-        ],
+    learningMode: "BRANCHING_STUDY",
+    caseStatus: "PUBLISHED",
+    branching: {
+      totalAttempts: 120,
+      completedAttempts: 96,
+      completionRate: 80.0,
+      participants: 84,
+      singleAttemptStudents: 60,
+      retryStudents: 24,
+      attemptsPerStudent: [
+        { attempts: 1, students: 60 },
+        { attempts: 2, students: 18 },
+        { attempts: 3, students: 6 },
+      ],
+      flowStatus: {
+        inProgress: 24,
+        completed: 96,
+        reflected: 75,
       },
-      {
-        nodeId: "node-2a",
-        nodeTitle: "Lựa chọn kênh truyền thông chính thức",
-        totalSelections: 72,
-        options: [
-          {
-            optionId: "opt-2a1",
-            text: "Tổ chức họp báo trực tiếp với các cơ quan báo chí",
-            count: 54,
-            percentage: 75.0,
-            nextNodeId: "node-terminal-1",
-          },
-          {
-            optionId: "opt-2a2",
-            text: "Đăng tải video giải trình trên trang chủ và mạng xã hội",
-            count: 18,
-            percentage: 25.0,
-            nextNodeId: "node-terminal-2",
-          },
-        ],
-      },
-    ],
-    outcomeDistributions: [
-      {
-        nodeId: "node-terminal-1",
-        title: "Xử lý thành công — Doanh nghiệp lấy lại niềm tin thị trường",
-        count: 54,
-        percentage: 56.25,
-      },
-      {
-        nodeId: "node-terminal-2",
-        title: "Khủng hoảng kéo dài — Thất thoát thị phần ngắn hạn",
-        count: 42,
-        percentage: 43.75,
-      },
-    ],
+      decisionPoints: [
+        {
+          nodeId: "node-1",
+          nodeIndex: 0,
+          situation: "Phát ngôn minh bạch và nhận trách nhiệm trước báo chí",
+          totalSelections: 120,
+          options: [
+            {
+              optionId: "opt-1a",
+              optionText: "Tổ chức họp báo trực tiếp ngay trong ngày",
+              count: 72,
+              percentage: 60.0,
+            },
+            {
+              optionId: "opt-1b",
+              optionText: "Trì hoãn và rà soát nội bộ trước khi phản hồi",
+              count: 48,
+              percentage: 40.0,
+            },
+          ],
+        },
+      ],
+      outcomes: [
+        {
+          nodeId: "terminal-1",
+          situation: "Xử lý thành công — Lấy lại niềm tin thị trường",
+          count: 54,
+          percentage: 56.25,
+        },
+        {
+          nodeId: "terminal-2",
+          situation: "Khủng hoảng kéo dài — Thất thoát thị phần ngắn hạn",
+          count: 42,
+          percentage: 43.75,
+        },
+      ],
+    },
+    reviewStudy: null,
   };
 
-  describe("AC-1: Completion Rate & KPIs Calculation", () => {
-    it("correctly computes completion rate percentage from completed and total attempts", () => {
-      const calculatedRate = (dummyCaseStats.completedAttempts / dummyCaseStats.totalAttempts) * 100;
-      assert.equal(calculatedRate, 80.0);
-      assert.equal(dummyCaseStats.completionRate, 80.0);
-    });
+  const sampleReviewStudyStats = {
+    caseId: "case-uuid-002",
+    caseTitle: "Phân tích chiến lược mở rộng thị trường",
+    learningMode: "REVIEW_STUDY",
+    caseStatus: "PUBLISHED",
+    branching: null,
+    reviewStudy: {
+      totalSubmissions: 45,
+      flowStatus: {
+        submitted: 15,
+        reviewed: 20,
+        reflected: 10,
+      },
+    },
+  };
 
-    it("correctly calculates single vs. retry ratio", () => {
-      const single = dummyCaseStats.singleAttempts;
-      const retry = dummyCaseStats.retryAttempts;
-      assert.equal(single, 84);
-      assert.equal(retry, 36);
-      assert.equal(single + retry, dummyCaseStats.totalAttempts);
-    });
+  describe("statisticsService.getCaseStatistics (API Client & Route verification)", () => {
+    it("calls exact contract route GET /cases/:caseId/statistics and unwraps SUCCESS envelope", async () => {
+      const originalGet = apiClient.get;
+      try {
+        let requestedUrl = "";
+        apiClient.get = (async (url: string) => {
+          requestedUrl = url;
+          return {
+            data: {
+              status: "SUCCESS",
+              data: sampleBranchingStats,
+            },
+          };
+        }) as any;
 
-    it("handles zero attempts with fallback", () => {
-      const emptyAttempts = 0;
-      const displayValue = emptyAttempts > 0 ? `${emptyAttempts}%` : "—";
-      assert.equal(displayValue, "—");
-    });
-  });
-
-  describe("AC-2: Branch Selection Distribution (BranchStatsChart)", () => {
-    it("verifies node distributions contain valid option percentages summing up to 100%", () => {
-      for (const node of dummyCaseStats.nodeDistributions) {
-        assert.ok(node.totalSelections > 0, "Node must have positive selections");
-        const totalOptionPercentage = node.options.reduce((sum, o) => sum + o.percentage, 0);
-        assert.equal(
-          Math.round(totalOptionPercentage),
-          100,
-          `Option percentages for node ${node.nodeId} must sum to 100%`,
-        );
+        const result = await statisticsService.getCaseStatistics("case-uuid-001");
+        assert.equal(requestedUrl, "/cases/case-uuid-001/statistics");
+        assert.equal(result.caseId, "case-uuid-001");
+        assert.equal(result.learningMode, "BRANCHING_STUDY");
+        assert.ok(result.branching);
+        assert.equal(result.branching?.totalAttempts, 120);
+        assert.equal(result.branching?.completionRate, 80.0);
+        assert.equal(result.branching?.decisionPoints[0].nodeIndex, 0);
+        assert.equal(result.branching?.decisionPoints[0].options[0].optionText, "Tổ chức họp báo trực tiếp ngay trong ngày");
+        assert.equal(result.branching?.outcomes[0].situation, "Xử lý thành công — Lấy lại niềm tin thị trường");
+      } finally {
+        apiClient.get = originalGet;
       }
     });
 
-    it("identifies the focal branch choice with highest percentage", () => {
-      const firstNode = dummyCaseStats.nodeDistributions[0];
-      const maxPercent = Math.max(...firstNode.options.map((o) => o.percentage));
-      const focalOption = firstNode.options.find((o) => o.percentage === maxPercent);
+    it("correctly parses reviewStudy case statistics from GET /cases/:caseId/statistics", async () => {
+      const originalGet = apiClient.get;
+      try {
+        apiClient.get = (async (url: string) => {
+          assert.equal(url, "/cases/case-uuid-002/statistics");
+          return {
+            data: {
+              status: "SUCCESS",
+              data: sampleReviewStudyStats,
+            },
+          };
+        }) as any;
 
-      assert.equal(maxPercent, 60.0);
-      assert.equal(focalOption?.optionId, "opt-1a");
+        const result = await statisticsService.getCaseStatistics("case-uuid-002");
+        assert.equal(result.caseId, "case-uuid-002");
+        assert.equal(result.learningMode, "REVIEW_STUDY");
+        assert.equal(result.branching, null);
+        assert.ok(result.reviewStudy);
+        assert.equal(result.reviewStudy?.totalSubmissions, 45);
+        assert.equal(result.reviewStudy?.flowStatus.submitted, 15);
+        assert.equal(result.reviewStudy?.flowStatus.reviewed, 20);
+        assert.equal(result.reviewStudy?.flowStatus.reflected, 10);
+      } finally {
+        apiClient.get = originalGet;
+      }
     });
 
-    it("correctly handles cases with no branch selections gracefully", () => {
-      const emptyNodes: NodeBranchStat[] = [];
-      assert.equal(emptyNodes.length, 0);
+    it("propagates 404, 403, and 500 errors without swallowing into null", async () => {
+      const originalGet = apiClient.get;
+      try {
+        const errorCodes = [400, 403, 404, 500];
+        for (const code of errorCodes) {
+          apiClient.get = (async () => {
+            const err = new Error(`HTTP Error ${code}`);
+            (err as any).response = { status: code };
+            throw err;
+          }) as any;
+
+          await assert.rejects(
+            async () => {
+              await statisticsService.getCaseStatistics("err-id");
+            },
+            (err: any) => {
+              assert.equal(err.response?.status, code);
+              return true;
+            },
+          );
+        }
+      } finally {
+        apiClient.get = originalGet;
+      }
     });
   });
 
-  describe("AC-3: Single vs. Retry Attempts & Terminal Outcomes", () => {
-    it("computes single and retry attempt percentages accurately", () => {
-      const singlePercent = Math.round(
-        (dummyCaseStats.singleAttempts / dummyCaseStats.totalAttempts) * 100,
-      );
-      const retryPercent = Math.round(
-        (dummyCaseStats.retryAttempts / dummyCaseStats.totalAttempts) * 100,
-      );
+  describe("Pure View Logic & Helpers (statisticsHelpers)", () => {
+    describe("isCaseStatisticsEmpty", () => {
+      it("returns true for null or undefined", () => {
+        assert.equal(isCaseStatisticsEmpty(null), true);
+      });
 
-      assert.equal(singlePercent, 70);
-      assert.equal(retryPercent, 30);
-      assert.equal(singlePercent + retryPercent, 100);
+      it("returns true for branching case when totalAttempts is 0", () => {
+        const emptyBranching = {
+          ...sampleBranchingStats,
+          branching: {
+            ...sampleBranchingStats.branching,
+            totalAttempts: 0,
+            completedAttempts: 0,
+            participants: 0,
+          },
+        };
+        assert.equal(isCaseStatisticsEmpty(emptyBranching), true);
+      });
+
+      it("returns false for branching case when totalAttempts > 0", () => {
+        assert.equal(isCaseStatisticsEmpty(sampleBranchingStats), false);
+      });
+
+      it("returns true for reviewStudy case when totalSubmissions is 0", () => {
+        const emptyReview = {
+          ...sampleReviewStudyStats,
+          reviewStudy: {
+            totalSubmissions: 0,
+            flowStatus: { submitted: 0, reviewed: 0, reflected: 0 },
+          },
+        };
+        assert.equal(isCaseStatisticsEmpty(emptyReview), true);
+      });
+
+      it("returns false for reviewStudy case when totalSubmissions > 0", () => {
+        assert.equal(isCaseStatisticsEmpty(sampleReviewStudyStats), false);
+      });
     });
 
-    it("verifies terminal outcomes distribution reflects completed attempts", () => {
-      const totalOutcomeReach = dummyCaseStats.outcomeDistributions.reduce(
-        (sum, out) => sum + out.count,
-        0,
-      );
-      assert.equal(
-        totalOutcomeReach,
-        dummyCaseStats.completedAttempts,
-        "Total outcome counts must equal completed attempts",
-      );
+    describe("formatPercentage", () => {
+      it("formats valid numbers rounded to whole percent", () => {
+        assert.equal(formatPercentage(80), "80%");
+        assert.equal(formatPercentage(78.4), "78%");
+        assert.equal(formatPercentage(78.6), "79%");
+        assert.equal(formatPercentage(0), "0%");
+        assert.equal(formatPercentage(100), "100%");
+      });
 
-      const totalPercentage = dummyCaseStats.outcomeDistributions.reduce(
-        (sum, out) => sum + out.percentage,
-        0,
-      );
-      assert.equal(Math.round(totalPercentage), 100);
+      it("clamps out of bounds numbers and handles NaN", () => {
+        assert.equal(formatPercentage(-10), "0%");
+        assert.equal(formatPercentage(150), "100%");
+        assert.equal(formatPercentage(Number.NaN), "0%");
+      });
+    });
+
+    describe("truncateSituation", () => {
+      it("keeps short situations as-is", () => {
+        const short = "Quyết định ngắn";
+        assert.equal(truncateSituation(short, 50), "Quyết định ngắn");
+      });
+
+      it("truncates long situations with ellipsis", () => {
+        const long = "Đây là một tình huống rất dài cần phải được cắt ngắn để hiển thị vừa vặn trên thanh tiêu đề";
+        const truncated = truncateSituation(long, 30);
+        assert.ok(truncated.length <= 31);
+        assert.ok(truncated.endsWith("…"));
+      });
+
+      it("handles empty or whitespace strings", () => {
+        assert.equal(truncateSituation(""), "");
+        assert.equal(truncateSituation("   "), "");
+      });
+    });
+
+    describe("getOptionBarColor", () => {
+      it("assigns primary brand color to focal choice", () => {
+        assert.equal(getOptionBarColor(true, 0), "bg-primary");
+        assert.equal(getOptionBarColor(true, 1), "bg-primary");
+      });
+
+      it("assigns layered brand opacities to secondary and tertiary choices", () => {
+        assert.equal(getOptionBarColor(false, 1), "bg-primary/75");
+        assert.equal(getOptionBarColor(false, 2), "bg-primary/50");
+      });
+
+      it("strictly avoids green and red semantic coloring for options", () => {
+        for (let i = 0; i < 5; i++) {
+          const colorFocal = getOptionBarColor(true, i);
+          const colorNormal = getOptionBarColor(false, i);
+          assert.ok(!colorFocal.includes("green") && !colorFocal.includes("red"));
+          assert.ok(!colorNormal.includes("green") && !colorNormal.includes("red"));
+        }
+      });
+    });
+
+    describe("mapStatisticsErrorStatus", () => {
+      it("maps HTTP status codes to appropriate i18n keys", () => {
+        assert.equal(mapStatisticsErrorStatus(400), "g4.stats.errors.notFound");
+        assert.equal(mapStatisticsErrorStatus(404), "g4.stats.errors.notFound");
+        assert.equal(mapStatisticsErrorStatus(403), "g4.stats.errors.forbidden");
+        assert.equal(mapStatisticsErrorStatus(500), "g4.stats.errors.serverError");
+        assert.equal(mapStatisticsErrorStatus(502), "g4.stats.errors.serverError");
+        assert.equal(mapStatisticsErrorStatus(undefined), "g4.stats.errors.network");
+      });
     });
   });
 
-  describe("Pedagogical Guardrails & Integrity", () => {
+  describe("Pedagogical Guardrails & Domain Invariants", () => {
     it("strictly prohibits student ranking, grading, or pass/fail labels in statistics", () => {
       const forbiddenGradingProps = [
         "studentRanking",
@@ -166,21 +289,27 @@ describe("StatisticsPage & BranchStatsChart (FE-022)", () => {
         "gradeDistribution",
         "scores",
         "passFail",
+        "grading",
+        "studentGrade",
       ];
 
       for (const prop of forbiddenGradingProps) {
         assert.equal(
-          (dummyCaseStats as any)[prop],
+          (sampleBranchingStats as any)[prop],
           undefined,
           `Forbidden grading property "${prop}" must not exist on statistics!`,
+        );
+        assert.equal(
+          (sampleBranchingStats.branching as any)[prop],
+          undefined,
+          `Forbidden grading property "${prop}" must not exist on branching stats!`,
         );
       }
     });
 
-    it("enforces read-only aggregation with no mutation methods", () => {
-      // Statistics service provides query methods only
-      assert.ok(true);
+    it("enforces read-only aggregation with no mutation methods in statisticsService", () => {
+      const serviceMethods = Object.keys(statisticsService);
+      assert.deepEqual(serviceMethods, ["getCaseStatistics"]);
     });
   });
 });
-
