@@ -1318,15 +1318,51 @@
       "kpi": {
         "completion": "Completion rate",
         "avgAttempts": "Average attempts",
-        "inProgress": "Currently in a journey"
+        "inProgress": "Currently in a journey",
+        "totalAttempts": "Total attempts",
+        "singleVsRetry": "Single / Retry",
+        "reflectionsSubmitted": "Reflections submitted"
+      },
+      "filters": {
+        "course": "Filter by course",
+        "allCourses": "All courses",
+        "case": "Filter by case",
+        "allCases": "All cases",
+        "selectCase": "— Select a case study —",
+        "branchingOnly": "Branching Study Cases"
       },
       "panels": {
-        "choices": "Choices per situation",
-        "attempts": "Attempts distribution",
-        "outcomes": "Final outcomes",
+        "choices": "Branch selection distribution",
+        "attempts": "Attempts statistics (Single vs. Retry)",
+        "outcomes": "Terminal outcomes distribution",
         "timing": "When students work",
         "progress": "Progress of students who opened a case",
         "popular": "Popular choices per decision point"
+      },
+      "branchChart": {
+        "title": "Branch selection distribution chart",
+        "subtitle": "Frequency and percentage of students choosing options at each decision point",
+        "nodeTitle": "Decision Point: {{title}}",
+        "selections": "{{count}} selections",
+        "percent": "{{percent}}%",
+        "noBranches": "This case has no branch data or is in Review Study mode.",
+        "emptyCase": "No students have traversed branches in this case yet."
+      },
+      "outcomes": {
+        "title": "Terminal outcomes distribution",
+        "subtitle": "Percentage of students reaching each terminal conclusion node",
+        "terminalNode": "Outcome: {{title}}",
+        "reachCount": "{{count}} completions ({{percent}}%)",
+        "emptyOutcomes": "No students have reached a terminal outcome yet."
+      },
+      "attempts": {
+        "title": "Attempts statistics",
+        "subtitle": "Ratio of single-attempt completions versus retry attempts to explore alternative paths",
+        "singleLabel": "Single Attempt",
+        "retryLabel": "Retry Attempt",
+        "singleVsRetry": "Single / Retry Ratio: {{single}} / {{retry}}",
+        "totalLabel": "Total attempts: {{total}}",
+        "emptyAttempts": "No attempts data available yet."
       },
       "openCases": "Open cases",
       "openCasesEmpty": "No case has been published yet.",
@@ -1334,7 +1370,37 @@
       "published": "Published",
       "updatedOn": "Updated on {{date}}",
       "recent": "Recent submissions",
-      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet."
+      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
+      "prompt": {
+        "title": "Select a case study to view learning analytics",
+        "description": "Select a course and a case study from the filters above to track branching data and student cohort behavior."
+      },
+      "emptyCase": {
+        "title": "No attempts yet",
+        "description": "No students have participated in or submitted work for this case yet."
+      },
+      "reviewStudy": {
+        "title": "Review Study analytical progress",
+        "subtitle": "Submission statistics across stages: Submitted, Lecturer reviewed, and Student reflected",
+        "submitted": "Submitted (awaiting review)",
+        "reviewed": "Lecturer reviewed",
+        "reflected": "Student reflected",
+        "totalSubmissions": "Total submissions"
+      },
+      "flow": {
+        "title": "Learning flow status",
+        "subtitle": "Student distribution across learning journey stages",
+        "inProgress": "In progress",
+        "completed": "Journey completed",
+        "reflected": "Reflection completed",
+        "participants": "Participating students"
+      },
+      "errors": {
+        "notFound": "Statistics data for this case was not found.",
+        "forbidden": "You do not have permission to view statistics for this case.",
+        "serverError": "Server error loading statistics. Please try again later.",
+        "network": "Cannot connect to server. Check your connection and try again."
+      }
     },
     "profile": {
       "loadError": "Could not load your profile",
