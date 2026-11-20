@@ -1752,7 +1752,11 @@
   "g6": {
     "noData": {
       "title": "Chưa có dữ liệu",
-      "description": "Mục này hiển thị khi máy chủ cung cấp dữ liệu quản trị."
+      "description": "Mục này hiển thị khi máy chủ cung cấp dữ liệu quản trị.",
+      "apiUnavailable": "Dịch vụ quản trị chưa sẵn sàng trên máy chủ.",
+      "forbidden": "Bạn không có quyền quản trị để thực hiện thao tác này.",
+      "serverError": "Máy chủ gặp sự cố khi xử lý dữ liệu quản trị. Vui lòng thử lại sau.",
+      "networkError": "Không kết nối được máy chủ. Vui lòng kiểm tra mạng và thử lại."
     },
     "dashboard": {
       "attentionTitle": "{{count}} mục cần chú ý",
@@ -1810,19 +1814,173 @@
     },
     "users": {
       "emptyTitle": "Chưa có dữ liệu người dùng",
-      "emptyDescription": "Danh sách tài khoản hiển thị khi máy chủ cung cấp dữ liệu quản trị người dùng."
+      "emptyDescription": "Danh sách tài khoản hiển thị khi máy chủ cung cấp dữ liệu quản trị người dùng.",
+      "loadErrorTitle": "Lỗi tải dữ liệu người dùng",
+      "emptyFilteredTitle": "Không tìm thấy người dùng",
+      "emptyFilteredDescription": "Không có tài khoản người dùng nào khớp với bộ lọc hiện tại.",
+      "loading": "Đang tải danh sách người dùng...",
+      "kpi": {
+        "totalUsers": "Tổng người dùng",
+        "lecturers": "Giảng viên",
+        "students": "Sinh viên",
+        "lockedUsers": "Tài khoản bị khóa"
+      },
+      "searchPlaceholder": "Tìm hoặc email người dùng...",
+      "filterRoleAria": "Lọc theo vai trò",
+      "filterRole": {
+        "all": "Mọi vai trò",
+        "lecturer": "Giảng viên",
+        "student": "Sinh viên",
+        "admin": "Quản trị viên"
+      },
+      "filterStatusAria": "Lọc theo trạng thái",
+      "filterStatus": {
+        "all": "Tất cả trạng thái",
+        "active": "Hoạt động",
+        "locked": "Đã khóa"
+      },
+      "sortAria": "Sắp xếp",
+      "sort": {
+        "newest": "Sắp xếp: Mới tạo",
+        "name": "Sắp xếp: Tên A-Z"
+      },
+      "columns": {
+        "user": "Người dùng",
+        "createdAt": "Ngày tạo",
+        "role": "Vai trò & Khóa học",
+        "attempts": "Lượt làm",
+        "action": "Hành động",
+        "status": "Trạng thái"
+      },
+      "role": {
+        "lecturer": "Giảng viên",
+        "student": "Sinh viên",
+        "admin": "Quản trị viên"
+      },
+      "action": {
+        "lock": "Khóa tài khoản",
+        "unlock": "Mở khóa"
+      },
+      "status": {
+        "active": "Hoạt động",
+        "locked": "Đã khóa"
+      },
+      "pagination": {
+        "showing": "Hiển thị {{shown}} trên {{total}} người dùng",
+        "prev": "Trang trước",
+        "next": "Trang sau"
+      },
+      "dialog": {
+        "lockTitle": "Khóa tài khoản {{name}}?",
+        "unlockTitle": "Mở khóa tài khoản {{name}}?",
+        "lockDescription": "Người dùng sẽ không đăng nhập được cho tới khi được mở khóa. Lượt làm, bài nộp và suy ngẫm vẫn được giữ nguyên.",
+        "unlockDescription": "Người dùng sẽ có thể đăng nhập lại và tiếp tục truy cập các học phần bình thường.",
+        "lockConfirm": "Khóa tài khoản",
+        "unlockConfirm": "Mở khóa",
+        "cancel": "Hủy bỏ"
+      },
+      "toast": {
+        "lockSuccess": "Đã khóa tài khoản {{name}}",
+        "unlockSuccess": "Đã mở khóa tài khoản {{name}}",
+        "actionError": "Có lỗi xảy ra khi thay đổi trạng thái tài khoản."
+      }
     },
     "courses": {
       "title": "Tất cả khóa học",
       "emptyTitle": "Chưa có dữ liệu khóa học",
-      "emptyDescription": "Khóa học toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị khóa học."
+      "emptyDescription": "Khóa học toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị khóa học.",
+      "header": "Khóa học toàn hệ thống",
+      "loadErrorTitle": "Lỗi tải danh sách khóa học",
+      "emptyFilteredTitle": "Không có khóa học nào",
+      "emptyFilteredDescription": "Không tìm thấy khóa học nào phù hợp với điều kiện tìm kiếm.",
+      "loading": "Đang tải danh sách khóa học...",
+      "searchPlaceholder": "Tìm khóa học...",
+      "filterStatusAria": "Lọc theo trạng thái",
+      "filterStatus": {
+        "all": "Tất cả trạng thái",
+        "active": "Đang mở",
+        "archived": "Đã lưu trữ"
+      },
+      "status": {
+        "teaching": "Đang dạy",
+        "archived": "Đã lưu trữ"
+      },
+      "stats": {
+        "materials": "{{ready}}/{{total}} tài liệu sẵn sàng",
+        "cases": "{{count}} case",
+        "indexingError": "{{count}} tệp lỗi lập chỉ mục"
+      },
+      "pagination": {
+        "showing": "Hiển thị {{shown}} trên {{total}} khóa học",
+        "prev": "Trang trước",
+        "next": "Trang sau"
+      },
+      "detail": {
+        "title": "Chi tiết khóa học",
+        "viewDetail": "Xem chi tiết",
+        "close": "Đóng chi tiết",
+        "attempts": "Lượt làm bài",
+        "materials": "Tài liệu",
+        "cases": "Case Study",
+        "about": "Về khóa học",
+        "infoTitle": "Thông tin khóa học",
+        "courseCode": "Mã học phần:",
+        "statusLabel": "Trạng thái:",
+        "statusOpen": "Đang mở cho sinh viên",
+        "statusArchived": "Đã lưu trữ",
+        "lecturerLabel": "Giảng viên phụ trách:",
+        "navTitle": "Đi tới",
+        "navMaterials": "Tài liệu môn học",
+        "navMaterialsSub": "{{count}} tệp - {{ready}} sẵn sàng{{errorPart}}",
+        "navMaterialsError": ", {{count}} lỗi",
+        "navCases": "Case Study",
+        "navCasesSub": "{{count}} case"
+      }
     },
     "cases": {
       "byStatus": "Case Study theo trạng thái",
       "byMode": "Chế độ học theo case",
       "library": "Kho Case Study",
       "emptyTitle": "Chưa có dữ liệu Case Study",
-      "emptyDescription": "Case Study toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị Case Study."
+      "emptyDescription": "Case Study toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị Case Study.",
+      "header": "Case Study toàn hệ thống",
+      "loadErrorTitle": "Lỗi tải Case Study",
+      "emptyFilteredTitle": "Không tìm thấy Case Study",
+      "emptyFilteredDescription": "Không có tình huống nào khớp với bộ lọc hiện tại.",
+      "loading": "Đang tải danh sách Case...",
+      "totalSuffix": "Case Study",
+      "status": {
+        "draft": "Bản nháp",
+        "reviewed": "Đã rà soát",
+        "approved": "Đã phê duyệt",
+        "published": "Đã xuất bản"
+      },
+      "analytics": {
+        "modeBranching": "Branching",
+        "modeReview": "Review",
+        "recentTitle": "Case cập nhật gần đây"
+      },
+      "searchPlaceholder": "Tìm case...",
+      "tabs": {
+        "all": "Tất cả {{total}}",
+        "draft": "Bản nháp {{count}}",
+        "reviewed": "Đã rà soát {{count}}",
+        "published": "Đã xuất bản {{count}}"
+      },
+      "card": {
+        "aiDraft": "AI Draft",
+        "branchingMode": "Branching Study",
+        "reviewMode": "Review Study",
+        "nodesCount": "{{count}} nút",
+        "noTree": "Không dùng cây",
+        "updatedAt": "Cập nhật {{date}}",
+        "viewAction": "Xem"
+      },
+      "pagination": {
+        "showing": "Hiển thị {{shown}} trên {{total}} Case Study",
+        "prev": "Trang trước",
+        "next": "Trang sau"
+      }
     },
     "aiService": {
       "recent": {
@@ -1838,11 +1996,41 @@
         "providerLabel": "Nhà cung cấp AI",
         "providerValue": "Cố định trong cấu hình máy chủ",
         "modelLabel": "Mô hình",
-        "modelValue": "Do nhóm kỹ thuật thiết lập"
+        "modelValue": "Do nhóm kỹ thuật thiết lập",
+        "lastUpdatedLabel": "Cập nhật lần cuối"
       },
       "change": {
         "title": "Thay đổi cấu hình",
         "body": "Nhà cung cấp và mô hình AI được cố định trong tệp môi trường của máy chủ (OPD-013). Màn này chỉ để theo dõi, không có thao tác đổi cấu hình."
+      },
+      "loadErrorTitle": "Lỗi dịch vụ AI",
+      "loading": "Đang tải thông tin dịch vụ AI...",
+      "kpi": {
+        "totalGenerated": "Lượt sinh case",
+        "totalGeneratedDesc": "Tổng số bản nháp AI đã sinh",
+        "avgDuration": "Thời gian sinh TB",
+        "avgDurationValue": "{{seconds}} giây",
+        "avgDurationDesc": "Từ lúc gửi yêu cầu đến khi có bản nháp",
+        "readyMaterials": "Tài liệu sẵn sàng",
+        "readyMaterialsDesc": "Đã lập chỉ mục, AI có thể trích dẫn"
+      },
+      "gen": {
+        "duration": "Hoàn tất sau {{seconds}} giây",
+        "decisions": " · {{count}} điểm quyết định",
+        "materialsCited": " · trích từ {{count}} tài liệu"
+      },
+      "status": {
+        "completed": "Hoàn tất",
+        "pending": "Đang chờ",
+        "processing": "Đang xử lý",
+        "failed": "Thất bại",
+        "active": "Hoạt động"
+      },
+      "idx": {
+        "completed": "{{count}} đoạn trích, sẵn sàng cho AI trích dẫn",
+        "pending": "Đang chờ trong hàng đợi xử lý",
+        "processing": "Đang tách đoạn và tạo vector ({{percent}}%)",
+        "failedFallback": "Không đọc được nội dung tệp"
       }
     },
     "rubric": {
@@ -1854,7 +2042,69 @@
     },
     "logs": {
       "emptyTitle": "Chưa có dữ liệu nhật ký",
-      "emptyDescription": "Nhật ký hệ thống hiển thị khi máy chủ cung cấp dữ liệu nhật ký hoạt động."
+      "emptyDescription": "Nhật ký hệ thống hiển thị khi máy chủ cung cấp dữ liệu nhật ký hoạt động.",
+      "loadErrorTitle": "Lỗi tải nhật ký hệ thống",
+      "emptyFilteredTitle": "Không tìm thấy sự kiện nhật ký",
+      "emptyFilteredDescription": "Không có bản ghi nhật ký nào khớp với điều kiện lọc.",
+      "loading": "Đang tải nhật ký...",
+      "kpi": {
+        "eventsToday": "Sự kiện hôm nay",
+        "loginCount": "Lượt đăng nhập",
+        "aiGenerationsCount": "Lượt sinh case AI",
+        "errorsCount": "Lỗi cần xem"
+      },
+      "searchPlaceholder": "Tìm trong nhật ký...",
+      "filterEventAria": "Lọc theo loại sự kiện",
+      "filterEvent": {
+        "all": "Mọi loại sự kiện",
+        "login": "Đăng nhập",
+        "aiGen": "Sinh case",
+        "submission": "Nộp bài",
+        "material": "Tài liệu"
+      },
+      "filterTimeAria": "Lọc theo thời gian",
+      "filterTime": {
+        "today": "Hôm nay",
+        "sevenDays": "7 ngày qua",
+        "thirtyDays": "30 ngày qua",
+        "all": "Tất cả thời gian"
+      },
+      "sortAria": "Sắp xếp",
+      "sort": {
+        "newest": "Sắp xếp: Mới nhất",
+        "oldest": "Sắp xếp: Cũ nhất"
+      },
+      "columns": {
+        "actor": "Người thực hiện",
+        "time": "Thời gian",
+        "event": "Sự kiện",
+        "code": "Mã",
+        "detail": "Chi tiết",
+        "result": "Kết quả"
+      },
+      "action": {
+        "viewDetail": "Xem chi tiết"
+      },
+      "status": {
+        "success": "Thành công",
+        "warning": "Cảnh báo",
+        "error": "Lỗi"
+      },
+      "pagination": {
+        "showing": "Hiển thị {{shown}} trên {{total}} sự kiện",
+        "prev": "Trang trước",
+        "next": "Trang sau"
+      },
+      "dialog": {
+        "title": "Chi tiết sự kiện {{code}}",
+        "close": "Đóng",
+        "actor": "Người thực hiện:",
+        "time": "Thời gian:",
+        "action": "Hành động:",
+        "target": "Đối tượng liên quan:",
+        "technicalDetails": "Chi tiết kỹ thuật:",
+        "noDetails": "Không có chi tiết bổ sung."
+      }
     },
     "settings": {
       "platform": "Thông tin nền tảng",
@@ -1865,6 +2115,42 @@
         "provider": "Nhà cung cấp: cố định trong cấu hình máy chủ",
         "monitor": "Theo dõi trạng thái tại mục Dịch vụ AI",
         "note": "Cấu hình AI không chỉnh trên giao diện (OPD-013)."
+      },
+      "breadcrumb": "Quản trị hệ thống > Cài đặt",
+      "header": "Cài đặt hệ thống",
+      "loadErrorTitle": "Lỗi cài đặt hệ thống",
+      "loading": "Đang tải cài đặt hệ thống...",
+      "toast": {
+        "saveSuccess": "Đã lưu và áp dụng cài đặt hệ thống thành công.",
+        "saveError": "Lỗi khi lưu cài đặt hệ thống."
+      },
+      "form": {
+        "platformName": "Tên nền tảng *",
+        "operatorUnit": "Đơn vị vận hành",
+        "loginNoticeTitle": "Thông báo trên trang đăng nhập",
+        "loginNoticeLabel": "Nội dung thông báo (hiển thị công khai)",
+        "loginNoticeHelper": "Thông báo sẽ hiển thị nổi bật tại trang đăng nhập cho mọi người dùng.",
+        "supportEmailTitle": "Email hỗ trợ *",
+        "supportEmailLabel": "Địa chỉ email liên hệ hỗ trợ kỹ thuật"
+      },
+      "limitLabels": {
+        "fileFormats": "Định dạng tài liệu:",
+        "maxFileSize": "Dung lượng tối đa:",
+        "registration": "Đăng ký tài khoản:",
+        "version": "Phiên bản:",
+        "timezone": "Múi giờ:"
+      },
+      "actions": {
+        "cancel": "Hủy thay đổi",
+        "note": "Thay đổi áp dụng cho toàn hệ thống sau khi lưu.",
+        "save": "Lưu cài đặt",
+        "publish": "Xuất bản"
+      },
+      "dialog": {
+        "title": "Lưu thay đổi cài đặt hệ thống?",
+        "description": "Các thông tin cập nhật sẽ được lưu và áp dụng cho toàn bộ người dùng trong nền tảng EduBranch AI.",
+        "confirm": "Lưu & Áp dụng",
+        "cancel": "Hủy bỏ"
       }
     }
   },

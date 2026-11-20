@@ -8,6 +8,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
   BookOpen,
   ChevronRight,
@@ -23,13 +24,17 @@ import {
 } from "lucide-react";
 import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
 import { adminService, type AdminCourseItem } from "@/services/adminService";
+import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 import { PATHS } from "@/routes/paths";
 
 export function AdminCoursesPage() {
+  const { t } = useTranslation();
+
   const [courses, setCourses] = useState<AdminCourseItem[]>([]);
-  const [totalCount, setTotalCount] = useState(8);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   // Filters & Selection
   const [search, setSearch] = useState("");
@@ -38,31 +43,42 @@ export function AdminCoursesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
-  const loadData = useCallback(async () => {
+  const reload = useCallback(() => {
     setLoading(true);
     setLoadError(null);
-    try {
-      const res = await adminService.getCourses({
+    setReloadToken((k) => k + 1);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    adminService
+      .getCourses({
         search: search.trim() || undefined,
         status: statusFilter !== "ALL" ? statusFilter : undefined,
         page: currentPage,
         size: pageSize,
+      })
+      .then((res) => {
+        if (cancelled) return;
+        setCourses(res.courses ?? []);
+        setTotalCount(res.total ?? 0);
+        setSelectedCourse((prev) => {
+          if (prev && res.courses?.some((c) => c.id === prev.id)) {
+            return res.courses.find((c) => c.id === prev.id) ?? null;
+          }
+          return res.courses?.[0] ?? null;
+        });
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(mapAdminHttpErrorToKey(err));
+        setLoading(false);
       });
-      setCourses(res.courses);
-      setTotalCount(res.total);
-      if (res.courses.length > 0 && !selectedCourse) {
-        setSelectedCourse(res.courses[0]);
-      }
-    } catch {
-      setLoadError("Không tải được danh sách khóa học.");
-    } finally {
-      setLoading(false);
-    }
-  }, [search, statusFilter, currentPage, selectedCourse]);
-
-  useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    return () => {
+      cancelled = true;
+    };
+  }, [search, statusFilter, currentPage, reloadToken]);
 
   // Client-side filtering fallback
   const filteredCourses = useMemo(() => {
@@ -89,7 +105,7 @@ export function AdminCoursesPage() {
       {/* Top Filter Bar (Figma 10.5) */}
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-eb-xl bg-surface p-4 shadow-eb-card">
         <h2 className="text-[16px] leading-6 font-semibold text-ink">
-          Khóa học toàn hệ thống
+          {t("g6.courses.header")}
         </h2>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -98,7 +114,7 @@ export function AdminCoursesPage() {
             <Search size={16} className="absolute left-3 text-ink-muted" />
             <input
               type="text"
-              placeholder="Tìm khóa học..."
+              placeholder={t("g6.courses.searchPlaceholder")}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full rounded-eb-md border border-line bg-canvas py-1.5 pr-3 pl-9 text-[14px] text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none"
@@ -109,12 +125,12 @@ export function AdminCoursesPage() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            aria-label="Lọc theo trạng thái"
+            aria-label={t("g6.courses.filterStatusAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-1.5 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="ALL">Tất cả trạng thái</option>
-            <option value="ACTIVE">Đang mở</option>
-            <option value="ARCHIVED">Đã lưu trữ</option>
+            <option value="ALL">{t("g6.courses.filterStatus.all")}</option>
+            <option value="ACTIVE">{t("g6.courses.filterStatus.active")}</option>
+            <option value="ARCHIVED">{t("g6.courses.filterStatus.archived")}</option>
           </select>
         </div>
       </div>
@@ -124,21 +140,21 @@ export function AdminCoursesPage() {
         {/* Left Column: Course Cards List */}
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           {loading ? (
-            <SkeletonRegion label="Đang tải danh sách khóa học..." className="flex flex-col gap-3">
+            <SkeletonRegion label={t("g6.courses.loading")} className="flex flex-col gap-3">
               {Array.from({ length: 5 }).map((_, i) => (
                 <div key={i} className="h-28 w-full rounded-eb-xl bg-surface p-4 shadow-eb-card" />
               ))}
             </SkeletonRegion>
           ) : loadError ? (
             <div className="rounded-eb-xl bg-surface p-6 shadow-eb-card">
-              <ErrorState title="Lỗi tải danh sách khóa học" description={loadError} onRetry={loadData} />
+              <ErrorState title={t("g6.courses.loadErrorTitle")} description={t(loadError)} onRetry={reload} />
             </div>
           ) : filteredCourses.length === 0 ? (
             <div className="rounded-eb-xl bg-surface p-8 shadow-eb-card">
               <EmptyState
                 icon={BookOpen}
-                title="Không có khóa học nào"
-                description="Không tìm thấy khóa học nào phù hợp với điều kiện tìm kiếm."
+                title={t("g6.courses.emptyFilteredTitle")}
+                description={t("g6.courses.emptyFilteredDescription")}
               />
             </div>
           ) : (
@@ -161,7 +177,7 @@ export function AdminCoursesPage() {
                     <div className="flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] font-medium text-success-text">
                         <span className="size-1.5 rounded-full bg-success" />
-                        Đang dạy
+                        {c.status === "ARCHIVED" ? t("g6.courses.status.archived") : t("g6.courses.status.teaching")}
                       </span>
                       <span className="rounded bg-canvas px-2 py-0.5 text-[12px] font-semibold text-ink-secondary">
                         {c.courseCode}
@@ -187,13 +203,16 @@ export function AdminCoursesPage() {
                     <div className="flex flex-wrap items-center justify-between border-t border-line/60 pt-2.5 text-[12px] text-ink-secondary">
                       <div className="flex items-center gap-4">
                         <span>
-                          {c.materialsReady}/{c.materialsCount} tài liệu sẵn sàng
+                          {t("g6.courses.stats.materials", {
+                            ready: c.materialsReady,
+                            total: c.materialsCount,
+                          })}
                         </span>
-                        <span>{c.casesCount} case</span>
+                        <span>{t("g6.courses.stats.cases", { count: c.casesCount })}</span>
                       </div>
                       {c.errorCount && c.errorCount > 0 ? (
                         <span className="font-medium text-error-text">
-                          {c.errorCount} tệp lỗi lập chỉ mục
+                          {t("g6.courses.stats.indexingError", { count: c.errorCount })}
                         </span>
                       ) : null}
                     </div>
@@ -204,7 +223,10 @@ export function AdminCoursesPage() {
               {/* Pagination */}
               <div className="flex items-center justify-between rounded-eb-xl bg-surface px-4 py-3 text-[13px] text-ink-secondary shadow-eb-card">
                 <span>
-                  Hiển thị {filteredCourses.length} trên {totalCount} khóa học
+                  {t("g6.courses.pagination.showing", {
+                    shown: filteredCourses.length,
+                    total: totalCount,
+                  })}
                 </span>
                 <div className="flex items-center gap-1">
                   <button
@@ -212,7 +234,7 @@ export function AdminCoursesPage() {
                     disabled={currentPage <= 1}
                     onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
-                    aria-label="Trang trước"
+                    aria-label={t("g6.courses.pagination.prev")}
                   >
                     &lt;
                   </button>
@@ -224,7 +246,7 @@ export function AdminCoursesPage() {
                     disabled={filteredCourses.length < pageSize}
                     onClick={() => setCurrentPage((p) => p + 1)}
                     className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
-                    aria-label="Trang sau"
+                    aria-label={t("g6.courses.pagination.next")}
                   >
                     &gt;
                   </button>
@@ -239,19 +261,19 @@ export function AdminCoursesPage() {
           <div className="w-full shrink-0 flex-col gap-4 rounded-eb-xl bg-surface p-5 shadow-eb-card lg:w-[380px]">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-line pb-3">
-              <h3 className="text-[16px] font-semibold text-ink">Chi tiết khóa học</h3>
+              <h3 className="text-[16px] font-semibold text-ink">{t("g6.courses.detail.title")}</h3>
               <div className="flex items-center gap-2">
                 <Link
                   to={PATHS.ADMIN.CASES}
                   className="text-[13px] font-medium text-link hover:underline"
                 >
-                  Xem chi tiết
+                  {t("g6.courses.detail.viewDetail")}
                 </Link>
                 <button
                   type="button"
                   onClick={() => setSelectedCourse(null)}
                   className="rounded p-1 text-ink-muted hover:bg-canvas hover:text-ink"
-                  aria-label="Đóng chi tiết"
+                  aria-label={t("g6.courses.detail.close")}
                 >
                   <X size={16} />
                 </button>
@@ -279,7 +301,7 @@ export function AdminCoursesPage() {
               <div className="mt-1">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] font-medium text-success-text">
                   <span className="size-1.5 rounded-full bg-success" />
-                  Đang dạy
+                  {selectedCourse.status === "ARCHIVED" ? t("g6.courses.status.archived") : t("g6.courses.status.teaching")}
                 </span>
               </div>
             </div>
@@ -287,19 +309,19 @@ export function AdminCoursesPage() {
             {/* 3 Metric Tiles (Figma 10.5) */}
             <div className="mt-4 grid grid-cols-3 gap-2 rounded-eb-lg bg-canvas p-3 text-center">
               <div className="flex flex-col">
-                <span className="text-[11px] text-ink-secondary">Lượt làm bài</span>
+                <span className="text-[11px] text-ink-secondary">{t("g6.courses.detail.attempts")}</span>
                 <span className="text-[16px] font-bold text-ink">
-                  {selectedCourse.attemptsCount ?? 58}
+                  {selectedCourse.attemptsCount ?? 0}
                 </span>
               </div>
               <div className="flex flex-col border-x border-line/60">
-                <span className="text-[11px] text-ink-secondary">Tài liệu</span>
+                <span className="text-[11px] text-ink-secondary">{t("g6.courses.detail.materials")}</span>
                 <span className="text-[16px] font-bold text-ink">
                   {selectedCourse.materialsCount}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[11px] text-ink-secondary">Case Study</span>
+                <span className="text-[11px] text-ink-secondary">{t("g6.courses.detail.cases")}</span>
                 <span className="text-[16px] font-bold text-ink">
                   {selectedCourse.casesCount}
                 </span>
@@ -309,7 +331,7 @@ export function AdminCoursesPage() {
             {/* Section: Về khóa học */}
             {selectedCourse.description && (
               <div className="mt-4 flex flex-col gap-1.5">
-                <h5 className="text-[13px] font-semibold text-ink">Về khóa học</h5>
+                <h5 className="text-[13px] font-semibold text-ink">{t("g6.courses.detail.about")}</h5>
                 <p className="text-[13px] leading-5 text-ink-secondary">
                   {selectedCourse.description}
                 </p>
@@ -318,18 +340,20 @@ export function AdminCoursesPage() {
 
             {/* Section: Thông tin khóa học */}
             <div className="mt-4 flex flex-col gap-2 border-t border-line/60 pt-3 text-[13px]">
-              <h5 className="font-semibold text-ink">Thông tin khóa học</h5>
+              <h5 className="font-semibold text-ink">{t("g6.courses.detail.infoTitle")}</h5>
               <div className="flex flex-col gap-1.5 text-ink-secondary">
                 <div className="flex items-center gap-2">
-                  <span className="text-ink-muted">Mã học phần:</span>
+                  <span className="text-ink-muted">{t("g6.courses.detail.courseCode")}</span>
                   <span className="font-medium text-ink">{selectedCourse.courseCode}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-ink-muted">Trạng thái:</span>
-                  <span className="font-medium text-ink">Đang mở cho sinh viên</span>
+                  <span className="text-ink-muted">{t("g6.courses.detail.statusLabel")}</span>
+                  <span className="font-medium text-ink">
+                    {selectedCourse.status === "ARCHIVED" ? t("g6.courses.detail.statusArchived") : t("g6.courses.detail.statusOpen")}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-ink-muted">Giảng viên phụ trách:</span>
+                  <span className="text-ink-muted">{t("g6.courses.detail.lecturerLabel")}</span>
                   <span className="font-medium text-ink">{selectedCourse.lecturerName}</span>
                 </div>
               </div>
@@ -337,7 +361,7 @@ export function AdminCoursesPage() {
 
             {/* Section: Đi tới */}
             <div className="mt-4 flex flex-col gap-2 border-t border-line/60 pt-3 text-[13px]">
-              <h5 className="font-semibold text-ink">Đi tới</h5>
+              <h5 className="font-semibold text-ink">{t("g6.courses.detail.navTitle")}</h5>
               <div className="flex flex-col gap-2">
                 <Link
                   to={PATHS.ADMIN.CASES}
@@ -346,10 +370,15 @@ export function AdminCoursesPage() {
                   <div className="flex items-center gap-3">
                     <FileText size={18} className="text-primary" />
                     <div className="flex flex-col">
-                      <span className="font-medium text-ink">Tài liệu môn học</span>
+                      <span className="font-medium text-ink">{t("g6.courses.detail.navMaterials")}</span>
                       <span className="text-[11px] text-ink-secondary">
-                        {selectedCourse.materialsCount} tệp - {selectedCourse.materialsReady} sẵn sàng
-                        {selectedCourse.errorCount ? `, ${selectedCourse.errorCount} lỗi` : ""}
+                        {t("g6.courses.detail.navMaterialsSub", {
+                          count: selectedCourse.materialsCount,
+                          ready: selectedCourse.materialsReady,
+                          errorPart: selectedCourse.errorCount
+                            ? t("g6.courses.detail.navMaterialsError", { count: selectedCourse.errorCount })
+                            : "",
+                        })}
                       </span>
                     </div>
                   </div>
@@ -363,9 +392,9 @@ export function AdminCoursesPage() {
                   <div className="flex items-center gap-3">
                     <GitBranch size={18} className="text-primary" />
                     <div className="flex flex-col">
-                      <span className="font-medium text-ink">Case Study</span>
+                      <span className="font-medium text-ink">{t("g6.courses.detail.navCases")}</span>
                       <span className="text-[11px] text-ink-secondary">
-                        {selectedCourse.casesCount} case
+                        {t("g6.courses.detail.navCasesSub", { count: selectedCourse.casesCount })}
                       </span>
                     </div>
                   </div>

@@ -20,6 +20,7 @@ import { MetricCard } from "@/components/ds";
 import { AdminPanel } from "@/pages/admin/components/AdminPanel";
 import { ErrorState, SkeletonRegion } from "@/components/feedback";
 import { adminService, type AdminAiServiceData } from "@/services/adminService";
+import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
 export function AdminAiConfigPage() {
   const { t } = useTranslation();
@@ -27,28 +28,37 @@ export function AdminAiConfigPage() {
   const [aiData, setAiData] = useState<AdminAiServiceData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
-  const loadData = useCallback(async () => {
+  const reload = useCallback(() => {
     setLoading(true);
     setLoadError(null);
-    try {
-      const data = await adminService.getAiServiceData();
-      setAiData(data);
-    } catch {
-      setLoadError("Không tải được dữ liệu dịch vụ AI.");
-    } finally {
-      setLoading(false);
-    }
+    setReloadToken((k) => k + 1);
   }, []);
 
   useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    let cancelled = false;
+    adminService
+      .getAiServiceData()
+      .then((data) => {
+        if (cancelled) return;
+        setAiData(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(mapAdminHttpErrorToKey(err));
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadToken]);
 
-  if (loading || !aiData) {
+  if (loading && !aiData) {
     return (
       <div className="flex flex-1 flex-col gap-5 pb-6">
-        <SkeletonRegion label="Đang tải thông tin dịch vụ AI..." className="flex flex-col gap-5">
+        <SkeletonRegion label={t("g6.aiService.loading")} className="flex flex-col gap-5">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="h-24 rounded-eb-xl bg-surface shadow-eb-card" />
             <div className="h-24 rounded-eb-xl bg-surface shadow-eb-card" />
@@ -60,10 +70,14 @@ export function AdminAiConfigPage() {
     );
   }
 
-  if (loadError) {
+  if (loadError || !aiData) {
     return (
       <div className="rounded-eb-xl bg-surface p-6 shadow-eb-card">
-        <ErrorState title="Lỗi dịch vụ AI" description={loadError} onRetry={loadData} />
+        <ErrorState
+          title={t("g6.aiService.loadErrorTitle")}
+          description={t(loadError || "g6.noData.apiUnavailable")}
+          onRetry={reload}
+        />
       </div>
     );
   }
@@ -74,36 +88,36 @@ export function AdminAiConfigPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <MetricCard
           icon={Cpu}
-          label="Lượt sinh case"
+          label={t("g6.aiService.kpi.totalGenerated")}
           value={
             <span className="flex flex-col">
               <span>{aiData.metrics.totalGenerated}</span>
               <span className="mt-1 text-[12px] font-normal leading-4 text-ink-muted">
-                Tổng số bản nháp AI đã sinh
+                {t("g6.aiService.kpi.totalGeneratedDesc")}
               </span>
             </span>
           }
         />
         <MetricCard
           icon={Clock}
-          label="Thời gian sinh TB"
+          label={t("g6.aiService.kpi.avgDuration")}
           value={
             <span className="flex flex-col">
-              <span>{`${aiData.metrics.avgDurationSeconds} giây`}</span>
+              <span>{t("g6.aiService.kpi.avgDurationValue", { seconds: aiData.metrics.avgDurationSeconds })}</span>
               <span className="mt-1 text-[12px] font-normal leading-4 text-ink-muted">
-                Từ lúc gửi yêu cầu đến khi có bản nháp
+                {t("g6.aiService.kpi.avgDurationDesc")}
               </span>
             </span>
           }
         />
         <MetricCard
           icon={FileCheck2}
-          label="Tài liệu sẵn sàng"
+          label={t("g6.aiService.kpi.readyMaterials")}
           value={
             <span className="flex flex-col">
               <span>{aiData.metrics.readyMaterials}</span>
               <span className="mt-1 text-[12px] font-normal leading-4 text-ink-muted">
-                Đã lập chỉ mục, AI có thể trích dẫn
+                {t("g6.aiService.kpi.readyMaterialsDesc")}
               </span>
             </span>
           }
@@ -116,8 +130,8 @@ export function AdminAiConfigPage() {
         <div className="flex w-full min-w-0 flex-1 flex-col gap-5 lg:w-[777px]">
           {/* Panel 1: Lần sinh case gần đây */}
           <AdminPanel
-            title="Lần sinh case gần đây"
-            subtitle="Mỗi lần sinh tạo một bản nháp cho giảng viên rà soát"
+            title={t("g6.aiService.recent.title")}
+            subtitle={t("g6.aiService.recent.subtitle")}
           >
             <div className="flex flex-col gap-3">
               {aiData.recentGenerations.map((gen) => (
@@ -137,9 +151,9 @@ export function AdminAiConfigPage() {
                         {gen.courseCode} · {gen.lecturerName} · {gen.createdAt}
                       </p>
                       <p className="text-[11px] text-ink-muted">
-                        Hoàn tất sau {gen.durationSeconds} giây
-                        {gen.decisionsCount ? ` · ${gen.decisionsCount} điểm quyết định` : ""}
-                        {gen.materialsCitedCount ? ` · trích từ ${gen.materialsCitedCount} tài liệu` : ""}
+                        {t("g6.aiService.gen.duration", { seconds: gen.durationSeconds })}
+                        {gen.decisionsCount ? t("g6.aiService.gen.decisions", { count: gen.decisionsCount }) : ""}
+                        {gen.materialsCitedCount ? t("g6.aiService.gen.materialsCited", { count: gen.materialsCitedCount }) : ""}
                         {gen.note ? ` · ${gen.note}` : ""}
                       </p>
                     </div>
@@ -147,7 +161,7 @@ export function AdminAiConfigPage() {
 
                   <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] font-medium text-success-text">
                     <span className="size-1.5 rounded-full bg-success" />
-                    Hoàn tất
+                    {t("g6.aiService.status.completed")}
                   </span>
                 </div>
               ))}
@@ -156,15 +170,14 @@ export function AdminAiConfigPage() {
 
           {/* Panel 2: Trạng thái lập chỉ mục tài liệu */}
           <AdminPanel
-            title="Trạng thái lập chỉ mục tài liệu"
-            subtitle="Tài liệu được tách đoạn và lập chỉ mục để AI trích dẫn khi sinh case"
+            title={t("g6.aiService.indexing.title")}
+            subtitle={t("g6.aiService.indexing.subtitle")}
           >
             <div className="flex flex-col gap-3">
               {aiData.indexingStatuses.map((idxItem) => {
                 const isCompleted = idxItem.status === "COMPLETED";
                 const isPending = idxItem.status === "PENDING";
                 const isProcessing = idxItem.status === "PROCESSING";
-                const isFailed = idxItem.status === "FAILED";
 
                 return (
                   <div
@@ -180,7 +193,13 @@ export function AdminAiConfigPage() {
                           {idxItem.filename}
                         </span>
                         <p className="text-[12px] text-ink-secondary">
-                          {idxItem.courseCode} · {isCompleted ? `${idxItem.chunksCount ?? 112} đoạn trích, sẵn sàng cho AI trích dẫn` : isPending ? "Đang chờ trong hàng đợi xử lý" : isProcessing ? `Đang tách đoạn và tạo vector (${idxItem.progressPercent ?? 50}%)` : idxItem.errorMessage || "Không đọc được nội dung tệp"}
+                          {idxItem.courseCode} · {isCompleted
+                            ? t("g6.aiService.idx.completed", { count: idxItem.chunksCount ?? 112 })
+                            : isPending
+                            ? t("g6.aiService.idx.pending")
+                            : isProcessing
+                            ? t("g6.aiService.idx.processing", { percent: idxItem.progressPercent ?? 50 })
+                            : idxItem.errorMessage || t("g6.aiService.idx.failedFallback")}
                         </p>
                       </div>
                     </div>
@@ -207,7 +226,13 @@ export function AdminAiConfigPage() {
                             : "bg-error"
                         }`}
                       />
-                      {isCompleted ? "Hoàn tất" : isPending ? "Đang chờ" : isProcessing ? "Đang xử lý" : "Thất bại"}
+                      {isCompleted
+                        ? t("g6.aiService.status.completed")
+                        : isPending
+                        ? t("g6.aiService.status.pending")
+                        : isProcessing
+                        ? t("g6.aiService.status.processing")
+                        : t("g6.aiService.status.failed")}
                     </span>
                   </div>
                 );
@@ -219,33 +244,33 @@ export function AdminAiConfigPage() {
         {/* Right Column: Configuration Info & Notice */}
         <div className="flex w-full shrink-0 flex-col gap-5 lg:w-[379px]">
           {/* Card 1: Cấu hình hiện tại */}
-          <AdminPanel title="Cấu hình hiện tại">
+          <AdminPanel title={t("g6.aiService.config.title")}>
             <div className="flex flex-col gap-4 text-[13px]">
               <div className="flex flex-col gap-1">
-                <span className="text-ink-secondary">Nhà cung cấp AI</span>
-                <span className="font-semibold text-ink">Cố định trong cấu hình máy chủ</span>
+                <span className="text-ink-secondary">{t("g6.aiService.config.providerLabel")}</span>
+                <span className="font-semibold text-ink">{t("g6.aiService.config.providerValue")}</span>
               </div>
               <div className="flex flex-col gap-1 border-t border-line/60 pt-3">
-                <span className="text-ink-secondary">Mô hình</span>
-                <span className="font-semibold text-ink">Do nhóm kỹ thuật thiết lập</span>
+                <span className="text-ink-secondary">{t("g6.aiService.config.modelLabel")}</span>
+                <span className="font-semibold text-ink">{t("g6.aiService.config.modelValue")}</span>
               </div>
               <div className="flex flex-col gap-1 border-t border-line/60 pt-3">
-                <span className="text-ink-secondary">Cập nhật lần cuối</span>
-                <span className="font-medium text-ink">01/09/2026</span>
+                <span className="text-ink-secondary">{t("g6.aiService.config.lastUpdatedLabel")}</span>
+                <span className="font-medium text-ink">{aiData.config.lastUpdated}</span>
               </div>
               <div className="border-t border-line/60 pt-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] font-medium text-success-text">
                   <span className="size-1.5 rounded-full bg-success" />
-                  Hoạt động
+                  {t("g6.aiService.status.active")}
                 </span>
               </div>
             </div>
           </AdminPanel>
 
           {/* Card 2: Thay đổi cấu hình (OPD-013) */}
-          <AdminPanel title="Thay đổi cấu hình">
+          <AdminPanel title={t("g6.aiService.change.title")}>
             <p className="text-[13px] leading-5 text-ink-secondary">
-              Nhà cung cấp và mô hình AI được cố định trong tệp môi trường của máy chủ (OPD-013). Màn này chỉ để theo dõi, không có thao tác đổi cấu hình.
+              {t("g6.aiService.change.body")}
             </p>
           </AdminPanel>
         </div>

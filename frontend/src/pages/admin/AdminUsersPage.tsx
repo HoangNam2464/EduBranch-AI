@@ -18,19 +18,21 @@ import {
 import { Dialog, MetricCard, Toast, ToastRegion, cx } from "@/components/ds";
 import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
 import { adminService, type AdminUserItem } from "@/services/adminService";
+import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
 export function AdminUsersPage() {
   const { t } = useTranslation();
 
   const [users, setUsers] = useState<AdminUserItem[]>([]);
   const [metrics, setMetrics] = useState({
-    totalUsers: 186,
-    lecturers: 12,
-    students: 172,
-    lockedUsers: 2,
+    totalUsers: 0,
+    lecturers: 0,
+    students: 0,
+    lockedUsers: 0,
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   // Filters & Pagination
   const [search, setSearch] = useState("");
@@ -46,31 +48,39 @@ export function AdminUsersPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  const loadData = useCallback(async () => {
+  const reload = useCallback(() => {
     setLoading(true);
     setLoadError(null);
-    try {
-      const res = await adminService.getUsers({
+    setReloadToken((k) => k + 1);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    adminService
+      .getUsers({
         search: search.trim() || undefined,
         role: roleFilter !== "ALL" ? roleFilter : undefined,
         status: statusFilter !== "ALL" ? statusFilter : undefined,
         page: currentPage,
         size: pageSize,
+      })
+      .then((res) => {
+        if (cancelled) return;
+        setUsers(res.users ?? []);
+        if (res.metrics) {
+          setMetrics(res.metrics);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(mapAdminHttpErrorToKey(err));
+        setLoading(false);
       });
-      setUsers(res.users);
-      if (res.metrics) {
-        setMetrics(res.metrics);
-      }
-    } catch {
-      setLoadError(t("g6.users.emptyDescription"));
-    } finally {
-      setLoading(false);
-    }
-  }, [search, roleFilter, statusFilter, currentPage, t]);
-
-  useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    return () => {
+      cancelled = true;
+    };
+  }, [search, roleFilter, statusFilter, currentPage, reloadToken]);
 
   // Client-side filtering when mock/local data is active
   const filteredUsers = useMemo(() => {
@@ -110,11 +120,11 @@ export function AdminUsersPage() {
       );
       setToastMessage(
         newIsLocked
-          ? `Đã khóa tài khoản ${selectedUser.name}`
-          : `Đã mở khóa tài khoản ${selectedUser.name}`,
+          ? t("g6.users.toast.lockSuccess", { name: selectedUser.name })
+          : t("g6.users.toast.unlockSuccess", { name: selectedUser.name }),
       );
     } catch {
-      setToastMessage("Có lỗi xảy ra khi thay đổi trạng thái tài khoản.");
+      setToastMessage(t("g6.users.toast.actionError"));
     } finally {
       setIsDialogOpen(false);
       setSelectedUser(null);
@@ -138,22 +148,22 @@ export function AdminUsersPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           icon={Users}
-          label="Tổng người dùng"
+          label={t("g6.users.kpi.totalUsers")}
           value={metrics.totalUsers}
         />
         <MetricCard
           icon={GraduationCap}
-          label="Giảng viên"
+          label={t("g6.users.kpi.lecturers")}
           value={metrics.lecturers}
         />
         <MetricCard
           icon={UserCheck}
-          label="Sinh viên"
+          label={t("g6.users.kpi.students")}
           value={metrics.students}
         />
         <MetricCard
           icon={Lock}
-          label="Tài khoản bị khóa"
+          label={t("g6.users.kpi.lockedUsers")}
           value={metrics.lockedUsers}
         />
       </div>
@@ -165,7 +175,7 @@ export function AdminUsersPage() {
           <Search size={16} className="absolute left-3 text-ink-muted" />
           <input
             type="text"
-            placeholder="Tìm hoặc email người dùng..."
+            placeholder={t("g6.users.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-eb-md border border-line bg-canvas py-2 pr-3 pl-9 text-[14px] text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none"
@@ -177,34 +187,34 @@ export function AdminUsersPage() {
           <select
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
-            aria-label="Lọc theo vai trò"
+            aria-label={t("g6.users.filterRoleAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="ALL">Mọi vai trò</option>
-            <option value="LECTURER">Giảng viên</option>
-            <option value="STUDENT">Sinh viên</option>
-            <option value="ADMIN">Quản trị viên</option>
+            <option value="ALL">{t("g6.users.filterRole.all")}</option>
+            <option value="LECTURER">{t("g6.users.filterRole.lecturer")}</option>
+            <option value="STUDENT">{t("g6.users.filterRole.student")}</option>
+            <option value="ADMIN">{t("g6.users.filterRole.admin")}</option>
           </select>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            aria-label="Lọc theo trạng thái"
+            aria-label={t("g6.users.filterStatusAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="ALL">Tất cả trạng thái</option>
-            <option value="ACTIVE">Hoạt động</option>
-            <option value="LOCKED">Đã khóa</option>
+            <option value="ALL">{t("g6.users.filterStatus.all")}</option>
+            <option value="ACTIVE">{t("g6.users.filterStatus.active")}</option>
+            <option value="LOCKED">{t("g6.users.filterStatus.locked")}</option>
           </select>
 
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            aria-label="Sắp xếp"
+            aria-label={t("g6.users.sortAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="NEWEST">Sắp xếp: Mới tạo</option>
-            <option value="NAME">Sắp xếp: Tên A-Z</option>
+            <option value="NEWEST">{t("g6.users.sort.newest")}</option>
+            <option value="NAME">{t("g6.users.sort.name")}</option>
           </select>
         </div>
       </div>
@@ -213,7 +223,7 @@ export function AdminUsersPage() {
       <div className="overflow-hidden rounded-eb-xl bg-surface shadow-eb-card">
         {loading ? (
           <div className="p-6">
-            <SkeletonRegion label="Đang tải danh sách người dùng..." className="flex flex-col gap-4">
+            <SkeletonRegion label={t("g6.users.loading")} className="flex flex-col gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-12 w-full rounded-eb-md bg-canvas/60" />
               ))}
@@ -221,14 +231,14 @@ export function AdminUsersPage() {
           </div>
         ) : loadError ? (
           <div className="p-6">
-            <ErrorState title="Lỗi tải dữ liệu người dùng" description={loadError} onRetry={loadData} />
+            <ErrorState title={t("g6.users.loadErrorTitle")} description={t(loadError)} onRetry={reload} />
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="p-8">
             <EmptyState
               icon={Users}
-              title="Không tìm thấy người dùng"
-              description="Không có tài khoản người dùng nào khớp với bộ lọc hiện tại."
+              title={t("g6.users.emptyFilteredTitle")}
+              description={t("g6.users.emptyFilteredDescription")}
             />
           </div>
         ) : (
@@ -236,12 +246,12 @@ export function AdminUsersPage() {
             <table className="w-full text-left text-[14px]">
               <thead className="border-b border-line bg-canvas text-[12px] font-medium text-ink-secondary">
                 <tr>
-                  <th className="py-3 pr-4 pl-5">Người dùng</th>
-                  <th className="px-4 py-3">Ngày tạo</th>
-                  <th className="px-4 py-3">Vai trò & Khóa học</th>
-                  <th className="px-4 py-3 text-center">Lượt làm</th>
-                  <th className="px-4 py-3 text-center">Hành động</th>
-                  <th className="py-3 pr-5 pl-4 text-right">Trạng thái</th>
+                  <th className="py-3 pr-4 pl-5">{t("g6.users.columns.user")}</th>
+                  <th className="px-4 py-3">{t("g6.users.columns.createdAt")}</th>
+                  <th className="px-4 py-3">{t("g6.users.columns.role")}</th>
+                  <th className="px-4 py-3 text-center">{t("g6.users.columns.attempts")}</th>
+                  <th className="px-4 py-3 text-center">{t("g6.users.columns.action")}</th>
+                  <th className="py-3 pr-5 pl-4 text-right">{t("g6.users.columns.status")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -283,10 +293,10 @@ export function AdminUsersPage() {
                         <div className="flex flex-col">
                           <span className="font-medium text-ink">
                             {user.role === "LECTURER"
-                              ? "Giảng viên"
+                              ? t("g6.users.role.lecturer")
                               : user.role === "ADMIN"
-                              ? "Quản trị viên"
-                              : "Sinh viên"}
+                              ? t("g6.users.role.admin")
+                              : t("g6.users.role.student")}
                           </span>
                           {user.coursesInfo && (
                             <span className="text-[12px] text-ink-secondary">
@@ -313,7 +323,7 @@ export function AdminUsersPage() {
                               : "border-line text-ink hover:bg-canvas hover:text-error",
                           )}
                         >
-                          {isLocked ? "Mở khóa" : "Khóa tài khoản"}
+                          {isLocked ? t("g6.users.action.unlock") : t("g6.users.action.lock")}
                         </button>
                       </td>
 
@@ -333,7 +343,7 @@ export function AdminUsersPage() {
                               isLocked ? "bg-error" : "bg-success",
                             )}
                           />
-                          {isLocked ? "Đã khóa" : "Hoạt động"}
+                          {isLocked ? t("g6.users.status.locked") : t("g6.users.status.active")}
                         </span>
                       </td>
                     </tr>
@@ -347,7 +357,10 @@ export function AdminUsersPage() {
         {/* Pagination Footer */}
         <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[13px] text-ink-secondary">
           <span>
-            Hiển thị {Math.min(filteredUsers.length, pageSize)} trên {metrics.totalUsers} người dùng
+            {t("g6.users.pagination.showing", {
+              shown: Math.min(filteredUsers.length, pageSize),
+              total: metrics.totalUsers,
+            })}
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -355,7 +368,7 @@ export function AdminUsersPage() {
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
-              aria-label="Trang trước"
+              aria-label={t("g6.users.pagination.prev")}
             >
               &lt;
             </button>
@@ -367,7 +380,7 @@ export function AdminUsersPage() {
               disabled={filteredUsers.length < pageSize}
               onClick={() => setCurrentPage((p) => p + 1)}
               className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
-              aria-label="Trang sau"
+              aria-label={t("g6.users.pagination.next")}
             >
               &gt;
             </button>
@@ -383,16 +396,20 @@ export function AdminUsersPage() {
           type={actionType === "LOCK" ? "destructive" : "confirm"}
           title={
             actionType === "LOCK"
-              ? `Khóa tài khoản ${selectedUser.name}?`
-              : `Mở khóa tài khoản ${selectedUser.name}?`
+              ? t("g6.users.dialog.lockTitle", { name: selectedUser.name })
+              : t("g6.users.dialog.unlockTitle", { name: selectedUser.name })
           }
           description={
             actionType === "LOCK"
-              ? "Người dùng sẽ không đăng nhập được cho tới khi được mở khóa. Lượt làm, bài nộp và suy ngẫm vẫn được giữ nguyên."
-              : "Người dùng sẽ có thể đăng nhập lại và tiếp tục truy cập các học phần bình thường."
+              ? t("g6.users.dialog.lockDescription")
+              : t("g6.users.dialog.unlockDescription")
           }
-          confirmLabel={actionType === "LOCK" ? "Khóa tài khoản" : "Mở khóa"}
-          cancelLabel="Hủy bỏ"
+          confirmLabel={
+            actionType === "LOCK"
+              ? t("g6.users.dialog.lockConfirm")
+              : t("g6.users.dialog.unlockConfirm")
+          }
+          cancelLabel={t("g6.users.dialog.cancel")}
           onConfirm={handleConfirmAction}
         />
       )}

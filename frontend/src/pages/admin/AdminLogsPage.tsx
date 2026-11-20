@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 import {
   AlertTriangle,
   Calendar,
-  Clock,
   LogIn,
   ScrollText,
   Search,
@@ -20,19 +19,21 @@ import {
 import { Dialog, MetricCard, cx } from "@/components/ds";
 import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
 import { adminService, type AdminSystemLogItem } from "@/services/adminService";
+import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
 export function AdminLogsPage() {
   const { t } = useTranslation();
 
   const [logs, setLogs] = useState<AdminSystemLogItem[]>([]);
   const [metrics, setMetrics] = useState({
-    eventsToday: 248,
-    loginCount: 131,
-    aiGenerationsCount: 9,
-    errorsCount: 1,
+    eventsToday: 0,
+    loginCount: 0,
+    aiGenerationsCount: 0,
+    errorsCount: 0,
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   // Filters
   const [search, setSearch] = useState("");
@@ -45,31 +46,39 @@ export function AdminLogsPage() {
   // Selected Log for detail modal
   const [selectedLog, setSelectedLog] = useState<AdminSystemLogItem | null>(null);
 
-  const loadData = useCallback(async () => {
+  const reload = useCallback(() => {
     setLoading(true);
     setLoadError(null);
-    try {
-      const res = await adminService.getSystemLogs({
+    setReloadToken((k) => k + 1);
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    adminService
+      .getSystemLogs({
         search: search.trim() || undefined,
         eventType: eventFilter !== "ALL" ? eventFilter : undefined,
         timeRange: timeFilter !== "ALL" ? timeFilter : undefined,
         page: currentPage,
         size: pageSize,
+      })
+      .then((res) => {
+        if (cancelled) return;
+        setLogs(res.logs ?? []);
+        if (res.metrics) {
+          setMetrics(res.metrics);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(mapAdminHttpErrorToKey(err));
+        setLoading(false);
       });
-      setLogs(res.logs);
-      if (res.metrics) {
-        setMetrics(res.metrics);
-      }
-    } catch {
-      setLoadError("Không tải được nhật ký hệ thống.");
-    } finally {
-      setLoading(false);
-    }
-  }, [search, eventFilter, timeFilter, currentPage]);
-
-  useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    return () => {
+      cancelled = true;
+    };
+  }, [search, eventFilter, timeFilter, currentPage, reloadToken]);
 
   // Client-side filtering fallback
   const filteredLogs = useMemo(() => {
@@ -96,22 +105,22 @@ export function AdminLogsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
           icon={Calendar}
-          label="Sự kiện hôm nay"
+          label={t("g6.logs.kpi.eventsToday")}
           value={metrics.eventsToday}
         />
         <MetricCard
           icon={LogIn}
-          label="Lượt đăng nhập"
+          label={t("g6.logs.kpi.loginCount")}
           value={metrics.loginCount}
         />
         <MetricCard
           icon={Sparkles}
-          label="Lượt sinh case AI"
+          label={t("g6.logs.kpi.aiGenerationsCount")}
           value={metrics.aiGenerationsCount}
         />
         <MetricCard
           icon={AlertTriangle}
-          label="Lỗi cần xem"
+          label={t("g6.logs.kpi.errorsCount")}
           value={metrics.errorsCount}
         />
       </div>
@@ -123,7 +132,7 @@ export function AdminLogsPage() {
           <Search size={16} className="absolute left-3 text-ink-muted" />
           <input
             type="text"
-            placeholder="Tìm trong nhật ký..."
+            placeholder={t("g6.logs.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-eb-md border border-line bg-canvas py-2 pr-3 pl-9 text-[14px] text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none"
@@ -135,36 +144,36 @@ export function AdminLogsPage() {
           <select
             value={eventFilter}
             onChange={(e) => setEventFilter(e.target.value)}
-            aria-label="Lọc theo loại sự kiện"
+            aria-label={t("g6.logs.filterEventAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="ALL">Mọi loại sự kiện</option>
-            <option value="Đăng nhập">Đăng nhập</option>
-            <option value="Sinh case">Sinh case AI</option>
-            <option value="Nộp bài">Nộp bài</option>
-            <option value="Tài liệu">Tài liệu</option>
+            <option value="ALL">{t("g6.logs.filterEvent.all")}</option>
+            <option value="Đăng nhập">{t("g6.logs.filterEvent.login")}</option>
+            <option value="Sinh case">{t("g6.logs.filterEvent.aiGen")}</option>
+            <option value="Nộp bài">{t("g6.logs.filterEvent.submission")}</option>
+            <option value="Tài liệu">{t("g6.logs.filterEvent.material")}</option>
           </select>
 
           <select
             value={timeFilter}
             onChange={(e) => setTimeFilter(e.target.value)}
-            aria-label="Lọc theo thời gian"
+            aria-label={t("g6.logs.filterTimeAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="TODAY">Hôm nay</option>
-            <option value="7_DAYS">7 ngày qua</option>
-            <option value="30_DAYS">30 ngày qua</option>
-            <option value="ALL">Tất cả thời gian</option>
+            <option value="TODAY">{t("g6.logs.filterTime.today")}</option>
+            <option value="7_DAYS">{t("g6.logs.filterTime.sevenDays")}</option>
+            <option value="30_DAYS">{t("g6.logs.filterTime.thirtyDays")}</option>
+            <option value="ALL">{t("g6.logs.filterTime.all")}</option>
           </select>
 
           <select
             value={sortOrder}
             onChange={(e) => setSortOrder(e.target.value)}
-            aria-label="Sắp xếp"
+            aria-label={t("g6.logs.sortAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="NEWEST">Sắp xếp: Mới nhất</option>
-            <option value="OLDEST">Sắp xếp: Cũ nhất</option>
+            <option value="NEWEST">{t("g6.logs.sort.newest")}</option>
+            <option value="OLDEST">{t("g6.logs.sort.oldest")}</option>
           </select>
         </div>
       </div>
@@ -173,7 +182,7 @@ export function AdminLogsPage() {
       <div className="overflow-hidden rounded-eb-xl bg-surface shadow-eb-card">
         {loading ? (
           <div className="p-6">
-            <SkeletonRegion label="Đang tải nhật ký..." className="flex flex-col gap-4">
+            <SkeletonRegion label={t("g6.logs.loading")} className="flex flex-col gap-4">
               {Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="h-12 w-full rounded-eb-md bg-canvas/60" />
               ))}
@@ -181,14 +190,14 @@ export function AdminLogsPage() {
           </div>
         ) : loadError ? (
           <div className="p-6">
-            <ErrorState title="Lỗi tải nhật ký hệ thống" description={loadError} onRetry={loadData} />
+            <ErrorState title={t("g6.logs.loadErrorTitle")} description={t(loadError)} onRetry={reload} />
           </div>
         ) : filteredLogs.length === 0 ? (
           <div className="p-8">
             <EmptyState
               icon={ScrollText}
-              title="Không tìm thấy sự kiện nhật ký"
-              description="Không có bản ghi nhật ký nào khớp với điều kiện lọc."
+              title={t("g6.logs.emptyFilteredTitle")}
+              description={t("g6.logs.emptyFilteredDescription")}
             />
           </div>
         ) : (
@@ -196,17 +205,18 @@ export function AdminLogsPage() {
             <table className="w-full text-left text-[14px]">
               <thead className="border-b border-line bg-canvas text-[12px] font-medium text-ink-secondary">
                 <tr>
-                  <th className="py-3 pr-4 pl-5">Người thực hiện</th>
-                  <th className="px-4 py-3">Thời gian</th>
-                  <th className="px-4 py-3">Sự kiện</th>
-                  <th className="px-4 py-3 text-center">Mã</th>
-                  <th className="px-4 py-3 text-center">Chi tiết</th>
-                  <th className="py-3 pr-5 pl-4 text-right">Kết quả</th>
+                  <th className="py-3 pr-4 pl-5">{t("g6.logs.columns.actor")}</th>
+                  <th className="px-4 py-3">{t("g6.logs.columns.time")}</th>
+                  <th className="px-4 py-3">{t("g6.logs.columns.event")}</th>
+                  <th className="px-4 py-3 text-center">{t("g6.logs.columns.code")}</th>
+                  <th className="px-4 py-3 text-center">{t("g6.logs.columns.detail")}</th>
+                  <th className="py-3 pr-5 pl-4 text-right">{t("g6.logs.columns.result")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
                 {filteredLogs.map((log) => {
                   const isSuccess = log.status === "SUCCESS";
+                  const isWarning = log.status === "WARNING";
                   const initials = log.actorName
                     .split(" ")
                     .filter(Boolean)
@@ -262,7 +272,7 @@ export function AdminLogsPage() {
                           onClick={() => setSelectedLog(log)}
                           className="rounded-eb-md border border-line bg-canvas px-2.5 py-1 text-[12px] font-medium text-link hover:bg-surface-hover hover:underline"
                         >
-                          Xem chi tiết
+                          {t("g6.logs.action.viewDetail")}
                         </button>
                       </td>
 
@@ -273,16 +283,22 @@ export function AdminLogsPage() {
                             "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium",
                             isSuccess
                               ? "bg-success-bg text-success-text"
+                              : isWarning
+                              ? "bg-warning-bg text-warning-text"
                               : "bg-error-bg text-error-text",
                           )}
                         >
                           <span
                             className={cx(
                               "size-1.5 rounded-full",
-                              isSuccess ? "bg-success" : "bg-error",
+                              isSuccess ? "bg-success" : isWarning ? "bg-warning" : "bg-error",
                             )}
                           />
-                          {isSuccess ? "Thành công" : "Cảnh báo"}
+                          {isSuccess
+                            ? t("g6.logs.status.success")
+                            : isWarning
+                            ? t("g6.logs.status.warning")
+                            : t("g6.logs.status.error")}
                         </span>
                       </td>
                     </tr>
@@ -296,7 +312,10 @@ export function AdminLogsPage() {
         {/* Pagination Footer */}
         <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[13px] text-ink-secondary">
           <span>
-            Hiển thị {Math.min(filteredLogs.length, pageSize)} trên {metrics.eventsToday} sự kiện
+            {t("g6.logs.pagination.showing", {
+              shown: Math.min(filteredLogs.length, pageSize),
+              total: metrics.eventsToday,
+            })}
           </span>
           <div className="flex items-center gap-1">
             <button
@@ -304,7 +323,7 @@ export function AdminLogsPage() {
               disabled={currentPage <= 1}
               onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
               className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
-              aria-label="Trang trước"
+              aria-label={t("g6.logs.pagination.prev")}
             >
               &lt;
             </button>
@@ -316,7 +335,7 @@ export function AdminLogsPage() {
               disabled={filteredLogs.length < pageSize}
               onClick={() => setCurrentPage((p) => p + 1)}
               className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
-              aria-label="Trang sau"
+              aria-label={t("g6.logs.pagination.next")}
             >
               &gt;
             </button>
@@ -329,33 +348,33 @@ export function AdminLogsPage() {
         <Dialog
           open={Boolean(selectedLog)}
           onClose={() => setSelectedLog(null)}
-          title={`Chi tiết sự kiện ${selectedLog.code}`}
-          confirmLabel="Đóng"
+          title={t("g6.logs.dialog.title", { code: selectedLog.code })}
+          confirmLabel={t("g6.logs.dialog.close")}
           onConfirm={() => setSelectedLog(null)}
         >
           <div className="flex flex-col gap-3 text-[13px]">
             <div className="flex items-center justify-between border-b border-line pb-2">
-              <span className="text-ink-secondary">Người thực hiện:</span>
+              <span className="text-ink-secondary">{t("g6.logs.dialog.actor")}</span>
               <span className="font-semibold text-ink">{selectedLog.actorName} ({selectedLog.actorEmail})</span>
             </div>
             <div className="flex items-center justify-between border-b border-line pb-2">
-              <span className="text-ink-secondary">Thời gian:</span>
+              <span className="text-ink-secondary">{t("g6.logs.dialog.time")}</span>
               <span className="font-medium text-ink">{selectedLog.timestamp}</span>
             </div>
             <div className="flex items-center justify-between border-b border-line pb-2">
-              <span className="text-ink-secondary">Hành động:</span>
+              <span className="text-ink-secondary">{t("g6.logs.dialog.action")}</span>
               <span className="font-semibold text-ink">{selectedLog.eventTitle}</span>
             </div>
             {selectedLog.eventMeta && (
               <div className="flex items-center justify-between border-b border-line pb-2">
-                <span className="text-ink-secondary">Đối tượng liên quan:</span>
+                <span className="text-ink-secondary">{t("g6.logs.dialog.target")}</span>
                 <span className="font-medium text-ink">{selectedLog.eventMeta}</span>
               </div>
             )}
             <div className="flex flex-col gap-1 pt-1">
-              <span className="text-ink-secondary">Chi tiết kỹ thuật:</span>
+              <span className="text-ink-secondary">{t("g6.logs.dialog.technicalDetails")}</span>
               <p className="rounded-eb-md bg-canvas p-3 font-mono text-[12px] text-ink">
-                {selectedLog.details || "Không có chi tiết bổ sung."}
+                {selectedLog.details || t("g6.logs.dialog.noDetails")}
               </p>
             </div>
           </div>

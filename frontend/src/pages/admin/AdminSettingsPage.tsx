@@ -8,11 +8,12 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Settings, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Check } from "lucide-react";
 import { Button, Dialog, Field, Toast, ToastRegion } from "@/components/ds";
 import { AdminPanel } from "@/pages/admin/components/AdminPanel";
 import { ErrorState, SkeletonRegion } from "@/components/feedback";
 import { adminService, type AdminSystemSettings } from "@/services/adminService";
+import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
 export function AdminSettingsPage() {
   const { t } = useTranslation();
@@ -23,37 +24,46 @@ export function AdminSettingsPage() {
   const [saving, setSaving] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [reloadToken, setReloadToken] = useState(0);
 
   // Form State
-  const [platformName, setPlatformName] = useState("EduBranch AI");
-  const [operatorUnit, setOperatorUnit] = useState("Trường Đại học Duy Tân - Đồ án C1SE.65");
-  const [loginNotice, setLoginNotice] = useState("Hệ thống bảo trì định kỳ từ 22:00 đến 23:00 thứ Bảy hàng tuần.");
-  const [supportEmail, setSupportEmail] = useState("support@edubranch.ai");
+  const [platformName, setPlatformName] = useState("");
+  const [operatorUnit, setOperatorUnit] = useState("");
+  const [loginNotice, setLoginNotice] = useState("");
+  const [supportEmail, setSupportEmail] = useState("");
 
   // Confirmation Dialog
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
-  const loadData = useCallback(async () => {
+  const reload = useCallback(() => {
     setLoading(true);
     setLoadError(null);
-    try {
-      const data = await adminService.getSystemSettings();
-      setSettings(data);
-      setInitialSettings(data);
-      setPlatformName(data.platformName);
-      setOperatorUnit(data.operatorUnit);
-      setLoginNotice(data.loginNotice);
-      setSupportEmail(data.supportEmail);
-    } catch {
-      setLoadError("Không tải được cài đặt hệ thống.");
-    } finally {
-      setLoading(false);
-    }
+    setReloadToken((k) => k + 1);
   }, []);
 
   useEffect(() => {
-    void loadData();
-  }, [loadData]);
+    let cancelled = false;
+    adminService
+      .getSystemSettings()
+      .then((data) => {
+        if (cancelled) return;
+        setSettings(data);
+        setInitialSettings(data);
+        setPlatformName(data.platformName);
+        setOperatorUnit(data.operatorUnit);
+        setLoginNotice(data.loginNotice);
+        setSupportEmail(data.supportEmail);
+        setLoading(false);
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setLoadError(mapAdminHttpErrorToKey(err));
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadToken]);
 
   const handleReset = () => {
     if (!initialSettings) return;
@@ -74,29 +84,33 @@ export function AdminSettingsPage() {
       });
       setSettings(updated);
       setInitialSettings(updated);
-      setToastMessage("Đã lưu và áp dụng cài đặt hệ thống thành công.");
+      setToastMessage(t("g6.settings.toast.saveSuccess"));
     } catch {
-      setToastMessage("Lỗi khi lưu cài đặt hệ thống.");
+      setToastMessage(t("g6.settings.toast.saveError"));
     } finally {
       setSaving(false);
       setIsConfirmDialogOpen(false);
     }
   };
 
-  if (loading || !settings) {
+  if (loading && !settings) {
     return (
       <div className="flex flex-1 flex-col gap-5 pb-6">
-        <SkeletonRegion label="Đang tải cài đặt hệ thống..." className="flex flex-col gap-5">
+        <SkeletonRegion label={t("g6.settings.loading")} className="flex flex-col gap-5">
           <div className="h-64 rounded-eb-xl bg-surface shadow-eb-card" />
         </SkeletonRegion>
       </div>
     );
   }
 
-  if (loadError) {
+  if (loadError || !settings) {
     return (
       <div className="rounded-eb-xl bg-surface p-6 shadow-eb-card">
-        <ErrorState title="Lỗi cài đặt hệ thống" description={loadError} onRetry={loadData} />
+        <ErrorState
+          title={t("g6.settings.loadErrorTitle")}
+          description={t(loadError || "g6.noData.apiUnavailable")}
+          onRetry={reload}
+        />
       </div>
     );
   }
@@ -117,8 +131,8 @@ export function AdminSettingsPage() {
       {/* Breadcrumb / Title */}
       <div className="flex items-center justify-between rounded-eb-xl bg-surface p-4 shadow-eb-card">
         <div className="flex flex-col gap-0.5">
-          <h2 className="text-[16px] leading-6 font-semibold text-ink">Cài đặt hệ thống</h2>
-          <span className="text-[12px] text-ink-secondary">Quản trị hệ thống &gt; Cài đặt</span>
+          <h2 className="text-[16px] leading-6 font-semibold text-ink">{t("g6.settings.header")}</h2>
+          <span className="text-[12px] text-ink-secondary">{t("g6.settings.breadcrumb")}</span>
         </div>
       </div>
 
@@ -127,15 +141,15 @@ export function AdminSettingsPage() {
         {/* Left Column: Form Fields */}
         <div className="flex w-full min-w-0 flex-1 flex-col gap-5 lg:w-[678px]">
           {/* Card 1: Thông tin nền tảng */}
-          <AdminPanel title="Thông tin nền tảng">
+          <AdminPanel title={t("g6.settings.platform")}>
             <div className="flex flex-col gap-4">
               <Field
-                label="Tên nền tảng *"
+                label={t("g6.settings.form.platformName")}
                 value={platformName}
                 onChange={(e) => setPlatformName(e.target.value)}
               />
               <Field
-                label="Đơn vị vận hành"
+                label={t("g6.settings.form.operatorUnit")}
                 value={operatorUnit}
                 onChange={(e) => setOperatorUnit(e.target.value)}
               />
@@ -143,20 +157,20 @@ export function AdminSettingsPage() {
           </AdminPanel>
 
           {/* Card 2: Thông báo trên trang đăng nhập */}
-          <AdminPanel title="Thông báo trên trang đăng nhập">
+          <AdminPanel title={t("g6.settings.form.loginNoticeTitle")}>
             <Field
               multiline
-              label="Nội dung thông báo (hiển thị công khai)"
+              label={t("g6.settings.form.loginNoticeLabel")}
               value={loginNotice}
               onChange={(e) => setLoginNotice(e.target.value)}
-              helper="Thông báo sẽ hiển thị nổi bật tại trang đăng nhập cho mọi người dùng."
+              helper={t("g6.settings.form.loginNoticeHelper")}
             />
           </AdminPanel>
 
           {/* Card 3: Email hỗ trợ */}
-          <AdminPanel title="Email hỗ trợ *">
+          <AdminPanel title={t("g6.settings.form.supportEmailTitle")}>
             <Field
-              label="Địa chỉ email liên hệ hỗ trợ kỹ thuật"
+              label={t("g6.settings.form.supportEmailLabel")}
               type="email"
               value={supportEmail}
               onChange={(e) => setSupportEmail(e.target.value)}
@@ -167,44 +181,42 @@ export function AdminSettingsPage() {
         {/* Right Column: Limits & AI Policy */}
         <div className="flex w-full shrink-0 flex-col gap-5 lg:w-[478px]">
           {/* Card 1: Giới hạn & đăng ký */}
-          <AdminPanel title="Giới hạn & đăng ký">
+          <AdminPanel title={t("g6.settings.limits")}>
             <ul className="flex flex-col divide-y divide-line text-[13px]">
               <li className="flex items-center justify-between py-2.5">
-                <span className="text-ink-secondary">Định dạng tài liệu:</span>
+                <span className="text-ink-secondary">{t("g6.settings.limitLabels.fileFormats")}</span>
                 <span className="font-semibold text-ink">{settings.limits.fileFormats}</span>
               </li>
               <li className="flex items-center justify-between py-2.5">
-                <span className="text-ink-secondary">Dung lượng tối đa:</span>
+                <span className="text-ink-secondary">{t("g6.settings.limitLabels.maxFileSize")}</span>
                 <span className="font-semibold text-ink">{settings.limits.maxFileSize}</span>
               </li>
               <li className="flex items-center justify-between py-2.5">
-                <span className="text-ink-secondary">Đăng ký tài khoản:</span>
+                <span className="text-ink-secondary">{t("g6.settings.limitLabels.registration")}</span>
                 <span className="font-semibold text-success-text">{settings.limits.registration}</span>
               </li>
               <li className="flex items-center justify-between py-2.5">
-                <span className="text-ink-secondary">Phiên bản:</span>
+                <span className="text-ink-secondary">{t("g6.settings.limitLabels.version")}</span>
                 <span className="font-semibold text-ink">{settings.limits.version}</span>
               </li>
               <li className="flex items-center justify-between py-2.5">
-                <span className="text-ink-secondary">Múi giờ:</span>
+                <span className="text-ink-secondary">{t("g6.settings.limitLabels.timezone")}</span>
                 <span className="font-semibold text-ink">{settings.limits.timezone}</span>
               </li>
             </ul>
           </AdminPanel>
 
           {/* Card 2: Dịch vụ AI */}
-          <AdminPanel title="Dịch vụ AI">
+          <AdminPanel title={t("g6.settings.ai.title")}>
             <div className="flex flex-col gap-3 text-[13px]">
               <div className="flex flex-col gap-1">
-                <span className="text-ink-secondary">Nhà cung cấp:</span>
-                <span className="font-semibold text-ink">cố định trong cấu hình máy chủ</span>
+                <span className="text-ink-secondary">{t("g6.settings.ai.provider")}</span>
               </div>
               <div className="flex flex-col gap-1 border-t border-line/60 pt-2.5">
-                <span className="text-ink-secondary">Theo dõi trạng thái:</span>
-                <span className="font-medium text-primary">Xem tại mục Dịch vụ AI</span>
+                <span className="font-medium text-primary">{t("g6.settings.ai.monitor")}</span>
               </div>
               <p className="border-t border-line/60 pt-2.5 text-[12px] leading-4 text-ink-muted">
-                {settings.aiPolicyNote}
+                {settings.aiPolicyNote || t("g6.settings.ai.note")}
               </p>
             </div>
           </AdminPanel>
@@ -214,11 +226,11 @@ export function AdminSettingsPage() {
       {/* Bottom Sticky Action Bar (Figma 10.10) */}
       <div className="sticky bottom-4 flex flex-wrap items-center justify-between gap-4 rounded-eb-xl bg-surface p-4 shadow-eb-toast border border-line">
         <Button variant="secondary" onClick={handleReset} disabled={saving}>
-          Hủy thay đổi
+          {t("g6.settings.actions.cancel")}
         </Button>
 
         <span className="text-[13px] text-ink-secondary">
-          Thay đổi áp dụng cho toàn hệ thống sau khi lưu.
+          {t("g6.settings.actions.note")}
         </span>
 
         <div className="flex items-center gap-3">
@@ -227,7 +239,7 @@ export function AdminSettingsPage() {
             onClick={() => setIsConfirmDialogOpen(true)}
             disabled={saving}
           >
-            Lưu cài đặt
+            {t("g6.settings.actions.save")}
           </Button>
           <Button
             variant="primary"
@@ -235,7 +247,7 @@ export function AdminSettingsPage() {
             onClick={() => setIsConfirmDialogOpen(true)}
             disabled={saving}
           >
-            Xuất bản
+            {t("g6.settings.actions.publish")}
           </Button>
         </div>
       </div>
@@ -245,10 +257,10 @@ export function AdminSettingsPage() {
         open={isConfirmDialogOpen}
         onClose={() => setIsConfirmDialogOpen(false)}
         type="confirm"
-        title="Lưu thay đổi cài đặt hệ thống?"
-        description="Các thông tin cập nhật sẽ được lưu và áp dụng cho toàn bộ người dùng trong nền tảng EduBranch AI."
-        confirmLabel="Lưu & Áp dụng"
-        cancelLabel="Hủy bỏ"
+        title={t("g6.settings.dialog.title")}
+        description={t("g6.settings.dialog.description")}
+        confirmLabel={t("g6.settings.dialog.confirm")}
+        cancelLabel={t("g6.settings.dialog.cancel")}
         onConfirm={handleConfirmSave}
       />
     </div>
