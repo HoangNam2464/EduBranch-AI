@@ -1308,15 +1308,50 @@
       "kpi": {
         "completion": "Tỷ lệ hoàn thành",
         "avgAttempts": "Số lần làm trung bình",
-        "inProgress": "Đang trong hành trình"
+        "inProgress": "Đang trong hành trình",
+        "totalAttempts": "Tổng lượt làm",
+        "singleVsRetry": "Lần đầu / Làm lại",
+        "reflectionsSubmitted": "Bài phản tư đã nộp"
+      },
+      "filters": {
+        "course": "Lọc theo khóa học",
+        "allCourses": "Mọi khóa học",
+        "case": "Lọc theo tình huống",
+        "allCases": "Tất cả tình huống",
+        "branchingOnly": "Tình huống rẽ nhánh (Branching Study)"
       },
       "panels": {
-        "choices": "Lựa chọn tại từng tình huống",
-        "attempts": "Phân bố số lần làm bài",
-        "outcomes": "Kết quả cuối cùng",
+        "choices": "Phân bổ nhánh quyết định sinh viên lựa chọn",
+        "attempts": "Thống kê số lượt thử (Single vs. Retry)",
+        "outcomes": "Kết cục cuối cùng của hành trình",
         "timing": "Thời điểm làm bài",
         "progress": "Tiến độ của sinh viên đã mở case",
         "popular": "Lựa chọn phổ biến theo điểm"
+      },
+      "branchChart": {
+        "title": "Biểu đồ phân bổ nhánh quyết định sinh viên lựa chọn",
+        "subtitle": "Tần suất và tỷ lệ sinh viên lựa chọn từng phương án rẽ nhánh tại các điểm quyết định",
+        "nodeTitle": "Điểm quyết định: {{title}}",
+        "selections": "{{count}} lượt chọn",
+        "percent": "{{percent}}%",
+        "noBranches": "Tình huống này chưa có dữ liệu rẽ nhánh hoặc thuộc chế độ Review Study.",
+        "emptyCase": "Chưa có sinh viên nào tham gia rẽ nhánh cho tình huống này."
+      },
+      "outcomes": {
+        "title": "Kết cục cuối cùng của hành trình",
+        "subtitle": "Tỷ lệ sinh viên kết thúc tại các nút kết cục (terminal nodes)",
+        "terminalNode": "Kết cục: {{title}}",
+        "reachCount": "{{count}} lượt kết thúc ({{percent}}%)",
+        "emptyOutcomes": "Chưa có sinh viên nào đi đến kết cục cuối cùng."
+      },
+      "attempts": {
+        "title": "Thống kê số lượt thử (Attempts)",
+        "subtitle": "Tỷ lệ lượt làm một lần duy nhất so với các lượt thử lại để khám phá các nhánh khác",
+        "singleLabel": "Lượt làm lần đầu (Single Attempt)",
+        "retryLabel": "Lượt làm lại (Retry Attempt)",
+        "singleVsRetry": "Tỷ lệ Lần đầu / Làm lại: {{single}} / {{retry}}",
+        "totalLabel": "Tổng lượt thực hiện: {{total}}",
+        "emptyAttempts": "Chưa có dữ liệu lượt làm."
       },
       "openCases": "Case đang mở",
       "openCasesEmpty": "Chưa có case nào được xuất bản.",
