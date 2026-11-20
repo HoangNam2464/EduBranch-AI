@@ -232,3 +232,11 @@
 | `g4.stats.errors.forbidden` | Bạn không có quyền xem thống kê của tình huống này. | You do not have permission to view statistics for this case. | PROPOSED | — | — | FE-022 PR #70 |
 | `g4.stats.errors.serverError` | Lỗi máy chủ khi tải thống kê. Vui lòng thử lại sau. | Server error loading statistics. Please try again later. | PROPOSED | — | — | FE-022 PR #70 |
 | `g4.stats.errors.network` | Không thể kết nối đến máy chủ. Kiểm tra mạng rồi thử lại. | Cannot connect to server. Check your connection and try again. | PROPOSED | — | — | FE-022 PR #70 |
+| `g1.select.placeholder` | -- Chọn một mục -- | -- Select an item -- | PROPOSED | — | — | PR-71-FIX |
+| `g1.select.searchPlaceholder` | Tìm nhanh khoa hoặc đơn vị... | Search faculty or department... | PROPOSED | — | — | PR-71-FIX |
+| `g1.select.noResults` | Không tìm thấy khoa phù hợp. Bạn có thể chọn mục "Đơn vị / Khoa khác..." ở dưới cùng. | No matching faculty found. You can select "Other Faculty / Department..." at the bottom. | PROPOSED | — | — | PR-71-FIX |
+| `g1.select.otherCategory` | Khác | Other | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.departmentSelectPlaceholder` | -- Chọn Khoa / Đơn vị công tác -- | -- Select Faculty / Department -- | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.customDepartmentLabel` | Tên Khoa / Đơn vị công tác cụ thể | Specific Faculty / Department name | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.customDepartmentPlaceholder` | Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao | e.g. Institute of Advanced Technology Research | PROPOSED | — | — | PR-71-FIX |
+| `g1.register.departmentOther` | Đơn vị / Khoa khác... | Other Faculty / Department... | PROPOSED | — | — | PR-71-FIX |

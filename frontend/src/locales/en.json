@@ -338,6 +338,12 @@
   },
   "g1": {
     "brand": "EduBranch AI",
+    "select": {
+      "placeholder": "-- Select an item --",
+      "searchPlaceholder": "Search faculty or department...",
+      "noResults": "No matching faculty found. You can select \"Other Faculty / Department...\" at the bottom.",
+      "otherCategory": "Other"
+    },
     "showcase": {
       "title": "An experiential case-based learning platform",
       "subtitle": "Lecturers build case studies from course materials; students make decisions, reason and reflect on every branch of the case."
@@ -378,6 +384,10 @@
       "studentIdPlaceholder": "e.g. 21020451",
       "department": "Faculty / Department",
       "departmentPlaceholder": "e.g. Faculty of Information Technology",
+      "departmentSelectPlaceholder": "-- Select Faculty / Department --",
+      "customDepartmentLabel": "Specific Faculty / Department name",
+      "customDepartmentPlaceholder": "e.g. Institute of Advanced Technology Research",
+      "departmentOther": "Other Faculty / Department...",
       "passwordPlaceholder": "At least 8 characters",
       "confirmPassword": "Confirm password",
       "confirmPasswordPlaceholder": "Re-enter your password",
