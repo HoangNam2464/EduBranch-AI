@@ -12,7 +12,7 @@
 
 import { isAxiosError } from "axios";
 import apiClient from "@/services/apiClient";
-import type { ReviewStudySubmission } from "@/types";
+import type { LecturerFeedback, ReviewStudySubmission } from "@/types";
 import {
   toReviewStudySubmission,
   type ReviewStudySubmissionRow,
@@ -29,6 +29,8 @@ export const PROPOSED_SOLUTION_MAX_LENGTH = 3000;
 export const REASONING_MIN_LENGTH = 10;
 export const REASONING_MAX_LENGTH = 3000;
 export const STUDENT_ANALYSIS_MAX_LENGTH = 3000;
+export const REFLECTION_MIN_LENGTH = 10;
+export const REFLECTION_MAX_LENGTH = 3000;
 
 type Envelope<T> = { status?: string; data: T };
 
@@ -83,6 +85,24 @@ export const reviewStudyService = {
       { reflectionText },
     );
     return toReviewStudySubmission(unwrap(res.data));
+  },
+
+  /**
+   * Retrieve lecturer qualitative feedback for a Review Study submission.
+   * Returns null if not yet reviewed or endpoint returns 404/501.
+   */
+  async getFeedback(submissionId: string): Promise<LecturerFeedback | null> {
+    try {
+      const res = await apiClient.get<Envelope<LecturerFeedback> | LecturerFeedback>(
+        `/review-study-submissions/${submissionId}/feedback`,
+      );
+      return unwrap(res.data);
+    } catch (err: unknown) {
+      if (isAxiosError(err) && (err.response?.status === 404 || err.response?.status === 501)) {
+        return null;
+      }
+      throw err;
+    }
   },
 
   // Lecturer endpoints
