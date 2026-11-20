@@ -332,7 +332,11 @@ function CourseDetails({
             iconClass="text-error-text"
             title={m.originalFilename}
             subtitle={t("g2.courses.details.failedFile")}
-            action={<ChevronLink to={materialsPath} label={t("g2.courses.details.openMaterials")} />}
+            action={
+              <Button variant="secondary" size="sm" to={materialsPath}>
+                {t("g2.courses.details.retry")}
+              </Button>
+            }
           />,
         );
       } else if (m.processingStatus === "PENDING" || m.processingStatus === "PROCESSING") {
@@ -412,6 +416,7 @@ function CourseDetails({
         stats={
           summary
             ? [
+                { label: t("g2.courses.details.statAttempts"), value: "—" },
                 { label: t("g2.courses.details.statDocuments"), value: summary.documents },
                 { label: t("g2.courses.details.statCases"), value: summary.cases },
               ]
