@@ -126,7 +126,8 @@ export function RegisterPage() {
       setError(t("g1.errors.studentIdRequired"));
       return;
     }
-    const finalDepartment = department === "Đơn vị / Khoa khác..." ? customDepartment.trim() : department.trim();
+    const isOther = department === "Đơn vị / Khoa khác..." || department === t("g1.register.departmentOther");
+    const finalDepartment = isOther ? customDepartment.trim() : department.trim();
     if (role === "LECTURER" && !finalDepartment) {
       setError(t("g1.errors.departmentRequired"));
       return;
@@ -222,22 +223,22 @@ export function RegisterPage() {
               value={department}
               onChange={(e) => {
                 setDepartment(e.target.value);
-                if (e.target.value !== "Đơn vị / Khoa khác...") {
+                if (e.target.value !== "Đơn vị / Khoa khác..." && e.target.value !== t("g1.register.departmentOther")) {
                   setCustomDepartment("");
                 }
               }}
-              placeholder="-- Chọn Khoa / Đơn vị công tác --"
+              placeholder={t("g1.register.departmentSelectPlaceholder")}
               options={FACULTY_OPTIONS}
             />
-            {department === "Đơn vị / Khoa khác..." && (
+            {(department === "Đơn vị / Khoa khác..." || department === t("g1.register.departmentOther")) && (
               <AuthTextField
                 id="register-custom-department"
-                label="Tên Khoa / Đơn vị công tác cụ thể"
+                label={t("g1.register.customDepartmentLabel")}
                 type="text"
                 required
                 value={customDepartment}
                 onChange={(e) => setCustomDepartment(e.target.value)}
-                placeholder="Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao"
+                placeholder={t("g1.register.customDepartmentPlaceholder")}
               />
             )}
           </div>
