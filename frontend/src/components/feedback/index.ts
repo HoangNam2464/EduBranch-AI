@@ -44,4 +44,6 @@ export type {
   SkeletonLineProps,
   SkeletonRegionProps,
 } from "@/components/feedback/Skeleton";
+export { SubmissionReviewList } from "@/components/feedback/SubmissionReviewList";
+export type { SubmissionReviewListProps } from "@/components/feedback/SubmissionReviewList";
 export { SUPPORT_EMAIL, formatClockTime, formatDateTime, isValidDate } from "@/components/feedback/stateFormat";
