@@ -30,8 +30,14 @@ export interface ReviewStudySubmissionRow {
 
 /**
  * Converts a backend Review Study submission row to the domain model.
+ * Never invents submittedAt; missing required submittedAt throws an error.
  */
 export function toReviewStudySubmission(row: ReviewStudySubmissionRow): ReviewStudySubmission {
+  const submittedAt = row.submittedAt ?? row.submitted_at;
+  if (!submittedAt) {
+    throw new Error("Missing required field: submittedAt");
+  }
+
   return {
     id: row.id,
     studentId: row.studentId ?? row.student_id ?? "",
@@ -43,7 +49,6 @@ export function toReviewStudySubmission(row: ReviewStudySubmissionRow): ReviewSt
     reflectionText: (row.reflectionText ?? row.reflection_text) ?? undefined,
     reflectionStatus: row.reflectionStatus ?? row.reflection_status ?? "NOT_STARTED",
     reflectionSubmittedAt: (row.reflectionSubmittedAt ?? row.reflection_submitted_at) ?? undefined,
-    submittedAt: row.submittedAt ?? row.submitted_at ?? new Date().toISOString(),
+    submittedAt,
   };
 }
-
