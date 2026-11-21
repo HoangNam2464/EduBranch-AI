@@ -1963,7 +1963,11 @@
       "saveSuccess": "Đã lưu phiếu đánh giá thành công.",
       "updateSuccess": "Đã cập nhật phiếu đánh giá thành công.",
       "deleteConfirm": "Bạn có chắc chắn muốn xóa phiếu đánh giá này không?",
-      "deleteSuccess": "Đã xóa phiếu đánh giá thành công."
+      "deleteSuccess": "Đã xóa phiếu đánh giá thành công.",
+      "saveError": "Chưa lưu được phiếu đánh giá. Vui lòng thử lại.",
+      "duplicateError": "Bạn đã có phiếu đánh giá cho case này. Hãy chỉnh sửa phiếu đã lưu.",
+      "deleteError": "Chưa xóa được phiếu đánh giá. Vui lòng thử lại.",
+      "loadError": "Chưa tải được các phiếu đánh giá. Vui lòng thử lại."
     },
     "note": {
       "label": "Ghi chú (không bắt buộc)",
@@ -1979,7 +1983,8 @@
       "unavailableDescription": "Chưa có API đọc các phiếu đánh giá rubric đã lưu.",
       "noteLabel": "Ghi chú:",
       "edit": "Sửa",
-      "delete": "Xóa"
+      "delete": "Xóa",
+      "fallbackTitle": "Phiếu #{{index}}"
     }
   },
   "states": {

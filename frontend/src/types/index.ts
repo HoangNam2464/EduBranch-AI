@@ -305,24 +305,20 @@ export interface RubricEvaluation {
   updatedAt?: string;
 }
 
-export interface CreateRubricEvaluationDto {
+/** The three fixed criteria of FR-EVAL-01, each an integer 1–5. */
+export interface RubricScoresDto {
+  realismScore: number;
+  difficultyScore: number;
+  alignmentScore: number;
+}
+
+export interface CreateRubricEvaluationDto extends RubricScoresDto {
   caseId: string;
-  criteria: Array<{
-    id?: string;
-    name: string;
-    description?: string;
-    score: number;
-  }>;
   notes?: string;
 }
 
-export interface UpdateRubricEvaluationDto {
-  criteria?: Array<{
-    id?: string;
-    name: string;
-    description?: string;
-    score: number;
-  }>;
+export interface UpdateRubricEvaluationDto extends Partial<RubricScoresDto> {
+  /** Empty string clears the note. */
   notes?: string;
 }
 

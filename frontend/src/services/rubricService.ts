@@ -1,75 +1,46 @@
 /**
  * EduBranch AI — Rubric Service
- * Case quality research rubric evaluation (BE-033 / OPD-011).
+ * Case quality rubric (BE-033 / OPD-011 / FR-EVAL-01), backend contract
+ * `specs/007-mvp-completion-backend/contracts/api.md` §4.
  *
- * REST Endpoints:
- *   GET    /evaluation/rubrics              Get all rubrics (optionally by ?caseId=...)
- *   GET    /evaluation/rubrics/:id          Get rubric by id
- *   POST   /evaluation/rubrics              Create a new case quality rubric evaluation
- *   PUT    /evaluation/rubrics/:id          Update an existing rubric evaluation
- *   DELETE /evaluation/rubrics/:id          Delete a rubric evaluation
+ *   GET    /evaluation/rubrics?caseId=   list (lecturer: own cases; admin: all)
+ *   GET    /evaluation/rubrics/:id
+ *   POST   /evaluation/rubrics           { caseId, realismScore, difficultyScore, alignmentScore, notes? }
+ *   PUT    /evaluation/rubrics/:id       evaluator only
+ *   DELETE /evaluation/rubrics/:id       evaluator only
  *
- * RULE: Zero student grading / scoring / ranking logic.
- * This evaluation strictly measures case artifact quality for academic research.
+ * RULE: rates the case artefact for research; never a student grade, score or rank.
  */
 
 import apiClient from "@/services/apiClient";
-import type {
-  CreateRubricEvaluationDto,
-  RubricEvaluation,
-  UpdateRubricEvaluationDto,
-} from "@/types";
-import { calculateAverageScore, validateCriterion } from "./rubricLogic";
+import type { CreateRubricEvaluationDto, RubricEvaluation, UpdateRubricEvaluationDto } from "@/types";
+import { calculateAverageScore, fromRubricRow, toRubricScores, type RubricRow } from "./rubricLogic";
 
-export { calculateAverageScore, validateCriterion };
+export { calculateAverageScore, toRubricScores };
 
-type Envelope<T> = { status?: string; success?: boolean; data: T };
-
-function extractData<T>(res: { data: any }): T {
-  if (res.data && typeof res.data === "object" && "data" in res.data) {
-    return res.data.data;
-  }
-  return res.data;
-}
+type Envelope<T> = { status?: string; data: T };
 
 export const rubricService = {
-  /**
-   * Fetch rubric evaluations, optionally filtered by caseId.
-   */
   async getRubrics(params?: { caseId?: string }): Promise<RubricEvaluation[]> {
-    const res = await apiClient.get<Envelope<RubricEvaluation[]>>("/evaluation/rubrics", {
-      params,
-    });
-    return extractData<RubricEvaluation[]>(res) ?? [];
+    const res = await apiClient.get<Envelope<RubricRow[]>>("/evaluation/rubrics", { params });
+    return (res.data.data ?? []).map(fromRubricRow);
   },
 
-  /**
-   * Fetch a single rubric evaluation by id.
-   */
   async getRubricById(id: string): Promise<RubricEvaluation> {
-    const res = await apiClient.get<Envelope<RubricEvaluation>>(`/evaluation/rubrics/${id}`);
-    return extractData<RubricEvaluation>(res);
+    const res = await apiClient.get<Envelope<RubricRow>>(`/evaluation/rubrics/${id}`);
+    return fromRubricRow(res.data.data);
   },
 
-  /**
-   * Create a new rubric evaluation (BE-033).
-   */
   async createRubric(dto: CreateRubricEvaluationDto): Promise<RubricEvaluation> {
-    const res = await apiClient.post<Envelope<RubricEvaluation>>("/evaluation/rubrics", dto);
-    return extractData<RubricEvaluation>(res);
+    const res = await apiClient.post<Envelope<RubricRow>>("/evaluation/rubrics", dto);
+    return fromRubricRow(res.data.data);
   },
 
-  /**
-   * Update an existing rubric evaluation (BE-033).
-   */
   async updateRubric(id: string, dto: UpdateRubricEvaluationDto): Promise<RubricEvaluation> {
-    const res = await apiClient.put<Envelope<RubricEvaluation>>(`/evaluation/rubrics/${id}`, dto);
-    return extractData<RubricEvaluation>(res);
+    const res = await apiClient.put<Envelope<RubricRow>>(`/evaluation/rubrics/${id}`, dto);
+    return fromRubricRow(res.data.data);
   },
 
-  /**
-   * Delete a rubric evaluation.
-   */
   async deleteRubric(id: string): Promise<void> {
     await apiClient.delete(`/evaluation/rubrics/${id}`);
   },

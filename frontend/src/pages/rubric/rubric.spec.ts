@@ -1,74 +1,74 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  RUBRIC_CRITERIA,
   calculateAverageScore,
-  validateCriterion,
+  fromRubricRow,
+  toRubricScores,
 } from "../../services/rubricLogic.ts";
-import type { RubricEvaluation } from "../../types/index.ts";
+import type { RubricCriterionItem } from "../../types/index.ts";
 
-describe("Rubric & Case Quality Evaluation (BE-033 / OPD-011 / Figma 07.8 & 10.8)", () => {
-  it("AC-3: validateCriterion flags empty or whitespace-only criterion names", () => {
-    assert.equal(validateCriterion("", ["Tính thực tế"]), "EMPTY");
-    assert.equal(validateCriterion("   ", ["Tính thực tế"]), "EMPTY");
-    assert.equal(validateCriterion("Độ khó", ["Tính thực tế"]), null);
-  });
+const form = (realism: number, difficulty: number, fit: number): RubricCriterionItem[] => [
+  { id: "realism", name: "Tính thực tế", score: realism },
+  { id: "difficulty", name: "Độ khó", score: difficulty },
+  { id: "curriculumFit", name: "Phù hợp môn", score: fit },
+];
 
-  it("AC-3: validateCriterion flags duplicate criterion names case-insensitively", () => {
-    const existing = ["Tính thực tế", "Độ khó", "Phù hợp môn"];
-    assert.equal(validateCriterion("Tính thực tế", existing), "DUPLICATE");
-    assert.equal(validateCriterion("tính thực tế", existing), "DUPLICATE");
-    assert.equal(validateCriterion("  ĐỘ KHÓ  ", existing), "DUPLICATE");
-    assert.equal(validateCriterion("Tính khả thi", existing), null);
-  });
-
-  it("AC-3: validateCriterion allows editing existing criterion without self-duplication", () => {
-    const existing = ["Tính thực tế", "Độ khó", "Phù hợp môn"];
-    // Editing index 1 ("Độ khó") with same name is allowed
-    assert.equal(validateCriterion("Độ khó", existing, 1), null);
-    // Editing index 1 with name of index 0 ("Tính thực tế") is a duplicate
-    assert.equal(validateCriterion("Tính thực tế", existing, 1), "DUPLICATE");
-  });
-
-  it("AC-1 & Figma 07.8/10.8: calculateAverageScore correctly computes mean with 1 decimal place", () => {
-    // Figma 07.8 shows 5, 4, 5 -> avg 4.7
-    const criteria1 = [{ score: 5 }, { score: 4 }, { score: 5 }];
-    assert.equal(calculateAverageScore(criteria1), 4.7);
-
-    // Empty list
-    assert.equal(calculateAverageScore([]), 0);
-
-    // All 5s
-    assert.equal(calculateAverageScore([{ score: 5 }, { score: 5 }]), 5.0);
-
-    // 1, 2, 3 -> avg 2.0
-    assert.equal(
-      calculateAverageScore([{ score: 1 }, { score: 2 }, { score: 3 }]),
-      2.0,
+describe("Case quality rubric (BE-033 / OPD-011 / FR-EVAL-01 / Figma 07.8 & 10.8)", () => {
+  it("has exactly the three fixed criteria of FR-EVAL-01", () => {
+    assert.deepEqual(
+      RUBRIC_CRITERIA.map((c) => c.apiKey),
+      ["REALISM", "DIFFICULTY", "ALIGNMENT"],
     );
   });
 
-  it("AC-4: Pedagogical Guardrail — zero student grading, scoring, or pass/fail in rubric models", () => {
-    const sampleEvaluation: RubricEvaluation = {
-      id: "rubric-1",
-      caseId: "case-123",
-      caseTitle: "Khủng hoảng sập mạng lưới trung tâm dữ liệu",
-      evaluatorId: "lecturer-456",
-      criteria: [
-        { name: "Tính thực tế", score: 5, description: "Mức độ sát thực tế" },
-        { name: "Độ khó", score: 4, description: "Mức độ phức tạp" },
-        { name: "Phù hợp môn", score: 5, description: "Gắn kết CLO" },
-      ],
-      averageScore: 4.7,
-      notes: "Bối cảnh sát thực tế, cần bổ sung giới hạn nguồn lực khi xử lý sự cố.",
-      createdAt: new Date().toISOString(),
-    };
+  it("calculateAverageScore uses one decimal (Figma 07.8: 5, 4, 5 -> 4.7)", () => {
+    assert.equal(calculateAverageScore([{ score: 5 }, { score: 4 }, { score: 5 }]), 4.7);
+    assert.equal(calculateAverageScore([]), 0);
+    assert.equal(calculateAverageScore([{ score: 1 }, { score: 2 }, { score: 3 }]), 2);
+  });
 
-    // Assert that rubric fields describe case quality, not student grades or pass/fail
-    const keys = Object.keys(sampleEvaluation);
-    assert.ok(!keys.includes("studentScore"));
-    assert.ok(!keys.includes("grade"));
-    assert.ok(!keys.includes("pass"));
-    assert.ok(!keys.includes("ranking"));
-    assert.equal(sampleEvaluation.averageScore, 4.7);
+  it("toRubricScores builds the API payload from the form", () => {
+    assert.deepEqual(toRubricScores(form(5, 4, 3)), {
+      realismScore: 5,
+      difficultyScore: 4,
+      alignmentScore: 3,
+    });
+  });
+
+  it("toRubricScores refuses a missing criterion or a score outside 1-5", () => {
+    assert.throws(() => toRubricScores(form(5, 4, 3).slice(0, 2)));
+    assert.throws(() => toRubricScores(form(0, 4, 3)));
+    assert.throws(() => toRubricScores(form(5, 6, 3)));
+    assert.throws(() => toRubricScores(form(5, 4, 3.5)));
+  });
+
+  it("fromRubricRow maps the API row to the three UI criteria in order", () => {
+    const ev = fromRubricRow({
+      id: "r-1",
+      caseId: "k-1",
+      caseTitle: "Case",
+      evaluatorId: "u-1",
+      evaluatorName: "Lecturer",
+      realismScore: 4,
+      difficultyScore: 3,
+      alignmentScore: 5,
+      averageScore: 4,
+      notes: "",
+      createdAt: "2026-11-21T00:00:00Z",
+    });
+    assert.deepEqual(
+      ev.criteria.map((c) => [c.id, c.score]),
+      [["realism", 4], ["difficulty", 3], ["curriculumFit", 5]],
+    );
+    assert.equal(ev.averageScore, 4);
+    assert.equal(ev.notes, undefined);
+  });
+
+  it("rates the case only: no student grade, rank or pass/fail field", () => {
+    const keys = Object.keys(toRubricScores(form(5, 5, 5)));
+    for (const k of ["studentScore", "grade", "pass", "ranking", "studentId"]) {
+      assert.ok(!keys.includes(k));
+    }
   });
 });

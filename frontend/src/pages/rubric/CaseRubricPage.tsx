@@ -18,7 +18,6 @@ import {
   ClipboardList,
   GitBranch,
   Pencil,
-  Plus,
   Save,
   Trash2,
   X,
@@ -27,7 +26,8 @@ import { BadgeBase, Button, Field, SectionHeading, Toast, ToastRegion, cx } from
 import { SkeletonLine, SkeletonRegion, StateCard } from "@/components/feedback";
 import { caseService } from "@/services/caseService";
 import { courseService } from "@/services/courseService";
-import { rubricService, calculateAverageScore, validateCriterion } from "@/services/rubricService";
+import { rubricService, calculateAverageScore, toRubricScores } from "@/services/rubricService";
+import { useAuthStore } from "@/stores/authStore";
 import type { Case, CaseDetail, Course, RubricCriterionItem, RubricEvaluation } from "@/types";
 import { PATHS } from "@/routes/paths";
 
@@ -84,11 +84,7 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
   const [editingId, setEditingId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Custom criterion modal/inline add state
-  const [isAddingCriterion, setIsAddingCriterion] = useState(false);
-  const [newCritName, setNewCritName] = useState("");
-  const [newCritDesc, setNewCritDesc] = useState("");
-  const [critValidationError, setCritValidationError] = useState<string | null>(null);
+  const currentUserId = useAuthStore((state) => state.user?.id);
 
   // Sync initial criteria names when language changes
   useEffect(() => {
@@ -148,11 +144,11 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
       setSavedEvaluations(list);
     } catch (err: unknown) {
       const status = errorCodeOf(err);
-      // If endpoint is not yet wired in backend, maintain clean fallback without crashing
+      // 404: the selected case no longer exists, so there is nothing to list.
       if (status === 404) {
         setSavedEvaluations([]);
       } else {
-        setApiError(t("rubric.scoring.unavailable"));
+        setApiError(t("rubric.scoring.loadError"));
       }
     } finally {
       setLoadingRubrics(false);
@@ -194,40 +190,6 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
     );
   };
 
-  // Add new criterion with validation
-  const handleAddCriterion = () => {
-    const existingNames = criteria.map((c) => c.name);
-    const err = validateCriterion(newCritName, existingNames);
-    if (err === "EMPTY") {
-      setCritValidationError(t("rubric.scoring.emptyCriterionError"));
-      return;
-    }
-    if (err === "DUPLICATE") {
-      setCritValidationError(t("rubric.scoring.duplicateCriterionError"));
-      return;
-    }
-
-    setCriteria((prev) => [
-      ...prev,
-      {
-        id: `custom-${Date.now()}`,
-        name: newCritName.trim(),
-        description: newCritDesc.trim() || undefined,
-        score: 5,
-        maxScore: 5,
-      },
-    ]);
-    setNewCritName("");
-    setNewCritDesc("");
-    setCritValidationError(null);
-    setIsAddingCriterion(false);
-  };
-
-  // Remove custom criterion
-  const handleRemoveCriterion = (index: number) => {
-    setCriteria((prev) => prev.filter((_, i) => i !== index));
-  };
-
   // Save or update evaluation
   const handleSubmit = async () => {
     if (!selectedCaseId && !caseData?.id) {
@@ -239,30 +201,16 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
     setSaving(true);
     setApiError(null);
     try {
+      const scores = toRubricScores(criteria);
       if (editingId) {
-        const updated = await rubricService.updateRubric(editingId, {
-          criteria: criteria.map((c) => ({
-            id: c.id,
-            name: c.name,
-            description: c.description,
-            score: c.score,
-          })),
-          notes: note.trim() || undefined,
-        });
-        setSavedEvaluations((prev) =>
-          prev.map((item) => (item.id === editingId ? { ...item, ...updated } : item)),
-        );
+        const updated = await rubricService.updateRubric(editingId, { ...scores, notes: note.trim() });
+        setSavedEvaluations((prev) => prev.map((item) => (item.id === editingId ? updated : item)));
         setToastMessage(t("rubric.scoring.updateSuccess"));
         setEditingId(null);
       } else {
         const created = await rubricService.createRubric({
           caseId: targetCaseId,
-          criteria: criteria.map((c) => ({
-            id: c.id,
-            name: c.name,
-            description: c.description,
-            score: c.score,
-          })),
+          ...scores,
           notes: note.trim() || undefined,
         });
         setSavedEvaluations((prev) => [created, ...prev]);
@@ -270,32 +218,10 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
       }
       setNote("");
     } catch (err: unknown) {
-      // Local graceful fallback if backend is offline or returned 404
-      const status = errorCodeOf(err);
-      if (status === 404 || !status) {
-        const fallbackEvaluation: RubricEvaluation = {
-          id: editingId || `eval-${Date.now()}`,
-          caseId: targetCaseId,
-          caseTitle: caseData?.title || t("rubric.case.regionLabel"),
-          criteria: [...criteria],
-          averageScore: currentAverage,
-          notes: note.trim() || undefined,
-          createdAt: new Date().toISOString(),
-        };
-        if (editingId) {
-          setSavedEvaluations((prev) =>
-            prev.map((item) => (item.id === editingId ? fallbackEvaluation : item)),
-          );
-          setToastMessage(t("rubric.scoring.updateSuccess"));
-          setEditingId(null);
-        } else {
-          setSavedEvaluations((prev) => [fallbackEvaluation, ...prev]);
-          setToastMessage(t("rubric.scoring.saveSuccess"));
-        }
-        setNote("");
-      } else {
-        setApiError(t("rubric.scoring.unavailable"));
-      }
+      // Nothing is shown as saved unless the API confirmed it (no local fallback).
+      setApiError(
+        errorCodeOf(err) === 409 ? t("rubric.scoring.duplicateError") : t("rubric.scoring.saveError"),
+      );
     } finally {
       setSaving(false);
     }
@@ -308,6 +234,8 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
       setCriteria(
         evaluation.criteria.map((c) => ({
           ...c,
+          name: t(`rubric.criteria.${c.id}.name`),
+          description: t(`rubric.criteria.${c.id}.description`),
           maxScore: c.maxScore ?? 5,
         })),
       );
@@ -337,7 +265,8 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
     try {
       await rubricService.deleteRubric(id);
     } catch {
-      // Ignore API failure for optimistic deletion
+      setApiError(t("rubric.scoring.deleteError"));
+      return;
     }
     setSavedEvaluations((prev) => prev.filter((item) => item.id !== id));
     if (editingId === id) {
@@ -509,18 +438,6 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
                     <h3 className="text-[15px] leading-5 font-medium text-ink">
                       {index + 1}. {item.name}
                     </h3>
-                    {/* Allow deleting custom criteria (beyond default 3) */}
-                    {index >= 3 && (
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveCriterion(index)}
-                        className="text-ink-muted hover:text-error transition-colors"
-                        title={t("rubric.scoring.removeCriterion", "Xóa tiêu chí")}
-                        aria-label={t("rubric.scoring.removeCriterion", "Xóa tiêu chí")}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    )}
                   </div>
                   {item.description && (
                     <p className="text-[13px] leading-4 text-ink-secondary">{item.description}</p>
@@ -557,59 +474,6 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
               </div>
             ))}
           </div>
-
-          {/* Add Custom Criterion Block */}
-          {isAddingCriterion ? (
-            <div className="flex flex-col gap-3 rounded-eb-lg border border-line bg-canvas p-4">
-              <h4 className="text-[14px] font-medium text-ink">
-                {t("rubric.scoring.newCriterionName", "Thêm tiêu chí tùy chỉnh")}
-              </h4>
-              <Field
-                label={t("rubric.scoring.criterionName", "Tên tiêu chí")}
-                placeholder="Ví dụ: Tính thực tiễn trong ngành..."
-                value={newCritName}
-                onChange={(e) => {
-                  setNewCritName(e.target.value);
-                  if (critValidationError) setCritValidationError(null);
-                }}
-                error={critValidationError}
-              />
-              <Field
-                label={t("rubric.scoring.criterionDesc", "Mô tả tiêu chí (tùy chọn)")}
-                placeholder="Mô tả chi tiết mục đích đánh giá..."
-                value={newCritDesc}
-                onChange={(e) => setNewCritDesc(e.target.value)}
-              />
-              <div className="flex items-center justify-end gap-2 pt-1">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  onClick={() => {
-                    setIsAddingCriterion(false);
-                    setNewCritName("");
-                    setNewCritDesc("");
-                    setCritValidationError(null);
-                  }}
-                >
-                  {t("caseReview.editor.cancel")}
-                </Button>
-                <Button variant="primary" size="sm" onClick={handleAddCriterion}>
-                  {t("caseReview.editor.save")}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex justify-start">
-              <Button
-                variant="secondary"
-                size="sm"
-                leadingIcon={Plus}
-                onClick={() => setIsAddingCriterion(true)}
-              >
-                {t("rubric.scoring.addCriterion", "Thêm tiêu chí")}
-              </Button>
-            </div>
-          )}
 
           {/* Notes textarea */}
           <Field
@@ -687,8 +551,9 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
                   {/* Card Header: Case Title or Identifier + Action Buttons */}
                   <div className="flex items-start justify-between gap-2">
                     <h4 className="truncate text-[14px] leading-5 font-semibold text-ink" title={evalItem.caseTitle}>
-                      {evalItem.caseTitle || `Phiếu #${idx + 1}`}
+                      {evalItem.caseTitle || t("rubric.saved.fallbackTitle", { index: idx + 1 })}
                     </h4>
+                    {evalItem.evaluatorId === currentUserId && (
                     <div className="flex shrink-0 items-center gap-1">
                       <button
                         type="button"
@@ -709,16 +574,17 @@ export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps
                         <Trash2 size={15} />
                       </button>
                     </div>
+                    )}
                   </div>
 
                   {/* Criteria Score Tags */}
                   <div className="flex flex-wrap gap-1.5">
                     {evalItem.criteria.map((c) => (
                       <span
-                        key={c.name}
+                        key={c.id}
                         className="rounded-eb-md bg-primary-subtle px-2 py-0.5 text-[12px] font-medium text-primary"
                       >
-                        {c.name} {c.score}/5
+                        {t(`rubric.criteria.${c.id}.name`)} {c.score}/5
                       </span>
                     ))}
                   </div>
