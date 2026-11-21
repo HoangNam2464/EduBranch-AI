@@ -45,9 +45,9 @@ Clean worktree; each branch tested as-is and after a local merge of `origin/deve
 | #70 | FE-022 | 1 + 2 by PO | 0 / 0 / 0 | 0 / 0 | 188 / 0 | Title has no task ID |
 | #72 | FE-026 | 1 + 2 by PO | 0 / 0 / 0 | 0 / 0 | 169 / 0 | No new test file |
 | #73 | FE-027 | 1 + 2 by PO | 0 / 0 / 0 | 0 / 0 | 183 / 0 | Commits are tagged `[D-05]`, not `[FE-027]` |
-| #74 | FE-029 | 1 by Hướng | 0 / 0 / 0 | 0 / 0 | 157 / 0 | `src/pages/rubric/rubric.spec.ts` is **not** in the `test` script, so CI never runs it (run directly: 5 pass). The commit is tagged `[BE-033]`. It sends free-form criteria, which conflicts with FR-EVAL-01 / Figma 07.8 (3 fixed criteria) |
+| #74 | FE-029 | 1 by Hướng + 1 by Claude (`a0a7124`) | 0 / 0 / 0 | 0 / 0 | 163 / 0 after the fix | Before the fix: `rubric.spec.ts` was not in the `test` script, the page sent free-form criteria (FR-EVAL-01 / Figma 07.8 define 3 fixed criteria), and a failed save or delete showed success. Claude's follow-up commit (PO request 2026-11-21) fixes these. Live run against the PR #80 backend: save, reload, duplicate (409), update and delete all reach the database |
 | #75 | FE-032 | 1 + 2 by PO | 0 / 0 / 0 | 0 / 0 | 181 / 0 | Matches the admin API in PR #80 |
-| #59 | BE-016…BE-023 | 8 by Đức Anh | build 0, unit 205/205 (on its own old base) | **conflict** | — | Most behaviour already reached `develop` through PO PRs #61, #62 and #76. Bringing PR #59 up to date needs a manual conflict resolution |
+| #59 | BE-016…BE-023 | 8 by Đức Anh + merge commit by Claude (`92a676f`) | build 0, unit 205/205 (old base) | merged with `develop` on the branch (PO request 2026-11-21): tsc 0, build 0, unit 349/349, e2e 148 pass / 33 skipped (fresh DB), matrix 24/24, regression 32/32 | — | Conflicts resolved in `case/`: the node editor takes develop's version (PR #61, FND §5; closes the High finding of 18/11); the transactional status change from BE-018 is kept. Still open from the 18/11 review: lecturer ownership on attempt/reasoning reads (Medium). It will conflict with PR #77 (reasoning) and PR #80 (`case.service.ts`), whichever merges second |
 
 GitHub CI for #68–#75 is green on their heads (React Build; NestJS where it was triggered).
 
@@ -57,11 +57,8 @@ Merging all open PRs one after another onto `develop` (simulation, not pushed):
 
 ## 4. Options for the PO (open, no interim choice)
 
-1. **Hướng's 7 PRs.** Review and merge them; they already pass. Before merging, #74 needs its spec added to the `test` script and the rubric payload aligned with FR-EVAL-01. Either Hướng does this, or Claude pushes a small commit on the branch with the PO's permission (Hướng's commit stays his).
-2. **Đức Anh's PR #59.**
-   - (A) Đức Anh merges `develop` into the branch, resolves the conflicts and fixes the review findings.
-   - (B) Claude does the conflict merge on his branch with the PO's permission. His 8 commits keep their authorship; the merge commit is Claude's.
-   - (C) Close #59 as superseded. The PR stays as the record of his work.
+1. **Hướng's 7 PRs.** Review and merge them; they pass. #74 was fixed by Claude on 2026-11-21 (PO's choice); Hướng's commit stays his.
+2. **Đức Anh's PR #59.** The PO chose option (B) on 2026-11-21: Claude merged `develop` into the branch. His 8 commits keep their authorship; the merge commit is Claude's. The PO decides the merge order relative to #77 and #80.
 3. **Baohy's closed PRs #33–#47, #57.** They remain on GitHub as evidence, with their branches. Reopening them would conflict with the code now on `develop`.
 4. **Jira "Done" tasks without assignee code (§2).**
    - (A) Keep as is.
