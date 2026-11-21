@@ -25,6 +25,8 @@ import { CaseController } from "../src/modules/case/case.controller";
 import { CaseService } from "../src/modules/case/case.service";
 import { BranchingAttemptController } from "../src/modules/branching-attempt/branching-attempt.controller";
 import { BranchingAttemptService } from "../src/modules/branching-attempt/branching-attempt.service";
+import { ReasoningController } from "../src/modules/reasoning/reasoning.controller";
+import { ReasoningService } from "../src/modules/reasoning/reasoning.service";
 import { HealthController } from "../src/common/health/health.controller";
 import { DatabaseService } from "../src/common/database/database.service";
 
@@ -162,6 +164,27 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
     submitReflection: jest.fn().mockResolvedValue({ success: true, isCompleted: true }),
   };
 
+  const validReasoningId = "11111111-1111-1111-1111-111111111111";
+  const validAttemptId = "22222222-2222-2222-2222-222222222222";
+
+  const mockReasoningService = {
+    getReasoningById: jest.fn().mockResolvedValue({
+      id: validReasoningId,
+      attempt_id: validAttemptId,
+      student_id: "student-1",
+      reasoning_text: "Reasoning for strategic option",
+      consequence: null,
+    }),
+    getReasoningsByAttempt: jest.fn().mockResolvedValue([
+      {
+        id: validReasoningId,
+        attempt_id: validAttemptId,
+        reasoning_text: "Reasoning for strategic option",
+        consequence: null,
+      },
+    ]),
+  };
+
   const mockDbService = {
     query: jest.fn().mockResolvedValue({ rows: [{ "?column?": 1 }] }),
   };
@@ -184,6 +207,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
         CourseController,
         CaseController,
         BranchingAttemptController,
+        ReasoningController,
         HealthController,
       ],
       providers: [
@@ -204,6 +228,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
         { provide: CourseService, useValue: mockCourseService },
         { provide: CaseService, useValue: mockCaseService },
         { provide: BranchingAttemptService, useValue: mockAttemptService },
+        { provide: ReasoningService, useValue: mockReasoningService },
         { provide: DatabaseService, useValue: mockDbService },
         { provide: RateLimiterService, useValue: mockRateLimiterService },
       ],
@@ -465,6 +490,54 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
           .set("Authorization", `Bearer ${lecturerToken}`)
           .send({ reflectionText: "Self-reflection on the outcome" })
           .expect(403);
+      });
+
+      it("[RBAC-13] GET /reasoning/:id — STUDENT allowed (200), LECTURER forbidden (403), ADMIN forbidden (403)", async () => {
+        const reasoningId = "11111111-1111-1111-1111-111111111111";
+        // STUDENT
+        await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${reasoningId}`)
+          .set("Authorization", `Bearer ${studentToken}`)
+          .expect(200);
+
+        // LECTURER
+        const lecRes = await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${reasoningId}`)
+          .set("Authorization", `Bearer ${lecturerToken}`)
+          .expect(403);
+        expect(lecRes.body.message).toContain("Forbidden resource");
+
+        // ADMIN
+        const adminToken = signJwt({ sub: "admin-1", role: "ADMIN" as any });
+        const adminRes = await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${reasoningId}`)
+          .set("Authorization", `Bearer ${adminToken}`)
+          .expect(403);
+        expect(adminRes.body.message).toContain("Forbidden resource");
+      });
+
+      it("[RBAC-14] GET /branching-attempts/:attemptId/reasonings — STUDENT allowed (200), LECTURER forbidden (403), ADMIN forbidden (403)", async () => {
+        const attemptId = "22222222-2222-2222-2222-222222222222";
+        // STUDENT
+        await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${attemptId}/reasonings`)
+          .set("Authorization", `Bearer ${studentToken}`)
+          .expect(200);
+
+        // LECTURER
+        const lecRes = await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${attemptId}/reasonings`)
+          .set("Authorization", `Bearer ${lecturerToken}`)
+          .expect(403);
+        expect(lecRes.body.message).toContain("Forbidden resource");
+
+        // ADMIN
+        const adminToken = signJwt({ sub: "admin-1", role: "ADMIN" as any });
+        const adminRes = await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${attemptId}/reasonings`)
+          .set("Authorization", `Bearer ${adminToken}`)
+          .expect(403);
+        expect(adminRes.body.message).toContain("Forbidden resource");
       });
     });
 

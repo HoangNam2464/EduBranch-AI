@@ -24,6 +24,8 @@ import { CaseController } from "../src/modules/case/case.controller";
 import { CaseService } from "../src/modules/case/case.service";
 import { BranchingAttemptController } from "../src/modules/branching-attempt/branching-attempt.controller";
 import { BranchingAttemptService } from "../src/modules/branching-attempt/branching-attempt.service";
+import { ReasoningController } from "../src/modules/reasoning/reasoning.controller";
+import { ReasoningService } from "../src/modules/reasoning/reasoning.service";
 import { HealthController } from "../src/common/health/health.controller";
 import { DatabaseService } from "../src/common/database/database.service";
 
@@ -193,6 +195,46 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
     }),
   };
 
+  const validOwnerReasoningId = "11111111-1111-1111-1111-111111111111";
+  const validNonExistentReasoningId = "99999999-9999-9999-9999-999999999999";
+  const validOwnerAttemptId = "22222222-2222-2222-2222-222222222222";
+  const validNonExistentAttemptId = "88888888-8888-8888-8888-888888888888";
+
+  const mockReasoningService = {
+    getReasoningById: jest.fn().mockImplementation(async (id: string, studentId: string) => {
+      if (id === validNonExistentReasoningId) {
+        throw new NotFoundException(`Reasoning record ${id} not found`);
+      }
+      if (studentId !== "student-owner-a") {
+        throw new ForbiddenException("You do not have permission to view this reasoning record");
+      }
+      return {
+        id,
+        attempt_id: validOwnerAttemptId,
+        student_id: "student-owner-a",
+        case_id: "case-1",
+        reasoning_text: "Owner reasoning",
+        consequence: null,
+      };
+    }),
+    getReasoningsByAttempt: jest.fn().mockImplementation(async (attemptId: string, studentId: string) => {
+      if (attemptId === validNonExistentAttemptId) {
+        throw new NotFoundException(`Attempt ${attemptId} not found`);
+      }
+      if (studentId !== "student-owner-a") {
+        throw new ForbiddenException("You do not have permission to view reasonings for this attempt");
+      }
+      return [
+        {
+          id: validOwnerReasoningId,
+          attempt_id: attemptId,
+          reasoning_text: "Owner reasoning",
+          consequence: null,
+        },
+      ];
+    }),
+  };
+
   const mockDbService = {
     query: jest.fn().mockResolvedValue({ rows: [{ "?column?": 1 }] }),
     getClient: jest.fn(),
@@ -211,6 +253,7 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
         CourseController,
         CaseController,
         BranchingAttemptController,
+        ReasoningController,
       ],
       providers: [
         JwtStrategy,
@@ -230,6 +273,7 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
         { provide: CourseService, useValue: mockCourseService },
         { provide: CaseService, useValue: mockCaseService },
         { provide: BranchingAttemptService, useValue: mockAttemptService },
+        { provide: ReasoningService, useValue: mockReasoningService },
         { provide: DatabaseService, useValue: mockDbService },
         { provide: RateLimiterService, useValue: mockRateLimiterService },
       ],
@@ -647,6 +691,121 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
 
         expect(res.body.status).toBe("SUCCESS");
         expect(res.body.data.id).toBe("attempt-of-student-a");
+      });
+    });
+
+    describe("3.4 Cross-Student Reasoning Isolation & Access Control (AC-R1, AC-R2, AC-R5)", () => {
+      const adminToken = signJwt({ sub: "admin-system", role: "ADMIN" as any });
+      const lecturerToken = ownerLecturerToken;
+
+      it("[SEC-OWN-13] Student B reading Student A's reasoning by ID receives 403 Forbidden", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${validOwnerReasoningId}`)
+          .set("Authorization", `Bearer ${intruderStudentToken}`)
+          .expect(403);
+
+        expect(res.body.message).toBe("You do not have permission to view this reasoning record");
+      });
+
+      it("[SEC-OWN-14] Student B reading Student A's attempt reasonings receives 403 Forbidden", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${validOwnerAttemptId}/reasonings`)
+          .set("Authorization", `Bearer ${intruderStudentToken}`)
+          .expect(403);
+
+        expect(res.body.message).toBe("You do not have permission to view reasonings for this attempt");
+      });
+
+      it("[SEC-OWN-15] Lecturer reading student reasoning by ID receives 403 Forbidden (AC-R1)", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${validOwnerReasoningId}`)
+          .set("Authorization", `Bearer ${lecturerToken}`)
+          .expect(403);
+
+        expect(res.body.message).toContain("Forbidden resource");
+      });
+
+      it("[SEC-OWN-16] Admin reading student reasoning by ID receives 403 Forbidden (AC-R1)", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${validOwnerReasoningId}`)
+          .set("Authorization", `Bearer ${adminToken}`)
+          .expect(403);
+
+        expect(res.body.message).toContain("Forbidden resource");
+      });
+
+      it("[SEC-OWN-17] Lecturer reading attempt reasonings receives 403 Forbidden (AC-R1)", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${validOwnerAttemptId}/reasonings`)
+          .set("Authorization", `Bearer ${lecturerToken}`)
+          .expect(403);
+
+        expect(res.body.message).toContain("Forbidden resource");
+      });
+
+      it("[SEC-OWN-18] Admin reading attempt reasonings receives 403 Forbidden (AC-R1)", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${validOwnerAttemptId}/reasonings`)
+          .set("Authorization", `Bearer ${adminToken}`)
+          .expect(403);
+
+        expect(res.body.message).toContain("Forbidden resource");
+      });
+
+      it("[SEC-OWN-19] Non-UUID id parameter rejected with 400 Bad Request (ParseUUIDPipe, AC-R5)", async () => {
+        await request(app.getHttpServer())
+          .get("/api/v1/reasoning/not-a-valid-uuid")
+          .set("Authorization", `Bearer ${ownerStudentToken}`)
+          .expect(400);
+
+        await request(app.getHttpServer())
+          .get("/api/v1/branching-attempts/not-a-valid-uuid/reasonings")
+          .set("Authorization", `Bearer ${ownerStudentToken}`)
+          .expect(400);
+      });
+
+      it("[SEC-OWN-20] Unauthenticated request to reasoning routes receives 401 Unauthorized", async () => {
+        await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${validOwnerReasoningId}`)
+          .expect(401);
+
+        await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${validOwnerAttemptId}/reasonings`)
+          .expect(401);
+      });
+
+      it("[SEC-OWN-21] Non-existent reasoning ID returns 404 Not Found (AC-R2)", async () => {
+        await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${validNonExistentReasoningId}`)
+          .set("Authorization", `Bearer ${ownerStudentToken}`)
+          .expect(404);
+      });
+
+      it("[SEC-OWN-22] Non-existent attempt ID returns 404 Not Found (AC-R2)", async () => {
+        await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${validNonExistentAttemptId}/reasonings`)
+          .set("Authorization", `Bearer ${ownerStudentToken}`)
+          .expect(404);
+      });
+
+      it("[SEC-OWN-23] Student A (Owner) can read their own reasoning record -> 200 OK", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/reasoning/${validOwnerReasoningId}`)
+          .set("Authorization", `Bearer ${ownerStudentToken}`)
+          .expect(200);
+
+        expect(res.body.status).toBe("SUCCESS");
+        expect(res.body.data.id).toBe(validOwnerReasoningId);
+      });
+
+      it("[SEC-OWN-24] Student A (Owner) can read their own attempt reasonings -> 200 OK", async () => {
+        const res = await request(app.getHttpServer())
+          .get(`/api/v1/branching-attempts/${validOwnerAttemptId}/reasonings`)
+          .set("Authorization", `Bearer ${ownerStudentToken}`)
+          .expect(200);
+
+        expect(res.body.status).toBe("SUCCESS");
+        expect(Array.isArray(res.body.data)).toBe(true);
       });
     });
   });
