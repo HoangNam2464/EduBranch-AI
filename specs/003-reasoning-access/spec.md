@@ -3,7 +3,7 @@
 **Feature Branch**: `fix/reasoning-access` (từ `origin/develop` `55eb9ef`)
 **Feature directory**: `specs/003-reasoning-access`
 **Created**: 2026-11-21
-**Status**: Draft — chờ G1–G6 (PO có thể gộp) và G7
+**Status**: Approved — G0 và G1–G7 đã được PO duyệt ngày 2026-11-21 (nguyên văn trong `record.md` §2). Implement và Converge đã xong; QG1–QG4 PASS. QG5: GitHub CI PASS trên head `5b20fd6`; commit chứa bản đồng bộ tài liệu này tạo head mới, nên CI phải chạy lại và PASS trên head mới. Còn chờ QG6 (PO/Code Owner duyệt và merge) và QG7 (retest trên `develop` sau merge).
 **Parent task**: BE-024 (Master `EBA-422`, Jira `EBA-71`) — `docs/03_TASK-DETAILS.md` [71]; deliverable `backend/src/modules/reasoning/*`
 **G0**: PO, chat 2026-11-21: "Sửa reasoning" (nguyên văn trong `record.md` §2)
 **Loại thay đổi**: sửa quyền/ownership (security) → workflow §4 đầy đủ, không dùng đường bug ngắn (workflow dòng 195)
@@ -34,17 +34,17 @@
 
 ## 4. Acceptance Criteria
 
-Tất cả AC là **[ĐỀ-XUẤT]** cho tới khi PO duyệt.
+Trạng thái: **[PO-ĐÃ-XÁC-NHẬN]** — AC-R1..R6 được PO duyệt cùng G1–G7 ngày 2026-11-21 ("Duyệt, bắt đầu", `record.md` §2). Bằng chứng V cho từng AC: `record.md` §6.
 
-- **AC-R1** (vai trò): LECTURER và ADMIN gọi một trong 2 route → 403. Không có JWT → 401 (giữ nguyên).
-- **AC-R2** (ownership): sinh viên gọi với reasoning hoặc attempt của sinh viên khác → 403. Id không tồn tại → 404. Điều kiện sở hữu nằm trong câu SQL (`a.student_id = $user`), không lọc sau khi đã đọc dữ liệu.
-- **AC-R3** (INV-01): attempt thuộc case không ở trạng thái `PUBLISHED` → 403, kể cả khi sinh viên là chủ attempt. Điều kiện `c.status = 'PUBLISHED'` nằm trong câu SQL.
-- **AC-R4** (ẩn hệ quả):
+- **AC-R1** (vai trò) [PO-ĐÃ-XÁC-NHẬN]: LECTURER và ADMIN gọi một trong 2 route → 403. Không có JWT → 401 (giữ nguyên).
+- **AC-R2** (ownership) [PO-ĐÃ-XÁC-NHẬN]: sinh viên gọi với reasoning hoặc attempt của sinh viên khác → 403. Id không tồn tại → 404. Điều kiện sở hữu nằm trong câu SQL (`a.student_id = $user`), không lọc sau khi đã đọc dữ liệu.
+- **AC-R3** (INV-01) [PO-ĐÃ-XÁC-NHẬN]: attempt thuộc case không ở trạng thái `PUBLISHED` → 403, kể cả khi sinh viên là chủ attempt. Điều kiện `c.status = 'PUBLISHED'` nằm trong câu SQL.
+- **AC-R4** (ẩn hệ quả) [PO-ĐÃ-XÁC-NHẬN]:
   - Khi `branching_attempts.is_completed = FALSE`, trường `consequence` của mọi dòng trả về là `null`.
   - Khi `TRUE`, trả đúng `case_options.consequence`.
   - Các trường khác giữ nguyên: `situation`, `option_text`, `reasoning_text`, `node_id`, `selected_option_id`, `submitted_at`, `attempt_id`, `id`, và `case_id`, `student_id` ở route theo id.
-- **AC-R5** (đầu vào): `:id` hoặc `:attemptId` không phải UUID → 400 (`ParseUUIDPipe`, như `case.controller.ts:102`), không còn 500.
-- **AC-R6** (hồi quy): các test hiện có vẫn pass: `npm test`, `npm run test:e2e` (cách chạy như CI), `test:matrix`, `test:regression`, `npm run build`.
+- **AC-R5** (đầu vào) [PO-ĐÃ-XÁC-NHẬN]: `:id` hoặc `:attemptId` không phải UUID → 400 (`ParseUUIDPipe`, như `case.controller.ts:102`), không còn 500.
+- **AC-R6** (hồi quy) [PO-ĐÃ-XÁC-NHẬN]: các test hiện có vẫn pass: `npm test`, `npm run test:e2e` (cách chạy như CI), `test:matrix`, `test:regression`, `npm run build`.
 
 ## 5. Mã lỗi
 
@@ -63,4 +63,5 @@ FND §4 INV-01, §6 (Experience/Review); `FEATURE-AUTH-AND-ROLES.md` §9; `FEATU
 ## Clarifications
 
 - Không có câu hỏi mở. Mọi quy tắc đều có nguồn ở §6.
+- Phạm vi INV-01 trong spec này: điều kiện là `cases.status = 'PUBLISHED'` cộng quyền sở hữu attempt. Spec không thêm điều kiện ghi danh khóa học: theo FR-BS-01 và OPD-001 → A, liên kết trực tiếp tới case PUBLISHED vẫn hoạt động; chỉ các danh sách (Bàn học, Khóa học của tôi) giới hạn theo lớp đã tham gia. Reasoning chỉ tồn tại trong attempt mà chính sinh viên đã bắt đầu, nên spec này không mở rộng quyền truy cập.
 - Quyết định kỹ thuật: dùng `null` (không bỏ trường) khi ẩn `consequence`, để mọi dòng có cùng cấu trúc. Tiền lệ `getAttempt` bỏ trường (`undefined`). Cả hai cách đều không lộ nội dung; frontend không dùng các route này.

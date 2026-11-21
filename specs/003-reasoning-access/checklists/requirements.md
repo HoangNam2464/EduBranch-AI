@@ -2,6 +2,8 @@
 
 Claude đề xuất câu trả lời. Chỉ PO hoặc người review được chỉ định mới đánh `[x]`. Một mục đã đánh dấu không có nghĩa là đã làm xong.
 
+> Trạng thái gate G4: PASS qua phê duyệt gộp G1–G6 của PO ngày 2026-11-21 (`record.md` §2). Các ô bên dưới giữ nguyên chưa đánh dấu vì PO duyệt ở mức gate, không đánh dấu từng mục.
+
 - [ ] CHK001 Mỗi AC kiểm thử được bằng một mã HTTP hoặc giá trị trường cụ thể. Đề xuất: đạt (AC-R1..R5 có mã HTTP; AC-R4 có giá trị `null` hoặc văn bản).
 - [ ] CHK002 Vai trò đầy đủ (STUDENT chủ attempt, STUDENT khác, LECTURER, ADMIN, không JWT). Đề xuất: đạt (spec §2, §5).
 - [ ] CHK003 Ownership và INV-01 nằm ở mức truy vấn, đúng FND §4. Đề xuất: đạt (AC-R2, AC-R3).

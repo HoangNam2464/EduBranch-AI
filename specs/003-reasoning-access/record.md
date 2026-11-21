@@ -1,13 +1,14 @@
 # Feature Record: 003-reasoning-access — Chặn truy cập trái phép API reasoning [BE-024]
 
 > Theo `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` §3–§6. Nội dung tiếng Việt.
-> **Created**: 2026-11-21 · **Last Updated**: 2026-11-21 (G1–G7 đã duyệt; Implement + Converge xong, QG1–QG4 PASS)
+> **Created**: 2026-11-21 · **Last Updated**: 2026-11-21 (G0–G7 đã duyệt; Implement + Converge xong; QG1–QG4 PASS; QG5 PASS trên `5b20fd6`, phải chạy lại trên head mới; chờ QG6 và QG7)
 
 ## 1. Discover (Stage 0)
 
 ### 1.1 Workspace & Git
 - Workspace: git worktree `D:\CAPSTONE_2026\EduBranch-AI-reasoning-fix`. Đây không phải checkout chính của PO.
 - Nhánh: `fix/reasoning-access`, tạo từ `origin/develop` `55eb9ef` (fetch 2026-11-21). Chưa có commit code.
+- Đồng bộ 2026-11-21: merge `develop` `6f903f2` (PR #78: font hệ thống, sidebar — 4 file frontend/docs, không trùng file nào của PR) vào nhánh bằng merge commit `3499b08`, không rebase và không force-push. Sau merge, diff của PR so với `develop` vẫn đúng 12 file như trước.
 
 ### 1.2 Parent task
 | Group | Master | Jira | Trạng thái nguồn | Jira |
@@ -82,4 +83,17 @@ Trong lúc review PR #59 ngày 2026-11-21, Claude phát hiện lỗi có sẵn t
 | AC-R6 | — | toàn bộ bảng §5 | PASS |
 
 - Người viết code là Antigravity; người chạy lại test và review là Claude.
-- Còn lại: GitHub CI chưa chạy (QG5). Retest trên develop sau merge thuộc QG7.
+- Toàn bộ AC-R1..R6 có trạng thái **[PO-ĐÃ-XÁC-NHẬN]** (G1–G7, §2) và V = PASS (bảng trên).
+
+## 7. Quality Gates sau Converge
+
+| Gate | Trạng thái | Bằng chứng |
+|---|---|---|
+| QG1 Developer tests | PASS | §5. Chạy lại sau khi merge `develop` (`3499b08` cộng bản đồng bộ tài liệu này), ngày 2026-11-21, DB sạch: `npm run build` 0; `npm test` 314/314; `npm run test:e2e` cách CI (`POSTGRES_PORT=1`) 162 pass, 43 skip; `npm run test:e2e` có DB 162 pass, 43 skip; `test:matrix` 26/26; `test:regression` 44/44; live `reasoning-access` 10/10. |
+| QG2 Independent review | PASS | §4, §6; review lặp lại trong phiên khác ngày 2026-11-21 trên worktree sạch tại `5b20fd6`: build 0; `npm test` 314/314; `npm run test:e2e` 162 pass, 43 skip; `test:matrix` 26/26; `test:regression` 44/44; live `reasoning-access` 10/10. Không có finding Critical/High/Medium; Low R1: 404/403 cho phép dò sự tồn tại của UUID — đã được AC-R2 chấp nhận, không sửa. Info R2: header `spec.md` còn ghi Draft — đã sửa ở bản này. |
+| QG3 Browser check | N/A | Không có thay đổi frontend; frontend không gọi 2 route này. |
+| QG4 No open failure | PASS | Không còn mục failed/BLOCKED trong phạm vi. Không có chuỗi giao diện mới nên không cần chạy l10n check. |
+| QG5 PR checks | PASS trên `5b20fd6`; chạy lại trên head mới | Bằng chứng chỉ có giá trị cho đúng SHA được chạy. Commit đồng bộ tài liệu (header spec, nhãn AC, mục §7 này) tạo head mới: CI phải PASS trên SHA đó trước QG6, và SHA cùng link run mới được ghi bổ sung vào đây. Lần chạy trước: GitHub Actions "Backend CI" trên head `5b20fd63af80f754bda7ccb5941c40e2cbf5b41c`: run #175 (event `push`, https://github.com/HoangNam2464/EduBranch-AI/actions/runs/44802335368) và run #176 (event `pull_request`, PR #77, https://github.com/HoangNam2464/EduBranch-AI/actions/runs/44802386237), cả hai `conclusion: success` (2026-11-20 19:27–19:28 UTC). Các bước job "NestJS Build & Test": Build, Unit Tests (`npm test -- --runInBand`), HTTP Security E2E Tests (`npm run test:e2e -- --runInBand`) đều success. CI không có Postgres, nên các suite live và `migration.integration` bị skip; suite live đã chạy cục bộ ở §5 và trong QG2. |
+| QG6 Merge | Chờ | Chưa có review submission trên GitHub. Cần PO/Code Owner duyệt; admin-merge chỉ khi PO ra lệnh trực tiếp cho PR #77 (policy §7). Claude không approve, không merge. |
+| Rủi ro còn lại | Đã chấp nhận | Trả 404 cho id không tồn tại và 403 cho id của sinh viên khác, nên người gọi có thể biết một UUID có tồn tại hay không. Hành vi này đúng AC-R2 đã duyệt và theo tiền lệ `getAttempt`; UUID ngẫu nhiên khiến việc dò thực tế không khả thi. Không mở rộng phạm vi sửa. |
+| QG7 Post-merge | Chờ (hậu kiểm) | Sau merge: chạy lại QG1 trên `develop` tại merge SHA (build, `npm test`, `npm run test:e2e`, `test:matrix`, `test:regression`, live `reasoning-access`). Chỉ khi PASS mới chuyển Jira EBA-71 (BE-024) sang Done. |
