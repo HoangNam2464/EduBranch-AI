@@ -169,7 +169,7 @@ flowchart TD
     end
 
     subgraph Providers ["☁️ External LLM Providers"]
-        LLM["Google Gemini 2.0 Flash / OpenAI GPT-4o-mini\n(Provider Abstraction)"]
+        LLM["Google Gemini 3.5 Flash / OpenAI GPT-4o-mini\n(Provider Abstraction)"]
     end
 
     FE -->|REST API + JWT| BG
@@ -203,7 +203,7 @@ flowchart TD
 | **HTTP Client** | Axios | Centralized client with JWT auth interceptors |
 | **Backend Gateway** | Node.js 20 LTS, NestJS 10, TypeScript | REST API Gateway, Auth, RBAC, Business State |
 | **AI / RAG Service** | Python 3.12, FastAPI, LangChain | Internal AI microservice, document chunking, RAG |
-| **LLM Providers** | Gemini 2.0 Flash / OpenAI GPT-4o-mini | Unified via Provider Abstraction (`providers/factory.py`) |
+| **LLM Providers** | Gemini 3.5 Flash (`gemini-3.5-flash`) / OpenAI GPT-4o-mini | Unified via Provider Abstraction (`providers/factory.py`) |
 | **Relational & Vector**| PostgreSQL 16 + pgvector | Relational entities & 1536/768-dim embeddings |
 | **Cache & Sessions** | Redis 7 | Revocation blacklist, transient session cache |
 | **Object Storage** | MinIO (S3 Compatible) | PDF / DOCX teaching syllabus uploads |
@@ -252,12 +252,14 @@ EduBranch-AI/
 │
 ├── frontend/                        ← React 19 + TypeScript + Vite Client
 │   ├── src/
-│   │   ├── app/router.tsx           ← React Router configuration
-│   │   ├── components/              ← UI primitives & decision tree components
-│   │   ├── layouts/                 ← PublicLayout, LecturerLayout, StudentLayout
-│   │   ├── pages/                   ← Route view shells (Lecturer / Student)
-│   │   ├── services/apiClient.ts    ← Centralized Axios API client
-│   │   ├── stores/authStore.ts      ← Zustand authentication state
+│   │   ├── routes/                  ← paths.ts (route SSOT), AppRoutes.tsx, PrivateRoute.tsx
+│   │   ├── layouts/                 ← Public, Lecturer, Student, Admin layouts
+│   │   ├── pages/<feature>/         ← Screens grouped by feature (auth, courses, cases, branching…)
+│   │   ├── components/              ← ui/ primitives + feature components
+│   │   ├── services/                ← apiClient.ts (single Axios client) + one service per feature
+│   │   ├── stores/                  ← Zustand state (auth, case study)
+│   │   ├── config/ · providers/     ← API config · app-wide providers
+│   │   ├── lib/i18n.ts · locales/   ← i18n setup · vi.json / en.json (Vietnamese default)
 │   │   └── types/index.ts           ← Shared domain TypeScript declarations
 │   └── package.json
 │

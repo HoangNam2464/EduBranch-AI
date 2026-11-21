@@ -7,19 +7,32 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { User } from "../types";
+import type { User } from "@/types";
+
+const logoutListeners = new Set<() => void>();
+
+/** Register a callback invoked synchronously whenever logout() executes. */
+export function onAuthLogout(callback: () => void): () => void {
+  logoutListeners.add(callback);
+  return () => {
+    logoutListeners.delete(callback);
+  };
+}
 
 interface AuthState {
   user: User | null;
   accessToken: string | null;
   refreshToken: string | null;
   isAuthenticated: boolean;
+  /** True after an API call returned 401 while signed in (Figma 01.6 dialog). Not persisted. */
+  sessionExpired: boolean;
 
   // Actions
   setUser: (user: User) => void;
   setTokens: (accessToken: string, refreshToken?: string) => void;
   login: (user: User, accessToken: string, refreshToken?: string) => void;
   logout: () => void;
+  markSessionExpired: () => void;
 
   // Computed helpers
   isLecturer: () => boolean;
@@ -33,6 +46,7 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
+      sessionExpired: false,
 
       setUser: (user) => set({ user, isAuthenticated: true }),
 
@@ -45,15 +59,29 @@ export const useAuthStore = create<AuthState>()(
           accessToken,
           refreshToken: refreshToken ?? null,
           isAuthenticated: true,
+          sessionExpired: false,
         }),
 
-      logout: () =>
+      logout: () => {
+        logoutListeners.forEach((fn) => {
+          try {
+            fn();
+          } catch {
+            // ignore subscriber errors
+          }
+        });
         set({
           user: null,
           accessToken: null,
           refreshToken: null,
           isAuthenticated: false,
-        }),
+          sessionExpired: false,
+        });
+      },
+
+      markSessionExpired: () => {
+        if (get().isAuthenticated) set({ sessionExpired: true });
+      },
 
       isLecturer: () => get().user?.role === "LECTURER",
       isStudent: () => get().user?.role === "STUDENT",

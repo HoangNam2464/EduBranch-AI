@@ -27,6 +27,26 @@ class CaseGenerationException(Exception):
     """Raised when case generation fails or produces invalid output."""
 
 
+class GenerationTimeoutError(CaseGenerationException):
+    """Raised when provider call or overall generation times out (AC-4, AC-8)."""
+
+
+class GenerationRetryExhaustedError(CaseGenerationException):
+    """Raised when transient retry attempts are exhausted without success (AC-5, AC-8)."""
+
+
+class GenerationValidationError(CaseGenerationException):
+    """Raised when generated output repeatedly fails schema or graph validation (AC-3, AC-8)."""
+
+
+class NonRetryableProviderError(CaseGenerationException):
+    """Raised when a non-recoverable 4xx or fatal provider error occurs (AC-7)."""
+
+
+class IdempotencyConflictError(CaseGenerationException):
+    """Raised when duplicate request has conflicting parameters (AC-9)."""
+
+
 class ChallengeSupportException(Exception):
     """Raised when AI Reasoning/Challenge Support fails to generate a counter-question."""
 

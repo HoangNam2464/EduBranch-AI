@@ -55,8 +55,8 @@ class Settings(BaseSettings):
 
     # Google Gemini
     gemini_api_key: str = ""
-    gemini_model: str = "gemini-2.0-flash"
-    gemini_embedding_model: str = "text-embedding-004"
+    gemini_model: str = "gemini-3.5-flash"  # pinned; 2.0-flash retired (PO 2026-11-17)
+    gemini_embedding_model: str = "gemini-embedding-001"
 
     # =========================================================================
     # MinIO — Object Storage
@@ -68,11 +68,19 @@ class Settings(BaseSettings):
     minio_secure: bool = False  # True in production (HTTPS)
 
     # =========================================================================
-    # RAG Configuration
+    # RAG Configuration (AC-1: 500-1000 tokens/chars, overlap 100)
     # =========================================================================
-    rag_chunk_size: int = 512
-    rag_chunk_overlap: int = 64
+    rag_chunk_size: int = 800
+    rag_chunk_overlap: int = 100
     rag_top_k: int = 5
+
+    # =========================================================================
+    # AI Case Generation & Provider Limits [BE-015] (AC-4, AC-5, AC-6)
+    # =========================================================================
+    generation_timeout_seconds: float = 45.0  # Configurable timeout, default 45s (30s-60s per AC-4)
+    generation_max_attempts: int = 3  # 1 initial + max 2 retries (total 3 attempts per AC-5)
+    generation_retry_base_delay: float = 0.5  # Base delay for exponential backoff
+    generation_idempotency_ttl_seconds: int = 3600  # 1 hour TTL for idempotency deduplication cache
 
     # =========================================================================
     # AI Reasoning / Challenge Support

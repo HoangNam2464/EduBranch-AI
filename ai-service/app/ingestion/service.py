@@ -21,6 +21,7 @@ from app.core.config import settings
 from app.core.exceptions import DocumentParsingException, EmbeddingException
 from app.core.logging import logger
 from app.ingestion.chunker import DocumentChunker
+from app.ingestion.embedder import DocumentEmbedder
 from app.ingestion.parser import DocumentParser
 from app.ingestion.vector_store import VectorStore
 from app.providers.factory import get_provider
@@ -199,14 +200,9 @@ async def ingest_document(
 
         chunk_texts = [c.text for c in chunks]
 
-        # Step 4: Generate embeddings (batch)
-        provider = get_provider()
-        embeddings = await provider.generate_embeddings_batch(chunk_texts)
-
-        if len(embeddings) != len(chunk_texts):
-            raise EmbeddingException(
-                f"Embedding count mismatch: expected {len(chunk_texts)}, got {len(embeddings)}"
-            )
+        # Step 4: Generate embeddings via DocumentEmbedder [BE-010]
+        embedder = DocumentEmbedder(provider=get_provider())
+        embeddings = await embedder.embed_chunks(chunk_texts)
 
         # Step 5: Delete old chunks (idempotent), then insert new ones
         await _delete_existing_chunks(conn, material_id)

@@ -41,6 +41,15 @@ class BaseLLMProvider(ABC):
             Validated dict conforming to schema
         """
 
+    @property
+    def embedding_dimension(self) -> int:
+        """
+        Return the vector embedding dimension for this provider.
+
+        Default is 768 (document_chunks.embedding is vector(768)). Subclasses may override.
+        """
+        return 768
+
     @abstractmethod
     async def generate_embedding(self, text: str) -> list[float]:
         """

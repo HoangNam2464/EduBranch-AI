@@ -8,9 +8,10 @@ import {
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
-import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
 import { CaseStatus } from "./dto/update-case-status.dto";
 import { randomUUID } from "crypto";
+import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
+import { findTreeViolation } from "./case-tree.validator";
 
 @Injectable()
 export class CaseService {
@@ -24,7 +25,7 @@ export class CaseService {
   async generateCase(
     courseId: string,
     lecturerId: string,
-    dto: { materialIds: string[]; topicHint?: string; numNodes?: number },
+    dto: { materialIds: string[]; topicHint?: string; numNodes?: number; idempotencyKey?: string },
   ) {
     // Verify lecturer exists
     const userRes = await this.db.query(
@@ -37,25 +38,40 @@ export class CaseService {
 
     // Verify course exists and belongs to this lecturer
     const courseRes = await this.db.query(
-      "SELECT id FROM courses WHERE id = $1 AND lecturer_id = $2",
+      "SELECT id, is_active FROM courses WHERE id = $1 AND lecturer_id = $2",
       [courseId, lecturerId],
     );
     if (courseRes.rows.length === 0) {
       throw new NotFoundException(`Course ${courseId} not found or access denied`);
     }
+    // C1-B / OPD-014: no new cases in an archived course
+    if (courseRes.rows[0].is_active === false) {
+      throw new ConflictException("Course is archived");
+    }
 
-    // 2. Call AI Service to generate case draft
+    // 2. Call AI Service to generate case draft with idempotency support
     const aiResponse = await this.aiClient.generateCase({
       material_ids: dto.materialIds,
       course_id: courseId,
       topic_hint: dto.topicHint,
       num_nodes: dto.numNodes,
+      idempotency_key: dto.idempotencyKey,
     });
 
     const client = await this.db.getClient();
     let transactionCommitted = false;
     try {
       await client.query("BEGIN");
+
+      // C1-B: the AI call above can take long; re-check under a share lock so a course
+      // archived meanwhile gets no new case (the lock holds off a concurrent archive)
+      const lockRes = await client.query(
+        "SELECT is_active FROM courses WHERE id = $1 FOR SHARE",
+        [courseId],
+      );
+      if (lockRes.rows[0]?.is_active !== true) {
+        throw new ConflictException("Course is archived");
+      }
 
       const caseId = randomUUID();
       const title = aiResponse.title || "University Case Study";
@@ -335,191 +351,139 @@ export class CaseService {
     }
   }
 
-  async updateCaseNode(
-    caseId: string,
-    nodeId: string,
-    lecturerId: string,
-    dto: UpdateCaseNodeDto,
-  ) {
-    if (!dto || typeof dto.situation !== "string" || !dto.situation.trim()) {
-      throw new BadRequestException("Node situation must be a non-empty string");
-    }
-    if (!Array.isArray(dto.options)) {
-      throw new BadRequestException("Node options must be an array");
-    }
-    for (const [index, option] of dto.options.entries()) {
-      if (!option || typeof option.text !== "string" || !option.text.trim()) {
-        throw new BadRequestException(`Option ${index} text must be a non-empty string`);
-      }
-      if (typeof option.consequence !== "string" || !option.consequence.trim()) {
-        throw new BadRequestException(`Option ${index} consequence must be a non-empty string`);
-      }
-      if (option.nextNodeId !== null &&
-          (typeof option.nextNodeId !== "string" || !option.nextNodeId.trim())) {
-        throw new BadRequestException(`Option ${index} nextNodeId must be a node UUID or null`);
+  /**
+   * BE-017 / FE-009: `PUT /cases/:id/nodes/:nodeId` saves one node — its situation and its
+   * options (text, consequence, next node). Options with an `id` are updated in place, new
+   * ones are inserted, missing ones are deleted. The whole tree is checked (FND §5) before
+   * anything is written. The case status does not change (BE-017 AC-3, PO 2026-11-19);
+   * editing is allowed in DRAFT and REVIEWED only, like `PUT /cases/:id`.
+   */
+  async updateCaseNode(caseId: string, nodeId: string, lecturerId: string, dto: UpdateCaseNodeDto) {
+    if (!dto.situation?.trim()) throw new BadRequestException("Situation is required");
+    for (const option of dto.options ?? []) {
+      if (!option.text?.trim() || !option.consequence?.trim()) {
+        throw new BadRequestException("Every option needs a text and a consequence");
       }
     }
-
     const client = await this.db.getClient();
-    let transactionCommitted = false;
     try {
       await client.query("BEGIN");
       const caseRes = await client.query(
-        `SELECT c.id, c.status, c.learning_mode, c.root_node_id, co.lecturer_id
+        `SELECT c.status, c.learning_mode, c.root_node_id, co.lecturer_id, co.is_active
          FROM cases c
          JOIN courses co ON co.id = c.course_id
          WHERE c.id = $1
          FOR UPDATE OF c`,
         [caseId],
       );
-      if (caseRes.rows.length === 0) {
-        throw new NotFoundException(`Case ${caseId} not found`);
-      }
+      if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
       const caseRow = caseRes.rows[0];
       if (caseRow.lecturer_id !== lecturerId) {
         throw new ForbiddenException("You can only edit cases in your own courses");
       }
-      if (caseRow.status !== "DRAFT") {
-        throw new ForbiddenException("Only DRAFT cases can be edited. Revert the case to DRAFT through the lifecycle workflow first.");
+      // C1-B / OPD-014: an archived course is read-only, as for case generation
+      if (caseRow.is_active === false) throw new ConflictException("Course is archived");
+      if (caseRow.status === "APPROVED" || caseRow.status === "PUBLISHED") {
+        throw new ForbiddenException("Cannot edit an APPROVED or PUBLISHED case directly. Revert to DRAFT first.");
       }
       if (caseRow.learning_mode === "REVIEW_STUDY") {
-        throw new BadRequestException("Review Study cases do not have decision tree nodes");
+        throw new BadRequestException("Review Study cases have no decision tree nodes");
       }
 
-      const nodesRes = await client.query(
-        `SELECT id, situation, is_terminal, node_index
-         FROM case_nodes WHERE case_id = $1 ORDER BY node_index ASC FOR UPDATE`,
-        [caseId],
-      );
-      const nodes = nodesRes.rows as Array<{
-        id: string; situation: string; is_terminal: boolean; node_index: number | null;
-      }>;
-      const editedNode = nodes.find((node) => node.id === nodeId);
-      if (!editedNode) {
+      const nodesRes = await client.query("SELECT id FROM case_nodes WHERE case_id = $1 FOR UPDATE", [caseId]);
+      const nodes = nodesRes.rows as Array<{ id: string }>;
+      if (!nodes.some((n) => n.id === nodeId)) {
         throw new NotFoundException(`Node ${nodeId} not found in case ${caseId}`);
       }
-
-      const nodeIds = nodes.map((node) => node.id);
-      const optionsRes = nodeIds.length > 0
-        ? await client.query(
-          `SELECT id, node_id, option_text, consequence, next_node_id
-           FROM case_options WHERE node_id = ANY($1) FOR UPDATE`,
-          [nodeIds],
-        )
-        : { rows: [] };
-      const optionsByNode = new Map<string, Array<{
-        option_text: string; consequence: string; next_node_id: string | null;
-      }>>();
-      for (const option of optionsRes.rows) {
-        const current = optionsByNode.get(option.node_id) || [];
-        current.push({
-          option_text: option.option_text,
-          consequence: option.consequence,
-          next_node_id: option.next_node_id,
-        });
-        optionsByNode.set(option.node_id, current);
-      }
-      optionsByNode.set(nodeId, dto.options.map((option) => ({
-        option_text: option.text.trim(),
-        consequence: option.consequence.trim(),
-        next_node_id: option.nextNodeId,
-      })));
-
-      this.validateCaseTree(caseRow.root_node_id, nodeId, nodes, optionsByNode);
-
-      const isTerminal = dto.options.length === 0;
-      await client.query(
-        `UPDATE case_nodes SET situation = $1, is_terminal = $2
-         WHERE id = $3 AND case_id = $4`,
-        [dto.situation.trim(), isTerminal, nodeId, caseId],
+      const optionsRes = await client.query(
+        `SELECT o.id, o.node_id, o.next_node_id
+         FROM case_options o JOIN case_nodes n ON n.id = o.node_id
+         WHERE n.case_id = $1
+         FOR UPDATE OF o`,
+        [caseId],
       );
-      await client.query("DELETE FROM case_options WHERE node_id = $1", [nodeId]);
+      const options = optionsRes.rows as Array<{ id: string; node_id: string; next_node_id: string | null }>;
+      const ownOptionIds = new Set(options.filter((o) => o.node_id === nodeId).map((o) => o.id));
+
+      const seenIds = new Set<string>();
       for (const option of dto.options) {
-        await client.query(
-          `INSERT INTO case_options (id, node_id, option_text, consequence, next_node_id)
-           VALUES ($1, $2, $3, $4, $5)`,
-          [randomUUID(), nodeId, option.text.trim(), option.consequence.trim(), option.nextNodeId],
-        );
+        if (!option.id) continue;
+        if (!ownOptionIds.has(option.id)) {
+          throw new BadRequestException(`Option ${option.id} does not belong to node ${nodeId}`);
+        }
+        if (seenIds.has(option.id)) throw new BadRequestException(`Option ${option.id} is listed twice`);
+        seenIds.add(option.id);
       }
+
+      const targetsByNode = new Map<string, string[]>();
+      for (const o of options) {
+        if (o.node_id === nodeId) continue;
+        const list = targetsByNode.get(o.node_id) ?? [];
+        list.push(o.next_node_id ?? "");
+        targetsByNode.set(o.node_id, list);
+      }
+      targetsByNode.set(nodeId, dto.options.map((o) => o.nextNodeId));
+      const violation = findTreeViolation(caseRow.root_node_id, nodes, targetsByNode, nodeId);
+      if (violation) throw new BadRequestException(violation);
+
+      const keptIds = new Set(dto.options.filter((o) => o.id).map((o) => o.id as string));
+      const removedIds = [...ownOptionIds].filter((id) => !keptIds.has(id));
+      if (removedIds.length > 0) {
+        const usedRes = await client.query(
+          "SELECT COUNT(*)::int AS count FROM student_reasoning WHERE selected_option_id = ANY($1)",
+          [removedIds],
+        );
+        if ((usedRes.rows[0]?.count ?? 0) > 0) {
+          throw new ConflictException("An option that students already chose cannot be removed");
+        }
+        try {
+          await client.query("DELETE FROM case_options WHERE id = ANY($1)", [removedIds]);
+        } catch (e) {
+          // Any other table that still references the option (e.g. legacy student_arguments): 409, not 500.
+          if ((e as { code?: string }).code === "23503") {
+            throw new ConflictException("An option that students already used cannot be removed");
+          }
+          throw e;
+        }
+      }
+      for (const option of dto.options) {
+        const text = option.text.trim();
+        const consequence = option.consequence.trim();
+        if (option.id) {
+          await client.query(
+            "UPDATE case_options SET option_text = $1, consequence = $2, next_node_id = $3 WHERE id = $4 AND node_id = $5",
+            [text, consequence, option.nextNodeId, option.id, nodeId],
+          );
+        } else {
+          await client.query(
+            "INSERT INTO case_options (id, node_id, option_text, consequence, next_node_id) VALUES ($1, $2, $3, $4, $5)",
+            [randomUUID(), nodeId, text, consequence, option.nextNodeId],
+          );
+        }
+      }
+      await client.query("UPDATE case_nodes SET situation = $1, is_terminal = $2 WHERE id = $3 AND case_id = $4", [
+        dto.situation.trim(),
+        dto.options.length === 0,
+        nodeId,
+        caseId,
+      ]);
+      // Re-check the edited node against what was actually written before committing.
+      const writtenRes = await client.query("SELECT next_node_id FROM case_options WHERE node_id = $1", [nodeId]);
+      targetsByNode.set(
+        nodeId,
+        (writtenRes.rows as Array<{ next_node_id: string | null }>).map((r) => r.next_node_id ?? ""),
+      );
+      const afterWrite = findTreeViolation(caseRow.root_node_id, nodes, targetsByNode, nodeId);
+      if (afterWrite) throw new BadRequestException(afterWrite);
       await client.query("UPDATE cases SET updated_at = NOW() WHERE id = $1", [caseId]);
       await client.query("COMMIT");
-      transactionCommitted = true;
-
-      return await this.getCaseById(caseId, "LECTURER", lecturerId);
-    } catch (error) {
-      if (!transactionCommitted) {
-        await client.query("ROLLBACK");
-      }
-      throw error;
+    } catch (e) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw e;
     } finally {
       client.release();
     }
-  }
-
-  private validateCaseTree(
-    rootNodeId: string | null,
-    editedNodeId: string,
-    nodes: Array<{ id: string; situation: string; is_terminal: boolean }>,
-    optionsByNode: Map<string, Array<{ next_node_id: string | null }>>,
-  ) {
-    const nodeIds = new Set(nodes.map((node) => node.id));
-    if (nodes.length < 2) {
-      throw new BadRequestException("Decision tree must contain a root node and at least one child node");
-    }
-    if (!rootNodeId || !nodeIds.has(rootNodeId)) {
-      throw new BadRequestException("Decision tree must have a valid root node");
-    }
-
-    const adjacency = new Map<string, string[]>();
-    let terminalCount = 0;
-    for (const node of nodes) {
-      const options = optionsByNode.get(node.id) || [];
-      const isTerminal = node.id === editedNodeId ? options.length === 0 : node.is_terminal;
-      if (isTerminal !== (options.length === 0)) {
-        throw new BadRequestException(`Node ${node.id} terminal state does not match its options`);
-      }
-      if (isTerminal) {
-        terminalCount++;
-      } else if (options.length < 2 || options.length > 4) {
-        throw new BadRequestException(`Non-terminal node ${node.id} must have between 2 and 4 options`);
-      }
-      const targets: string[] = [];
-      for (const option of options) {
-        if (option.next_node_id === null) continue;
-        if (!nodeIds.has(option.next_node_id)) {
-          throw new BadRequestException(`Option references a node outside case: ${option.next_node_id}`);
-        }
-        targets.push(option.next_node_id);
-      }
-      adjacency.set(node.id, targets);
-    }
-    if (terminalCount === 0) {
-      throw new BadRequestException("Decision tree must contain at least one terminal node");
-    }
-
-    // Three-color DFS detects back edges and guarantees acyclicity.
-    const colors = new Map<string, 0 | 1 | 2>();
-    const visit = (nodeId: string): void => {
-      const color = colors.get(nodeId) || 0;
-      if (color === 1) throw new BadRequestException("Cannot save decision tree: loop detected");
-      if (color === 2) return;
-      colors.set(nodeId, 1);
-      for (const target of adjacency.get(nodeId) || []) visit(target);
-      colors.set(nodeId, 2);
-    };
-    for (const node of nodes) visit(node.id);
-
-    const reachable = new Set<string>();
-    const queue = [rootNodeId];
-    while (queue.length > 0) {
-      const current = queue.shift()!;
-      if (reachable.has(current)) continue;
-      reachable.add(current);
-      queue.push(...(adjacency.get(current) || []));
-    }
-    if (reachable.size !== nodes.length) {
-      throw new BadRequestException("This node has no incoming path from the start");
-    }
+    return this.getCaseById(caseId, "LECTURER", lecturerId);
   }
 
   async updateCaseStatus(

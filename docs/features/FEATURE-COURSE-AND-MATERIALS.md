@@ -65,7 +65,7 @@ Enables university lecturers to organize their teaching domains by establishing 
 ## 8. Business Rules
 - **BR-MAT-01**: Only PDF and DOCX file types are allowed; executable, archive, image, or generic text formats must be rejected.
 - **BR-MAT-02**: Teaching materials belong strictly to the course they were uploaded to; cross-course material sharing is not permitted in MVP.
-- **BR-MAT-03**: Deleting a course cascades deletion or archiving of associated materials and generated cases.
+- **BR-MAT-03**: Courses are archived, never hard-deleted (OPD-014, PO decision 2026-11-16, C1-B). Archiving sets `courses.is_active = false` through `PATCH /courses/:courseId/archive` (owner lecturer only); associated materials, pgvector chunks, MinIO objects and cases are kept. An archived course leaves the lecturer's active course list and rejects new material uploads and case generation (HTTP 409). There is no `DELETE /courses/:courseId`. Restore has no task (PO Q4, 2026-11-15: no restore flow without a source).
 - **BR-MAT-04**: If document processing in the AI Service fails, `processing_status` must be set to `FAILED` and `processing_error` populated.
 
 ---

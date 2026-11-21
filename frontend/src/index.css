@@ -1,10 +1,169 @@
-﻿@import "tailwindcss";
+@import "tailwindcss";
+/* Public landing headings only (GDS §3 "EduBranch/Public *" text styles); app screens never use it. */
+@import "@fontsource/be-vietnam-pro/500.css";
+@import "@fontsource/be-vietnam-pro/600.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * EduBranch design tokens — mirrors the "EduBranch" variable collections of
+ * Figma file 6CtSgJPKo4jCIbB7WwCaWw (page EduBranch AI – Screens is the approved UI).
+ * Utilities: bg-canvas, text-ink, border-line, bg-primary, text-accent, ...
+ * Existing Tailwind palette classes keep working for screens not yet reworked.
+ */
+@theme {
+  /* PO decision 2026-11-21: system font (Segoe UI on Windows), as before FE-025; Roboto is no longer loaded. */
+  --font-sans: system-ui, "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Be Vietnam Pro", system-ui, "Segoe UI", sans-serif; /* public landing headings only */
+
+  /* Surfaces */
+  --color-page: #FFFFFF;            /* bg/page */
+  --color-canvas: #F3F6FC;          /* bg/canvas */
+  --color-surface: #FFFFFF;         /* bg/surface */
+  --color-surface-muted: #EEF2F9;   /* bg/surface-muted */
+  --color-surface-hover: #E8EDF6;   /* bg/surface-hover */
+  --color-selected: #DFEDF9;        /* bg/selected */
+
+  /* Text */
+  --color-ink: #202124;             /* text/primary */
+  --color-ink-secondary: #696A70;   /* text/secondary */
+  --color-ink-muted: #909198;       /* text/muted */
+  --color-ink-inverse: #FFFFFF;     /* text/inverse */
+  --color-link: #2A4E7F;            /* text/link */
+
+  /* Borders */
+  --color-line: #E1E8F5;            /* border/default */
+  --color-line-soft: #E8EDF6;       /* account divider in Navigation/Sidebar */
+  --color-line-strong: #D1D9E8;     /* border/strong */
+  --color-focus: #2A4E7F;           /* border/focus */
+
+  /* Actions */
+  --color-primary: #2A4E7F;         /* action/primary (navy/600) */
+  --color-primary-text: #2A4E7F;    /* text/primary brand contrast */
+  --color-primary-hover: #223F68;   /* action/primary-hover */
+  --color-primary-active: #1B3253;  /* action/primary-active */
+  --color-primary-disabled: #94A7C0;
+  --color-primary-subtle: #DFEDF9;  /* action/primary-subtle */
+  --color-primary-subtle-hover: #D1E4F5;
+  --color-accent: #00A5F5;          /* action/accent (sky/500) */
+  --color-danger: #D11F1F;          /* action/danger */
+  --color-danger-hover: #B01818;
+
+  /* Semantic */
+  --color-success: #00B343;
+  --color-success-text: #007A2D;
+  --color-success-bg: #E1F7E9;
+  --color-success-border: #B3E8C7;
+  --color-warning: #F58A00;
+  --color-warning-text: #9A5700;
+  --color-warning-bg: #FFF1DE;
+  --color-warning-border: #FFD9A8;
+  --color-error: #FF3535;
+  --color-error-text: #D11F1F;
+  --color-error-bg: #FFE5E5;
+  --color-error-border: #FFBCBC;
+  --color-info: #2A4E7F;
+  --color-info-bg: #DFEDF9;
+
+  /* Brand */
+  --color-brand-start: #2A4E7F;
+  --color-brand-end: #1B3253;
+
+  /* Radius (radius/sm..xl) */
+  --radius-eb-sm: 6px;
+  --radius-eb-md: 8px;
+  --radius-eb-lg: 12px;
+  --radius-eb-xl: 18px;
+
+  /* Design-system components (frontend/src/components/ds). Values measured on
+   * Figma EduBranch AI – Design System component sets as instanced on page EduBranch AI – Screens. */
+  --color-mode-review-bg: #E6F6FE;      /* mode/review-bg (sky/50) */
+  --color-mode-review-border: #B3E4FC;  /* mode/review-border (sky/200) */
+  --color-mode-review-text: #0087C9;    /* mode/review-text (sky/600) */
+  --color-status-approved-text: #B86800;  /* status/approved-text (orange/700) */
+  --color-status-published-text: #008A33; /* status/published-text (green/700) */
+  --shadow-eb-dialog: 0 16px 40px 0 rgb(32 33 36 / 0.16);  /* Overlays/Dialog */
+  --shadow-eb-toast: 0 8px 24px 0 rgb(42 78 127 / 0.16);   /* Feedback/Toast */
+  --shadow-eb-focus: 0 0 0 3px rgb(0 165 245 / 0.18);      /* Forms/Field focus glow */
+  /* Resting card on bg/canvas: 1px border/default @80% (inset, no layout change, = Figma inside stroke)
+     + EduBranch/Elevation/Card. Hover on clickable cards: EduBranch/Elevation/Hover. PO 2026-11-17. */
+  --shadow-eb-card: inset 0 0 0 1px rgb(225 232 245 / 0.8), 0 1px 2px 0 rgb(32 33 36 / 0.05), 0 1px 3px 0 rgb(32 33 36 / 0.06);
+  --shadow-eb-hover: inset 0 0 0 1px rgb(225 232 245 / 0.8), 0 2px 8px 0 rgb(32 33 36 / 0.06);
+  /* Shared page patterns (components/ds) — colours resolved on page EduBranch AI – Screens that have no token above. */
+  --color-control-icon: #4B5563;        /* "Expand" chevron of Filter control / Dropdown / Pagination (02.1, 03.1, 05.9) */
+  --color-result-count: #73807F;        /* "Hiển thị … trên N" labels of Result count (01.2, 02.1, 05.9) */
+  --color-back-icon: #808080;           /* "Back to courses" arrow-left (02.4, 05.1) */
+  --color-note-info: #00699E;           /* Course Card status note, mode/review-text as resolved on 02.1 */
+}
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  :root.dark, .dark {
+    color-scheme: dark;
+    --color-page: #0B1120;
+    --color-canvas: #0F172A;
+    --color-surface: #1E293B;
+    --color-surface-muted: #162032;
+    --color-surface-hover: #273549;
+    --color-selected: #1E3A5F;
+
+    --color-ink: #F8FAFC;
+    --color-ink-secondary: #94A3B8;
+    --color-ink-muted: #64748B;
+    --color-ink-inverse: #FFFFFF;
+    --color-link: #38BDF8;
+
+    --color-line: #334155;
+    --color-line-soft: #1E293B;
+    --color-line-strong: #475569;
+    --color-focus: #38BDF8;
+
+    --color-primary: #1D4ED8;
+    --color-primary-text: #60A5FA;
+    --color-primary-hover: #2563EB;
+    --color-primary-active: #1E40AF;
+    --color-primary-disabled: #475569;
+    --color-primary-subtle: #172554;
+    --color-primary-subtle-hover: #1E3A5F;
+    --color-accent: #38BDF8;
+    --color-danger: #EF4444;
+    --color-danger-hover: #DC2626;
+
+    /* Semantic */
+    --color-success: #10B981;
+    --color-success-text: #34D399;
+    --color-success-bg: #064E3B;
+    --color-success-border: #065F46;
+    --color-warning: #F59E0B;
+    --color-warning-text: #FBBF24;
+    --color-warning-bg: #451A03;
+    --color-warning-border: #78350F;
+    --color-error: #EF4444;
+    --color-error-text: #F87171;
+    --color-error-bg: #450A0A;
+    --color-error-border: #7F1D1D;
+    --color-info: #60A5FA;
+    --color-info-bg: #172554;
+
+    /* Mode & Status */
+    --color-mode-review-bg: #082F49;
+    --color-mode-review-border: #0369A1;
+    --color-mode-review-text: #7DD3FC;
+    --color-status-approved-text: #FBBF24;
+    --color-status-published-text: #34D399;
+
+    /* Elevation for dark surfaces */
+    --shadow-eb-card: inset 0 0 0 1px rgb(51 65 85 / 0.8), 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 0 rgb(0 0 0 / 0.4);
+    --shadow-eb-hover: inset 0 0 0 1px rgb(71 85 105 / 0.9), 0 4px 12px 0 rgb(0 0 0 / 0.5);
+  }
+
   body {
-    font-family: system-ui, sans-serif;
-    background-color: #f9fafb;
-    color: #111827;
+    font-family: var(--font-sans);
+    background-color: var(--color-page);
+    color: var(--color-ink);
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -50,3 +209,11 @@
     box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   }
 }
+
+@layer utilities {
+  :root.dark .text-primary,
+  .dark .text-primary {
+    color: var(--color-primary-text);
+  }
+}
+

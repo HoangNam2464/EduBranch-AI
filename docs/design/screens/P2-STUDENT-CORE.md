@@ -13,7 +13,7 @@ The Branching Study **Experience phase**: seamless, immersive decision-making jo
 
 ### User & Context
 Student only. Requires the case to be `PUBLISHED` (`INV-01`) — non-published cases must 404.
-Student accesses via a direct link provided by the Lecturer. There is no student browse page.
+Student opens the case from the student desk or "My courses" after joining the class by invite code (OPD-001 → A, 2026-11-12; Figma 07.2–07.4), or via a direct link from the lecturer.
 
 ### Layout
 Full-width immersive reading layout (distraction-free decision interface). Top: case title + a subtle progress indicator (e.g. "Decision 2 of ?" — not a percentage bar, since branch length is variable and unknown). Center: current node's `situation` text in a readable, capped-width column (`GLOBAL-DESIGN-SYSTEM.md §3` line-length rule). Below: Option Selector (`§6.5`).

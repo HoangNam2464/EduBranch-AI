@@ -1,0 +1,2047 @@
+{
+  "common": {
+    "appName": "EduBranch AI",
+    "logout": "Sign out",
+    "reload": "Reload page",
+    "backHome": "Back to home"
+  },
+  "nav": {
+    "lecturer": {
+      "courses": "Courses",
+      "cases": "Case Studies",
+      "feedback": "Student feedback",
+      "statistics": "Learning statistics"
+    },
+    "student": {
+      "desk": "My desk",
+      "courses": "My courses",
+      "joinClass": "Join a class"
+    },
+    "admin": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "courses": "Courses",
+      "cases": "Case Studies",
+      "rubric": "Research & Rubric",
+      "logs": "System logs",
+      "aiService": "AI service",
+      "settings": "System settings"
+    },
+    "studentCase": {
+      "case": "Case",
+      "history": "Attempt history",
+      "journey": "Journey Review",
+      "journeyUnavailable": "Open Journey Review from a completed attempt"
+    },
+    "studentReview": {
+      "work": "My work",
+      "feedback": "Feedback",
+      "feedbackUnavailable": "Feedback appears after you submit and the lecturer reviews it"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Page not found",
+      "description": "The link you opened does not exist or has moved. Check the link or go back to the main workspace."
+    },
+    "route": {
+      "titleNotFound": "Content not found",
+      "titleGeneric": "Something went wrong",
+      "defaultMessage": "An unexpected problem occurred while handling your request."
+    },
+    "portal": {
+      "login": "Back to sign in",
+      "lecturer": "Back to the lecturer portal",
+      "student": "Back to the student portal",
+      "admin": "Back to the admin portal"
+    }
+  },
+  "shell": {
+    "sidebar": "Sidebar",
+    "mainNav": "Main navigation",
+    "skipToContent": "Skip to main content",
+    "collapse": "Collapse",
+    "expand": "Expand sidebar",
+    "workspace": {
+      "lecturer": "Lecturer workspace",
+      "student": "Student workspace",
+      "admin": "System administration"
+    },
+    "roles": {
+      "lecturer": "Lecturer",
+      "student": "Student",
+      "admin": "System administrator"
+    },
+    "search": {
+      "lecturer": "Search courses, cases, students…",
+      "student": "Search cases, courses…",
+      "admin": "Search users, courses, cases…"
+    },
+    "searchLabel": "Search",
+    "language": "Interface language",
+    "themeSoon": "Dark theme (coming soon)",
+    "themeLight": "Switch to light theme",
+    "themeDark": "Switch to dark theme",
+    "themeToggle": "Toggle light / dark theme",
+    "notifications": "Notifications",
+    "notificationsUnread": "Notifications, {{count}} unread",
+    "settings": "Settings",
+    "account": "My account",
+    "titles": {
+      "lecturerDashboard": "Overview · Due dates",
+      "courses": "Course management",
+      "courseDetail": "Course details",
+      "materialSources": "Document excerpts",
+      "cases": "Case Study management",
+      "aiStudio": "AI Studio",
+      "caseEditor": "Case Study editor",
+      "rubric": "Case quality research rubric",
+      "feedbackQueue": "Review queue and reasoning feedback",
+      "feedbackDetail": "Student reasoning feedback",
+      "statistics": "Learning flow statistics",
+      "profile": "Account profile",
+      "desk": "My desk",
+      "myCourses": "My courses",
+      "joinClass": "Join a class",
+      "attemptHistory": "Attempt history",
+      "case": "Case",
+      "journeyReview": "Journey Review — Revisit your decisions",
+      "reflection": "Reflection & key lessons",
+      "reviewStudy": "Review Study",
+      "adminDashboard": "Dashboard",
+      "adminUsers": "User management",
+      "adminCourses": "All courses",
+      "adminCases": "All Case Studies",
+      "adminRubric": "Research & Rubric",
+      "adminLogs": "System logs",
+      "adminAiService": "AI service",
+      "adminSettings": "System settings"
+    },
+    "footer": {
+      "copyright": "© 2026 EduBranch AI",
+      "privacy": "Privacy policy",
+      "terms": "Terms of use",
+      "supportEmail": "support@edubranch.ai",
+      "project": "Capstone C1SE.65 · Duy Tan University"
+    }
+  },
+  "authRecovery": {
+    "backToLogin": "Back to sign in",
+    "unavailable": "Password recovery is not available yet. Please contact an administrator.",
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your registered email to receive a recovery link.",
+      "emailLabel": "Your email",
+      "emailPlaceholder": "name@duytan.edu.vn",
+      "submit": "Send password reset link"
+    },
+    "reset": {
+      "title": "Set a new password",
+      "subtitle": "Passwords must be at least 6 characters.",
+      "passwordLabel": "New password",
+      "passwordPlaceholder": "At least 6 characters",
+      "confirmLabel": "Confirm new password",
+      "confirmPlaceholder": "Re-enter your new password",
+      "submit": "Save new password"
+    }
+  },
+  "caseReview": {
+    "back": "Back to cases",
+    "breadcrumb": "Case Study",
+    "editor": "Editor",
+    "editorReview": "Review Study editor",
+    "mode": {
+      "BRANCHING_STUDY": "Branching Study",
+      "REVIEW_STUDY": "Review Study",
+      "lockedHint": "The learning mode is set when the case is created and cannot be changed here."
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "REVIEWED": "Reviewed",
+      "APPROVED": "Approved",
+      "PUBLISHED": "Published"
+    },
+    "load": {
+      "loading": "Loading case…",
+      "notFoundTitle": "Case not found",
+      "notFoundDescription": "This case does not exist or has been deleted.",
+      "forbiddenTitle": "You cannot view this case",
+      "forbiddenDescription": "Your current account is not allowed to open this case.",
+      "errorTitle": "Couldn't load the case",
+      "errorDescription": "Check your connection and try again."
+    },
+    "readOnlyNotice": "Approved or published cases cannot be edited directly. Return the case to draft to edit it.",
+    "unsupportedHint": "Saving this field is not supported yet.",
+    "required": "Required",
+    "branching": {
+      "situationCard": "Situation",
+      "outcomeCard": "Outcome",
+      "aiDraft": "AI Draft",
+      "situationTitle": "Situation title",
+      "promptQuestion": "Choice prompt",
+      "keyDecision": "Mark as a key decision",
+      "keyDecisionHelp": "This decision is highlighted in Journey Review. Students are encouraged to explain their reasoning for this step; challenging it with AI is optional.",
+      "situationContent": "Situation details",
+      "outcomeContent": "Outcome details",
+      "optionsTitle": "Options ({{count}})",
+      "optionsHelp": "Each option leads to a next situation and carries its consequence",
+      "noOptions": "An outcome node ends the journey, so it has no options.",
+      "optionLabel": "Option {{n}}",
+      "deleteOption": "Delete option",
+      "optionText": "Option label",
+      "optionDescription": "Option action description",
+      "nextNode": "Next situation for this option",
+      "endsJourney": "Ends the journey",
+      "consequence": "Consequence (set by the lecturer)",
+      "consequenceHelp": "Shown to students only in Journey Review, not while they play",
+      "addOption": "+ Add option",
+      "selectNextNode": "Choose the next situation",
+      "maxOptions": "A situation has at most {{max}} options",
+      "nodeList": "Situations ({{count}})",
+      "editingNode": "Editing · Step {{step}}",
+      "rootTag": "Root",
+      "branches": "Branches:",
+      "branchItem": "{{option}} → {{target}}",
+      "nodeSituation": "Situation {{n}}",
+      "nodeOutcome": "Outcome {{n}}",
+      "nodeLabel": "{{label}}: {{text}}",
+      "deleteNode": "Delete situation",
+      "addNode": "+ Add situation",
+      "noNodes": "This case has no nodes in its decision tree yet.",
+      "treeCheck": "Decision tree check",
+      "topology": "{{nodes}} nodes · {{situations}} situations · {{outcomes}} outcomes",
+      "treeOk": "Tree check: 0 structural errors",
+      "treeIssues": "Tree check: {{count}} structural errors",
+      "issue": {
+        "noRoot": "The case has no root node.",
+        "danglingNext": "An option points to a node that does not exist.",
+        "cycle": "The tree contains a loop.",
+        "orphan": "Some nodes cannot be reached from the root.",
+        "optionCount": "Each situation needs 2–4 options.",
+        "noTerminal": "The tree has no outcome node."
+      },
+      "treeTitle": "Decision tree",
+      "nodeCount": "{{count}} nodes",
+      "treeValid": "Valid · every branch reaches an outcome",
+      "treeInvalid": "{{count}} structure issues to fix",
+      "badgeStart": "Start",
+      "badgeOutcome": "Outcome",
+      "badgePoint": "Point {{n}}",
+      "treeHint": "Select a node to edit its content in the left column.",
+      "topologyLabel": "Topology:",
+      "checkLabel": "Tree check:",
+      "issueCount": "{{count}} structure issues",
+      "optionSummary": "Option {{n}} · {{text}} → {{target}}",
+      "expandOption": "Open option {{n}}"
+    },
+    "review": {
+      "contentCard": "Review Study content",
+      "title": "Case title",
+      "shortDesc": "Short description",
+      "context": "Context & data",
+      "problem": "Problem to analyse",
+      "infoCard": "Case details",
+      "modeLabel": "Mode:",
+      "courseLabel": "Course:",
+      "statusLabel": "Status:",
+      "versionLabel": "Version:",
+      "version": "v{{version}}",
+      "structureLabel": "Structure:",
+      "noTree": "No decision tree",
+      "unknown": "—",
+      "studentAnswers": "Students will answer",
+      "answerSolution": "1. Proposed solution / action plan",
+      "answerReasoning": "2. Supporting reasoning (based on the data and course knowledge)",
+      "answersHint": "Each student submits once. You respond with comments, not grades."
+    },
+    "validation": {
+      "title": "Not saved",
+      "titleRequired": "The case title cannot be empty.",
+      "situationRequired": "The situation details cannot be empty.",
+      "optionRequired": "Each option needs a label and a consequence.",
+      "nextRequired": "Each option of {{node}} needs a next situation."
+    },
+    "toast": {
+      "close": "Close notification",
+      "savedTitle": "Changes saved",
+      "saveFailedTitle": "Couldn't save changes",
+      "statusChangedTitle": "Status updated",
+      "statusChangedMessage": "The case is now “{{status}}”.",
+      "statusFailedTitle": "Couldn't change the status",
+      "genericError": "Something went wrong. Please try again."
+    },
+    "bar": {
+      "saving": "Saving...",
+      "saveAndReview": "Save & mark as reviewed",
+      "saveChanges": "Save changes",
+      "revertToDraft": "Return to draft",
+      "openForStudents": "Open to students",
+      "approve": "Approve",
+      "approveNeedsSave": "Save your changes before approving.",
+      "publish": "Publish",
+      "publishForStudents": "Publish to students",
+      "copyLink": "Copy link",
+      "copied": "Student link copied!",
+      "copyFailed": "Couldn't copy the link. Select it and copy it manually.",
+      "subtitle": {
+        "DRAFT": "{{mode}} · Version {{version}} · Not reviewed",
+        "REVIEWED": "{{mode}} · Version {{version}} · Awaiting approval",
+        "APPROVED": "{{mode}} · Version {{version}} · Ready to publish",
+        "PUBLISHED": "{{mode}} · Version {{version}} · Available to students"
+      },
+      "label": "Case review bar",
+      "stepper": "Case review progress",
+      "locked": {
+        "DRAFT": "Approve and Publish stay locked until the case is marked as reviewed.",
+        "REVIEWED": "You can approve now; Publish stays locked.",
+        "APPROVED": "The content is final. Publish it for students or return it to draft to keep editing.",
+        "PUBLISHED": "Students in the course can see the case. Only copying the class link remains."
+      }
+    },
+    "publishModal": {
+      "title": "Publish case study",
+      "description": "Once published, students in {{course}} can open and work on this case.",
+      "close": "Close",
+      "linkLabel": "Student link",
+      "copy": "Copy",
+      "deadline": "Due date (optional)",
+      "notify": "Send in-app and email notifications to students in the class",
+      "cancel": "Cancel",
+      "confirm": "Confirm publishing",
+      "publishing": "Publishing...",
+      "descriptionNoCourse": "Once published, students in the course can open and work on this case.",
+      "points": "{{count}} decision points",
+      "outcomes": "{{count}} outcomes",
+      "checkTree": "The decision tree is valid and every branch reaches an outcome",
+      "checkConsequences": "Every option has a consequence",
+      "checkApproved": "Reviewed and approved",
+      "checkContext": "Context and data are filled in",
+      "checkProblem": "The problem to analyse is filled in",
+      "checkOk": "Passed",
+      "checkFailed": "Not passed",
+      "warning": "After publishing, the case content can no longer be edited."
+    },
+    "errors": {
+      "detail": "Details: {{detail}}",
+      "invalid": "Some data is not valid. Check the fields you changed.",
+      "forbidden": "You do not have permission for this action.",
+      "notFound": "The case or the content to save was not found.",
+      "conflict": "This action conflicts with the current data.",
+      "network": "Cannot reach the server. Check your connection and try again.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "sources": {
+      "title": "Cited source passages",
+      "unavailable": "The system does not return cited source passages for this case yet."
+    }
+  },
+  "g1": {
+    "brand": "EduBranch AI",
+    "select": {
+      "placeholder": "-- Select an item --",
+      "searchPlaceholder": "Search faculty or department...",
+      "noResults": "No matching faculty found. You can select \"Other Faculty / Department...\" at the bottom.",
+      "otherCategory": "Other"
+    },
+    "showcase": {
+      "title": "An experiential case-based learning platform",
+      "subtitle": "Lecturers build case studies from course materials; students make decisions, reason and reflect on every branch of the case."
+    },
+    "form": {
+      "email": "Email address",
+      "password": "Password",
+      "fullName": "Full name",
+      "rememberMe": "Remember me",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "social": {
+      "divider": "Or",
+      "google": "Continue with Google",
+      "microsoft": "Continue with Microsoft"
+    },
+    "login": {
+      "title": "Sign in to EduBranch",
+      "subtitle": "For lecturers and students",
+      "emailPlaceholder": "an.nguyen@duytan.edu.vn",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up now",
+      "forgotPassword": "Forgot password?"
+    },
+    "register": {
+      "title": "Create a new account",
+      "subtitleStudent": "Registration for students taking part in case-study learning",
+      "subtitleLecturer": "Registration for lecturers and staff who author case studies",
+      "roleLabel": "Role",
+      "roleStudent": "Student",
+      "roleLecturer": "Lecturer",
+      "fullNamePlaceholder": "Nguyen Van A",
+      "emailPlaceholder": "name@duytan.edu.vn",
+      "studentId": "Student ID",
+      "studentIdPlaceholder": "e.g. 21020451",
+      "department": "Faculty / Department",
+      "departmentPlaceholder": "e.g. Faculty of Information Technology",
+      "departmentSelectPlaceholder": "-- Select Faculty / Department --",
+      "customDepartmentLabel": "Specific Faculty / Department name",
+      "customDepartmentPlaceholder": "e.g. Institute of Advanced Technology Research",
+      "departmentOther": "Other Faculty / Department...",
+      "passwordPlaceholder": "At least 8 characters",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Re-enter your password",
+      "lecturerNote": "To protect academic standards and material copyright, lecturer accounts get full authoring rights once the faculty or department confirms your employment details.",
+      "submit": "Complete sign-up",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in now"
+    },
+    "admin": {
+      "title": "Administrator sign-in",
+      "subtitle": "For administrator accounts only",
+      "emailPlaceholder": "admin@duytan.edu.vn",
+      "notAdmin": "Not an administrator?",
+      "backToLogin": "Go to the main sign-in page"
+    },
+    "errors": {
+      "emailRequired": "Email address is required.",
+      "passwordRequired": "Password is required.",
+      "fullNameRequired": "Please enter your full name.",
+      "universityEmailRequired": "Please enter your university email address.",
+      "studentIdRequired": "Please enter your student ID.",
+      "departmentRequired": "Please enter your faculty / department.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "network": "Can't reach the server. Check your network connection and try again.",
+      "invalidCredentials": "Incorrect email or password.",
+      "emailTaken": "This email is already used by another account.",
+      "invalidData": "Some details are not valid. Check the fields and try again.",
+      "generic": "Something went wrong. Please try again later.",
+      "tooManyAttempts": "Too many attempts. Please wait a moment and try again.",
+      "notAdmin": "This account has no administrator access. Please use the sign-in page for lecturers and students."
+    },
+    "info": {
+      "ssoPending": "Duy Tan University Google Workspace sign-in (SSO) is being set up for the new semester."
+    },
+    "dev": {
+      "lecturer": "Demo lecturer",
+      "student": "Demo student"
+    },
+    "landing": {
+      "nav": {
+        "ariaLabel": "Landing page navigation",
+        "how": "How it works",
+        "modes": "Two learning modes",
+        "faq": "FAQ",
+        "login": "Sign in",
+        "register": "Sign up"
+      },
+      "hero": {
+        "category": "Experiential Case & Critical Thinking Platform for Higher Education",
+        "title": "Every decision opens a new branch",
+        "lead": "EduBranch AI turns course materials into cases with many paths. Students choose how to respond, see the consequences of each choice, then get feedback from their lecturer.",
+        "register": "Create an account",
+        "howItWorks": "See how it works",
+        "note": "For lecturers and students of Duy Tan University.",
+        "badges": {
+          "grounded": "RAG Grounding from course syllabi",
+          "pedagogical": "Realistic multi-branch decision trees",
+          "approved": "Lecturer holds 100% approval authority"
+        },
+        "diagram": {
+          "ariaLabel": "Example of one decision point in a branching case",
+          "situationLabel": "Situation",
+          "situation": "8 PM Black Friday: the payment gateway is overloaded and transactions start hanging",
+          "optionA": "Option A",
+          "optionAText": "Scale up the servers now and keep the checkout flow as is",
+          "chosen": "You chose",
+          "optionBText": "Turn on an order queue and tell customers the waiting time",
+          "optionC": "Option C",
+          "optionCText": "Pause promotions to reduce system load",
+          "consequenceLabel": "Consequence",
+          "consequence": "No orders are lost, but 1 in 8 customers leaves because of the wait. How do you handle the customers who leave?",
+          "caption": "Decision point 2 on the second attempt",
+          "simulationBadge": "Continuous Simulation",
+          "decisionPoint1": "Decision point 1",
+          "journeyReview": "Journey review",
+          "attempt2Title": "Attempt 2 · Next action & Outcome",
+          "retrospective": "Retrospective",
+          "attempt2Text": "Automatically send an apology voucher to waiting customers ➔ Retain customers and turn an incident into an opportunity to build satisfaction.",
+          "statusPaused": "Simulation paused — Move mouse away to resume",
+          "statusPlaying": "Auto-playing simulation (Hover to pause)",
+          "phaseProgress": "Phase {{current}} of {{total}}"
+        }
+      },
+      "how": {
+        "title": "One case, from course materials to the classroom",
+        "subtitle": "From the materials a lecturer uploads to feedback for students, in five steps. Each step is shown with the actual EduBranch AI interface.",
+        "stepsLabel": "The five steps of a case",
+        "steps": [
+          {
+            "title": "Upload materials",
+            "actor": "Lecturer",
+            "desc": "Upload syllabi and slides; the system indexes them.",
+            "chip": "Upload",
+            "status": "Step 1 of 5: the lecturer uploads syllabi and slides; the system indexes them."
+          },
+          {
+            "title": "AI drafts the case",
+            "actor": "Lecturer",
+            "desc": "AI sketches the context and the decision points.",
+            "chip": "AI draft",
+            "status": "Step 2 of 5: AI sketches the context and the decision points."
+          },
+          {
+            "title": "Review & publish",
+            "actor": "Lecturer",
+            "desc": "Review every branch, approve, open it to the class.",
+            "chip": "Review & publish",
+            "status": "Step 3 of 5: the lecturer reviews every branch, approves it and opens the case to the class."
+          },
+          {
+            "title": "Students take the case",
+            "actor": "Student",
+            "desc": "Choose a course of action or write a submission.",
+            "chip": "Students work",
+            "status": "Step 4 of 5: students choose a course of action or write a submission."
+          },
+          {
+            "title": "Feedback & reflection",
+            "actor": "Both",
+            "desc": "Lecturers comment, students reflect.",
+            "chip": "Feedback",
+            "status": "Step 5 of 5: lecturers comment, students reflect."
+          }
+        ],
+        "allDone": "All five steps: from course materials to feedback for students.",
+        "goToStep": "Show step {{n}}: {{title}}",
+        "demo": {
+          "files": [
+            "Giao_trinh.pdf",
+            "Slide_Tuan_7.pdf",
+            "Bao_cao.docx"
+          ],
+          "generating": "Generating draft",
+          "nodes": [
+            "Point 1",
+            "Point 2",
+            "Point 3",
+            "Outcome"
+          ],
+          "draft": "Draft",
+          "draftGenerated": "Draft generated",
+          "reviewed": "Reviewed",
+          "approve": "Approve",
+          "running": "In progress",
+          "done": "Done",
+          "publish": "Publish",
+          "publishedForClass": "Published for class",
+          "options": [
+            "Scale up servers",
+            "Turn on a queue",
+            "Pause promotions"
+          ],
+          "lecturer": "Dr. Nguyen Van An",
+          "feedback": "“Good reasoning; state your cost assumptions.”",
+          "reflection": "Write a reflection…"
+        }
+      },
+      "modes": {
+        "title": "Two ways to learn from the same case",
+        "subtitle": "Lecturers pick the mode that fits the lesson goal. Both start from a real context in the course materials.",
+        "branching": {
+          "title": "Branching Study",
+          "desc": "Walk through a chain of decision points. Each choice leads to a different outcome, and you can retake the case to try another path.",
+          "points": [
+            "Focus on reasoning, no automatic grading",
+            "Review the whole journey in Journey Review",
+            "Write a reflection after each attempt"
+          ],
+          "diagram": {
+            "init": "Initialize",
+            "option1": "Choice 1",
+            "option2": "Choice 2",
+            "outcome": "Outcome"
+          }
+        },
+        "review": {
+          "title": "Review Study",
+          "desc": "Read the context and attached data, propose a solution and argue why it makes sense. The lecturer reads it and replies directly.",
+          "points": [
+            "One submission with a solution and its reasoning",
+            "Written feedback from the lecturer",
+            "Submissions are final and cannot be edited"
+          ],
+          "answerLabel": "Proposed solution",
+          "completed": "Completed",
+          "sent": "Sent to the lecturer at 21:40",
+          "receiveFeedback": "Receive lecturer feedback →"
+        }
+      },
+      "lifecycle": {
+        "title": "AI only writes drafts.\nLecturers decide what reaches students.",
+        "subtitle": "Every case goes through four states in order. Students only see a case once the lecturer has approved and published it, even if AI has already written the whole decision tree.",
+        "states": [
+          {
+            "name": "Draft",
+            "desc": "AI or the lecturer creates content; nobody else sees it yet.",
+            "actor": "AI or lecturer"
+          },
+          {
+            "name": "Reviewed",
+            "desc": "The lecturer reads every branch, edits it and checks the sources.",
+            "actor": "Lecturer"
+          },
+          {
+            "name": "Approved",
+            "desc": "Content is final and ready to open to the class.",
+            "actor": "Lecturer"
+          },
+          {
+            "name": "Published",
+            "desc": "The case appears in the students' course.",
+            "actor": "Students see it from here"
+          }
+        ],
+        "gate": "Open to class"
+      },
+      "roles": {
+        "lecturer": {
+          "title": "For lecturers",
+          "desc": "Build cases from your own course materials and keep full control of the content.",
+          "points": [
+            "Manage courses and course materials",
+            "Create cases with AI or write them from scratch",
+            "Read submissions and send feedback",
+            "See learning statistics for each case"
+          ],
+          "action": "Sign up as a lecturer"
+        },
+        "student": {
+          "title": "For students",
+          "desc": "Practise decision-making in contexts close to real professional practice.",
+          "points": [
+            "Open the cases your lecturers have published",
+            "Retake a case to try another course of action",
+            "Review your journey and write a reflection",
+            "Read your lecturer's feedback"
+          ],
+          "action": "Sign up as a student"
+        }
+      },
+      "faq": {
+        "title": "Frequently asked questions",
+        "subtitle": "Short answers about using EduBranch AI as a lecturer or a student.",
+        "searchLabel": "Search questions",
+        "searchPlaceholder": "Search questions, e.g. materials, retake, feedback",
+        "popular": "Popular topics:",
+        "topics": [
+          "Grading",
+          "Course materials",
+          "Retake case",
+          "AI model"
+        ],
+        "count": "{{count}} questions",
+        "groups": [
+          {
+            "title": "General",
+            "questions": [
+              {
+                "q": "What is EduBranch AI?",
+                "a": "A case-based learning platform for university lecturers and students. Lecturers build cases from course materials; students practise making decisions and read their lecturer's feedback."
+              },
+              {
+                "q": "How do Branching Study and Review Study differ?",
+                "a": "Branching Study walks through a chain of decision points, each choice leading to a different outcome, and it can be retaken. Review Study is one submission with a solution and its reasoning, which the lecturer reads and answers directly."
+              },
+              {
+                "q": "Does the system grade students?",
+                "a": "There is no automatic grading. AI only asks open questions so students reason more carefully; feedback and assessment belong to the lecturer."
+              }
+            ]
+          },
+          {
+            "title": "Lecturers",
+            "questions": [
+              {
+                "q": "Which kinds of materials can I upload?",
+                "a": "PDF and DOCX files, up to 50 MB each. The system splits them into excerpts and indexes them so AI can cite them."
+              },
+              {
+                "q": "Are AI-generated drafts published automatically?",
+                "a": "No. Every case goes through Draft, Reviewed and Approved before Published; students only see a case once the lecturer has approved and published it."
+              },
+              {
+                "q": "Can I write a case without using AI?",
+                "a": "Yes. Lecturers can create cases with AI or write them from scratch; both go through the same review process before opening to the class."
+              }
+            ]
+          },
+          {
+            "title": "Students",
+            "questions": [
+              {
+                "q": "Can I retake a case?",
+                "a": "In Branching Study you can retake a case to try another course of action and review each attempt. A Review Study submission is final and cannot be edited."
+              },
+              {
+                "q": "When will I see my lecturer's feedback?",
+                "a": "As soon as the lecturer has read your work and sent feedback; it appears on the result page of the attempt or submission."
+              }
+            ]
+          },
+          {
+            "title": "AI and materials",
+            "questions": [
+              {
+                "q": "Does AI use materials from other courses?",
+                "a": "No. AI drafts and asks questions based on the materials the lecturer uploaded for that course."
+              },
+              {
+                "q": "Who chooses the AI model the system uses?",
+                "a": "The AI model is configured by the university on the server; administrators monitor the AI service. Lecturers and students do not need to choose."
+              }
+            ]
+          }
+        ],
+        "contact": {
+          "title": "Can't find an answer?",
+          "before": "Send your question to ",
+          "after": ", with your role and course.",
+          "action": "Email support"
+        }
+      },
+      "cta": {
+        "title": "Start with your first case",
+        "subtitle": "Create an account with your university email. Lecturers can build a case right after signing in.",
+        "login": "Sign in",
+        "register": "Create an account"
+      },
+      "footer": {
+        "description": "A case-based learning platform for university lecturers and students. Capstone project C1SE.65, Duy Tan University.",
+        "product": "Product",
+        "account": "Account",
+        "legal": "Legal",
+        "privacy": "Privacy policy",
+        "terms": "Terms of use",
+        "copyright": "© 2026 EduBranch AI"
+      }
+    }
+  },
+  "g2": {
+    "common": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "retry": "Retry",
+      "fileSize": {
+        "b": "{{value}} B",
+        "kb": "{{value}} KB",
+        "mb": "{{value}} MB"
+      }
+    },
+    "courses": {
+      "listTitle": "All courses",
+      "searchLabel": "Search courses",
+      "searchPlaceholder": "Search courses",
+      "statusFilterLabel": "Filter by status",
+      "statusAll": "All statuses",
+      "statusActive": "Teaching",
+      "statusInactive": "Closed",
+      "create": "Create course",
+      "documentsReady": "{{ready}}/{{total}} documents ready",
+      "cases_one": "{{count}} case",
+      "cases_other": "{{count}} cases",
+      "noCases": "No cases yet",
+      "note": {
+        "failedFiles": "{{count}} file failed indexing",
+        "processingFiles": "{{count}} file processing",
+        "reviewedCases": "{{count}} case awaiting approval",
+        "draftCases": "{{count}} draft awaiting review"
+      },
+      "archiveAction": "Archive course {{name}}",
+      "resultLeading": "Showing",
+      "resultTrailing": "of {{count}} courses",
+      "pageSizeLabel": "Courses per page",
+      "paginationNav": "Course list pagination",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "pageN": "Page {{page}}",
+      "details": {
+        "title": "Course details",
+        "open": "Open course",
+        "close": "Close course details",
+        "statDocuments": "Documents",
+        "statCases": "Case Study",
+        "attention": "Needs attention",
+        "failedFile": "Indexing failed",
+        "pendingFile": "Waiting for indexing",
+        "processingFile": "Indexing",
+        "draftCase": "AI draft awaiting review",
+        "reviewedCase": "Reviewed, awaiting approval",
+        "view": "View",
+        "openMaterials": "Open course materials",
+        "about": "About the course",
+        "noDescription": "This course has no description yet.",
+        "info": "Course information",
+        "infoCode": "Course code: {{code}}",
+        "infoStatusActive": "Status: open to students",
+        "infoStatusInactive": "Status: closed to students",
+        "infoLecturer": "Lecturer in charge: {{name}}",
+        "goTo": "Go to",
+        "materials": "Course materials",
+        "materialsSummary": "{{total}} files · {{ready}} ready, {{failed}} failed",
+        "cases": "Case Study",
+        "casesSummary": "{{total}} cases · {{published}} published, {{drafts}} drafts",
+        "inviteCode": "Student invite code",
+        "inviteCodeHelp": "Students use this code to join the class on their Student Desk.",
+        "copyCode": "Copy code",
+        "codeCopied": "Invite code copied to clipboard",
+        "rotateCode": "Rotate code",
+        "createCode": "Create invite code",
+        "noCodeYet": "No invite code yet",
+        "disableCode": "Disable code",
+        "enableCode": "Re-enable code",
+        "codeDisabled": "Invite code is disabled",
+        "copyError": "Unable to copy invite code to clipboard",
+        "createError": "Unable to create student invite code",
+        "rotateError": "Unable to rotate invite code",
+        "disableError": "Unable to disable invite code",
+        "loadError": "Unable to load invite code information"
+      },
+      "createDialog": {
+        "title": "Create a new course",
+        "description": "Enter the basic information. You can upload course materials after creating it.",
+        "name": "Course / module name *",
+        "namePlaceholder": "e.g. CS301 - Software Engineering & System Architecture",
+        "code": "Course code *",
+        "codePlaceholder": "CS301",
+        "about": "Course description",
+        "aboutPlaceholder": "Learning goals, prerequisite knowledge...",
+        "submit": "Create course",
+        "nameRequired": "The course name needs at least 2 characters.",
+        "codeRequired": "Enter the course code.",
+        "failed": "The course could not be created. Please try again."
+      },
+      "archiveDialog": {
+        "title": "Archive this course?",
+        "message": "The course will be hidden from the active list. Its materials and case studies are kept.",
+        "summary": "{{code}} · {{name}}",
+        "summaryCounts": "{{code}} · {{name}} · {{documents}} documents · {{cases}} cases",
+        "confirm": "Archive course",
+        "pending": "Archiving…",
+        "failed": "The course could not be archived. Please try again.",
+        "successTitle": "Course archived",
+        "successMessage": "{{code}} · {{name}} is hidden from the active list. Its materials and case studies are kept.",
+        "closeToast": "Close notification"
+      }
+    },
+    "materials": {
+      "back": "Back to courses",
+      "breadcrumbLabel": "Breadcrumb",
+      "breadcrumbCourses": "Courses",
+      "statDocuments": "Course materials",
+      "statDocumentsValue": "{{count}} files",
+      "statCases": "Case Study",
+      "statCasesValue": "{{count}} cases",
+      "about": "About the course",
+      "indexing": "Material indexing",
+      "formats": "Supported formats",
+      "maxSize": "Maximum size",
+      "maxSizeValue": "50 MB per file",
+      "indexStatus": "Indexing status",
+      "indexStatusValue": "{{ready}} / {{total}} documents ready for AI",
+      "sectionTitle": "Course materials ({{count}})",
+      "uploadSection": "Upload materials for AI indexing",
+      "formatsChip": "PDF · DOCX",
+      "collapse": "Collapse",
+      "expand": "Expand",
+      "pipeline": "Processing pipeline",
+      "step1": "Upload file",
+      "step1Hint": "PDF/DOCX",
+      "step2": "Split into chunks",
+      "step3": "Embed & index",
+      "stepAuto": "Automatic",
+      "step4": "Ready for AI citation",
+      "step4Hint": "On case generation",
+      "newUpload": "Upload new material",
+      "dropTitle": "Drag materials here or click to choose files",
+      "dropHint": "PDF, DOCX supported • Up to 50 MB per file",
+      "choose": "Choose files",
+      "casesSection": "Case Study ({{count}})",
+      "casesChip": "{{count}} cases",
+      "noCases": "This course has no case studies yet.",
+      "uploadedTitle": "Uploaded materials ({{count}})",
+      "indexedSummary": "{{ready}}/{{total}} indexed",
+      "chunks": "{{count}} chunks",
+      "statusDone": "Indexed",
+      "statusPending": "Pending",
+      "statusProcessing": "Processing",
+      "statusFailed": "Indexing failed",
+      "openSources": "View chunks of {{name}}",
+      "delete": "Delete {{name}}",
+      "noMaterials": "No materials yet. Upload materials so the AI has sources when generating cases.",
+      "loadError": "Could not load the course",
+      "uploadDialog": {
+        "title": "Upload course materials",
+        "description": "Materials are split into chunks and indexed so the AI can use them as sources when generating cases.",
+        "dropTitle": "Drag files here or choose files from your computer",
+        "dropHint": "PDF or DOCX · up to 50 MB per file",
+        "ready": "{{size}} · Ready to upload",
+        "uploading": "{{size}} · Uploading {{percent}}%",
+        "uploaded": "{{size}} · Uploaded",
+        "invalidType": "Only PDF and DOCX files are supported.",
+        "tooLarge": "The file exceeds the 50 MB limit.",
+        "failed": "Upload failed. Please try again.",
+        "remove": "Remove {{name}} from the list",
+        "submit_one": "Upload {{count}} file",
+        "submit_other": "Upload {{count}} files"
+      },
+      "deleteDialog": {
+        "title": "Delete this material?",
+        "message": "The file and its indexed chunks will be deleted permanently. The AI will not use this material for new cases. This cannot be undone.",
+        "summary": "{{name}} · {{count}} chunks",
+        "confirm": "Delete permanently",
+        "failed": "The material could not be deleted. Please try again."
+      },
+      "caseStatus": {
+        "DRAFT": "Draft",
+        "REVIEWED": "Reviewed",
+        "APPROVED": "Approved",
+        "PUBLISHED": "Published"
+      }
+    },
+    "sources": {
+      "chunksCard": "Chunks",
+      "chunksHint": "Ready for AI citation",
+      "chunksHintNotReady": "Not ready for AI citation",
+      "sizeCard": "Size",
+      "sizeHint": "{{type}} · 50 MB limit per file",
+      "chunksTitle": "Indexed chunks",
+      "chunksSubtitle": "Sources the AI cites when generating cases",
+      "chunksUnavailable": "Chunk contents are not available yet",
+      "chunksUnavailableHint": "The system does not provide the chunk list of a material yet.",
+      "notIndexed": "This material is not indexed",
+      "notIndexedHint": "Indexing has not completed, so the AI has no chunks from it.",
+      "otherTitle": "Other materials in the course ({{count}})",
+      "noOther": "The course has no other materials.",
+      "info": "Material information",
+      "file": "File",
+      "course": "Course",
+      "uploadedAt": "Uploaded",
+      "statusDone": "Completed",
+      "statusPending": "Pending",
+      "statusProcessing": "Processing",
+      "statusFailed": "Failed",
+      "howAi": "How the AI uses sources",
+      "howAiText": "Every AI-generated case must cite its source chunks. Lecturers check the citations before approving a case.",
+      "aiDraft": "AI Draft",
+      "loadError": "Could not load the material"
+    }
+  },
+  "g3": {
+    "status": {
+      "DRAFT": "Draft",
+      "REVIEWED": "Reviewed",
+      "APPROVED": "Approved",
+      "PUBLISHED": "Published"
+    },
+    "mode": {
+      "BRANCHING_STUDY": "Branching Study",
+      "REVIEW_STUDY": "Review Study",
+      "shortBranching": "Branching",
+      "shortReview": "Review"
+    },
+    "aiDraft": "AI Draft",
+    "list": {
+      "statusPanel": "Case Studies by status",
+      "caseUnit": "Case Study",
+      "modePanel": "Learning mode by case",
+      "recent": "Recently updated cases",
+      "recentEmpty": "No case has been updated yet.",
+      "recentMeta": "{{date}} · {{mode}}",
+      "openCase": "Open {{title}}",
+      "allCourses": "All courses",
+      "courseFilter": "Filter by course",
+      "chartLabel": "Number of cases by learning mode",
+      "library": "Case Study library",
+      "search": "Search cases",
+      "statusTabs": "Filter by status",
+      "tabAll": "All · {{count}}",
+      "tabStatus": "{{label}} · {{count}}",
+      "create": "Create a new case with AI",
+      "notice": "The AI only uses materials that have finished indexing.",
+      "noticeCourse": "The AI only uses materials that have finished indexing. {{code}} has {{ready}}/{{total}} materials ready.",
+      "noticeCourseFailed": "The AI only uses materials that have finished indexing. {{code}} has {{ready}}/{{total}} materials ready; {{failed}} failed files need to be uploaded again.",
+      "manageMaterials": "Manage materials",
+      "nodes": "{{count}} nodes",
+      "noTree": "No tree",
+      "updated": "Updated {{date}}",
+      "edit": "Edit",
+      "view": "View",
+      "showing": "Showing",
+      "ofTotal": "of {{count}} Case Studies",
+      "pageSize": "Cases per page",
+      "pagination": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {{page}}",
+      "loading": "Loading the case list",
+      "loadError": "Could not load the case list",
+      "emptyTitle": "No Case Studies yet",
+      "emptyDescription": "Create your first case in AI Studio from indexed course materials.",
+      "noCoursesTitle": "No courses yet",
+      "noCoursesDescription": "Create a course and upload materials before generating cases.",
+      "goToCourses": "Go to Courses"
+    },
+    "generation": {
+      "title": "Generating a draft case",
+      "description": "The AI is building the situation from the materials you selected. This usually takes 5–15 seconds.",
+      "stepRetrieve": "Retrieving relevant excerpts from {{count}} selected materials",
+      "stepRetrieveNone": "Retrieving relevant excerpts (no source materials selected)",
+      "stepCompose": "Composing the situation and its decision points",
+      "stepValidate": "Checking the decision tree structure (no loops, no orphan situations)",
+      "running": "In progress",
+      "failedTitle": "Case generation failed",
+      "failedDescription": "The AI could not produce a valid decision tree. Try again or give a more specific topic.",
+      "close": "Dismiss message"
+    },
+    "editor": {
+      "breadcrumb": "Breadcrumb",
+      "back": "Back to Case Studies",
+      "branchingCrumb": "Editor",
+      "reviewCrumb": "Review Study editor",
+      "situation": "Situation",
+      "situationLabel": "Situation {{index}}",
+      "situationContent": "Detailed situation content",
+      "options": "Choices ({{count}})",
+      "optionsHint": "Each choice leads to a next situation and carries its own consequence",
+      "option": "Choice {{index}}",
+      "optionLabel": "Choice label",
+      "nextNode": "Next situation when this choice is picked",
+      "endsJourney": "Ends the journey",
+      "consequence": "Consequence (set by the lecturer)",
+      "consequenceHint": "Shown to students only in Journey Review, never while they are playing the case.",
+      "terminalNode": "Outcome node: no further choices.",
+      "collapsedOption": "Choice {{index}} · {{text}} → {{next}}",
+      "expandOption": "Open choice {{index}}",
+      "tree": "Decision tree",
+      "treeNodes": "{{count}} nodes",
+      "treeValid": "Valid · every branch reaches an outcome",
+      "treeInvalid": "The tree has {{count}} structural errors",
+      "treeHint": "Select a node to edit its content in the left column.",
+      "treeStart": "Start",
+      "treePoint": "Point {{index}}",
+      "treeEnd": "Outcome",
+      "treeEmpty": "This case has no nodes yet.",
+      "check": "Check decision tree",
+      "topology": "Topology:",
+      "topologyValue": "{{nodes}} nodes · {{situations}} situations · {{outcomes}} outcomes",
+      "checkResult": "Tree check:",
+      "checkErrors": "{{count}} structural errors",
+      "issues": {
+        "noRoot": "There is no start node",
+        "danglingNext": "A choice points to a node that does not exist",
+        "cycle": "The tree contains a loop",
+        "orphan": "Some nodes cannot be reached from the start node",
+        "optionCount": "A non-outcome node needs 2–4 choices",
+        "noTerminal": "The tree has no outcome node"
+      },
+      "reviewContent": "Review Study content",
+      "caseTitle": "Case title",
+      "shortDescription": "Short description",
+      "context": "Context & data",
+      "problem": "Problem to analyse",
+      "info": "Case information",
+      "infoMode": "Mode:",
+      "infoCourse": "Course:",
+      "infoStatus": "Status:",
+      "infoVersion": "Version:",
+      "infoVersionValue": "v{{version}}",
+      "infoStructure": "Structure:",
+      "noTreeStructure": "No decision tree",
+      "studentSubmits": "Students will submit",
+      "submitAnalysis": "1. Situation analysis (optional)",
+      "submitSolution": "2. Proposed solution (required)",
+      "submitReasoning": "3. Reasoning based on the data (required)",
+      "submitNote": "Each student submits once. You respond with feedback, not a grade.",
+      "readOnly": "An approved or published case cannot be edited directly.",
+      "loading": "Loading the case",
+      "loadError": "Could not load the case",
+      "saveError": "Could not save the changes",
+      "statusError": "Could not change the case status"
+    },
+    "governance": {
+      "label": "Case review progress",
+      "markReviewed": "Save & mark as reviewed",
+      "saveChanges": "Save changes",
+      "revertDraft": "Return to draft",
+      "approve": "Approve",
+      "publish": "Publish",
+      "publishToStudents": "Publish to students",
+      "copyLink": "Copy link",
+      "copied": "Student link copied",
+      "copyFailed": "Could not copy the link",
+      "saving": "Saving…"
+    },
+    "publish": {
+      "title": "Publish Case Study",
+      "description": "Once published, students in {{course}} can open and play this case.",
+      "meta": "{{course}} · {{mode}} · {{points}} decision points · {{outcomes}} outcomes",
+      "metaReview": "{{course}} · {{mode}}",
+      "checkTree": "The decision tree is valid and every branch reaches an outcome",
+      "checkConsequences": "Every choice has a consequence",
+      "checkReviewText": "Context and the problem to analyse are filled in",
+      "checkApproved": "Reviewed and approved",
+      "warning": "After publishing, the case content can no longer be edited.",
+      "cancel": "Cancel",
+      "confirm": "Confirm publishing",
+      "close": "Close"
+    },
+    "studio": {
+      "title": "AI Studio",
+      "back": "Back to Case Studies",
+      "crumbStep": "Step {{step}}/3 · {{label}}",
+      "step1": "Course & learning mode",
+      "step2": "Topic & source materials",
+      "step3": "Review & generate draft",
+      "intro": "Create a branching academic scenario from course materials in just 3 steps.",
+      "course": "Course",
+      "coursePlaceholder": "Select a course",
+      "modeLabel": "Choose a learning mode",
+      "modeBranching": "Branching Study · Decision tree — Students keep making choices and consequences stay hidden until the outcome. Recommended for incident scenarios.",
+      "modeReview": "Review Study · In-depth analysis — A simpler format: context, data and a problem to analyse. No decision tree needed.",
+      "modeManual": "Create manually from scratch — No AI; the lecturer writes the whole situation.",
+      "modeUnavailable": "The system can currently only generate Branching Study cases.",
+      "topic": "Situation topic",
+      "topicPlaceholder": "Enter the topic or context you want the AI to generate…",
+      "materials": "Select source materials for the AI to draw context from",
+      "materialsSelected": "{{count}} materials selected",
+      "materialNotReady": "Processing · cannot be selected yet",
+      "materialFailed": "Indexing failed · cannot be selected",
+      "materialsEmpty": "This course has no materials yet.",
+      "materialsError": "Could not load the course materials",
+      "note": "Note: The number of decision points is not fixed; the AI outlines them naturally as the situation unfolds.",
+      "steps": "Setup steps",
+      "config": "Generation settings",
+      "configCourse": "Course",
+      "configMode": "Learning mode",
+      "configTopic": "Topic",
+      "configMaterials": "Source materials",
+      "notEntered": "Not entered",
+      "notSelected": "Not selected",
+      "aiDraftNote": "An AI draft always starts as a Draft and must be reviewed and approved by a lecturer before publishing.",
+      "confirmTitle": "Confirm the scenario settings",
+      "materialsSummary": "{{count}} materials · {{names}}",
+      "noMaterials": "None selected",
+      "after": "After you generate",
+      "after1": "The AI retrieves relevant excerpts (if source materials are selected)",
+      "after2": "It composes the situation and its decision points",
+      "after3": "It checks the tree structure: no loops, no orphan situations",
+      "after4": "The editor opens as a Draft for you to review",
+      "footer1": "Step 1 of 3: Course and mode",
+      "footer2": "Step 2 of 3: Topic and materials",
+      "footer3": "Step 3 of 3: Confirm settings",
+      "cancel": "Cancel",
+      "previous": "Back",
+      "next": "Continue",
+      "generate": "Generate draft",
+      "loading": "Loading courses",
+      "loadError": "Could not load the course list"
+    },
+    "rubric": {
+      "title": "Case quality research rubric",
+      "crumb": "Research rubric",
+      "average": "Average score",
+      "averageValue": "/ 5",
+      "averageFrom": "from 3 criteria",
+      "averageNone": "Not rated",
+      "form": "Case quality evaluation",
+      "formHint": "A 1–5 scale for each criterion. This rates the quality of the case for research, not a student's grade.",
+      "realism": "1. Realism",
+      "realismHint": "How closely it matches real crisis situations in businesses",
+      "difficulty": "2. Difficulty",
+      "difficultyHint": "How complex the problem is and how much analytical thinking it demands",
+      "fit": "3. Course fit",
+      "fitHint": "How well it matches the course learning outcomes (CLOs)",
+      "score": "{{score}}/5",
+      "scoreNone": "–/5",
+      "scoreLabel": "{{criterion}}: {{value}} points",
+      "note": "Note (optional)",
+      "notePlaceholder": "What to adjust in the next version…",
+      "noteCount": "{{count}}/1000 characters",
+      "save": "Save evaluation",
+      "saveUnavailable": "The system has no API to save rubric evaluations yet.",
+      "saved": "Saved evaluations ({{count}})",
+      "savedEmpty": "No evaluation has been saved yet.",
+      "pickTitle": "Choose a case to evaluate",
+      "pickDescription": "Open the rubric from a case in the Case Study library.",
+      "pickAction": "Go to Case Studies",
+      "meta": "{{code}} · {{course}}"
+    }
+  },
+  "g4": {
+    "common": {
+      "unknownValue": "—",
+      "all": "All",
+      "branching": "Branching",
+      "review": "Review"
+    },
+    "calendar": {
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "weekdays": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "today": "Today",
+      "monthTitle": "{{month}}/{{year}}",
+      "monthShort": "M{{month}}"
+    },
+    "todo": {
+      "drafts_one": "{{count}} draft to review",
+      "drafts_other": "{{count}} drafts to review",
+      "reviewDrafts_one": "Review {{count}} draft case",
+      "reviewDrafts_other": "Review {{count}} draft cases",
+      "reviewed_one": "{{count}} case awaiting approval",
+      "reviewed_other": "{{count}} cases awaiting approval",
+      "meta": "Case Study · {{code}}",
+      "materialFailed": "Indexing failed · {{code}}",
+      "metaCode": "{{code}} · Case Study"
+    },
+    "dashboard": {
+      "loadError": "Could not load the dashboard",
+      "calendarLabel": "Deadline calendar",
+      "metrics": {
+        "courses": "Courses you teach",
+        "published": "Published cases",
+        "drafts": "Drafts · awaiting approval",
+        "pending": "Submissions to review"
+      },
+      "modeFilter": "Filter by learning mode",
+      "view": "Calendar view",
+      "viewMonth": "Month",
+      "courseFilter": "Filter by course",
+      "filter": "Filter",
+      "createCase": "New case",
+      "moreCases": "+{{count}} other cases",
+      "pendingTitle": "Submissions awaiting your feedback",
+      "pendingUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
+      "trackSubmissions": "Track submissions",
+      "openSubmissionsQueue": "Open submissions queue",
+      "todoTitle": "To do",
+      "todoEmpty": "No case is waiting for your review.",
+      "access": "Access",
+      "courseSectionFallback": "COURSE",
+      "statusActive": "Active",
+      "statusInactive": "Paused",
+      "casesCount": "{{total}} cases ({{published}} published)",
+      "materialsCount": "{{ready}}/{{total}} materials",
+      "materialsLink": "Materials →",
+      "enterCourse": "Enter course",
+      "quickActions": {
+        "title": "Quick Actions",
+        "subtitle": "Shortcuts for teaching operations",
+        "aiStudioBadge": "AI Studio",
+        "aiStudio": {
+          "title": "AI Case Studio",
+          "desc": "Generate branching scenarios or case analyses from syllabus."
+        },
+        "materials": {
+          "title": "Course Materials",
+          "desc": "Upload syllabi, textbooks in PDF/DOCX and monitor RAG indexing."
+        },
+        "cases": {
+          "title": "Approve Cases",
+          "desc": "Review decision tree DAG structure and publish to students."
+        },
+        "stats": {
+          "title": "Reports & Analytics",
+          "desc": "Track decision path traversal and student reasoning patterns."
+        }
+      },
+      "coursesSection": {
+        "title": "Active Teaching Courses",
+        "subtitle": "Overview of course status, materials and case scenarios",
+        "viewAll": "View all courses",
+        "noCoursesTitle": "No courses yet",
+        "noCoursesDesc": "Create your first course to upload materials and build experiential cases.",
+        "createCourse": "Create new course"
+      }
+    },
+    "queue": {
+      "metrics": {
+        "total": "Submitted attempts",
+        "pending": "Awaiting feedback",
+        "reviewed": "Feedback given",
+        "cases": "Cases with submissions"
+      },
+      "listLabel": "Submissions",
+      "searchLabel": "Search submissions",
+      "searchPlaceholder": "Student name or case",
+      "courseFilter": "Filter by course",
+      "allCourses": "All courses",
+      "statusFilter": "Filter by status",
+      "status": {
+        "all": "All statuses",
+        "pending": "Awaiting feedback",
+        "reviewed": "Feedback given"
+      },
+      "sortLabel": "Sort",
+      "sort": {
+        "newest": "Newest",
+        "oldest": "Oldest"
+      },
+      "columns": {
+        "student": "Student",
+        "submittedAt": "Submitted",
+        "case": "Case Study & course",
+        "attempt": "Attempt",
+        "action": "Action",
+        "status": "Status"
+      },
+      "emptyTitle": "No submission data",
+      "emptyDescription": "The system does not provide student work to lecturers yet."
+    },
+    "detail": {
+      "unavailableTitle": "This submission cannot be shown",
+      "unavailableDescription": "The system does not provide submission {{id}} to lecturers yet.",
+      "backToQueue": "Back to the feedback queue"
+    },
+    "stats": {
+      "noData": "No statistics yet",
+      "kpi": {
+        "completion": "Completion rate",
+        "avgAttempts": "Average attempts",
+        "inProgress": "Currently in a journey"
+      },
+      "panels": {
+        "choices": "Choices per situation",
+        "attempts": "Attempts distribution",
+        "outcomes": "Final outcomes",
+        "timing": "When students work",
+        "progress": "Progress of students who opened a case",
+        "popular": "Popular choices per decision point"
+      },
+      "openCases": "Open cases",
+      "openCasesEmpty": "No case has been published yet.",
+      "openCasesError": "Could not load cases",
+      "published": "Published",
+      "updatedOn": "Updated on {{date}}",
+      "recent": "Recent submissions",
+      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet."
+    },
+    "profile": {
+      "loadError": "Could not load your profile",
+      "accountLabel": "Account information",
+      "roles": {
+        "lecturer": "Lecturer",
+        "student": "Student",
+        "admin": "Administrator"
+      },
+      "joinedOn": "Joined {{date}}",
+      "studentMeta": "{{role}}  •  Joined {{date}}",
+      "teaching": "Courses you teach",
+      "teachingCount_one": "{{count}} active course",
+      "teachingCount_other": "{{count}} active courses",
+      "teachingTitle": "Courses you teach",
+      "coursesError": "Could not load courses",
+      "noCourses": "You do not teach any course yet.",
+      "email": "Email",
+      "role": "Role",
+      "joined": "Joined on",
+      "courseActive": "Active",
+      "courseInactive": "Inactive",
+      "caseCount_one": "{{count}} case",
+      "caseCount_other": "{{count}} cases",
+      "noCases": "No cases yet",
+      "materialsReady": "{{percent}}% of materials ready",
+      "noMaterials": "No materials yet",
+      "completionTitle": "Case completion rate",
+      "activityTitle": "Activity",
+      "courseProgressTitle": "Progress by course",
+      "chartNoData": "No data yet",
+      "todoTitle": "To do",
+      "recentTitle": "Recent submissions",
+      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
+      "progressTitle": "Learning progress",
+      "progressUnavailable": "No learning progress data yet.",
+      "studentTodoUnavailable": "Nothing to do yet.",
+      "myCoursesTitle": "My courses",
+      "myCoursesUnavailable": "The system does not provide the student's course list yet.",
+      "editProfile": "Edit Profile",
+      "editProfileTitle": "Update Account Profile",
+      "editProfileDesc": "View and update personal details and UI language preference.",
+      "fullName": "Full name",
+      "fullNamePlaceholder": "Enter your full name...",
+      "fullNameRequired": "Full name cannot be empty.",
+      "emailImmutable": "Account email is fixed and cannot be changed.",
+      "language": "Interface language",
+      "languageDesc": "Select system-wide display language.",
+      "languageVi": "Tiếng Việt",
+      "languageEn": "English",
+      "saveChanges": "Save changes",
+      "saving": "Saving...",
+      "saveSuccess": "Profile updated successfully.",
+      "saveError": "Failed to update profile, please try again.",
+      "cancel": "Cancel"
+    }
+  },
+  "g5": {
+    "common": {
+      "loading": "Loading data",
+      "cancel": "Cancel",
+      "close": "Close",
+      "expand": "Expand: {{title}}",
+      "collapse": "Collapse: {{title}}",
+      "showMore": "Show more",
+      "showLess": "Show less",
+      "course": "Course",
+      "grading": "Grading",
+      "notGraded": "Not graded",
+      "modeBranching": "Branching Study",
+      "modeReview": "Review Study",
+      "aiAssisted": "AI-assisted",
+      "attemptN": "Attempt #{{n}}",
+      "attemptRun": "Attempt #{{n}}",
+      "decisionPoint": "Decision point {{n}}",
+      "stepsCount": "{{count}} steps",
+      "charCount": "{{count}} / {{max}} characters",
+      "inProgress": "In progress",
+      "completed": "Completed",
+      "submitted": "Submitted",
+      "newAttempt": "Start a new attempt",
+      "caseCard": "Situation",
+      "consequenceInReview": "Detailed consequences are shown in Journey Review",
+      "phase": {
+        "experience": "Play the scenario",
+        "review": "Review & explain your reasoning",
+        "reflection": "Final reflection"
+      },
+      "phaseStatus": {
+        "done": "Done",
+        "waiting": "Waiting",
+        "locked": "Locked"
+      },
+      "caseForbiddenTitle": "This situation is not open yet",
+      "caseForbiddenDescription": "The lecturer has not published this situation, so you cannot access it yet.",
+      "caseNotFoundTitle": "Situation not found",
+      "caseNotFoundDescription": "The situation or attempt does not exist, or it does not belong to you."
+    },
+    "player": {
+      "open": "Open",
+      "attemptsDone": "Attempted",
+      "attemptsCount": "{{count}} times",
+      "contextTitle": "Situation context",
+      "courseInfo": "Course information",
+      "learningMode": "Learning mode",
+      "learningModeValue": "Branching Study — move through the decision points in one run; consequences are revealed in Journey Review.",
+      "historyTitle": "Your attempt history ({{count}})",
+      "firstTitle": "You have not started an attempt yet",
+      "firstDescription": "Every try is a chance to explore. Earlier attempts are always kept as they are.",
+      "startFirst": "Start an attempt",
+      "startFailed": "Could not start the attempt (error code {{code}}). Please try again.",
+      "attemptTitle": "Attempt #{{n}} · {{status}}",
+      "progressTitle": "Attempt progress",
+      "passed": "Passed",
+      "nextPoint": "Next decision point",
+      "waiting": "Waiting",
+      "outcomeReached": "Journey outcome",
+      "completedAt": "Completed {{time}}",
+      "startedAt": "Started {{time}}",
+      "viewReview": "View Journey Review",
+      "continueTitle": "Continue your attempt",
+      "midAttempt": "You are in the middle of attempt #{{n}}",
+      "midAttemptNote": "Every try is a chance to explore. Earlier attempts are kept as they are.",
+      "restart": "Start over",
+      "continue": "Continue attempt",
+      "howTitle": "How to play this case",
+      "how": {
+        "decide": {
+          "title": "Make decisions",
+          "body": "Choose how to respond at each decision point. Consequences are not shown at this step."
+        },
+        "review": {
+          "title": "Journey Review",
+          "body": "See the consequences of each choice and write your reasoning for the key decisions."
+        },
+        "reflect": {
+          "title": "Reflect",
+          "body": "Write what you took away from the journey."
+        }
+      },
+      "howNote": "No grading. Every attempt is saved so you can look back at your path.",
+      "noNodeTitle": "Could not load the decision point",
+      "noNodeDescription": "This attempt has no current decision point. Go back to the case page and try again.",
+      "situation": "Context",
+      "chooseTitle": "Choose a course of action",
+      "chooseSubtitle": "Your choice will set off the next chain of events",
+      "optionCount": "{{count}} choices",
+      "optionsHeading": "Choices",
+      "optionN": "Choice {{key}}",
+      "selected": "Selected",
+      "commitNote": "This decision is final and moves the scenario on to what happens next immediately.",
+      "chooseOption": "Choose option {{key}}",
+      "chooseFailed": "Could not record your choice (error code {{code}}). Please try again.",
+      "pickPrompt": "Select a choice from the list on the left to see its details.",
+      "outcomeTitle": "End of the journey",
+      "outcomeLabel": "Journey outcome",
+      "decisionCount": "Decision points",
+      "attemptLabel": "Attempt",
+      "pathTitle": "The path you chose",
+      "outcomeChip": "Journey outcome",
+      "ended": "Ended",
+      "progressCard": "Attempt progress",
+      "nextStep": "Next step",
+      "nextStepBody": "Required before moving on to reflection and wrapping up attempt #{{n}}: review the consequences of each decision and explain your reasoning.",
+      "toReview": "Go to Journey Review",
+      "noteTitle": "Note",
+      "noteBody": "The detailed consequences of each choice are only revealed in Journey Review. Earlier attempts are kept as they are."
+    },
+    "newAttempt": {
+      "title": "Start a new attempt?",
+      "message": "A new attempt starts again from the first situation so you can try a different path. The previous attempt stays in your history, with your reasoning and reflection.",
+      "previous": "Attempt {{n}} · {{state}} · {{count}} decision steps · {{reflection}}",
+      "stateCompleted": "Completed",
+      "stateInProgress": "In progress",
+      "reflected": "Reflection submitted",
+      "notReflected": "No reflection submitted",
+      "confirm": "Start attempt {{n}}"
+    },
+    "review": {
+      "pageTitle": "Journey Review — Look back at your journey",
+      "notCompletedTitle": "This attempt has not ended",
+      "notCompletedDescription": "Journey Review opens only after you reach the outcome of an attempt.",
+      "backToCase": "Back to the situation",
+      "mapTitle": "Decision journey map",
+      "stepsPassed": "Steps passed",
+      "reasoningWritten": "Reasoning written",
+      "finishedAt": "Completed",
+      "outcomeTitle": "Journey outcome",
+      "outcomeNote": "Pedagogical secrecy is lifted: the real consequences of each decision are now revealed.",
+      "toReflection": "Go to reflection",
+      "stepsTitle": "Steps you passed",
+      "stepLabel": "Step {{n}} · {{situation}}",
+      "chose": "Chosen: {{option}}",
+      "detailsTitle": "Decision details & real consequences",
+      "hasReasoning": "Reasoning added",
+      "noReasoning": "No reasoning yet",
+      "outcomePill": "Outcome",
+      "chosenOption": "The choice you made",
+      "consequence": "Real consequence",
+      "yourReasoning": "Your reasoning",
+      "reasoningLabel": "Retrospective reasoning (based on data & course theory)",
+      "reasoningPlaceholder": "Why did you choose this option? If you did it again, what would you change?",
+      "reasoningLength": "Reasoning must be {{min}} to {{max}} characters.",
+      "saveReasoning": "Save reasoning",
+      "editReasoning": "Edit reasoning",
+      "saveFailed": "Could not save your reasoning (error code {{code}}). Please try again.",
+      "challengeNote": "Challenge with AI · optional. The AI asks questions about your reasoning and does not grade it.",
+      "openChallenge": "Open challenge",
+      "challengeNeedsReasoning": "Save your reasoning before opening the challenge."
+    },
+    "challenge": {
+      "title": "AI Challenge Support",
+      "description": "Round 1/2 · Answer the challenge questions to clarify your reasoning. Up to 2 rounds, not graded.",
+      "roundIndicator": "Round {{round}}/2",
+      "roundCompleted": "Completed 2 rounds",
+      "completedBanner": "The challenge session completed 2 dialogue rounds. Your points have been recorded.",
+      "decisionAt": "Your decision at step {{n}}",
+      "unavailableTitle": "AI challenge is not available",
+      "unavailableBody": "Save your reasoning before opening the AI challenge. You can still continue Journey Review.",
+      "replyLabel": "Your response",
+      "replyPlaceholder": "Defend your decision or describe an extra fallback mechanism...",
+      "skip": "Skip",
+      "send": "Send round {{round}} response",
+      "close": "Close",
+      "roundLabel": "Round {{round}}",
+      "counterQuestionLabel": "AI counter-question",
+      "completedSubtitle": "Round 2/2 · Completed. The challenge session concluded after 2 rounds. Your answer is saved alongside your reasoning at step {{n}}. No score is assigned.",
+      "r1Question": "Round 1 · AI counter-question",
+      "r1Answer": "Round 1 · Your response",
+      "r2Question": "Round 2 · AI counter-question",
+      "completedFooter": "Round 2 / 2 · Completed · Not graded",
+      "backToReview": "Back to Journey Review",
+      "loading": "Loading AI challenge session...",
+      "generating": "AI is generating counter-question...",
+      "sending": "Sending response...",
+      "errorTitle": "Unable to load AI challenge",
+      "retry": "Retry",
+      "errors": {
+        "maxRoundsReached": "Challenge support session has reached the maximum of 2 rounds. No further replies can be submitted.",
+        "aiUnavailable": "AI Challenge Support service is temporarily unavailable. Please retry shortly.",
+        "forbidden": "You do not have permission to access this challenge session.",
+        "notFound": "Challenge support session not found.",
+        "generic": "An error occurred during challenge support. Please retry."
+      }
+    },
+    "reflection": {
+      "pageTitle": "Reflect & capture the lessons",
+      "notCompletedTitle": "You cannot reflect yet",
+      "notCompletedDescription": "Reflection opens only after the attempt reaches its outcome.",
+      "yourReflection": "Your reflection *",
+      "yourReflectionPlain": "Your reflection",
+      "hint": "Hint: which decision mattered most and why? What would you change if you did it again? Which course knowledge helped you?",
+      "placeholder": "Write your reflection on this attempt...",
+      "required": "Please write your reflection before submitting.",
+      "submitFailed": "Could not submit your reflection (error code {{code}}). Please try again.",
+      "attemptCard": "Attempt",
+      "attempt": "Attempt",
+      "decisions": "Decision steps",
+      "status": "Status",
+      "awaiting": "Awaiting reflection",
+      "progressCard": "Progress",
+      "progress": {
+        "experience": "Play the scenario · Done",
+        "reviewDone": "Review & explain your reasoning · Done",
+        "reviewOpen": "Review & explain your reasoning · Not enough reasoning yet",
+        "reflecting": "Final reflection · In progress"
+      },
+      "backToReview": "Back to Journey Review",
+      "barNote": "Reflection is not graded. After you submit, your lecturer will review it and respond.",
+      "submit": "Submit reflection",
+      "doneTitle": "You have fully completed attempt #{{n}}!",
+      "doneBody": "Your whole path, your reasoning and your reflection have been recorded.",
+      "viewReview": "Review Journey Review",
+      "newAttempt": "Start a new attempt",
+      "submittedTitle": "Reflection submitted",
+      "noScoreTitle": "No scores or rankings",
+      "noScoreBody": "Every try is a chance to explore. Reflection is not graded; your lecturer responds with qualitative feedback."
+    },
+    "history": {
+      "allTitle": "Choose a situation to see its history",
+      "allDescription": "Attempt history is shown per situation. Open a situation from your courses.",
+      "toCourses": "My courses",
+      "metricAttempts": "Attempts",
+      "metricSubmitted": "Submitted",
+      "metricInProgress": "In progress",
+      "metricSteps": "Steps passed",
+      "chartTitle": "Steps passed per attempt",
+      "pathsTitle": "Path of each attempt",
+      "atPoint": "At decision point {{n}}",
+      "noAttempts": "You have no attempts for this situation yet.",
+      "listTitle": "Attempt list",
+      "search": "Search attempts",
+      "searchPlaceholder": "Search attempts…",
+      "colCompleted": "Completed",
+      "colAttempt": "Attempt",
+      "colStarted": "Started",
+      "colCase": "Situation",
+      "colMode": "Mode",
+      "colSteps": "Steps",
+      "colStatus": "Status",
+      "colActions": "Actions",
+      "reflectedSub": "Reflection submitted",
+      "awaitingReflection": "Awaiting reflection",
+      "processing": "Processing",
+      "viewJourney": "Review journey",
+      "continue": "Continue",
+      "resultLeading": "Showing",
+      "resultTrailing": "of {{count}} attempts",
+      "pageSizeLabel": "Rows per page",
+      "paginationNav": "Pagination",
+      "previousPage": "Previous page",
+      "nextPage": "Next page",
+      "pageN": "Page {{page}}"
+    },
+    "reviewStudy": {
+      "contextTitle": "Situation context",
+      "problem": "Problem to solve",
+      "analysis": "Situation analysis (optional)",
+      "analysisPlaceholder": "What do you notice in the data?",
+      "solution": "Proposed solution *",
+      "solutionPlaceholder": "Describe your solution or plan for solving the problem...",
+      "reasoning": "Reasoning based on the data *",
+      "reasoningPlaceholder": "Explain using the attached data and course knowledge...",
+      "infoTitle": "Situation information",
+      "mode": "Mode",
+      "format": "Format",
+      "formatValue": "Written submission",
+      "status": "Status",
+      "submittedStatus": "Submitted (SUBMITTED)",
+      "submittedBadge": "Submitted",
+      "submittedNotice": "Your submission has been recorded and is awaiting lecturer review. Review Study permits exactly one submission per case.",
+      "submittedAt": "Submitted at: {{time}}",
+      "submittedAnalysisTitle": "Submitted analysis",
+      "submittedSolutionTitle": "Submitted proposed solution",
+      "submittedReasoningTitle": "Submitted reasoning",
+      "emptyAnalysis": "No analysis provided",
+      "requirementsTitle": "Submission requirements",
+      "requirement": {
+        "solution": "1. Propose a solution / plan to solve the problem (min 10 chars)",
+        "reasoning": "2. Reasoning based on the data (min 10 chars)"
+      },
+      "back": "Back",
+      "finalNote": "Your submission is final and cannot be edited after you submit.",
+      "submit": "Submit",
+      "submitting": "Submitting…",
+      "submitSuccess": "Submission submitted successfully!",
+      "submitFailed": "Failed to submit: {{error}}",
+      "submitFailedGeneric": "Failed to submit. Please try again.",
+      "duplicateSubmission": "You already have a submission for this case. Exactly one submission is allowed.",
+      "submitUnavailable": "Cannot submit yet: the server has no Review Study submission API.",
+      "validation": {
+        "solutionMin": "Proposed solution must contain at least 10 characters.",
+        "reasoningMin": "Reasoning must contain at least 10 characters."
+      }
+    },
+    "feedback": {
+      "unavailableTitle": "Feedback cannot be shown yet",
+      "unavailableBody": "The server has no API to read Review Study submissions and lecturer feedback.",
+      "backToWork": "Back to my work"
+    },
+    "desk": {
+      "title": "Student Desk",
+      "emptyTitle": "No courses or lessons yet",
+      "emptyBody": "Join a class using an invite code to start solving experiential case studies.",
+      "toCourses": "Explore my courses",
+      "stats": {
+        "enrolledCourses": "Enrolled classes",
+        "activeCases": "In-progress attempts",
+        "publishedCases": "Available cases"
+      },
+      "activeCasesTitle": "Continue in-progress cases",
+      "continueCase": "Resume",
+      "myCoursesTitle": "My Courses",
+      "noActiveCases": "No cases in progress.",
+      "noEnrolledCourses": "You have not enrolled in any course yet.",
+      "calendar": "Calendar",
+      "month": "{{month}}/{{year}}",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "weekdays": [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+      ],
+      "newCases": "Newly opened cases",
+      "newCasesEmpty": "No new cases yet."
+    },
+    "courses": {
+      "listTitle": "Class list",
+      "join": "Join a class",
+      "emptyTitle": "You have not joined any class yet",
+      "emptyBody": "Enter the class code provided by your lecturer to access case studies.",
+      "joinTitle": "Join a new class",
+      "joinDescription": "Enter the class code from your lecturer to access the case studies of the course.",
+      "codeLabel": "Class code *",
+      "codePlaceholder": "e.g. SEC7A2",
+      "joinSubmit": "Join class",
+      "joinSuccess": "Successfully joined class!",
+      "enrolledAt": "Enrolled on: {{date}}",
+      "viewCases": "View cases",
+      "error": {
+        "invalidCode": "Invalid or empty class code.",
+        "notFound": "Class code does not exist. Please check again.",
+        "archived": "This course has been archived and cannot be joined.",
+        "alreadyEnrolled": "You have already joined this class.",
+        "disabled": "This class code has expired or was disabled by the lecturer.",
+        "generic": "Could not join class. Please try again later."
+      }
+    }
+  },
+  "g6": {
+    "noData": {
+      "title": "No data yet",
+      "description": "This section appears once the server provides admin data."
+    },
+    "dashboard": {
+      "attentionTitle": "{{count}} items need attention",
+      "viewDetails": "View details",
+      "kpi": {
+        "users": "Users",
+        "openCourses": "Active courses",
+        "publishedCases": "Published cases",
+        "aiGenerations": "AI case generations",
+        "growthThisMonth": "+{{count}} in month {{month}}",
+        "aiErrors": "{{count}} failed generations",
+        "noAiErrors": "No errors"
+      },
+      "activity": {
+        "title": "Weekly learning activity",
+        "subtitle": "Branching Study attempts and Review Study submissions across the system",
+        "filter8Weeks": "8 weeks",
+        "branchingAttempts": "Study attempts",
+        "reviewSubmissions": "Review submissions"
+      },
+      "usersByRole": {
+        "title": "Users by role",
+        "subtitle": "Active accounts",
+        "students": "Students",
+        "lecturers": "Lecturers",
+        "admins": "Administrators",
+        "totalUsers": "{{count}} users"
+      },
+      "health": {
+        "title": "System status",
+        "updatedAt": "Updated at {{time}}",
+        "appServer": "Application server",
+        "aiService": "AI service",
+        "indexing": "Document indexing",
+        "indexingProcessing": "{{count}} files processing",
+        "database": "Database",
+        "up": "Stable",
+        "down": "Disrupted",
+        "loading": "Checking system status…",
+        "errorTitle": "Status check failed"
+      },
+      "casesByCourse": {
+        "title": "Cases by course",
+        "subtitle": "Published and draft cases in each course",
+        "filterAll": "All courses",
+        "published": "Published",
+        "draft": "Draft",
+        "noCases": "No cases yet"
+      },
+      "recentLog": {
+        "title": "Recent log",
+        "subtitle": "Today"
+      },
+      "loadError": "Failed to load dashboard overview data"
+    },
+    "users": {
+      "emptyTitle": "No user data yet",
+      "emptyDescription": "Accounts appear once the server provides user administration data."
+    },
+    "courses": {
+      "title": "All courses",
+      "emptyTitle": "No course data yet",
+      "emptyDescription": "System-wide courses appear once the server provides course administration data."
+    },
+    "cases": {
+      "byStatus": "Case Studies by status",
+      "byMode": "Learning mode per case",
+      "library": "Case Study library",
+      "emptyTitle": "No Case Study data yet",
+      "emptyDescription": "System-wide Case Studies appear once the server provides Case Study administration data."
+    },
+    "aiService": {
+      "recent": {
+        "title": "Recent case generations",
+        "subtitle": "Each generation creates a draft for the lecturer to review"
+      },
+      "indexing": {
+        "title": "Document indexing status",
+        "subtitle": "Documents are chunked and indexed so the AI can cite them when generating cases"
+      },
+      "config": {
+        "title": "Current configuration",
+        "providerLabel": "AI provider",
+        "providerValue": "Fixed in the server configuration",
+        "modelLabel": "Model",
+        "modelValue": "Set by the engineering team"
+      },
+      "change": {
+        "title": "Changing the configuration",
+        "body": "The AI provider and model are fixed in the server environment file (OPD-013). This screen is for monitoring only; it has no action to change the configuration."
+      }
+    },
+    "rubric": {
+      "title": "Case quality evaluation",
+      "description": "1–5 scale for each criterion. This rates case quality for research; it is not a student grade.",
+      "saved": "Saved evaluation forms",
+      "emptyTitle": "No evaluation data yet",
+      "emptyDescription": "Evaluation forms appear once the server provides Case Study evaluation data."
+    },
+    "logs": {
+      "emptyTitle": "No log data yet",
+      "emptyDescription": "The system log appears once the server provides activity log data."
+    },
+    "settings": {
+      "platform": "Platform information",
+      "platformEmpty": "Platform name, operator, sign-in notice and support email appear once the server provides settings data.",
+      "limits": "Limits & registration",
+      "ai": {
+        "title": "AI service",
+        "provider": "Provider: fixed in the server configuration",
+        "monitor": "Monitor its status under AI service",
+        "note": "The AI configuration is not edited in the interface (OPD-013)."
+      }
+    }
+  },
+  "ragInspector": {
+    "loading": "Loading document details…",
+    "retry": "Retry",
+    "error": {
+      "title": "Couldn't load the document details",
+      "description": "Check your network connection and try again."
+    },
+    "metrics": {
+      "chunks": "Chunks",
+      "chunksHint": {
+        "PENDING": "Waiting to be indexed",
+        "PROCESSING": "Indexing",
+        "COMPLETED": "Ready for AI citations",
+        "FAILED": "Indexing failed"
+      },
+      "pages": "Pages",
+      "pagesUnavailable": "The system does not record a page count yet",
+      "size": "Size",
+      "sizeHint": "{{type}} · 50 MB limit per file"
+    },
+    "chunks": {
+      "title": "Indexed chunks",
+      "subtitle": "Sources the AI cites when it generates a case",
+      "unavailableTitle": "Chunk contents can't be shown yet",
+      "unavailableDescription": "There is no API yet for viewing a document's chunks."
+    },
+    "others": {
+      "title": "Other documents in this course ({{count}})",
+      "titleNoCount": "Other documents in this course",
+      "loading": "Loading the other documents of this course…",
+      "errorTitle": "Couldn't load the other documents of this course",
+      "empty": "This course has no other documents"
+    },
+    "courseLoading": "Loading the course…",
+    "courseError": "Couldn't load the course",
+    "courseErrorWithCode": "Couldn't load the course (code {{code}})",
+    "info": {
+      "title": "Document details",
+      "file": "File",
+      "course": "Course",
+      "uploadedAt": "Uploaded",
+      "processingError": "Processing error",
+      "processingErrorUnknown": "The system did not record a reason."
+    },
+    "status": {
+      "PENDING": "Pending",
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed"
+    },
+    "howAiUses": {
+      "title": "How the AI uses sources",
+      "description": "Every AI-generated situation must cite its matching source chunk. Lecturers check the citations before approving a case.",
+      "badge": "AI Draft"
+    }
+  },
+  "rubric": {
+    "case": {
+      "regionLabel": "Case being evaluated",
+      "loading": "Loading case information…",
+      "errorTitle": "Could not load the case",
+      "errorDescription": "Check your network connection and try again.",
+      "noneTitle": "No case selected",
+      "noneDescription": "Open the rubric from a specific case to see its information.",
+      "mode": {
+        "BRANCHING_STUDY": "Branching Study",
+        "REVIEW_STUDY": "Review Study"
+      }
+    },
+    "average": {
+      "label": "Average score",
+      "unavailable": "No score yet"
+    },
+    "criteria": {
+      "realism": {
+        "name": "Realism",
+        "description": "How closely it matches real business crisis situations"
+      },
+      "difficulty": {
+        "name": "Difficulty",
+        "description": "How complex the problem is and how much analytical thinking it demands"
+      },
+      "curriculumFit": {
+        "name": "Course fit",
+        "description": "How well it aligns with the course learning outcomes (CLO)"
+      }
+    },
+    "scoring": {
+      "title": "Case quality evaluation",
+      "description": "Scale 1–5 for each criterion. This rates case quality for research, not student scores.",
+      "noScore": "No score yet",
+      "unavailable": "Cannot score or save yet: the system has no rubric API.",
+      "save": "Save evaluation"
+    },
+    "note": {
+      "label": "Note (optional)",
+      "placeholder": "What to adjust in the next version…",
+      "counter": "{{count}}/{{max}} characters"
+    },
+    "saved": {
+      "title": "Saved evaluations",
+      "unavailableTitle": "Saved evaluations unavailable",
+      "unavailableDescription": "There is no API to read saved rubric evaluations yet."
+    }
+  },
+  "states": {
+    "loading": {
+      "label": "Loading…",
+      "courseList": "Loading your courses…"
+    },
+    "empty": {
+      "courses": {
+        "title": "No courses yet",
+        "description": "Create a course to upload course materials and build case studies.",
+        "action": "Create course"
+      }
+    },
+    "error": {
+      "title": "Couldn't load the data",
+      "description": "Check your network connection and try again.",
+      "retry": "Try again",
+      "codeLine": "Error code {{code}} · {{time}} — if this keeps happening, send this code to ",
+      "codeLineNoTime": "Error code {{code}} — if this keeps happening, send this code to ",
+      "courses": {
+        "title": "Couldn't load your courses",
+        "description": "Check your network connection and try again. Your existing courses are not affected."
+      }
+    },
+    "noResults": {
+      "title": "No matching results",
+      "description": "Nothing matches “{{keyword}}”. Try another keyword or clear the filters.",
+      "clear": "Clear search",
+      "courses": {
+        "title": "No matching courses",
+        "description": "No courses match “{{keyword}}”. Try another keyword or clear the filters."
+      }
+    },
+    "forbidden": {
+      "code": "403",
+      "title": "You don't have access to this page",
+      "description": "The account you're signed in with can't view this page.",
+      "descriptionWithRole": "The {{page}} page is only for {{allowedRole}}. You're signed in as {{currentRole}}.",
+      "switchAccount": "Sign in with another account",
+      "home": "Go to my home page",
+      "helpBefore": "If you think this is a mistake, contact your lecturer or ",
+      "helpAfter": ".",
+      "roleFor": {
+        "lecturer": "lecturers",
+        "student": "students",
+        "admin": "administrators"
+      }
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Page not found",
+      "description": "The link may be wrong or the page may have been removed. Check the address or go back to the home page.",
+      "path": "Path: {{path}}",
+      "back": "Go back",
+      "home": "Go to home page",
+      "helpBefore": "Need help? Contact "
+    },
+    "serverError": {
+      "code": "500",
+      "title": "Something went wrong on our side",
+      "description": "Your request wasn't processed. Your saved data is not affected. Please try again in a few minutes.",
+      "incident": "Incident ID: {{id}} · {{time}}",
+      "incidentNoTime": "Incident ID: {{id}}",
+      "home": "Go to home page",
+      "reload": "Reload page"
+    },
+    "sessionExpired": {
+      "title": "Your session has expired",
+      "description": "For security reasons, please sign in again to continue. Unsaved changes on this page may be lost.",
+      "signIn": "Sign in again"
+    }
+  }
+}

@@ -110,7 +110,12 @@ data/
 # 8. Local AI Agent Skills & Assistant Tooling
 # ------------------------------------------------------------------------------
 .agents/skills/
-.claude/
+# Claude Code: keep personal settings and synced skill mirrors local; share project rules and subagents.
+.claude/*
+!.claude/rules/
+!.claude/agents/
 scripts/*.py
 scripts/figma-mcp-bridge/
+*.zip
+*.tar.gz
 

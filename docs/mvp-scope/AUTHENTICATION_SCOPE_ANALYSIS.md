@@ -2,6 +2,8 @@
 
 > **Trạng thái**: `DRAFT — CHỜ PROJECT OWNER PHÊ DUYỆT` · Ngày: 2026-11-01
 > Tài liệu liên quan: `MVP_SCOPE_EVIDENCE_MATRIX.md §2.1`, `OPEN_DECISIONS_MVP_IMPACT.md`
+>
+> **Cập nhật 2026-11-12 — QUYẾT ĐỊNH PO thay đổi scope:** đăng nhập/đăng ký bằng **Google và Microsoft** được đưa vào **MVP** (PSD-09). Kết luận PHASE 2 ở §1 bên dưới không còn hiệu lực; phần phân tích được giữ để làm căn cứ cho danh sách việc cần làm ở §2.7 (quy tắc vai trò lần đầu, liên kết trùng email, BE/FE/QA). `01_MASTER-TASKS.md §4.6` chưa được sửa (tài liệu giữ nguyên theo HANDOVER_DIRECTIVE) — cần mentor/PO xác nhận bổ sung task.
 
 ---
 

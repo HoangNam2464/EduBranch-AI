@@ -1,0 +1,40 @@
+import {
+  BookOpen,
+  ChartColumn,
+  Compass,
+  Cpu,
+  FileText,
+  FlaskConical,
+  GitBranch,
+  KeyRound,
+  LayoutDashboard,
+  MessageSquare,
+  PenLine,
+  RotateCcw,
+  SlidersHorizontal,
+  SquarePen,
+  UserCheck,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+import type { ShellIconName } from "@/layouts/shell/shellRoutes";
+
+/** Figma `Icon/*` names → Lucide components (the Figma icon set is Lucide). */
+export const SHELL_ICONS: Record<ShellIconName, LucideIcon> = {
+  "book-open": BookOpen,
+  "git-branch": GitBranch,
+  "message-square": MessageSquare,
+  "chart-column": ChartColumn,
+  "layout-dashboard": LayoutDashboard,
+  "key-round": KeyRound,
+  users: Users,
+  "flask-conical": FlaskConical,
+  "file-text": FileText,
+  cpu: Cpu,
+  "sliders-horizontal": SlidersHorizontal,
+  compass: Compass,
+  "rotate-ccw": RotateCcw,
+  "square-pen": SquarePen,
+  "pen-line": PenLine,
+  "user-check": UserCheck,
+};

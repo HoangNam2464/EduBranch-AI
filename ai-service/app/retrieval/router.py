@@ -1,23 +1,33 @@
 """
-EduBranch AI — Retrieval Router.
+EduBranch AI — Retrieval Router [BE-012].
 
-Exposes the internal retrieval endpoint:
+Exposes internal retrieval endpoint:
   POST /internal/v1/retrieval/query
 
-Called by the NestJS Backend Gateway during case generation or challenge support.
-Requires X-Internal-API-Key header.
+Called by the NestJS Backend Gateway or internal Generation services.
+Enforces:
+  - Internal API key authentication (X-Internal-API-Key)
+  - Strict course-level tenant isolation (AC-2)
+  - Cosine similarity vector retrieval (AC-1)
+  - <sources>...</sources> boundary wrapping for LLM grounding (AC-3)
 
-Flow 1 implementation: Material Ingestion & RAG.
+Traceability:
+  - Master Task ID: EBA-215
+  - Jira Key: BE-012
+  - Sprint: Sprint 2 (Material & RAG)
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 
+from app.core.exceptions import RetrievalException
 from app.core.logging import logger
 from app.core.security import verify_internal_api_key
-from app.core.exceptions import RetrievalException
-from app.retrieval.service import retrieve_chunks, build_rag_context, RetrievedChunk
-
+from app.retrieval.service import (
+    RetrievedChunk,
+    build_rag_context,
+    retrieve_chunks,
+)
 
 router = APIRouter()
 
@@ -33,7 +43,7 @@ class RetrievalRequest(BaseModel):
         default=None,
         description="Optional list of material UUIDs to restrict retrieval scope",
     )
-    top_k: int = Field(default=5, ge=1, le=20, description="Number of chunks to return")
+    top_k: int = Field(default=5, ge=1, le=50, description="Number of chunks to return")
     include_rag_context: bool = Field(
         default=True,
         description="If True, assemble and return the <sources>...</sources> context string",
@@ -41,12 +51,13 @@ class RetrievalRequest(BaseModel):
 
 
 class ChunkResult(BaseModel):
-    """A single retrieved chunk."""
+    """A single retrieved chunk with lineage and similarity score."""
     chunk_id: str
     text: str
     similarity: float
     material_id: str
     chunk_index: int
+    page_number: int | None = None
 
 
 class RetrievalResponse(BaseModel):
@@ -68,7 +79,7 @@ class RetrievalResponse(BaseModel):
     summary="Retrieve relevant document chunks for a query",
     description=(
         "Embeds the query text and performs top-K cosine similarity search over document_chunks "
-        "filtered by course_id. Enforces tenant isolation. "
+        "strictly filtered by course_id (tenant isolation). "
         "Returns chunk texts and optionally the <sources> RAG context string."
     ),
 )
@@ -77,7 +88,7 @@ async def query_chunks(
     _: str = Depends(verify_internal_api_key),
 ) -> RetrievalResponse:
     """
-    RAG retrieval: embed query → pgvector cosine search → return top-K chunks.
+    AC-1, AC-2, AC-3: RAG retrieval: embed query → pgvector cosine search → return top-K chunks.
     """
     logger.info(
         "retrieval_request_received",
@@ -107,6 +118,7 @@ async def query_chunks(
                     similarity=c.similarity,
                     material_id=c.material_id,
                     chunk_index=c.chunk_index,
+                    page_number=c.page_number,
                 )
                 for c in chunks
             ],
@@ -115,10 +127,16 @@ async def query_chunks(
         )
 
     except RetrievalException as e:
-        logger.error("retrieval_failure", course_id=body.course_id, error=str(e))
+        err_msg = str(e)
+        logger.error("retrieval_failure", course_id=body.course_id, error=err_msg)
+        if "Invalid" in err_msg or "empty" in err_msg:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid retrieval parameters: {err_msg}",
+            )
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Retrieval failed: {e}",
+            detail=f"Retrieval failed: {err_msg}",
         )
     except Exception as e:
         logger.error("retrieval_unexpected_error", error=str(e))

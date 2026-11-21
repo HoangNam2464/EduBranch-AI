@@ -1,0 +1,2047 @@
+{
+  "common": {
+    "appName": "EduBranch AI",
+    "logout": "Đăng xuất",
+    "reload": "Tải lại trang",
+    "backHome": "Về trang chủ"
+  },
+  "nav": {
+    "lecturer": {
+      "courses": "Khóa học",
+      "cases": "Case Study",
+      "feedback": "Phản hồi sinh viên",
+      "statistics": "Thống kê học tập"
+    },
+    "student": {
+      "desk": "Bàn học",
+      "courses": "Khóa học của tôi",
+      "joinClass": "Tham gia lớp học"
+    },
+    "admin": {
+      "dashboard": "Bảng điều khiển",
+      "users": "Người dùng",
+      "courses": "Khóa học",
+      "cases": "Case Study",
+      "rubric": "Nghiên cứu & Rubric",
+      "logs": "Nhật ký hệ thống",
+      "aiService": "Dịch vụ AI",
+      "settings": "Cài đặt hệ thống"
+    },
+    "studentCase": {
+      "case": "Tình huống",
+      "history": "Lịch sử lần làm",
+      "journey": "Journey Review",
+      "journeyUnavailable": "Mở Journey Review từ một lần làm đã hoàn thành"
+    },
+    "studentReview": {
+      "work": "Bài làm",
+      "feedback": "Phản hồi",
+      "feedbackUnavailable": "Phản hồi xuất hiện sau khi bạn nộp bài và giảng viên nhận xét"
+    }
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Không tìm thấy trang yêu cầu",
+      "description": "Đường dẫn bạn đang truy cập không tồn tại hoặc đã bị di chuyển. Vui lòng kiểm tra lại liên kết hoặc quay về giao diện chính của hệ thống."
+    },
+    "route": {
+      "titleNotFound": "Không tìm thấy nội dung",
+      "titleGeneric": "Đã xảy ra lỗi hệ thống",
+      "defaultMessage": "Đã xảy ra sự cố không mong muốn trong quá trình xử lý yêu cầu."
+    },
+    "portal": {
+      "login": "Quay lại trang Đăng nhập",
+      "lecturer": "Quay về Portal Giảng viên",
+      "student": "Quay về Portal Sinh viên",
+      "admin": "Quay về Portal Quản trị"
+    }
+  },
+  "shell": {
+    "sidebar": "Thanh điều hướng",
+    "mainNav": "Điều hướng chính",
+    "skipToContent": "Bỏ qua tới nội dung chính",
+    "collapse": "Thu gọn",
+    "expand": "Mở rộng thanh điều hướng",
+    "workspace": {
+      "lecturer": "Không gian giảng viên",
+      "student": "Không gian sinh viên",
+      "admin": "Quản trị hệ thống"
+    },
+    "roles": {
+      "lecturer": "Giảng viên",
+      "student": "Sinh viên",
+      "admin": "Quản trị hệ thống"
+    },
+    "search": {
+      "lecturer": "Tìm khóa học, case, sinh viên…",
+      "student": "Tìm case, khóa học…",
+      "admin": "Tìm người dùng, khóa học, case…"
+    },
+    "searchLabel": "Tìm kiếm",
+    "language": "Ngôn ngữ giao diện",
+    "themeSoon": "Giao diện tối (sắp có)",
+    "themeLight": "Chuyển sang giao diện sáng",
+    "themeDark": "Chuyển sang giao diện tối",
+    "themeToggle": "Chuyển đổi giao diện sáng / tối",
+    "notifications": "Thông báo",
+    "notificationsUnread": "Thông báo, {{count}} chưa đọc",
+    "settings": "Cài đặt",
+    "account": "Tài khoản của tôi",
+    "titles": {
+      "lecturerDashboard": "Tổng quan · Lịch hạn nộp",
+      "courses": "Quản lý khóa học",
+      "courseDetail": "Chi tiết khóa học",
+      "materialSources": "Đoạn trích của tài liệu",
+      "cases": "Quản lý Case Study",
+      "aiStudio": "AI Studio",
+      "caseEditor": "Trình chỉnh sửa Case Study",
+      "rubric": "Rubric nghiên cứu chất lượng tình huống",
+      "feedbackQueue": "Hàng đợi Review và phản hồi lập luận",
+      "feedbackDetail": "Chi tiết phản hồi lập luận sinh viên",
+      "statistics": "Thống kê luồng học tập",
+      "profile": "Hồ sơ tài khoản",
+      "desk": "Bàn học",
+      "myCourses": "Khóa học của tôi",
+      "joinClass": "Tham gia lớp học",
+      "attemptHistory": "Lịch sử lần làm bài",
+      "case": "Tình huống",
+      "journeyReview": "Journey Review — Xem lại hành trình quyết định",
+      "reflection": "Suy ngẫm & đúc kết bài học",
+      "reviewStudy": "Review Study",
+      "adminDashboard": "Bảng điều khiển",
+      "adminUsers": "Quản lý người dùng",
+      "adminCourses": "Khóa học toàn hệ thống",
+      "adminCases": "Case Study toàn hệ thống",
+      "adminRubric": "Nghiên cứu & Rubric",
+      "adminLogs": "Nhật ký hệ thống",
+      "adminAiService": "Dịch vụ AI",
+      "adminSettings": "Cài đặt hệ thống"
+    },
+    "footer": {
+      "copyright": "© 2026 EduBranch AI",
+      "privacy": "Chính sách bảo mật",
+      "terms": "Điều khoản sử dụng",
+      "supportEmail": "support@edubranch.ai",
+      "project": "Đồ án C1SE.65 · Trường Đại học Duy Tân"
+    }
+  },
+  "authRecovery": {
+    "backToLogin": "Quay lại đăng nhập",
+    "unavailable": "Chức năng khôi phục mật khẩu chưa khả dụng. Vui lòng liên hệ quản trị viên.",
+    "forgot": {
+      "title": "Đặt lại mật khẩu",
+      "subtitle": "Nhập email đăng ký để nhận liên kết khôi phục.",
+      "emailLabel": "Email của bạn",
+      "emailPlaceholder": "name@duytan.edu.vn",
+      "submit": "Gửi liên kết đặt lại mật khẩu"
+    },
+    "reset": {
+      "title": "Thiết lập mật khẩu mới",
+      "subtitle": "Mật khẩu tối thiểu 6 ký tự.",
+      "passwordLabel": "Mật khẩu mới",
+      "passwordPlaceholder": "Tối thiểu 6 ký tự",
+      "confirmLabel": "Xác nhận mật khẩu mới",
+      "confirmPlaceholder": "Nhập lại mật khẩu mới",
+      "submit": "Lưu mật khẩu mới"
+    }
+  },
+  "caseReview": {
+    "back": "Quay lại danh sách case",
+    "breadcrumb": "Case Study",
+    "editor": "Trình chỉnh sửa",
+    "editorReview": "Trình chỉnh sửa Review Study",
+    "mode": {
+      "BRANCHING_STUDY": "Branching Study",
+      "REVIEW_STUDY": "Review Study",
+      "lockedHint": "Chế độ học được chọn khi tạo case và không đổi được tại đây."
+    },
+    "status": {
+      "DRAFT": "Bản nháp",
+      "REVIEWED": "Đã rà soát",
+      "APPROVED": "Đã phê duyệt",
+      "PUBLISHED": "Đã xuất bản"
+    },
+    "load": {
+      "loading": "Đang tải case…",
+      "notFoundTitle": "Không tìm thấy case",
+      "notFoundDescription": "Case này không tồn tại hoặc đã bị xóa.",
+      "forbiddenTitle": "Bạn không có quyền xem case này",
+      "forbiddenDescription": "Tài khoản hiện tại không được phép mở case này.",
+      "errorTitle": "Không tải được case",
+      "errorDescription": "Kiểm tra kết nối mạng rồi thử lại."
+    },
+    "readOnlyNotice": "Case đã phê duyệt hoặc đã xuất bản không chỉnh sửa trực tiếp được. Trả về bản nháp để chỉnh sửa.",
+    "unsupportedHint": "Hệ thống chưa hỗ trợ lưu trường này.",
+    "required": "Bắt buộc",
+    "branching": {
+      "situationCard": "Tình huống",
+      "outcomeCard": "Kết quả",
+      "aiDraft": "AI Draft",
+      "situationTitle": "Tiêu đề tình huống",
+      "promptQuestion": "Câu hỏi gợi ý lựa chọn",
+      "keyDecision": "Đánh dấu là quyết định then chốt",
+      "keyDecisionHelp": "Quyết định này được làm nổi bật trong Journey Review. Sinh viên được khuyến khích viết lập luận cho bước này; phản biện cùng AI là tùy chọn.",
+      "situationContent": "Nội dung tình huống chi tiết",
+      "outcomeContent": "Nội dung kết quả",
+      "optionsTitle": "Các phương án lựa chọn ({{count}})",
+      "optionsHelp": "Mỗi phương án dẫn tới một tình huống tiếp theo và chứa hậu quả tương ứng",
+      "noOptions": "Nút kết quả kết thúc hành trình nên không có phương án lựa chọn.",
+      "optionLabel": "Phương án {{n}}",
+      "deleteOption": "Xóa phương án",
+      "optionText": "Tiêu đề nhãn lựa chọn",
+      "optionDescription": "Mô tả hành động của phương án",
+      "nextNode": "Tình huống tiếp theo khi chọn phương án này",
+      "endsJourney": "Kết thúc hành trình",
+      "consequence": "Hậu quả (do giảng viên xác định)",
+      "consequenceHelp": "Chỉ hiển thị cho sinh viên trong Journey Review, không hiển thị khi đang làm bài",
+      "addOption": "+ Thêm phương án",
+      "selectNextNode": "Chọn tình huống tiếp theo",
+      "maxOptions": "Mỗi tình huống có tối đa {{max}} phương án",
+      "nodeList": "Danh sách tình huống ({{count}})",
+      "editingNode": "Đang chỉnh sửa · Bước {{step}}",
+      "rootTag": "Nút gốc",
+      "branches": "Nhánh đi tiếp:",
+      "branchItem": "{{option}} → {{target}}",
+      "nodeSituation": "Tình huống {{n}}",
+      "nodeOutcome": "Kết quả {{n}}",
+      "nodeLabel": "{{label}}: {{text}}",
+      "deleteNode": "Xóa tình huống",
+      "addNode": "+ Thêm tình huống",
+      "noNodes": "Case chưa có nút nào trong cây quyết định.",
+      "treeCheck": "Kiểm tra cây quyết định",
+      "topology": "{{nodes}} nút · {{situations}} tình huống · {{outcomes}} kết quả",
+      "treeOk": "Kiểm tra cây: 0 lỗi cấu trúc",
+      "treeIssues": "Kiểm tra cây: {{count}} lỗi cấu trúc",
+      "issue": {
+        "noRoot": "Case chưa có nút gốc.",
+        "danglingNext": "Có phương án trỏ tới nút không tồn tại.",
+        "cycle": "Cây có vòng lặp.",
+        "orphan": "Có nút không đi tới được từ nút gốc.",
+        "optionCount": "Mỗi tình huống cần 2–4 phương án.",
+        "noTerminal": "Cây chưa có nút kết quả."
+      },
+      "treeTitle": "Cây quyết định",
+      "nodeCount": "{{count}} nút",
+      "treeValid": "Hợp lệ · mọi nhánh dẫn tới kết cục",
+      "treeInvalid": "{{count}} lỗi cấu trúc cần sửa",
+      "badgeStart": "Bắt đầu",
+      "badgeOutcome": "Kết cục",
+      "badgePoint": "Điểm {{n}}",
+      "treeHint": "Chọn một nút để sửa nội dung ở cột trái.",
+      "topologyLabel": "Topology:",
+      "checkLabel": "Kiểm tra cây:",
+      "issueCount": "{{count}} lỗi cấu trúc",
+      "optionSummary": "Phương án {{n}} · {{text}} → {{target}}",
+      "expandOption": "Mở phương án {{n}}"
+    },
+    "review": {
+      "contentCard": "Nội dung Review Study",
+      "title": "Tiêu đề case",
+      "shortDesc": "Mô tả ngắn",
+      "context": "Bối cảnh & số liệu",
+      "problem": "Vấn đề cần phân tích",
+      "infoCard": "Thông tin case",
+      "modeLabel": "Chế độ:",
+      "courseLabel": "Khóa học:",
+      "statusLabel": "Trạng thái:",
+      "versionLabel": "Phiên bản:",
+      "version": "v{{version}}",
+      "structureLabel": "Cấu trúc:",
+      "noTree": "Không dùng cây quyết định",
+      "unknown": "—",
+      "studentAnswers": "Sinh viên sẽ trả lời",
+      "answerSolution": "1. Đề xuất phương án / kế hoạch giải quyết",
+      "answerReasoning": "2. Lập luận căn cứ (dựa trên số liệu và kiến thức học phần)",
+      "answersHint": "Mỗi sinh viên nộp một lần. Bạn phản hồi bằng nhận xét, không chấm điểm."
+    },
+    "validation": {
+      "title": "Chưa lưu được",
+      "titleRequired": "Tiêu đề case không được để trống.",
+      "situationRequired": "Nội dung tình huống không được để trống.",
+      "optionRequired": "Mỗi phương án cần tiêu đề nhãn và hậu quả.",
+      "nextRequired": "Mỗi phương án của {{node}} cần chọn tình huống tiếp theo."
+    },
+    "toast": {
+      "close": "Đóng thông báo",
+      "savedTitle": "Đã lưu thay đổi",
+      "saveFailedTitle": "Không lưu được thay đổi",
+      "statusChangedTitle": "Đã chuyển trạng thái",
+      "statusChangedMessage": "Case hiện ở trạng thái “{{status}}”.",
+      "statusFailedTitle": "Không chuyển được trạng thái",
+      "genericError": "Đã có lỗi xảy ra. Vui lòng thử lại."
+    },
+    "bar": {
+      "saving": "Đang lưu...",
+      "saveAndReview": "Lưu & đánh dấu đã rà soát",
+      "saveChanges": "Lưu thay đổi",
+      "revertToDraft": "Trả về bản nháp",
+      "openForStudents": "Đang mở cho sinh viên tham gia",
+      "approve": "Phê duyệt",
+      "approveNeedsSave": "Lưu thay đổi trước khi phê duyệt.",
+      "publish": "Xuất bản",
+      "publishForStudents": "Xuất bản cho sinh viên",
+      "copyLink": "Sao chép đường dẫn",
+      "copied": "Đã sao chép đường dẫn bài làm của sinh viên!",
+      "copyFailed": "Không sao chép được đường dẫn. Hãy chọn và sao chép thủ công.",
+      "subtitle": {
+        "DRAFT": "{{mode}} · Phiên bản {{version}} · Chưa rà soát",
+        "REVIEWED": "{{mode}} · Phiên bản {{version}} · Chờ phê duyệt",
+        "APPROVED": "{{mode}} · Phiên bản {{version}} · Sẵn sàng xuất bản",
+        "PUBLISHED": "{{mode}} · Phiên bản {{version}} · Sinh viên đã truy cập được"
+      },
+      "label": "Thanh duyệt case",
+      "stepper": "Tiến độ duyệt case",
+      "locked": {
+        "DRAFT": "Phê duyệt và Xuất bản bị khóa cho đến khi case được đánh dấu đã rà soát.",
+        "REVIEWED": "Có thể phê duyệt; Xuất bản vẫn khóa.",
+        "APPROVED": "Nội dung đã chốt. Có thể xuất bản cho sinh viên hoặc trả về bản nháp để sửa tiếp.",
+        "PUBLISHED": "Sinh viên trong khóa đã thấy case. Chỉ còn sao chép đường dẫn gửi lớp."
+      }
+    },
+    "publishModal": {
+      "title": "Xuất bản Case Study",
+      "description": "Sau khi xuất bản, sinh viên trong khóa {{course}} có thể mở và làm case này.",
+      "close": "Đóng",
+      "linkLabel": "Đường dẫn cho sinh viên",
+      "copy": "Sao chép",
+      "deadline": "Hạn hoàn thành (không bắt buộc)",
+      "notify": "Gửi thông báo in-app và email cho sinh viên trong lớp",
+      "cancel": "Hủy bỏ",
+      "confirm": "Xác nhận xuất bản",
+      "publishing": "Đang xuất bản...",
+      "descriptionNoCourse": "Sau khi xuất bản, sinh viên trong khóa có thể mở và làm case này.",
+      "points": "{{count}} điểm quyết định",
+      "outcomes": "{{count}} kết cục",
+      "checkTree": "Cây quyết định hợp lệ, mọi nhánh đều dẫn tới kết cục",
+      "checkConsequences": "Mọi phương án đều có hậu quả",
+      "checkApproved": "Đã rà soát và phê duyệt",
+      "checkContext": "Đã có bối cảnh & số liệu",
+      "checkProblem": "Đã có vấn đề cần phân tích",
+      "checkOk": "Đạt",
+      "checkFailed": "Chưa đạt",
+      "warning": "Sau khi xuất bản, nội dung case không chỉnh sửa được."
+    },
+    "errors": {
+      "detail": "Chi tiết: {{detail}}",
+      "invalid": "Dữ liệu chưa hợp lệ. Hãy kiểm tra lại các trường đã sửa.",
+      "forbidden": "Bạn không có quyền thực hiện thao tác này.",
+      "notFound": "Không tìm thấy case hoặc nội dung cần lưu.",
+      "conflict": "Thao tác xung đột với dữ liệu hiện tại.",
+      "network": "Không kết nối được máy chủ. Kiểm tra mạng rồi thử lại.",
+      "generic": "Đã có lỗi xảy ra. Vui lòng thử lại."
+    },
+    "sources": {
+      "title": "Đoạn nguồn được trích",
+      "unavailable": "Hệ thống chưa trả về đoạn nguồn được trích cho case này."
+    }
+  },
+  "g1": {
+    "brand": "EduBranch AI",
+    "select": {
+      "placeholder": "-- Chọn một mục --",
+      "searchPlaceholder": "Tìm nhanh khoa hoặc đơn vị...",
+      "noResults": "Không tìm thấy khoa phù hợp. Bạn có thể chọn mục \"Đơn vị / Khoa khác...\" ở dưới cùng.",
+      "otherCategory": "Khác"
+    },
+    "showcase": {
+      "title": "Nền tảng học tập tình huống thực nghiệm",
+      "subtitle": "Giảng viên xây dựng Case Study từ tài liệu môn học; sinh viên ra quyết định, lập luận và suy ngẫm trên từng nhánh tình huống."
+    },
+    "form": {
+      "email": "Địa chỉ email",
+      "password": "Mật khẩu",
+      "fullName": "Họ và tên",
+      "rememberMe": "Ghi nhớ đăng nhập",
+      "showPassword": "Hiện mật khẩu",
+      "hidePassword": "Ẩn mật khẩu"
+    },
+    "social": {
+      "divider": "Hoặc",
+      "google": "Tiếp tục với Google",
+      "microsoft": "Tiếp tục với Microsoft"
+    },
+    "login": {
+      "title": "Đăng nhập vào hệ thống",
+      "subtitle": "Dành cho Giảng viên và Sinh viên",
+      "emailPlaceholder": "an.nguyen@duytan.edu.vn",
+      "submit": "Đăng nhập",
+      "submitting": "Đang xác thực...",
+      "noAccount": "Chưa có tài khoản?",
+      "registerLink": "Đăng ký ngay",
+      "forgotPassword": "Quên mật khẩu?"
+    },
+    "register": {
+      "title": "Đăng ký tài khoản mới",
+      "subtitleStudent": "Cổng đăng ký dành cho Sinh viên tham gia học tập Case Study",
+      "subtitleLecturer": "Cổng đăng ký dành cho Giảng viên & Cán bộ tham gia biên soạn Case Study",
+      "roleLabel": "Vai trò",
+      "roleStudent": "Sinh viên",
+      "roleLecturer": "Giảng viên",
+      "fullNamePlaceholder": "Nguyễn Văn A",
+      "emailPlaceholder": "name@duytan.edu.vn",
+      "studentId": "Mã số sinh viên",
+      "studentIdPlaceholder": "Ví dụ: 21020451",
+      "department": "Khoa / Đơn vị công tác",
+      "departmentPlaceholder": "Ví dụ: Khoa Công nghệ Thông tin",
+      "departmentSelectPlaceholder": "-- Chọn Khoa / Đơn vị công tác --",
+      "customDepartmentLabel": "Tên Khoa / Đơn vị công tác cụ thể",
+      "customDepartmentPlaceholder": "Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao",
+      "departmentOther": "Đơn vị / Khoa khác...",
+      "passwordPlaceholder": "Tối thiểu 8 ký tự",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "confirmPasswordPlaceholder": "Nhập lại mật khẩu",
+      "lecturerNote": "Nhằm bảo đảm tính chuẩn mực học thuật và bản quyền học liệu, tài khoản Giảng viên sẽ được kích hoạt toàn quyền tác giả sau khi Khoa/Bộ môn xác nhận thông tin công tác.",
+      "submit": "Hoàn tất đăng ký",
+      "submitting": "Đang tạo tài khoản...",
+      "haveAccount": "Đã có tài khoản?",
+      "loginLink": "Đăng nhập ngay"
+    },
+    "admin": {
+      "title": "Đăng nhập quản trị",
+      "subtitle": "Chỉ dành cho tài khoản quản trị viên",
+      "emailPlaceholder": "admin@duytan.edu.vn",
+      "notAdmin": "Không phải quản trị viên?",
+      "backToLogin": "Về trang đăng nhập chung"
+    },
+    "errors": {
+      "emailRequired": "Địa chỉ email không được để trống.",
+      "passwordRequired": "Mật khẩu không được để trống.",
+      "fullNameRequired": "Vui lòng nhập họ và tên của bạn.",
+      "universityEmailRequired": "Vui lòng nhập địa chỉ email đại học.",
+      "studentIdRequired": "Vui lòng nhập Mã số sinh viên (MSSV).",
+      "departmentRequired": "Vui lòng nhập Khoa / Đơn vị công tác.",
+      "passwordMin": "Mật khẩu phải có ít nhất 8 ký tự.",
+      "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+      "network": "Không kết nối được máy chủ. Kiểm tra kết nối mạng rồi thử lại.",
+      "invalidCredentials": "Email hoặc mật khẩu không đúng.",
+      "emailTaken": "Email này đã được dùng cho một tài khoản khác.",
+      "invalidData": "Thông tin chưa hợp lệ. Kiểm tra lại các trường rồi thử lại.",
+      "generic": "Đã có lỗi xảy ra. Vui lòng thử lại sau.",
+      "tooManyAttempts": "Bạn đã thử quá nhiều lần. Vui lòng đợi một lát rồi thử lại.",
+      "notAdmin": "Tài khoản này không có quyền quản trị. Vui lòng dùng trang đăng nhập dành cho giảng viên và sinh viên."
+    },
+    "info": {
+      "ssoPending": "Cổng xác thực Google Workspace Đại học Duy Tân (SSO) đang được đồng bộ cho kỳ học mới."
+    },
+    "dev": {
+      "lecturer": "Giảng viên Demo",
+      "student": "Sinh viên Demo"
+    },
+    "landing": {
+      "nav": {
+        "ariaLabel": "Điều hướng trang giới thiệu",
+        "how": "Cách hoạt động",
+        "modes": "Hai chế độ học",
+        "faq": "Câu hỏi thường gặp",
+        "login": "Đăng nhập",
+        "register": "Đăng ký"
+      },
+      "hero": {
+        "category": "Nền tảng Tình huống Thực nghiệm & Tư duy Bậc Đại học",
+        "title": "Mỗi quyết định mở ra một nhánh mới",
+        "lead": "EduBranch AI biến tài liệu môn học thành tình huống có nhiều lối đi. Sinh viên chọn hướng xử lý, thấy hệ quả của từng lựa chọn, rồi nhận phản hồi từ giảng viên.",
+        "register": "Đăng ký tài khoản",
+        "howItWorks": "Xem cách hoạt động",
+        "note": "Dành cho giảng viên và sinh viên Trường Đại học Duy Tân.",
+        "badges": {
+          "grounded": "RAG Grounding từ giáo trình",
+          "pedagogical": "Cây quyết định đa nhánh thực tế",
+          "approved": "Giảng viên phê duyệt toàn quyền"
+        },
+        "diagram": {
+          "ariaLabel": "Ví dụ một điểm quyết định trong case phân nhánh",
+          "situationLabel": "Tình huống",
+          "situation": "20:00 Black Friday, cổng thanh toán quá tải và giao dịch bắt đầu treo",
+          "optionA": "Lựa chọn A",
+          "optionAText": "Mở rộng máy chủ ngay, giữ nguyên luồng thanh toán",
+          "chosen": "Bạn đã chọn",
+          "optionBText": "Bật hàng đợi đơn hàng và báo thời gian chờ cho khách",
+          "optionC": "Lựa chọn C",
+          "optionCText": "Tạm dừng khuyến mãi để giảm tải hệ thống",
+          "consequenceLabel": "Hệ quả",
+          "consequence": "Không đơn hàng nào bị mất, nhưng cứ 8 khách thì có 1 người rời đi vì phải chờ. Bạn xử lý phần khách rời đi thế nào?",
+          "caption": "Điểm quyết định 2 trên lượt làm thứ hai",
+          "simulationBadge": "Mô phỏng tự động",
+          "decisionPoint1": "Điểm quyết định 1",
+          "journeyReview": "Hồi cứu hành trình",
+          "attempt2Title": "Lượt làm 2 · Hành động tiếp theo & Kết cục",
+          "retrospective": "Rút kinh nghiệm",
+          "attempt2Text": "Tự động gửi voucher xin lỗi cho khách hàng phải chờ ➔ Giữ chân khách hàng và biến sự cố thành cơ hội củng cố sự hài lòng.",
+          "statusPaused": "Đang tạm dừng — Bỏ chuột để tiếp tục",
+          "statusPlaying": "Tự động trình diễn mô phỏng (Rê chuột để tạm dừng)",
+          "phaseProgress": "Pha {{current}} trên {{total}}"
+        }
+      },
+      "how": {
+        "title": "Một case đi từ tài liệu môn học đến lớp học",
+        "subtitle": "Từ tài liệu giảng viên tải lên đến phản hồi cho sinh viên, gói gọn trong năm bước. Mỗi bước mô phỏng bằng chính giao diện EduBranch AI.",
+        "stepsLabel": "Năm bước của một case",
+        "steps": [
+          {
+            "title": "Tải tài liệu",
+            "actor": "Giảng viên",
+            "desc": "Tải giáo trình, slide; hệ thống lập chỉ mục.",
+            "chip": "Tải tài liệu",
+            "status": "Bước 1 trên 5: giảng viên tải giáo trình, slide; hệ thống lập chỉ mục."
+          },
+          {
+            "title": "AI soạn bản nháp",
+            "actor": "Giảng viên",
+            "desc": "AI phác thảo bối cảnh và các điểm quyết định.",
+            "chip": "AI soạn nháp",
+            "status": "Bước 2 trên 5: AI phác thảo bối cảnh và các điểm quyết định."
+          },
+          {
+            "title": "Duyệt & xuất bản",
+            "actor": "Giảng viên",
+            "desc": "Rà soát từng nhánh, phê duyệt, mở cho lớp.",
+            "chip": "Duyệt & xuất bản",
+            "status": "Bước 3 trên 5: giảng viên rà soát từng nhánh, phê duyệt rồi mở case cho lớp."
+          },
+          {
+            "title": "Sinh viên làm bài",
+            "actor": "Sinh viên",
+            "desc": "Chọn hướng xử lý hoặc viết bài nộp.",
+            "chip": "Sinh viên làm bài",
+            "status": "Bước 4 trên 5: sinh viên chọn hướng xử lý hoặc viết bài nộp."
+          },
+          {
+            "title": "Phản hồi & suy ngẫm",
+            "actor": "Cả hai",
+            "desc": "Giảng viên nhận xét, sinh viên suy ngẫm.",
+            "chip": "Phản hồi",
+            "status": "Bước 5 trên 5: giảng viên nhận xét, sinh viên suy ngẫm."
+          }
+        ],
+        "allDone": "Đủ năm bước: từ tài liệu môn học đến phản hồi cho sinh viên.",
+        "goToStep": "Xem bước {{n}}: {{title}}",
+        "demo": {
+          "files": [
+            "Giao_trinh.pdf",
+            "Slide_Tuan_7.pdf",
+            "Bao_cao.docx"
+          ],
+          "generating": "Đang sinh bản nháp",
+          "nodes": [
+            "Điểm 1",
+            "Điểm 2",
+            "Điểm 3",
+            "Kết cục"
+          ],
+          "draft": "Bản nháp",
+          "draftGenerated": "Đã sinh bản nháp",
+          "reviewed": "Đã rà soát",
+          "approve": "Phê duyệt",
+          "running": "Đang chạy",
+          "done": "Đã xong",
+          "publish": "Xuất bản",
+          "publishedForClass": "Đã xuất bản cho lớp",
+          "options": [
+            "Mở rộng máy chủ",
+            "Bật hàng đợi",
+            "Tạm dừng khuyến mãi"
+          ],
+          "lecturer": "TS. Nguyễn Văn An",
+          "feedback": "“Lập luận tốt, cần nêu rõ giả định chi phí.”",
+          "reflection": "Viết suy ngẫm…"
+        }
+      },
+      "modes": {
+        "title": "Hai cách học trên cùng một tình huống",
+        "subtitle": "Giảng viên chọn chế độ phù hợp với mục tiêu buổi học. Cả hai đều bắt đầu từ bối cảnh thật trong tài liệu môn học.",
+        "branching": {
+          "title": "Branching Study",
+          "desc": "Đi qua chuỗi điểm quyết định. Mỗi lựa chọn dẫn tới một diễn biến khác, và bạn có thể làm lại để thử hướng khác.",
+          "points": [
+            "Tập trung vào lập luận, không chấm điểm tự động",
+            "Xem lại toàn bộ hành trình ở Journey Review",
+            "Viết suy ngẫm sau mỗi lượt làm"
+          ],
+          "diagram": {
+            "init": "Khởi tạo",
+            "option1": "Lựa chọn 1",
+            "option2": "Lựa chọn 2",
+            "outcome": "Hậu quả (Outcome)"
+          }
+        },
+        "review": {
+          "title": "Review Study",
+          "desc": "Đọc bối cảnh và số liệu đính kèm, đề xuất phương án và lập luận vì sao nó hợp lý. Giảng viên đọc bài và phản hồi trực tiếp.",
+          "points": [
+            "Một bài nộp gồm phương án và lập luận",
+            "Nhận nhận xét bằng văn bản từ giảng viên",
+            "Bài nộp là bản cuối, không sửa sau khi nộp"
+          ],
+          "answerLabel": "Phương án giải pháp",
+          "completed": "Hoàn tất",
+          "sent": "Đã gửi giảng viên lúc 21:40",
+          "receiveFeedback": "Nhận phản hồi Giảng viên →"
+        }
+      },
+      "lifecycle": {
+        "title": "AI chỉ soạn bản nháp.\nGiảng viên quyết định điều gì đến tay sinh viên.",
+        "subtitle": "Mỗi case đi qua bốn trạng thái theo đúng thứ tự. Sinh viên chỉ thấy case khi giảng viên đã phê duyệt và xuất bản, kể cả khi AI đã viết xong toàn bộ cây quyết định.",
+        "states": [
+          {
+            "name": "Bản nháp",
+            "desc": "AI hoặc giảng viên tạo nội dung, chưa ai khác thấy.",
+            "actor": "AI hoặc giảng viên"
+          },
+          {
+            "name": "Đã rà soát",
+            "desc": "Giảng viên đọc từng nhánh, sửa và đối chiếu nguồn.",
+            "actor": "Giảng viên"
+          },
+          {
+            "name": "Đã phê duyệt",
+            "desc": "Nội dung đã chốt, sẵn sàng mở cho lớp.",
+            "actor": "Giảng viên"
+          },
+          {
+            "name": "Đã xuất bản",
+            "desc": "Case xuất hiện trong khóa học của sinh viên.",
+            "actor": "Sinh viên thấy từ đây"
+          }
+        ],
+        "gate": "Mở cho lớp"
+      },
+      "roles": {
+        "lecturer": {
+          "title": "Cho giảng viên",
+          "desc": "Soạn case từ tài liệu của chính môn học, giữ toàn quyền nội dung.",
+          "points": [
+            "Quản lý khóa học và tài liệu môn học",
+            "Tạo case bằng AI hoặc tự soạn từ đầu",
+            "Đọc bài nộp và gửi nhận xét",
+            "Xem thống kê học tập theo từng case"
+          ],
+          "action": "Đăng ký giảng viên"
+        },
+        "student": {
+          "title": "Cho sinh viên",
+          "desc": "Luyện ra quyết định trong bối cảnh gần với thực tế nghề nghiệp.",
+          "points": [
+            "Mở các case giảng viên đã xuất bản",
+            "Làm lại để thử một hướng xử lý khác",
+            "Xem lại hành trình và viết suy ngẫm",
+            "Đọc nhận xét của giảng viên"
+          ],
+          "action": "Đăng ký sinh viên"
+        }
+      },
+      "faq": {
+        "title": "Câu hỏi thường gặp",
+        "subtitle": "Câu trả lời ngắn về cách dùng EduBranch AI cho giảng viên và sinh viên.",
+        "searchLabel": "Tìm câu hỏi",
+        "searchPlaceholder": "Tìm câu hỏi, ví dụ: tài liệu, làm lại, nhận xét",
+        "popular": "Chủ đề phổ biến:",
+        "topics": [
+          "Chấm điểm",
+          "Tài liệu môn học",
+          "Làm lại case",
+          "Mô hình AI"
+        ],
+        "count": "{{count}} câu hỏi",
+        "groups": [
+          {
+            "title": "Chung",
+            "questions": [
+              {
+                "q": "EduBranch AI là gì?",
+                "a": "Nền tảng học qua tình huống cho giảng viên và sinh viên đại học. Giảng viên soạn case từ tài liệu môn học; sinh viên luyện ra quyết định và đọc nhận xét của giảng viên."
+              },
+              {
+                "q": "Branching Study và Review Study khác nhau thế nào?",
+                "a": "Branching Study đi qua chuỗi điểm quyết định, mỗi lựa chọn dẫn tới một diễn biến khác và có thể làm lại. Review Study là một bài nộp gồm phương án và lập luận, giảng viên đọc và phản hồi trực tiếp."
+              },
+              {
+                "q": "Hệ thống có chấm điểm sinh viên không?",
+                "a": "Không có chấm điểm tự động. AI chỉ đặt câu hỏi gợi mở để sinh viên lập luận kỹ hơn; nhận xét và đánh giá thuộc về giảng viên."
+              }
+            ]
+          },
+          {
+            "title": "Giảng viên",
+            "questions": [
+              {
+                "q": "Tôi tải được những loại tài liệu nào?",
+                "a": "Tệp PDF và DOCX, tối đa 50 MB mỗi tệp. Hệ thống tách tài liệu thành đoạn trích và lập chỉ mục để AI trích dẫn."
+              },
+              {
+                "q": "Bản nháp do AI tạo có tự xuất bản không?",
+                "a": "Không. Mỗi case đi qua Bản nháp, Đã rà soát, Đã phê duyệt rồi mới Đã xuất bản; sinh viên chỉ thấy case khi giảng viên đã phê duyệt và xuất bản."
+              },
+              {
+                "q": "Tôi có thể tự soạn case mà không dùng AI không?",
+                "a": "Có. Giảng viên có thể tạo case bằng AI hoặc tự soạn từ đầu; cả hai đều qua cùng quy trình rà soát trước khi mở cho lớp."
+              }
+            ]
+          },
+          {
+            "title": "Sinh viên",
+            "questions": [
+              {
+                "q": "Tôi có thể làm lại một case không?",
+                "a": "Với Branching Study, bạn có thể làm lại để thử một hướng xử lý khác và xem lại từng lượt làm. Bài nộp Review Study là bản cuối, không sửa sau khi nộp."
+              },
+              {
+                "q": "Khi nào tôi thấy nhận xét của giảng viên?",
+                "a": "Ngay sau khi giảng viên đọc bài và gửi nhận xét; nhận xét hiện trong trang kết quả của lượt làm hoặc bài nộp."
+              }
+            ]
+          },
+          {
+            "title": "AI và tài liệu",
+            "questions": [
+              {
+                "q": "AI có dùng tài liệu của khóa học khác không?",
+                "a": "Không. AI soạn bản nháp và gợi mở dựa trên tài liệu giảng viên đã tải lên cho chính khóa học đó."
+              },
+              {
+                "q": "Ai chọn mô hình AI mà hệ thống sử dụng?",
+                "a": "Mô hình AI do nhà trường cấu hình trên máy chủ; quản trị viên theo dõi trạng thái dịch vụ AI. Giảng viên và sinh viên không cần chọn."
+              }
+            ]
+          }
+        ],
+        "contact": {
+          "title": "Chưa thấy câu trả lời?",
+          "before": "Gửi câu hỏi tới ",
+          "after": ", kèm vai trò và khóa học của bạn.",
+          "action": "Gửi email hỗ trợ"
+        }
+      },
+      "cta": {
+        "title": "Bắt đầu với tình huống đầu tiên",
+        "subtitle": "Tạo tài khoản bằng email trường. Giảng viên có thể soạn case ngay sau khi đăng nhập.",
+        "login": "Đăng nhập",
+        "register": "Đăng ký tài khoản"
+      },
+      "footer": {
+        "description": "Nền tảng học tập tình huống cho giảng viên và sinh viên đại học. Đồ án C1SE.65, Trường Đại học Duy Tân.",
+        "product": "Sản phẩm",
+        "account": "Tài khoản",
+        "legal": "Pháp lý",
+        "privacy": "Chính sách bảo mật",
+        "terms": "Điều khoản sử dụng",
+        "copyright": "© 2026 EduBranch AI"
+      }
+    }
+  },
+  "g2": {
+    "common": {
+      "cancel": "Hủy bỏ",
+      "close": "Đóng",
+      "retry": "Thử lại",
+      "fileSize": {
+        "b": "{{value}} B",
+        "kb": "{{value}} KB",
+        "mb": "{{value}} MB"
+      }
+    },
+    "courses": {
+      "listTitle": "Tất cả khóa học",
+      "searchLabel": "Tìm khóa học",
+      "searchPlaceholder": "Tìm khóa học",
+      "statusFilterLabel": "Lọc theo trạng thái",
+      "statusAll": "Tất cả trạng thái",
+      "statusActive": "Đang dạy",
+      "statusInactive": "Đã đóng",
+      "create": "Tạo khóa học mới",
+      "documentsReady": "{{ready}}/{{total}} tài liệu sẵn sàng",
+      "cases_one": "{{count}} case",
+      "cases_other": "{{count}} case",
+      "noCases": "Chưa có case",
+      "note": {
+        "failedFiles": "{{count}} tệp lỗi lập chỉ mục",
+        "processingFiles": "{{count}} tệp đang xử lý",
+        "reviewedCases": "{{count}} case chờ phê duyệt",
+        "draftCases": "{{count}} bản nháp chờ rà soát"
+      },
+      "archiveAction": "Lưu trữ khóa học {{name}}",
+      "resultLeading": "Hiển thị",
+      "resultTrailing": "trên {{count}} khóa học",
+      "pageSizeLabel": "Số khóa học mỗi trang",
+      "paginationNav": "Phân trang danh sách khóa học",
+      "previousPage": "Trang trước",
+      "nextPage": "Trang sau",
+      "pageN": "Trang {{page}}",
+      "details": {
+        "title": "Chi tiết khóa học",
+        "open": "Mở khóa học",
+        "close": "Đóng chi tiết khóa học",
+        "statDocuments": "Tài liệu",
+        "statCases": "Case Study",
+        "attention": "Cần xử lý",
+        "failedFile": "Lập chỉ mục thất bại",
+        "pendingFile": "Đang chờ lập chỉ mục",
+        "processingFile": "Đang lập chỉ mục",
+        "draftCase": "Bản nháp AI chờ rà soát",
+        "reviewedCase": "Đã rà soát, chờ phê duyệt",
+        "view": "Xem",
+        "openMaterials": "Mở tài liệu môn học",
+        "about": "Về khóa học",
+        "noDescription": "Khóa học chưa có mô tả.",
+        "info": "Thông tin khóa học",
+        "infoCode": "Mã học phần: {{code}}",
+        "infoStatusActive": "Trạng thái: Đang mở cho sinh viên",
+        "infoStatusInactive": "Trạng thái: Đã đóng với sinh viên",
+        "infoLecturer": "Giảng viên phụ trách: {{name}}",
+        "goTo": "Đi tới",
+        "materials": "Tài liệu môn học",
+        "materialsSummary": "{{total}} tệp · {{ready}} sẵn sàng, {{failed}} lỗi",
+        "cases": "Case Study",
+        "casesSummary": "{{total}} case · {{published}} xuất bản, {{drafts}} nháp",
+        "inviteCode": "Mã mời sinh viên",
+        "inviteCodeHelp": "Sinh viên dùng mã này để tham gia lớp học trên Bàn học của mình.",
+        "copyCode": "Sao chép mã",
+        "codeCopied": "Đã sao chép mã mời vào bộ nhớ tạm",
+        "rotateCode": "Đổi mã mới",
+        "createCode": "Tạo mã mời",
+        "noCodeYet": "Chưa tạo mã mời",
+        "disableCode": "Vô hiệu hóa",
+        "enableCode": "Cấp lại mã",
+        "codeDisabled": "Mã mời đã bị vô hiệu hóa",
+        "copyError": "Không thể sao chép mã mời vào bộ nhớ tạm",
+        "createError": "Không thể tạo mã mời sinh viên",
+        "rotateError": "Không thể đổi mã mời mới",
+        "disableError": "Không thể vô hiệu hóa mã mời",
+        "loadError": "Không thể tải thông tin mã mời"
+      },
+      "createDialog": {
+        "title": "Khởi tạo khóa học mới",
+        "description": "Nhập thông tin cơ bản. Bạn có thể tải tài liệu môn học sau khi tạo.",
+        "name": "Tên khóa học / Học phần *",
+        "namePlaceholder": "Ví dụ: CS301 - Kỹ thuật phần mềm & Kiến trúc hệ thống",
+        "code": "Mã môn học *",
+        "codePlaceholder": "CS301",
+        "about": "Mô tả khóa học",
+        "aboutPlaceholder": "Mục tiêu môn học, yêu cầu kiến thức nền tảng...",
+        "submit": "Tạo khóa học",
+        "nameRequired": "Tên khóa học cần ít nhất 2 ký tự.",
+        "codeRequired": "Nhập mã môn học.",
+        "failed": "Không tạo được khóa học. Vui lòng thử lại."
+      },
+      "archiveDialog": {
+        "title": "Lưu trữ khóa học này?",
+        "message": "Khóa học sẽ ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên.",
+        "summary": "{{code}} · {{name}}",
+        "summaryCounts": "{{code}} · {{name}} · {{documents}} tài liệu · {{cases}} case",
+        "confirm": "Lưu trữ khóa học",
+        "pending": "Đang lưu trữ…",
+        "failed": "Không lưu trữ được khóa học. Vui lòng thử lại.",
+        "successTitle": "Đã lưu trữ khóa học",
+        "successMessage": "{{code}} · {{name}} đã ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên.",
+        "closeToast": "Đóng thông báo"
+      }
+    },
+    "materials": {
+      "back": "Quay lại danh sách khóa học",
+      "breadcrumbLabel": "Đường dẫn",
+      "breadcrumbCourses": "Khóa học",
+      "statDocuments": "Tài liệu môn học",
+      "statDocumentsValue": "{{count}} tệp",
+      "statCases": "Case Study",
+      "statCasesValue": "{{count}} case",
+      "about": "Giới thiệu khóa học",
+      "indexing": "Lập chỉ mục tài liệu",
+      "formats": "Định dạng hỗ trợ",
+      "maxSize": "Dung lượng tối đa",
+      "maxSizeValue": "50 MB mỗi tệp",
+      "indexStatus": "Trạng thái lập chỉ mục",
+      "indexStatusValue": "{{ready}} / {{total}} tài liệu đã sẵn sàng cho AI",
+      "sectionTitle": "Tài liệu môn học ({{count}})",
+      "uploadSection": "Tải lên tài liệu để AI lập chỉ mục",
+      "formatsChip": "PDF · DOCX",
+      "collapse": "Thu gọn",
+      "expand": "Mở rộng",
+      "pipeline": "Quy trình xử lý",
+      "step1": "Tải tệp lên",
+      "step1Hint": "PDF/DOCX",
+      "step2": "Tách thành đoạn trích",
+      "step3": "Tạo vector & lập chỉ mục",
+      "stepAuto": "Tự động",
+      "step4": "Sẵn sàng cho AI trích dẫn",
+      "step4Hint": "Khi sinh case",
+      "newUpload": "Tải tài liệu mới",
+      "dropTitle": "Kéo thả tài liệu vào đây hoặc nhấn để chọn tệp",
+      "dropHint": "Hỗ trợ PDF, DOCX • Tối đa 50 MB mỗi tệp",
+      "choose": "Chọn tài liệu",
+      "casesSection": "Case Study ({{count}})",
+      "casesChip": "{{count}} case",
+      "noCases": "Khóa học chưa có case study.",
+      "uploadedTitle": "Tài liệu đã tải lên ({{count}})",
+      "indexedSummary": "{{ready}}/{{total}} đã lập chỉ mục",
+      "chunks": "{{count}} đoạn trích",
+      "statusDone": "Đã lập chỉ mục",
+      "statusPending": "Đang chờ",
+      "statusProcessing": "Đang xử lý",
+      "statusFailed": "Lập chỉ mục thất bại",
+      "openSources": "Xem đoạn trích của {{name}}",
+      "delete": "Xóa {{name}}",
+      "noMaterials": "Chưa có tài liệu nào. Tải tài liệu lên để AI có nguồn khi sinh case.",
+      "loadError": "Không tải được thông tin khóa học",
+      "uploadDialog": {
+        "title": "Tải tài liệu môn học",
+        "description": "Tài liệu được tách thành các đoạn trích và lập chỉ mục để AI dùng làm nguồn khi sinh case.",
+        "dropTitle": "Kéo thả tệp vào đây hoặc chọn tệp từ máy",
+        "dropHint": "PDF hoặc DOCX · tối đa 50 MB mỗi tệp",
+        "ready": "{{size}} · Sẵn sàng tải lên",
+        "uploading": "{{size}} · Đang tải lên {{percent}}%",
+        "uploaded": "{{size}} · Đã tải lên",
+        "invalidType": "Chỉ hỗ trợ tệp PDF và DOCX.",
+        "tooLarge": "Tệp vượt quá giới hạn 50 MB.",
+        "failed": "Tải lên thất bại. Vui lòng thử lại.",
+        "remove": "Bỏ {{name}} khỏi danh sách",
+        "submit_one": "Tải lên {{count}} tệp",
+        "submit_other": "Tải lên {{count}} tệp"
+      },
+      "deleteDialog": {
+        "title": "Xóa tài liệu này?",
+        "message": "Tệp và các đoạn trích đã lập chỉ mục sẽ bị xóa vĩnh viễn. AI sẽ không dùng tài liệu này khi sinh case mới. Thao tác này không thể hoàn tác.",
+        "summary": "{{name}} · {{count}} đoạn trích",
+        "confirm": "Xóa vĩnh viễn",
+        "failed": "Không xóa được tài liệu. Vui lòng thử lại."
+      },
+      "caseStatus": {
+        "DRAFT": "Bản nháp",
+        "REVIEWED": "Đã rà soát",
+        "APPROVED": "Đã phê duyệt",
+        "PUBLISHED": "Đã xuất bản"
+      }
+    },
+    "sources": {
+      "chunksCard": "Đoạn trích",
+      "chunksHint": "Sẵn sàng để AI trích dẫn",
+      "chunksHintNotReady": "Chưa sẵn sàng để AI trích dẫn",
+      "sizeCard": "Dung lượng",
+      "sizeHint": "{{type}} · giới hạn 50 MB mỗi tệp",
+      "chunksTitle": "Đoạn trích đã lập chỉ mục",
+      "chunksSubtitle": "Nguồn AI dùng để trích dẫn khi sinh case",
+      "chunksUnavailable": "Chưa xem được nội dung đoạn trích",
+      "chunksUnavailableHint": "Hệ thống chưa cung cấp danh sách đoạn trích của tài liệu.",
+      "notIndexed": "Tài liệu chưa được lập chỉ mục",
+      "notIndexedHint": "Lập chỉ mục chưa hoàn tất nên chưa có đoạn trích nào cho AI dùng.",
+      "otherTitle": "Tài liệu khác trong khóa ({{count}})",
+      "noOther": "Khóa học chưa có tài liệu khác.",
+      "info": "Thông tin tài liệu",
+      "file": "Tệp",
+      "course": "Khóa học",
+      "uploadedAt": "Tải lên",
+      "statusDone": "Hoàn tất",
+      "statusPending": "Đang chờ",
+      "statusProcessing": "Đang xử lý",
+      "statusFailed": "Thất bại",
+      "howAi": "Cách AI dùng nguồn",
+      "howAiText": "Mỗi tình huống AI sinh ra phải trích dẫn đoạn nguồn tương ứng. Giảng viên kiểm tra trích dẫn trước khi phê duyệt case.",
+      "aiDraft": "AI Draft",
+      "loadError": "Không tải được thông tin tài liệu"
+    }
+  },
+  "g3": {
+    "status": {
+      "DRAFT": "Bản nháp",
+      "REVIEWED": "Đã rà soát",
+      "APPROVED": "Đã phê duyệt",
+      "PUBLISHED": "Đã xuất bản"
+    },
+    "mode": {
+      "BRANCHING_STUDY": "Branching Study",
+      "REVIEW_STUDY": "Review Study",
+      "shortBranching": "Branching",
+      "shortReview": "Review"
+    },
+    "aiDraft": "AI Draft",
+    "list": {
+      "statusPanel": "Case Study theo trạng thái",
+      "caseUnit": "Case Study",
+      "modePanel": "Chế độ học theo case",
+      "recent": "Case cập nhật gần đây",
+      "recentEmpty": "Chưa có case nào được cập nhật.",
+      "recentMeta": "{{date}} · {{mode}}",
+      "openCase": "Mở {{title}}",
+      "allCourses": "Mọi khóa học",
+      "courseFilter": "Lọc theo khóa học",
+      "chartLabel": "Số case theo chế độ học",
+      "library": "Kho Case Study",
+      "search": "Tìm case",
+      "statusTabs": "Lọc theo trạng thái",
+      "tabAll": "Tất cả · {{count}}",
+      "tabStatus": "{{label}} · {{count}}",
+      "create": "Tạo Case mới bằng AI",
+      "notice": "AI chỉ dùng tài liệu đã lập chỉ mục xong.",
+      "noticeCourse": "AI chỉ dùng tài liệu đã lập chỉ mục xong. {{code}} hiện có {{ready}}/{{total}} tài liệu sẵn sàng.",
+      "noticeCourseFailed": "AI chỉ dùng tài liệu đã lập chỉ mục xong. {{code}} hiện có {{ready}}/{{total}} tài liệu sẵn sàng; {{failed}} tệp lỗi cần tải lại.",
+      "manageMaterials": "Quản lý tài liệu",
+      "nodes": "{{count}} nút",
+      "noTree": "Không dùng cây",
+      "updated": "Cập nhật {{date}}",
+      "edit": "Chỉnh sửa",
+      "view": "Xem",
+      "showing": "Hiển thị",
+      "ofTotal": "trên {{count}} Case Study",
+      "pageSize": "Số case mỗi trang",
+      "pagination": "Phân trang",
+      "previous": "Trang trước",
+      "next": "Trang sau",
+      "page": "Trang {{page}}",
+      "loading": "Đang tải danh sách case",
+      "loadError": "Không tải được danh sách case",
+      "emptyTitle": "Chưa có Case Study nào",
+      "emptyDescription": "Tạo case đầu tiên bằng AI Studio từ tài liệu môn học đã lập chỉ mục.",
+      "noCoursesTitle": "Chưa có khóa học nào",
+      "noCoursesDescription": "Tạo khóa học và tải tài liệu trước khi sinh case.",
+      "goToCourses": "Đến Khóa học"
+    },
+    "generation": {
+      "title": "Đang sinh case nháp",
+      "description": "AI đang dựng tình huống từ tài liệu bạn chọn. Quá trình thường mất 5–15 giây.",
+      "stepRetrieve": "Truy xuất đoạn trích liên quan từ {{count}} tài liệu đã chọn",
+      "stepRetrieveNone": "Truy xuất đoạn trích liên quan (không chọn tài liệu nguồn)",
+      "stepCompose": "Tổng hợp tình huống và các điểm quyết định",
+      "stepValidate": "Kiểm tra cấu trúc cây quyết định (không có vòng lặp, không có tình huống mồ côi)",
+      "running": "Đang thực hiện",
+      "failedTitle": "Sinh case thất bại",
+      "failedDescription": "AI chưa tạo được cây quyết định hợp lệ. Hãy thử lại hoặc nêu chủ đề cụ thể hơn.",
+      "close": "Đóng thông báo"
+    },
+    "editor": {
+      "breadcrumb": "Đường dẫn",
+      "back": "Quay lại Case Study",
+      "branchingCrumb": "Trình chỉnh sửa",
+      "reviewCrumb": "Trình chỉnh sửa Review Study",
+      "situation": "Tình huống",
+      "situationLabel": "Tình huống {{index}}",
+      "situationContent": "Nội dung tình huống chi tiết",
+      "options": "Các phương án lựa chọn ({{count}})",
+      "optionsHint": "Mỗi phương án dẫn tới một tình huống tiếp theo và chứa hậu quả tương ứng",
+      "option": "Phương án {{index}}",
+      "optionLabel": "Tiêu đề nhãn lựa chọn",
+      "nextNode": "Tình huống tiếp theo khi chọn phương án này",
+      "endsJourney": "Kết thúc hành trình",
+      "consequence": "Hệ quả (do giảng viên xác định)",
+      "consequenceHint": "Chỉ hiển thị cho sinh viên trong Journey Review, không hiển thị khi đang làm bài.",
+      "terminalNode": "Nút kết cục: không có phương án tiếp theo.",
+      "collapsedOption": "Phương án {{index}} · {{text}} → {{next}}",
+      "expandOption": "Mở phương án {{index}}",
+      "tree": "Cây quyết định",
+      "treeNodes": "{{count}} nút",
+      "treeValid": "Hợp lệ · mọi nhánh dẫn tới kết cục",
+      "treeInvalid": "Cây có {{count}} lỗi cấu trúc",
+      "treeHint": "Chọn một nút để sửa nội dung ở cột trái.",
+      "treeStart": "Bắt đầu",
+      "treePoint": "Điểm {{index}}",
+      "treeEnd": "Kết cục",
+      "treeEmpty": "Case chưa có nút nào.",
+      "check": "Kiểm tra cây quyết định",
+      "topology": "Topology:",
+      "topologyValue": "{{nodes}} nút · {{situations}} tình huống · {{outcomes}} kết quả",
+      "checkResult": "Kiểm tra cây:",
+      "checkErrors": "{{count}} lỗi cấu trúc",
+      "issues": {
+        "noRoot": "Chưa có nút bắt đầu",
+        "danglingNext": "Phương án trỏ tới nút không tồn tại",
+        "cycle": "Cây có vòng lặp",
+        "orphan": "Có nút không đi tới được từ nút bắt đầu",
+        "optionCount": "Nút không phải kết cục cần 2–4 phương án",
+        "noTerminal": "Cây chưa có nút kết cục"
+      },
+      "reviewContent": "Nội dung Review Study",
+      "caseTitle": "Tiêu đề case",
+      "shortDescription": "Mô tả ngắn",
+      "context": "Bối cảnh & số liệu",
+      "problem": "Vấn đề cần phân tích",
+      "info": "Thông tin case",
+      "infoMode": "Chế độ:",
+      "infoCourse": "Khóa học:",
+      "infoStatus": "Trạng thái:",
+      "infoVersion": "Phiên bản:",
+      "infoVersionValue": "v{{version}}",
+      "infoStructure": "Cấu trúc:",
+      "noTreeStructure": "Không dùng cây quyết định",
+      "studentSubmits": "Sinh viên sẽ nộp",
+      "submitAnalysis": "1. Phân tích tình huống (không bắt buộc)",
+      "submitSolution": "2. Phương án giải pháp (bắt buộc)",
+      "submitReasoning": "3. Lập luận căn cứ trên số liệu (bắt buộc)",
+      "submitNote": "Mỗi sinh viên nộp một lần. Bạn phản hồi bằng nhận xét, không chấm điểm.",
+      "readOnly": "Case đã phê duyệt hoặc đã xuất bản không chỉnh sửa trực tiếp được.",
+      "loading": "Đang tải case",
+      "loadError": "Không tải được case",
+      "saveError": "Không lưu được thay đổi",
+      "statusError": "Không đổi được trạng thái case"
+    },
+    "governance": {
+      "label": "Tiến trình duyệt case",
+      "markReviewed": "Lưu & đánh dấu đã rà soát",
+      "saveChanges": "Lưu thay đổi",
+      "revertDraft": "Trả về bản nháp",
+      "approve": "Phê duyệt",
+      "publish": "Xuất bản",
+      "publishToStudents": "Xuất bản cho sinh viên",
+      "copyLink": "Sao chép đường dẫn",
+      "copied": "Đã sao chép đường dẫn cho sinh viên",
+      "copyFailed": "Không sao chép được đường dẫn",
+      "saving": "Đang lưu…"
+    },
+    "publish": {
+      "title": "Xuất bản Case Study",
+      "description": "Sau khi xuất bản, sinh viên trong khóa {{course}} có thể mở và làm case này.",
+      "meta": "{{course}} · {{mode}} · {{points}} điểm quyết định · {{outcomes}} kết cục",
+      "metaReview": "{{course}} · {{mode}}",
+      "checkTree": "Cây quyết định hợp lệ, mọi nhánh đều dẫn tới kết cục",
+      "checkConsequences": "Mọi phương án đều có hậu quả",
+      "checkReviewText": "Đã có bối cảnh và vấn đề cần phân tích",
+      "checkApproved": "Đã rà soát và phê duyệt",
+      "warning": "Sau khi xuất bản, nội dung case không chỉnh sửa được.",
+      "cancel": "Hủy bỏ",
+      "confirm": "Xác nhận xuất bản",
+      "close": "Đóng"
+    },
+    "studio": {
+      "title": "AI Studio",
+      "back": "Quay lại Case Study",
+      "crumbStep": "Bước {{step}}/3 · {{label}}",
+      "step1": "Khóa học & chế độ học",
+      "step2": "Chủ đề & tài liệu nguồn",
+      "step3": "Xem lại & sinh bản nháp",
+      "intro": "Khởi tạo kịch bản tình huống học thuật đa nhánh từ tài liệu môn học chỉ qua 3 bước.",
+      "course": "Khóa học",
+      "coursePlaceholder": "Chọn khóa học",
+      "modeLabel": "Chọn chế độ học tập",
+      "modeBranching": "Branching Study · Cây phân nhánh — Sinh viên đưa ra lựa chọn liên tục, hậu quả được giấu kín cho tới kết cục. Khuyến nghị cho kịch bản sự cố.",
+      "modeReview": "Review Study · Phân tích chuyên sâu — Bản đơn giản: bối cảnh, số liệu và vấn đề cần phân tích. Không cần cây phân nhánh.",
+      "modeManual": "Tạo thủ công từ đầu — Không dùng AI; giảng viên tự soạn toàn bộ tình huống.",
+      "modeUnavailable": "Hệ thống hiện chỉ sinh được case Branching Study.",
+      "topic": "Chủ đề tình huống",
+      "topicPlaceholder": "Nhập chủ đề hoặc bối cảnh tình huống muốn AI sinh…",
+      "materials": "Chọn tài liệu nguồn để AI trích xuất bối cảnh",
+      "materialsSelected": "{{count}} tài liệu đã chọn",
+      "materialNotReady": "Đang xử lý · chưa thể chọn",
+      "materialFailed": "Lỗi lập chỉ mục · chưa thể chọn",
+      "materialsEmpty": "Khóa học này chưa có tài liệu nào.",
+      "materialsError": "Không tải được tài liệu của khóa học",
+      "note": "Lưu ý: Không cố định số điểm quyết định; AI sẽ phác thảo tự nhiên theo diễn biến tình huống.",
+      "steps": "Các bước khởi tạo",
+      "config": "Cấu hình sinh case",
+      "configCourse": "Khóa học",
+      "configMode": "Chế độ học",
+      "configTopic": "Chủ đề",
+      "configMaterials": "Tài liệu nguồn",
+      "notEntered": "Chưa nhập",
+      "notSelected": "Chưa chọn",
+      "aiDraftNote": "Bản nháp AI luôn ở trạng thái Bản nháp và cần giảng viên rà soát, phê duyệt trước khi xuất bản.",
+      "confirmTitle": "Xác nhận thông số khởi tạo kịch bản",
+      "materialsSummary": "{{count}} tài liệu · {{names}}",
+      "noMaterials": "Không chọn",
+      "after": "Sau khi bấm tạo",
+      "after1": "AI truy xuất đoạn trích liên quan (nếu có tài liệu nguồn)",
+      "after2": "Tổng hợp tình huống và các điểm quyết định",
+      "after3": "Kiểm tra cấu trúc cây: không vòng lặp, không tình huống mồ côi",
+      "after4": "Mở trình chỉnh sửa ở trạng thái Bản nháp để rà soát",
+      "footer1": "Bước 1 trên 3: Khóa học và chế độ",
+      "footer2": "Bước 2 trên 3: Chủ đề và tài liệu",
+      "footer3": "Bước 3 trên 3: Xác nhận cấu hình",
+      "cancel": "Hủy",
+      "previous": "Quay lại",
+      "next": "Tiếp tục",
+      "generate": "Sinh bản nháp",
+      "loading": "Đang tải khóa học",
+      "loadError": "Không tải được danh sách khóa học"
+    },
+    "rubric": {
+      "title": "Rubric nghiên cứu chất lượng tình huống",
+      "crumb": "Rubric nghiên cứu",
+      "average": "Điểm trung bình",
+      "averageValue": "/ 5",
+      "averageFrom": "từ 3 tiêu chí",
+      "averageNone": "Chưa chấm",
+      "form": "Đánh giá chất lượng tình huống",
+      "formHint": "Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
+      "realism": "1. Tính thực tế",
+      "realismHint": "Mức độ sát với các tình huống khủng hoảng thực tế tại doanh nghiệp",
+      "difficulty": "2. Độ khó",
+      "difficultyHint": "Mức độ phức tạp của bài toán và đòi hỏi tư duy phân tích cao",
+      "fit": "3. Phù hợp môn",
+      "fitHint": "Độ gắn kết với mục tiêu chuẩn đầu ra (CLO) của học phần",
+      "score": "{{score}}/5",
+      "scoreNone": "–/5",
+      "scoreLabel": "{{criterion}}: {{value}} điểm",
+      "note": "Ghi chú (không bắt buộc)",
+      "notePlaceholder": "Điểm cần chỉnh ở phiên bản sau…",
+      "noteCount": "{{count}}/1000 ký tự",
+      "save": "Lưu phiếu đánh giá",
+      "saveUnavailable": "Hệ thống chưa có API lưu phiếu rubric.",
+      "saved": "Phiếu đánh giá đã lưu ({{count}})",
+      "savedEmpty": "Chưa có phiếu đánh giá nào được lưu.",
+      "pickTitle": "Chọn case để đánh giá",
+      "pickDescription": "Mở rubric từ một case trong Kho Case Study.",
+      "pickAction": "Đến Case Study",
+      "meta": "{{code}} · {{course}}"
+    }
+  },
+  "g4": {
+    "common": {
+      "unknownValue": "—",
+      "all": "Tất cả",
+      "branching": "Branching",
+      "review": "Review"
+    },
+    "calendar": {
+      "previousMonth": "Tháng trước",
+      "nextMonth": "Tháng sau",
+      "weekdays": [
+        "CN",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7"
+      ],
+      "today": "Hôm nay",
+      "monthTitle": "Tháng {{month}}, {{year}}",
+      "monthShort": "Th{{month}}"
+    },
+    "todo": {
+      "drafts_one": "{{count}} bản nháp chờ rà soát",
+      "drafts_other": "{{count}} bản nháp chờ rà soát",
+      "reviewDrafts_one": "Rà soát {{count}} case bản nháp",
+      "reviewDrafts_other": "Rà soát {{count}} case bản nháp",
+      "reviewed_one": "{{count}} case chờ phê duyệt",
+      "reviewed_other": "{{count}} case chờ phê duyệt",
+      "meta": "Case Study · {{code}}",
+      "materialFailed": "Lập chỉ mục thất bại · {{code}}",
+      "metaCode": "{{code}} · Case Study"
+    },
+    "dashboard": {
+      "loadError": "Không tải được bảng điều khiển",
+      "calendarLabel": "Lịch hạn nộp",
+      "metrics": {
+        "courses": "Khóa học phụ trách",
+        "published": "Case đã xuất bản",
+        "drafts": "Bản nháp · chờ duyệt",
+        "pending": "Bài nộp chờ bạn chấm"
+      },
+      "modeFilter": "Lọc theo chế độ học",
+      "view": "Chế độ xem lịch",
+      "viewMonth": "Tháng",
+      "courseFilter": "Lọc theo khóa học",
+      "filter": "Lọc",
+      "createCase": "Tạo Case mới",
+      "moreCases": "+{{count}} case khác",
+      "pendingTitle": "Bài nộp chờ bạn phản hồi",
+      "pendingUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên.",
+      "trackSubmissions": "Theo dõi bài nộp",
+      "openSubmissionsQueue": "Mở hàng đợi bài nộp",
+      "todoTitle": "Việc cần làm",
+      "todoEmpty": "Không có case nào đang chờ bạn rà soát.",
+      "access": "Truy cập",
+      "courseSectionFallback": "HỌC PHẦN",
+      "statusActive": "Đang giảng dạy",
+      "statusInactive": "Tạm dừng",
+      "casesCount": "{{total}} case ({{published}} xuất bản)",
+      "materialsCount": "{{ready}}/{{total}} tài liệu",
+      "materialsLink": "Tài liệu →",
+      "enterCourse": "Vào lớp học",
+      "quickActions": {
+        "title": "Hành động nhanh",
+        "subtitle": "Lối tắt thao tác cho giảng viên",
+        "aiStudioBadge": "AI Studio",
+        "aiStudio": {
+          "title": "Sinh Case bằng AI",
+          "desc": "Tạo kịch bản rẽ nhánh hoặc bài phân tích tình huống từ giáo trình."
+        },
+        "materials": {
+          "title": "Kho tài liệu học phần",
+          "desc": "Tải lên syllabus, giáo trình PDF/DOCX và giám sát vector hóa."
+        },
+        "cases": {
+          "title": "Phê duyệt tình huống",
+          "desc": "Rà soát cấu trúc cây quyết định và phát hành kịch bản cho sinh viên."
+        },
+        "stats": {
+          "title": "Báo cáo & Thống kê",
+          "desc": "Theo dõi lựa chọn rẽ nhánh và phân bố hành vi của người học."
+        }
+      },
+      "coursesSection": {
+        "title": "Khóa học đang phụ trách",
+        "subtitle": "Tổng quan trạng thái học phần, tài liệu và tình huống",
+        "viewAll": "Xem tất cả khóa học",
+        "noCoursesTitle": "Chưa có khóa học nào",
+        "noCoursesDesc": "Tạo khóa học đầu tiên để tải lên tài liệu và tạo kịch bản học tập thực nghiệm.",
+        "createCourse": "Tạo khóa học mới"
+      }
+    },
+    "queue": {
+      "metrics": {
+        "total": "Tổng bài làm đã nộp",
+        "pending": "Chờ phản hồi",
+        "reviewed": "Đã phản hồi",
+        "cases": "Case Study có bài nộp"
+      },
+      "listLabel": "Danh sách bài nộp",
+      "searchLabel": "Tìm bài nộp",
+      "searchPlaceholder": "Tên sinh viên hoặc case",
+      "courseFilter": "Lọc theo khóa học",
+      "allCourses": "Mọi khóa học",
+      "statusFilter": "Lọc theo trạng thái",
+      "status": {
+        "all": "Mọi trạng thái",
+        "pending": "Chờ phản hồi",
+        "reviewed": "Đã phản hồi"
+      },
+      "sortLabel": "Sắp xếp",
+      "sort": {
+        "newest": "Mới nhất",
+        "oldest": "Cũ nhất"
+      },
+      "columns": {
+        "student": "Sinh viên",
+        "submittedAt": "Thời gian nộp",
+        "case": "Case Study & Khóa học",
+        "attempt": "Lần làm",
+        "action": "Hành động",
+        "status": "Trạng thái"
+      },
+      "emptyTitle": "Chưa có dữ liệu bài nộp",
+      "emptyDescription": "Hệ thống chưa cung cấp danh sách bài làm của sinh viên cho giảng viên."
+    },
+    "detail": {
+      "unavailableTitle": "Chưa thể hiển thị bài nộp",
+      "unavailableDescription": "Hệ thống chưa cung cấp chi tiết bài nộp {{id}} cho giảng viên.",
+      "backToQueue": "Về hàng đợi phản hồi"
+    },
+    "stats": {
+      "noData": "Chưa có dữ liệu thống kê",
+      "kpi": {
+        "completion": "Tỷ lệ hoàn thành",
+        "avgAttempts": "Số lần làm trung bình",
+        "inProgress": "Đang trong hành trình"
+      },
+      "panels": {
+        "choices": "Lựa chọn tại từng tình huống",
+        "attempts": "Phân bố số lần làm bài",
+        "outcomes": "Kết quả cuối cùng",
+        "timing": "Thời điểm làm bài",
+        "progress": "Tiến độ của sinh viên đã mở case",
+        "popular": "Lựa chọn phổ biến theo điểm"
+      },
+      "openCases": "Case đang mở",
+      "openCasesEmpty": "Chưa có case nào được xuất bản.",
+      "openCasesError": "Không tải được danh sách case",
+      "published": "Xuất bản",
+      "updatedOn": "Cập nhật ngày {{date}}",
+      "recent": "Bài nộp gần đây",
+      "recentUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên."
+    },
+    "profile": {
+      "loadError": "Không tải được hồ sơ tài khoản",
+      "accountLabel": "Thông tin tài khoản",
+      "roles": {
+        "lecturer": "Giảng viên",
+        "student": "Sinh viên",
+        "admin": "Quản trị viên"
+      },
+      "joinedOn": "Tham gia {{date}}",
+      "studentMeta": "{{role}}  •  Tham gia {{date}}",
+      "teaching": "Khóa học phụ trách",
+      "teachingCount_one": "{{count}} khóa đang dạy",
+      "teachingCount_other": "{{count}} khóa đang dạy",
+      "teachingTitle": "Khóa học phụ trách",
+      "coursesError": "Không tải được khóa học",
+      "noCourses": "Bạn chưa phụ trách khóa học nào.",
+      "email": "Email",
+      "role": "Vai trò",
+      "joined": "Ngày tham gia",
+      "courseActive": "Đang dạy",
+      "courseInactive": "Ngừng dạy",
+      "caseCount_one": "{{count}} case",
+      "caseCount_other": "{{count}} case",
+      "noCases": "Chưa có case",
+      "materialsReady": "{{percent}}% tài liệu sẵn sàng",
+      "noMaterials": "Chưa có tài liệu",
+      "completionTitle": "Tỷ lệ hoàn thành case",
+      "activityTitle": "Hoạt động",
+      "courseProgressTitle": "Tiến độ theo khóa học",
+      "chartNoData": "Chưa có dữ liệu",
+      "todoTitle": "Việc cần làm",
+      "recentTitle": "Bài nộp gần đây",
+      "recentUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên.",
+      "progressTitle": "Tiến độ học tập",
+      "progressUnavailable": "Chưa có dữ liệu tiến độ học tập.",
+      "studentTodoUnavailable": "Chưa có việc cần làm.",
+      "myCoursesTitle": "Khóa học của tôi",
+      "myCoursesUnavailable": "Hệ thống chưa cung cấp danh sách khóa học của sinh viên.",
+      "editProfile": "Chỉnh sửa hồ sơ",
+      "editProfileTitle": "Cập nhật hồ sơ tài khoản",
+      "editProfileDesc": "Xem và cập nhật thông tin cá nhân cùng tùy chọn ngôn ngữ giao diện.",
+      "fullName": "Họ và tên",
+      "fullNamePlaceholder": "Nhập họ và tên...",
+      "fullNameRequired": "Họ và tên không được để trống.",
+      "emailImmutable": "Email tài khoản cố định, không thể thay đổi.",
+      "language": "Ngôn ngữ giao diện",
+      "languageDesc": "Lựa chọn ngôn ngữ hiển thị trên toàn bộ hệ thống.",
+      "languageVi": "Tiếng Việt",
+      "languageEn": "English",
+      "saveChanges": "Lưu thay đổi",
+      "saving": "Đang lưu...",
+      "saveSuccess": "Cập nhật hồ sơ thành công.",
+      "saveError": "Không thể cập nhật hồ sơ, vui lòng thử lại.",
+      "cancel": "Hủy"
+    }
+  },
+  "g5": {
+    "common": {
+      "loading": "Đang tải dữ liệu",
+      "cancel": "Hủy bỏ",
+      "close": "Đóng",
+      "expand": "Mở rộng: {{title}}",
+      "collapse": "Thu gọn: {{title}}",
+      "showMore": "Xem thêm",
+      "showLess": "Thu gọn",
+      "course": "Học phần",
+      "grading": "Chấm điểm",
+      "notGraded": "Không chấm điểm",
+      "modeBranching": "Branching Study",
+      "modeReview": "Review Study",
+      "aiAssisted": "AI-assisted",
+      "attemptN": "Lần làm #{{n}}",
+      "attemptRun": "Lượt làm #{{n}}",
+      "decisionPoint": "Điểm quyết định {{n}}",
+      "stepsCount": "{{count}} bước",
+      "charCount": "{{count}} / {{max}} ký tự",
+      "inProgress": "Đang thực hiện",
+      "completed": "Đã hoàn thành",
+      "submitted": "Đã nộp",
+      "newAttempt": "Bắt đầu lượt làm mới",
+      "caseCard": "Tình huống",
+      "consequenceInReview": "Hậu quả chi tiết xem trong Journey Review",
+      "phase": {
+        "experience": "Trải nghiệm kịch bản",
+        "review": "Xem lại & giải trình lập luận",
+        "reflection": "Phản tư tổng kết"
+      },
+      "phaseStatus": {
+        "done": "Hoàn thành",
+        "waiting": "Đang chờ",
+        "locked": "Chưa mở"
+      },
+      "caseForbiddenTitle": "Tình huống chưa được mở",
+      "caseForbiddenDescription": "Tình huống này chưa được giảng viên xuất bản nên bạn chưa thể truy cập.",
+      "caseNotFoundTitle": "Không tìm thấy tình huống",
+      "caseNotFoundDescription": "Tình huống hoặc lượt làm không tồn tại, hoặc không thuộc về bạn."
+    },
+    "player": {
+      "open": "Đang mở",
+      "attemptsDone": "Đã thực hiện",
+      "attemptsCount": "{{count}} lần",
+      "contextTitle": "Mô tả bối cảnh tình huống",
+      "courseInfo": "Thông tin học phần",
+      "learningMode": "Chế độ học",
+      "learningModeValue": "Branching Study — đi liên tục qua các điểm quyết định; hệ quả được mở ở bước Journey Review.",
+      "historyTitle": "Lịch sử các lần làm bài của bạn ({{count}})",
+      "firstTitle": "Bạn chưa bắt đầu lượt làm nào",
+      "firstDescription": "Mỗi lần thử là một cơ hội khám phá. Lượt cũ luôn được giữ nguyên.",
+      "startFirst": "Bắt đầu lượt làm",
+      "startFailed": "Không thể bắt đầu lượt làm (mã lỗi {{code}}). Vui lòng thử lại.",
+      "attemptTitle": "Lần làm #{{n}} · {{status}}",
+      "progressTitle": "Tiến độ lượt làm",
+      "passed": "Đã đi qua",
+      "nextPoint": "Điểm quyết định tiếp theo",
+      "waiting": "Đang chờ",
+      "outcomeReached": "Kết cục hành trình",
+      "completedAt": "Hoàn tất {{time}}",
+      "startedAt": "Bắt đầu {{time}}",
+      "viewReview": "Xem Journey Review",
+      "continueTitle": "Tiếp tục lượt đang làm",
+      "midAttempt": "Bạn đang ở giữa lượt làm #{{n}}",
+      "midAttemptNote": "Mỗi lần thử là một cơ hội khám phá. Lượt cũ được giữ nguyên.",
+      "restart": "Làm lại",
+      "continue": "Tiếp tục làm dở",
+      "howTitle": "Cách làm case này",
+      "how": {
+        "decide": {
+          "title": "Ra quyết định",
+          "body": "Chọn hướng xử lý tại mỗi điểm quyết định. Hậu quả chưa hiện ở bước này."
+        },
+        "review": {
+          "title": "Journey Review",
+          "body": "Xem hậu quả của từng lựa chọn và viết lập luận cho quyết định then chốt."
+        },
+        "reflect": {
+          "title": "Suy ngẫm",
+          "body": "Viết điều bạn rút ra sau hành trình."
+        }
+      },
+      "howNote": "Không chấm điểm. Mỗi lượt làm được lưu lại để bạn xem lại hướng đi của mình.",
+      "noNodeTitle": "Không tải được điểm quyết định",
+      "noNodeDescription": "Lượt làm không có điểm quyết định hiện tại. Hãy quay lại trang tình huống và thử lại.",
+      "situation": "Bối cảnh",
+      "chooseTitle": "Chọn phương án hành động",
+      "chooseSubtitle": "Lựa chọn của bạn sẽ kích hoạt chuỗi phản ứng tiếp theo",
+      "optionCount": "{{count}} phương án",
+      "optionsHeading": "Phương án",
+      "optionN": "Phương án {{key}}",
+      "selected": "Đã chọn",
+      "commitNote": "Quyết định này mang tính cam kết và sẽ chuyển hệ thống sang diễn biến tiếp theo ngay lập tức.",
+      "chooseOption": "Chọn phương án {{key}}",
+      "chooseFailed": "Không ghi nhận được lựa chọn (mã lỗi {{code}}). Vui lòng thử lại.",
+      "pickPrompt": "Chọn một phương án ở danh sách bên trái để xem chi tiết.",
+      "outcomeTitle": "Kết thúc hành trình",
+      "outcomeLabel": "Kết cục hành trình",
+      "decisionCount": "Số điểm quyết định",
+      "attemptLabel": "Lượt làm bài",
+      "pathTitle": "Hướng đi bạn đã chọn",
+      "outcomeChip": "Kết cục hành trình",
+      "ended": "Đã kết thúc",
+      "progressCard": "Tiến trình lượt làm",
+      "nextStep": "Bước tiếp theo",
+      "nextStepBody": "Nhiệm vụ bắt buộc trước khi chuyển sang bước phản tư và tổng kết lượt làm bài #{{n}}: xem lại hệ quả của từng quyết định và giải trình lập luận.",
+      "toReview": "Chuyển sang Journey Review",
+      "noteTitle": "Ghi chú",
+      "noteBody": "Hệ quả chi tiết của từng lựa chọn chỉ được mở ở bước Journey Review. Lượt làm cũ được giữ nguyên."
+    },
+    "newAttempt": {
+      "title": "Bắt đầu lượt làm mới?",
+      "message": "Lượt làm mới bắt đầu lại từ tình huống đầu tiên để bạn thử một hướng đi khác. Lượt trước được giữ nguyên trong lịch sử, kèm lập luận và phần suy ngẫm của bạn.",
+      "previous": "Lượt {{n}} · {{state}} · {{count}} bước quyết định · {{reflection}}",
+      "stateCompleted": "Đã hoàn thành",
+      "stateInProgress": "Đang thực hiện",
+      "reflected": "Đã nộp suy ngẫm",
+      "notReflected": "Chưa nộp suy ngẫm",
+      "confirm": "Bắt đầu lượt {{n}}"
+    },
+    "review": {
+      "pageTitle": "Journey Review — Xem lại hành trình",
+      "notCompletedTitle": "Lượt làm chưa kết thúc",
+      "notCompletedDescription": "Journey Review chỉ mở sau khi bạn đi đến kết cục của lượt làm.",
+      "backToCase": "Quay lại tình huống",
+      "mapTitle": "Sơ đồ hành trình quyết định",
+      "stepsPassed": "Bước đã đi qua",
+      "reasoningWritten": "Lập luận đã viết",
+      "finishedAt": "Hoàn tất",
+      "outcomeTitle": "Kết cục hành trình",
+      "outcomeNote": "Bảo mật sư phạm đã mở khóa: hậu quả thực tế của từng quyết định được tiết lộ.",
+      "toReflection": "Chuyển sang bước suy ngẫm",
+      "stepsTitle": "Các bước đã đi qua",
+      "stepLabel": "Bước {{n}} · {{situation}}",
+      "chose": "Đã chọn: {{option}}",
+      "detailsTitle": "Chi tiết các quyết định & hậu quả thực tế",
+      "hasReasoning": "Đã có lập luận",
+      "noReasoning": "Chưa có lập luận",
+      "outcomePill": "Kết cục",
+      "chosenOption": "Phương án bạn đã chọn",
+      "consequence": "Hậu quả thực tế",
+      "yourReasoning": "Bản lập luận của bạn",
+      "reasoningLabel": "Lập luận hồi cứu (căn cứ số liệu & lý thuyết học phần)",
+      "reasoningPlaceholder": "Vì sao bạn chọn phương án này? Nếu làm lại, bạn sẽ thay đổi điều gì?",
+      "reasoningLength": "Lập luận cần từ {{min}} đến {{max}} ký tự.",
+      "saveReasoning": "Lưu lập luận",
+      "editReasoning": "Chỉnh sửa lập luận",
+      "saveFailed": "Không lưu được lập luận (mã lỗi {{code}}). Vui lòng thử lại.",
+      "challengeNote": "Phản biện với AI · không bắt buộc. AI đặt câu hỏi cho lập luận của bạn, không chấm điểm.",
+      "openChallenge": "Mở phản biện",
+      "challengeNeedsReasoning": "Lưu lập luận trước khi mở phản biện."
+    },
+    "challenge": {
+      "title": "AI Challenge Support",
+      "description": "Vòng 1/2 · Trả lời câu hỏi phản biện để làm rõ lập luận của bạn. Tối đa 2 vòng, không chấm điểm.",
+      "roundIndicator": "Vòng {{round}}/2",
+      "roundCompleted": "Đã hoàn thành 2 vòng",
+      "completedBanner": "Phiên phản biện đã hoàn tất 2 vòng đối thoại. Luận điểm của bạn đã được ghi nhận.",
+      "decisionAt": "Quyết định của bạn tại bước {{n}}",
+      "unavailableTitle": "Phản biện AI chưa khả dụng",
+      "unavailableBody": "Lưu lập luận trước khi mở phản biện AI. Bạn vẫn có thể tiếp tục Journey Review.",
+      "replyLabel": "Luận điểm phản hồi của bạn",
+      "replyPlaceholder": "Trình bày luận điểm bảo vệ quyết định hoặc cơ chế dự phòng bổ sung...",
+      "skip": "Bỏ qua",
+      "send": "Gửi phản hồi vòng {{round}}",
+      "close": "Đóng",
+      "roundLabel": "Vòng {{round}}",
+      "counterQuestionLabel": "Câu hỏi phản biện từ AI",
+      "completedSubtitle": "Vòng 2/2 · Đã hoàn tất. Phiên phản biện đã kết thúc sau 2 vòng. Câu trả lời của bạn được lưu cùng lập luận ở bước {{n}}. Không có điểm số.",
+      "r1Question": "Vòng 1 · Câu hỏi phản biện từ AI",
+      "r1Answer": "Vòng 1 · Câu trả lời của bạn",
+      "r2Question": "Vòng 2 · Câu hỏi phản biện từ AI",
+      "completedFooter": "Vòng 2 / 2 · Đã hoàn tất · Không chấm điểm",
+      "backToReview": "Quay lại Journey Review",
+      "loading": "Đang tải phiên phản biện AI...",
+      "generating": "AI đang chuẩn bị câu hỏi phản biện...",
+      "sending": "Đang gửi phản hồi...",
+      "errorTitle": "Không thể tải phản biện AI",
+      "retry": "Thử lại",
+      "errors": {
+        "maxRoundsReached": "Phiên phản biện đã hoàn tất 2 vòng tối đa. Không thể gửi thêm câu trả lời.",
+        "aiUnavailable": "Dịch vụ AI tạm thời không phản hồi. Vui lòng thử lại sau ít phút.",
+        "forbidden": "Bạn không có quyền truy cập phiên phản biện này.",
+        "notFound": "Không tìm thấy dữ liệu phiên phản biện.",
+        "generic": "Đã xảy ra lỗi trong quá trình phản biện. Vui lòng thử lại."
+      }
+    },
+    "reflection": {
+      "pageTitle": "Suy ngẫm & đúc kết bài học",
+      "notCompletedTitle": "Chưa thể viết suy ngẫm",
+      "notCompletedDescription": "Phần suy ngẫm chỉ mở sau khi lượt làm đi đến kết cục.",
+      "yourReflection": "Suy ngẫm của bạn *",
+      "yourReflectionPlain": "Suy ngẫm của bạn",
+      "hint": "Gợi ý: quyết định nào quan trọng nhất và vì sao? Nếu làm lại bạn sẽ thay đổi điều gì? Kiến thức nào trong học phần giúp bạn?",
+      "placeholder": "Viết suy ngẫm của bạn về lượt làm này...",
+      "required": "Vui lòng viết phần suy ngẫm trước khi nộp.",
+      "submitFailed": "Không nộp được phần suy ngẫm (mã lỗi {{code}}). Vui lòng thử lại.",
+      "attemptCard": "Lượt làm bài",
+      "attempt": "Lần làm",
+      "decisions": "Bước quyết định",
+      "status": "Trạng thái",
+      "awaiting": "Chờ suy ngẫm",
+      "progressCard": "Tiến trình",
+      "progress": {
+        "experience": "Trải nghiệm kịch bản · Hoàn thành",
+        "reviewDone": "Xem lại & giải trình lập luận · Hoàn thành",
+        "reviewOpen": "Xem lại & giải trình lập luận · Chưa đủ lập luận",
+        "reflecting": "Phản tư tổng kết · Đang thực hiện"
+      },
+      "backToReview": "Quay lại Journey Review",
+      "barNote": "Phần suy ngẫm không chấm điểm. Sau khi nộp, giảng viên sẽ xem xét và phản hồi.",
+      "submit": "Nộp suy ngẫm",
+      "doneTitle": "Bạn đã hoàn thành trọn vẹn lần làm bài #{{n}}!",
+      "doneBody": "Toàn bộ đường đi, bản lập luận và phần suy ngẫm của bạn đã được ghi nhận.",
+      "viewReview": "Xem lại Journey Review",
+      "newAttempt": "Bắt đầu lượt làm mới",
+      "submittedTitle": "Phần suy ngẫm đã nộp",
+      "noScoreTitle": "Không xếp hạng điểm số",
+      "noScoreBody": "Mỗi lần thử nghiệm là một cơ hội khám phá. Phần suy ngẫm không chấm điểm; giảng viên phản hồi bằng nhận xét định tính."
+    },
+    "history": {
+      "allTitle": "Chọn một tình huống để xem lịch sử",
+      "allDescription": "Lịch sử lần làm được xem theo từng tình huống. Mở tình huống từ khóa học của bạn.",
+      "toCourses": "Khóa học của tôi",
+      "metricAttempts": "Số lần làm",
+      "metricSubmitted": "Đã nộp",
+      "metricInProgress": "Đang làm",
+      "metricSteps": "Bước đã qua",
+      "chartTitle": "Số bước đã đi qua theo lần làm",
+      "pathsTitle": "Hướng đi của từng lượt",
+      "atPoint": "Đang ở điểm quyết định {{n}}",
+      "noAttempts": "Bạn chưa có lượt làm nào cho tình huống này.",
+      "listTitle": "Danh sách lần làm",
+      "search": "Tìm lần làm",
+      "searchPlaceholder": "Tìm lần làm…",
+      "colCompleted": "Hoàn thành",
+      "colAttempt": "Lần làm",
+      "colStarted": "Bắt đầu",
+      "colCase": "Tình huống",
+      "colMode": "Chế độ",
+      "colSteps": "Số bước",
+      "colStatus": "Trạng thái",
+      "colActions": "Thao tác",
+      "reflectedSub": "Đã nộp suy ngẫm",
+      "awaitingReflection": "Chờ suy ngẫm",
+      "processing": "Đang xử lý",
+      "viewJourney": "Xem lại hành trình",
+      "continue": "Tiếp tục làm",
+      "resultLeading": "Hiển thị",
+      "resultTrailing": "trên {{count}} lần làm",
+      "pageSizeLabel": "Số dòng mỗi trang",
+      "paginationNav": "Phân trang",
+      "previousPage": "Trang trước",
+      "nextPage": "Trang sau",
+      "pageN": "Trang {{page}}"
+    },
+    "reviewStudy": {
+      "contextTitle": "Bối cảnh tình huống",
+      "problem": "Vấn đề cần giải quyết",
+      "analysis": "Phân tích tình huống (không bắt buộc)",
+      "analysisPlaceholder": "Bạn nhận thấy điều gì từ số liệu?",
+      "solution": "Phương án giải pháp *",
+      "solutionPlaceholder": "Trình bày phương án hoặc kế hoạch giải quyết vấn đề...",
+      "reasoning": "Lập luận căn cứ dựa trên số liệu *",
+      "reasoningPlaceholder": "Giải thích bằng số liệu đính kèm và kiến thức học phần...",
+      "infoTitle": "Thông tin tình huống",
+      "mode": "Chế độ",
+      "format": "Hình thức",
+      "formatValue": "Bài nộp tự luận",
+      "status": "Trạng thái",
+      "submittedStatus": "Đã nộp bài (SUBMITTED)",
+      "submittedBadge": "Đã nộp",
+      "submittedNotice": "Bài nộp của bạn đã được ghi nhận và đang chờ giảng viên đánh giá. Chế độ Review Study cho phép nộp một lần duy nhất.",
+      "submittedAt": "Thời gian nộp: {{time}}",
+      "submittedAnalysisTitle": "Bài phân tích đã nộp",
+      "submittedSolutionTitle": "Phương án giải pháp đã nộp",
+      "submittedReasoningTitle": "Lập luận căn cứ đã nộp",
+      "emptyAnalysis": "Không có nội dung phân tích",
+      "requirementsTitle": "Yêu cầu bài nộp",
+      "requirement": {
+        "solution": "1. Đề xuất phương án / kế hoạch giải quyết (tối thiểu 10 ký tự)",
+        "reasoning": "2. Lập luận căn cứ dựa trên số liệu (tối thiểu 10 ký tự)"
+      },
+      "back": "Quay lại",
+      "finalNote": "Bài nộp là bản cuối, không chỉnh sửa được sau khi nộp.",
+      "submit": "Nộp bài",
+      "submitting": "Đang gửi bài nộp…",
+      "submitSuccess": "Bài nộp đã được gửi thành công!",
+      "submitFailed": "Không thể nộp bài: {{error}}",
+      "submitFailedGeneric": "Gửi bài nộp thất bại. Vui lòng thử lại.",
+      "duplicateSubmission": "Bạn đã có bài nộp cho tình huống này. Hệ thống chỉ cho phép nộp 1 lần duy nhất.",
+      "submitUnavailable": "Chưa thể nộp bài: máy chủ chưa có API nộp bài Review Study.",
+      "validation": {
+        "solutionMin": "Phương án giải pháp phải có ít nhất 10 ký tự.",
+        "reasoningMin": "Lập luận căn cứ phải có ít nhất 10 ký tự."
+      }
+    },
+    "feedback": {
+      "unavailableTitle": "Chưa xem được phản hồi",
+      "unavailableBody": "Máy chủ chưa có API đọc bài nộp Review Study và phản hồi của giảng viên.",
+      "backToWork": "Quay lại bài làm"
+    },
+    "desk": {
+      "title": "Bàn học",
+      "emptyTitle": "Chưa có bài học hoặc khóa học nào",
+      "emptyBody": "Tham gia lớp học phần bằng mã mời để bắt đầu giải quyết các tình huống thực tế.",
+      "toCourses": "Khám phá khóa học của tôi",
+      "stats": {
+        "enrolledCourses": "Lớp học đã tham gia",
+        "activeCases": "Bài làm đang dở",
+        "publishedCases": "Case study khả dụng"
+      },
+      "activeCasesTitle": "Tiếp tục bài làm dở",
+      "continueCase": "Làm tiếp",
+      "myCoursesTitle": "Học phần của tôi",
+      "noActiveCases": "Không có case nào đang làm dở.",
+      "noEnrolledCourses": "Chưa tham gia khóa học nào.",
+      "calendar": "Lịch",
+      "month": "Tháng {{month}}, {{year}}",
+      "previousMonth": "Tháng trước",
+      "nextMonth": "Tháng sau",
+      "weekdays": [
+        "CN",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7"
+      ],
+      "newCases": "Case mới mở",
+      "newCasesEmpty": "Chưa có case mới."
+    },
+    "courses": {
+      "listTitle": "Danh sách lớp học phần",
+      "join": "Tham gia lớp học",
+      "emptyTitle": "Bạn chưa tham gia lớp học phần nào",
+      "emptyBody": "Nhập mã lớp do giảng viên cung cấp để bắt đầu trải nghiệm các case study.",
+      "joinTitle": "Tham gia lớp học mới",
+      "joinDescription": "Nhập mã lớp do giảng viên cung cấp để truy cập các case study của môn.",
+      "codeLabel": "Mã lớp *",
+      "codePlaceholder": "Ví dụ: SEC7A2",
+      "joinSubmit": "Tham gia lớp",
+      "joinSuccess": "Tham gia lớp học thành công!",
+      "enrolledAt": "Đã tham gia: {{date}}",
+      "viewCases": "Vào học",
+      "error": {
+        "invalidCode": "Mã lớp không hợp lệ hoặc để trống.",
+        "notFound": "Mã lớp không tồn tại. Vui lòng kiểm tra lại.",
+        "archived": "Khóa học này đã được lưu trữ, không thể tham gia.",
+        "alreadyEnrolled": "Bạn đã tham gia lớp học phần này rồi.",
+        "disabled": "Mã lớp này đã hết hạn hoặc bị giảng viên vô hiệu hóa.",
+        "generic": "Không thể tham gia lớp học. Vui lòng thử lại sau."
+      }
+    }
+  },
+  "g6": {
+    "noData": {
+      "title": "Chưa có dữ liệu",
+      "description": "Mục này hiển thị khi máy chủ cung cấp dữ liệu quản trị."
+    },
+    "dashboard": {
+      "attentionTitle": "{{count}} mục cần chú ý",
+      "viewDetails": "Xem chi tiết",
+      "kpi": {
+        "users": "Người dùng",
+        "openCourses": "Khóa học đang mở",
+        "publishedCases": "Case đã xuất bản",
+        "aiGenerations": "Lượt sinh case AI",
+        "growthThisMonth": "+{{count}} trong tháng {{month}}",
+        "aiErrors": "{{count}} lần sinh lỗi",
+        "noAiErrors": "Không có lỗi"
+      },
+      "activity": {
+        "title": "Hoạt động học tập theo tuần",
+        "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống",
+        "filter8Weeks": "8 tuần",
+        "branchingAttempts": "Lượt làm bài",
+        "reviewSubmissions": "Bài nộp Review Study"
+      },
+      "usersByRole": {
+        "title": "Người dùng theo vai trò",
+        "subtitle": "Tài khoản đang hoạt động",
+        "students": "Sinh viên",
+        "lecturers": "Giảng viên",
+        "admins": "Quản trị viên",
+        "totalUsers": "{{count}} người dùng"
+      },
+      "health": {
+        "title": "Tình trạng hệ thống",
+        "updatedAt": "Cập nhật lúc {{time}}",
+        "appServer": "Máy chủ ứng dụng",
+        "aiService": "Dịch vụ AI",
+        "indexing": "Lập chỉ mục tài liệu",
+        "indexingProcessing": "{{count}} tệp đang xử lý",
+        "database": "Cơ sở dữ liệu",
+        "up": "Ổn định",
+        "down": "Gián đoạn",
+        "loading": "Đang kiểm tra tình trạng hệ thống…",
+        "errorTitle": "Không kiểm tra được"
+      },
+      "casesByCourse": {
+        "title": "Case theo khóa học",
+        "subtitle": "Số case đã xuất bản và bản nháp ở mỗi khóa",
+        "filterAll": "Mọi khóa học",
+        "published": "Đã xuất bản",
+        "draft": "Bản nháp",
+        "noCases": "Chưa có case"
+      },
+      "recentLog": {
+        "title": "Nhật ký gần đây",
+        "subtitle": "Hôm nay"
+      },
+      "loadError": "Không tải được dữ liệu tổng quan"
+    },
+    "users": {
+      "emptyTitle": "Chưa có dữ liệu người dùng",
+      "emptyDescription": "Danh sách tài khoản hiển thị khi máy chủ cung cấp dữ liệu quản trị người dùng."
+    },
+    "courses": {
+      "title": "Tất cả khóa học",
+      "emptyTitle": "Chưa có dữ liệu khóa học",
+      "emptyDescription": "Khóa học toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị khóa học."
+    },
+    "cases": {
+      "byStatus": "Case Study theo trạng thái",
+      "byMode": "Chế độ học theo case",
+      "library": "Kho Case Study",
+      "emptyTitle": "Chưa có dữ liệu Case Study",
+      "emptyDescription": "Case Study toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị Case Study."
+    },
+    "aiService": {
+      "recent": {
+        "title": "Lần sinh case gần đây",
+        "subtitle": "Mỗi lần sinh tạo một bản nháp chờ giảng viên rà soát"
+      },
+      "indexing": {
+        "title": "Trạng thái lập chỉ mục tài liệu",
+        "subtitle": "Tài liệu được tách đoạn và lập chỉ mục để AI trích dẫn khi sinh case"
+      },
+      "config": {
+        "title": "Cấu hình hiện tại",
+        "providerLabel": "Nhà cung cấp AI",
+        "providerValue": "Cố định trong cấu hình máy chủ",
+        "modelLabel": "Mô hình",
+        "modelValue": "Do nhóm kỹ thuật thiết lập"
+      },
+      "change": {
+        "title": "Thay đổi cấu hình",
+        "body": "Nhà cung cấp và mô hình AI được cố định trong tệp môi trường của máy chủ (OPD-013). Màn này chỉ để theo dõi, không có thao tác đổi cấu hình."
+      }
+    },
+    "rubric": {
+      "title": "Đánh giá chất lượng tình huống",
+      "description": "Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
+      "saved": "Phiếu đánh giá đã lưu",
+      "emptyTitle": "Chưa có dữ liệu đánh giá",
+      "emptyDescription": "Phiếu đánh giá hiển thị khi máy chủ cung cấp dữ liệu đánh giá Case Study."
+    },
+    "logs": {
+      "emptyTitle": "Chưa có dữ liệu nhật ký",
+      "emptyDescription": "Nhật ký hệ thống hiển thị khi máy chủ cung cấp dữ liệu nhật ký hoạt động."
+    },
+    "settings": {
+      "platform": "Thông tin nền tảng",
+      "platformEmpty": "Tên nền tảng, đơn vị vận hành, thông báo đăng nhập và email hỗ trợ hiển thị khi máy chủ cung cấp dữ liệu cài đặt.",
+      "limits": "Giới hạn & đăng ký",
+      "ai": {
+        "title": "Dịch vụ AI",
+        "provider": "Nhà cung cấp: cố định trong cấu hình máy chủ",
+        "monitor": "Theo dõi trạng thái tại mục Dịch vụ AI",
+        "note": "Cấu hình AI không chỉnh trên giao diện (OPD-013)."
+      }
+    }
+  },
+  "ragInspector": {
+    "loading": "Đang tải thông tin tài liệu…",
+    "retry": "Thử lại",
+    "error": {
+      "title": "Không tải được thông tin tài liệu",
+      "description": "Kiểm tra kết nối mạng rồi thử lại."
+    },
+    "metrics": {
+      "chunks": "Đoạn trích",
+      "chunksHint": {
+        "PENDING": "Đang chờ lập chỉ mục",
+        "PROCESSING": "Đang lập chỉ mục",
+        "COMPLETED": "Sẵn sàng để AI trích dẫn",
+        "FAILED": "Lập chỉ mục thất bại"
+      },
+      "pages": "Số trang",
+      "pagesUnavailable": "Hệ thống chưa ghi nhận số trang",
+      "size": "Dung lượng",
+      "sizeHint": "{{type}} · giới hạn 50 MB mỗi tệp"
+    },
+    "chunks": {
+      "title": "Đoạn trích đã lập chỉ mục",
+      "subtitle": "Nguồn AI dùng để trích dẫn khi sinh case",
+      "unavailableTitle": "Chưa xem được nội dung đoạn trích",
+      "unavailableDescription": "Chưa có API xem đoạn trích của tài liệu."
+    },
+    "others": {
+      "title": "Tài liệu khác trong khóa ({{count}})",
+      "titleNoCount": "Tài liệu khác trong khóa",
+      "loading": "Đang tải tài liệu khác trong khóa…",
+      "errorTitle": "Không tải được tài liệu khác trong khóa",
+      "empty": "Khóa học chưa có tài liệu nào khác"
+    },
+    "courseLoading": "Đang tải khóa học…",
+    "courseError": "Không tải được khóa học",
+    "courseErrorWithCode": "Không tải được khóa học (mã {{code}})",
+    "info": {
+      "title": "Thông tin tài liệu",
+      "file": "Tệp",
+      "course": "Khóa học",
+      "uploadedAt": "Tải lên",
+      "processingError": "Lỗi xử lý",
+      "processingErrorUnknown": "Hệ thống không ghi lại lý do lỗi."
+    },
+    "status": {
+      "PENDING": "Đang chờ",
+      "PROCESSING": "Đang xử lý",
+      "COMPLETED": "Hoàn tất",
+      "FAILED": "Thất bại"
+    },
+    "howAiUses": {
+      "title": "Cách AI dùng nguồn",
+      "description": "Mỗi tình huống AI sinh ra phải trích dẫn đoạn nguồn tương ứng. Giảng viên kiểm tra trích dẫn trước khi phê duyệt case.",
+      "badge": "AI Draft"
+    }
+  },
+  "rubric": {
+    "case": {
+      "regionLabel": "Tình huống được đánh giá",
+      "loading": "Đang tải thông tin case…",
+      "errorTitle": "Không tải được case",
+      "errorDescription": "Kiểm tra kết nối mạng rồi thử lại.",
+      "noneTitle": "Chưa chọn case",
+      "noneDescription": "Mở rubric từ một case cụ thể để xem thông tin tình huống.",
+      "mode": {
+        "BRANCHING_STUDY": "Branching Study",
+        "REVIEW_STUDY": "Review Study"
+      }
+    },
+    "average": {
+      "label": "Điểm trung bình",
+      "unavailable": "Chưa có điểm"
+    },
+    "criteria": {
+      "realism": {
+        "name": "Tính thực tế",
+        "description": "Mức độ sát với các tình huống khủng hoảng thực tế tại doanh nghiệp"
+      },
+      "difficulty": {
+        "name": "Độ khó",
+        "description": "Mức độ phức tạp của bài toán và đòi hỏi tư duy phân tích cao"
+      },
+      "curriculumFit": {
+        "name": "Phù hợp môn",
+        "description": "Độ gắn kết với mục tiêu chuẩn đầu ra (CLO) của học phần"
+      }
+    },
+    "scoring": {
+      "title": "Đánh giá chất lượng tình huống",
+      "description": "Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
+      "noScore": "Chưa có điểm",
+      "unavailable": "Chưa chấm và lưu được: hệ thống chưa có API rubric.",
+      "save": "Lưu phiếu đánh giá"
+    },
+    "note": {
+      "label": "Ghi chú (không bắt buộc)",
+      "placeholder": "Điểm cần chỉnh ở phiên bản sau…",
+      "counter": "{{count}}/{{max}} ký tự"
+    },
+    "saved": {
+      "title": "Phiếu đánh giá đã lưu",
+      "unavailableTitle": "Chưa xem được phiếu đánh giá",
+      "unavailableDescription": "Chưa có API đọc các phiếu đánh giá rubric đã lưu."
+    }
+  },
+  "states": {
+    "loading": {
+      "label": "Đang tải…",
+      "courseList": "Đang tải danh sách khóa học…"
+    },
+    "empty": {
+      "courses": {
+        "title": "Chưa có khóa học nào",
+        "description": "Tạo khóa học để tải tài liệu môn học và xây dựng case study.",
+        "action": "Tạo khóa học mới"
+      }
+    },
+    "error": {
+      "title": "Không tải được dữ liệu",
+      "description": "Kiểm tra kết nối mạng rồi thử lại.",
+      "retry": "Thử lại",
+      "codeLine": "Mã lỗi {{code}} · {{time}} — nếu lỗi lặp lại, gửi mã này tới ",
+      "codeLineNoTime": "Mã lỗi {{code}} — nếu lỗi lặp lại, gửi mã này tới ",
+      "courses": {
+        "title": "Không tải được danh sách khóa học",
+        "description": "Kiểm tra kết nối mạng rồi thử lại. Các khóa học hiện có không bị ảnh hưởng."
+      }
+    },
+    "noResults": {
+      "title": "Không tìm thấy kết quả phù hợp",
+      "description": "Không có kết quả nào khớp với “{{keyword}}”. Thử từ khóa khác hoặc xóa bộ lọc.",
+      "clear": "Xóa tìm kiếm",
+      "courses": {
+        "title": "Không tìm thấy khóa học phù hợp",
+        "description": "Không có khóa học nào khớp với “{{keyword}}”. Thử từ khóa khác hoặc xóa bộ lọc."
+      }
+    },
+    "forbidden": {
+      "code": "403",
+      "title": "Bạn không có quyền truy cập trang này",
+      "description": "Tài khoản bạn đang dùng không có quyền xem trang này.",
+      "descriptionWithRole": "Trang {{page}} chỉ dành cho {{allowedRole}}. Bạn đang đăng nhập với vai trò {{currentRole}}.",
+      "switchAccount": "Đăng nhập tài khoản khác",
+      "home": "Về trang của tôi",
+      "helpBefore": "Nếu bạn cho rằng đây là nhầm lẫn, liên hệ giảng viên phụ trách hoặc ",
+      "helpAfter": ".",
+      "roleFor": {
+        "lecturer": "giảng viên",
+        "student": "sinh viên",
+        "admin": "quản trị viên"
+      }
+    },
+    "notFound": {
+      "code": "404",
+      "title": "Không tìm thấy trang",
+      "description": "Đường dẫn có thể đã sai hoặc trang đã bị xóa. Kiểm tra lại địa chỉ hoặc quay về trang chính.",
+      "path": "Đường dẫn: {{path}}",
+      "back": "Quay lại trang trước",
+      "home": "Về trang chính",
+      "helpBefore": "Cần hỗ trợ? Liên hệ "
+    },
+    "serverError": {
+      "code": "500",
+      "title": "Hệ thống đang gặp sự cố",
+      "description": "Yêu cầu của bạn chưa được xử lý. Dữ liệu đã lưu không bị ảnh hưởng. Vui lòng thử lại sau ít phút.",
+      "incident": "Mã sự cố: {{id}} · {{time}}",
+      "incidentNoTime": "Mã sự cố: {{id}}",
+      "home": "Về trang chính",
+      "reload": "Tải lại trang"
+    },
+    "sessionExpired": {
+      "title": "Phiên đăng nhập đã hết hạn",
+      "description": "Vì lý do bảo mật, bạn cần đăng nhập lại để tiếp tục. Nội dung chưa lưu trên trang này có thể bị mất.",
+      "signIn": "Đăng nhập lại"
+    }
+  }
+}

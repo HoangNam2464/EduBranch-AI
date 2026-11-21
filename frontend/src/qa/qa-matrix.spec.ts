@@ -1,7 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
-import type { Role, User } from "../types";
-import { resolveSafeReturnUrl } from "../utils/navigation";
+import type { Role, User } from "@/types";
+import { resolveSafeReturnUrl } from "@/utils/navigation";
 
 /**
  * [QA-001] Frontend Test Matrix: Auth, Course & Permissions
@@ -10,7 +10,7 @@ import { resolveSafeReturnUrl } from "../utils/navigation";
  *
  * Verifies Acceptance Criteria AC-3 through AC-8:
  * - AC-3: Student direct access to /student and blocked forbidden routes
- * - AC-4: CoursesPage loading, empty, and error state transitions (GET /courses/my-courses)
+ * - AC-4: CoursesPage loading, empty, and error state transitions (GET /courses)
  * - AC-5: Course creation validation and API error handling (POST /courses)
  * - AC-6: Catch-all route '*' rendering NotFoundPage and role-aware return link
  * - AC-7: errorElement / RootErrorBoundary handling React Router errors safely without blank screen
@@ -68,7 +68,7 @@ class CoursesPageController {
   error: string | null = null;
   courses: Course[] = [];
 
-  // Emulates GET /courses/my-courses (or GET /courses)
+  // Emulates GET /courses
   async loadCourses(apiCall: () => Promise<Course[]>) {
     this.loading = true;
     this.error = null;
@@ -266,9 +266,9 @@ describe("[QA-001] Frontend Test Matrix: Auth, Course & Permissions", () => {
   });
 
   // ==========================================================================
-  // AC-4: CoursesPage GET /courses/my-courses Loading, Empty, and Error States
+  // AC-4: CoursesPage GET /courses Loading, Empty, and Error States
   // ==========================================================================
-  describe("AC-4: CoursesPage State Transitions (GET /courses/my-courses)", () => {
+  describe("AC-4: CoursesPage State Transitions (GET /courses)", () => {
     it("[FE-COURSE-01] Transitions into LOADING state while fetching data", async () => {
       const controller = new CoursesPageController();
 

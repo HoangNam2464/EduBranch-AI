@@ -3,31 +3,32 @@ import { plainToInstance } from "class-transformer";
 import { validate } from "class-validator";
 import { UpdateCaseNodeDto } from "./update-case-node.dto";
 
-describe("UpdateCaseNodeDto", () => {
-  it("accepts node text and a terminal option transition", async () => {
-    const dto = plainToInstance(UpdateCaseNodeDto, {
-      situation: "A valid situation",
-      options: [{
-        text: "Choose a response",
-        consequence: "The response changes the outcome",
-        nextNodeId: null,
-      }],
-    });
+const NODE = "00000000-0000-4000-8000-000000000002";
 
-    await expect(validate(dto)).resolves.toHaveLength(0);
+async function errorsFor(body: unknown) {
+  const dto = plainToInstance(UpdateCaseNodeDto, body);
+  return validate(dto, { whitelist: true, forbidNonWhitelisted: true });
+}
+
+describe("UpdateCaseNodeDto", () => {
+  it("accepts a situation with options that lead to nodes", async () => {
+    expect(await errorsFor({ situation: "S", options: [{ text: "A", consequence: "C", nextNodeId: NODE }] })).toHaveLength(0);
   });
 
-  it("rejects blank content, malformed node IDs, and a missing nextNodeId", async () => {
-    const dto = plainToInstance(UpdateCaseNodeDto, {
-      situation: " ",
-      options: [
-        { text: "", consequence: "A consequence", nextNodeId: "not-a-uuid" },
-        { text: "Another option", consequence: "Another consequence" },
-      ],
-    });
+  it("accepts a terminal node (no options)", async () => {
+    expect(await errorsFor({ situation: "S", options: [] })).toHaveLength(0);
+  });
 
-    const errors = await validate(dto);
-    expect(errors.map((error) => error.property)).toContain("situation");
-    expect(errors.find((error) => error.property === "options")?.children).toHaveLength(2);
+  it("rejects an option without a next node (FND §5)", async () => {
+    expect((await errorsFor({ situation: "S", options: [{ text: "A", consequence: "C", nextNodeId: null }] })).length).toBeGreaterThan(0);
+  });
+
+  it("rejects more than four options", async () => {
+    const o = { text: "A", consequence: "C", nextNodeId: NODE };
+    expect((await errorsFor({ situation: "S", options: [o, o, o, o, o] })).length).toBeGreaterThan(0);
+  });
+
+  it("rejects unknown fields", async () => {
+    expect((await errorsFor({ situation: "S", options: [], status: "PUBLISHED" })).length).toBeGreaterThan(0);
   });
 });

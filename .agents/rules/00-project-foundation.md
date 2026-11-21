@@ -16,14 +16,14 @@ trigger: always_on
 - **Target Domain**: Quá trình học tập tình huống thực nghiệm & rèn luyện tư duy phản biện bậc Đại học (University-Level Experiential Case-Based Learning Process)
 - **Primary Actors**:
   - **Lecturer** (`LECTURER` — Giảng viên / Người hướng dẫn): Creates courses, uploads teaching materials, triggers AI case generation, edits/approves/publishes cases, inspects student attempts/submissions, authors qualitative feedback, views cohort statistics.
-  - **Student** (`STUDENT` — Sinh viên / Người học): Accesses published cases via direct link, navigates Branching Study experiences, completes retrospective Journey Review, submits Review Study analyses, engages in optional Socratic AI Challenge Support (max 2 rounds), writes post-activity reflections.
+  - **Student** (`STUDENT` — Sinh viên / Người học): Accesses published cases from the student desk / my courses after joining a class by invite code, or via a direct link (OPD-001 → A, 2026-11-12); navigates Branching Study experiences, completes retrospective Journey Review, submits Review Study analyses, engages in optional Socratic AI Challenge Support (max 2 rounds), writes post-activity reflections.
   - **Admin** (`ADMIN` — Quản trị hệ thống): System-level account/role and operational health boundary per Proposal V1.2.
 - **Technology Stack**:
   - **Backend Gateway**: Node.js 20 LTS (NestJS 10 + TypeScript)
   - **Internal AI Service**: Python 3.12 (FastAPI + Pydantic v2 + LangChain)
   - **Frontend Web App**: React 19 + Vite + TypeScript + TailwindCSS v4 + Zustand + ReactFlow
   - **Data & Storage**: PostgreSQL 16 + pgvector | MinIO (Object Storage) | Redis 7 (Cache/Session)
-  - **LLM Providers**: Google Gemini 2.0 Flash / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`)
+  - **LLM Providers**: Google Gemini 3.5 Flash (`gemini-3.5-flash`, pinned; `gemini-2.0-flash` was retired by Google — PO 2026-11-17) / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`); embeddings Gemini `gemini-embedding-001` at 768 dims
 
 ### 1.1. Core Pedagogical Model
 1. **Experiential Case-Based Learning**: EduBranch-AI immerses university students into realistic multi-branch decision-making scenarios (`Branching Study`) and open analytical problems (`Review Study`) grounded in the lecturer's actual course materials (Business, Law, Medicine, Management, Engineering, etc.).
@@ -176,6 +176,7 @@ docs/<topic>             →  develop
 3. **Quy ước phân tách Backend & Frontend**:
    - **Frontend (hoặc tính năng chung)**: Dùng format chuẩn `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`).
    - **Backend khi phát triển riêng biệt**: Bắt buộc thêm hậu tố `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
+   - **AI service (`ai-service/`)**: Dùng chung nhánh `-backend` của tính năng, không tạo hậu tố riêng (ví dụ: `feature/rag-backend`). Code AI tiếp nối trên nhánh `-backend` đã có (PO quyết định 2026-11-19).
    - **Quy trình chuẩn**: Cả hai nhánh đều phân nhánh từ `develop` mới nhất (`git checkout develop && git pull`), kiểm thử độc lập qua Docker (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
 4. **Tính bền vững của nhánh**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task đơn lẻ.
 

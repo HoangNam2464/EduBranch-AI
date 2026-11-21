@@ -21,8 +21,8 @@ if (typeof (globalThis as any).window === "undefined") {
 (globalThis as any).window.localStorage = fakeLocalStorage;
 
 // Dynamic import so authStore initializes after localStorage and window are available
-const { useAuthStore } = await import("./authStore");
-import type { User } from "../types";
+const { useAuthStore } = await import("@/stores/authStore");
+import type { User } from "@/types";
 
 describe("authStore (Session State & Persistence)", () => {
   const dummyLecturer: User = {

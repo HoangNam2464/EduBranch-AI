@@ -86,7 +86,7 @@
 | **EBA-214** | `OPS-003` | `[OPS-003] Implement Document Chunks Persistence & HNSW Vector Indexing` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-213 | IN PROGRESS |
 | **EBA-215** | `BE-012` | `[BE-012] Implement Grounded Vector Retrieval with Course Isolation & <sources> Wrapping` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-214 | IN PROGRESS |
 | **EBA-216** | `BE-013` | `[BE-013] Fix Material Controller Spec Mock Data for Ownership Regression` | Flow 1 | Bug | High | 2 | is blocked by Master Task EBA-208 | IN PROGRESS |
-| **EBA-217** | `QA-003` | `[QA-003] Test Suite for Material Upload Validation, File Types & Size Bounds` | Flow 1 | Task | High | 3 | is blocked by Master Task EBA-204, EBA-208 | TO DO |
+| **EBA-217** | `QA-003` | `[QA-003] Test Suite for Material Upload Validation, File Types & Size Bounds` | Flow 1 | Task | High | 3 | is blocked by Master Task EBA-204, EBA-208 | IN PROGRESS |
 | **EBA-218** | `QA-004` | `[QA-004] Security & Authorization Tests for Material Storage & Tenant Isolation` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-208, EBA-209 | TO DO |
 | **EBA-219** | `QA-005` | `[QA-005] Integration Test Suite for End-to-End Ingestion Pipeline (Upload to pgvector)` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-214 | TO DO |
 | **EBA-220** | `QA-006` | `[QA-006] Vector Retrieval Relevance & Prompt Injection Boundary Testing` | Flow 1 | Task | Highest | 5 | is blocked by Master Task EBA-215 | TO DO |
@@ -108,8 +108,8 @@
 | **EBA-307** | `FE-009` | `[FE-009] Implement Interactive Node, Option & Consequence Editor Form` | Flow 2 | Story | Highest | 5 | is blocked by Master Task EBA-303, EBA-306 | TO DO |
 | **EBA-308** | `FE-010` | `[FE-010] Implement Graph Mutation Capabilities (Add/Remove Node & Option Re-linking)` | Flow 2 | Story | High | 5 | is blocked by Master Task EBA-307 | TO DO |
 | **EBA-309** | `FE-011` | `[FE-011] Implement Case Approval State Transition Workflow UI` | Flow 2 | Story | Highest | 3 | is blocked by Master Task EBA-304, EBA-307 | TO DO |
-| **EBA-310** | `BE-014` | `[BE-014] Implement Pydantic Decision Tree Schema & DFS Graph Cycle Validator` | Flow 2 | Task | Highest | 5 | is blocked by Master Task EBA-215 | IN PROGRESS |
-| **EBA-311** | `BE-015` | `[BE-015] Implement AI Case Generation Service with Grounded Syllabus Prompting` | Flow 2 | Task | Highest | 5 | is blocked by Master Task EBA-310 | IN PROGRESS |
+| **EBA-310** | `BE-014` | `[BE-014] Implement Pydantic Decision Tree Schema & DFS Graph Cycle Validator` | Flow 2 | Task | Highest | 5 | is blocked by Master Task EBA-215 | DONE |
+| **EBA-311** | `BE-015` | `[BE-015] Implement AI Case Generation Service with Grounded Syllabus Prompting` | Flow 2 | Task | Highest | 5 | is blocked by Master Task EBA-310 | DONE |
 | **EBA-312** | `BE-016` | `[BE-016] Implement Multi-Table Decision Tree Persistence with Transaction Rollback` | Flow 2 | Story | Highest | 5 | is blocked by Master Task EBA-311 | IN PROGRESS |
 | **EBA-313** | `BE-017` | `[BE-017] Implement Case Node & Option CRUD APIs with Topology Integrity Check` | Flow 2 | Story | Highest | 5 | is blocked by Master Task EBA-312 | IN PROGRESS |
 | **EBA-314** | `BE-018` | `[BE-018] Implement Case Lifecycle State Machine Enforcement (DRAFT to PUBLISHED)` | Flow 2 | Story | Highest | 5 | is blocked by Master Task EBA-313 | IN PROGRESS |

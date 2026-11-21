@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   Logger,
@@ -49,7 +50,7 @@ export class MaterialService {
 
     // Verify course exists and belongs to the uploader
     const courseRes = await this.db.query(
-      "SELECT id, lecturer_id FROM courses WHERE id = $1",
+      "SELECT id, lecturer_id, is_active FROM courses WHERE id = $1",
       [courseId],
     );
 
@@ -59,6 +60,11 @@ export class MaterialService {
 
     if (courseRes.rows[0].lecturer_id !== uploadedBy) {
       throw new ForbiddenException("You can only upload materials to your own courses");
+    }
+
+    // C1-B / OPD-014: an archived course keeps its data but accepts no new materials
+    if (courseRes.rows[0].is_active === false) {
+      throw new ConflictException("Course is archived");
     }
 
     const materialId = randomUUID();
@@ -75,13 +81,15 @@ export class MaterialService {
       file.mimetype,
     );
 
-    // 2. Insert into teaching_materials with PENDING status
+    // 2. Insert into teaching_materials with PENDING status, only while the course is
+    //    still active (C1-B: closes the window between the check above and this insert)
     const insertRes = await this.db.query(
       `INSERT INTO teaching_materials (
          id, original_filename, stored_object_key, mime_type, size_bytes,
          course_id, uploaded_by, processing_status
        )
-       VALUES ($1, $2, $3, $4, $5, $6, $7, 'PENDING')
+       SELECT $1, $2, $3, $4, $5, $6, $7, 'PENDING'
+       FROM courses WHERE id = $6 AND is_active = TRUE
        RETURNING *`,
       [
         materialId,
@@ -93,6 +101,11 @@ export class MaterialService {
         uploadedBy,
       ],
     );
+
+    if (insertRes.rows.length === 0) {
+      await this.minio.removeObject(objectKey);
+      throw new ConflictException("Course is archived");
+    }
 
     const material = insertRes.rows[0];
 

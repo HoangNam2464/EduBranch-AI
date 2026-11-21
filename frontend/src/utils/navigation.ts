@@ -1,30 +1,24 @@
-import { Role } from "../types";
+import type { Role } from "@/types";
+import { PATHS, ROLE_HOME, ROLE_ROOT } from "@/routes/paths";
 
 /**
- * Default fallback landing pages by user role.
+ * Default landing page by role (alias of ROLE_HOME, kept for existing callers).
  */
-export const DEFAULT_ROLE_REDIRECT: Record<Role, string> = {
-  LECTURER: "/lecturer/courses",
-  STUDENT: "/student",
-  ADMIN: "/lecturer/courses",
-};
+export const DEFAULT_ROLE_REDIRECT: Record<Role, string> = ROLE_HOME;
 
 /**
- * Whitelist route prefix patterns permitted for each user role.
- * Ensures cross-role returnUrl injection (e.g., student navigating to lecturer management or vice-versa) is rejected.
+ * True when `pathname` is the role's route tree root or inside it
+ * ("/lecturer" or "/lecturer/..."), never a lookalike such as "/lecturerX".
+ * A returnUrl from another role's area (e.g. a student link opened by a
+ * lecturer) is rejected and replaced by the role's home.
  */
-const ROLE_ALLOWED_ROUTE_PATTERNS: Record<Role, RegExp[]> = {
-  LECTURER: [
-    /^\/lecturer(?:\/|$)/,
-  ],
-  STUDENT: [
-    /^\/student(?:\/|$)/,
-  ],
-  ADMIN: [
-    /^\/lecturer(?:\/|$)/,
-    /^\/student(?:\/|$)/,
-  ],
-};
+function isInsideRoleTree(pathname: string, role: Role): boolean {
+  const root = ROLE_ROOT[role];
+  return pathname === root || pathname.startsWith(`${root}/`);
+}
+
+/** Paths that must never be used as a return target (removed from MVP scope). */
+const PROHIBITED_RETURN_PATHS = new Set([`${PATHS.STUDENT.ROOT}/cases`, `${PATHS.STUDENT.ROOT}/cases/`]);
 
 /**
  * Validates and resolves a safe internal destination URL based on the authenticated user's role.
@@ -43,7 +37,7 @@ export function resolveSafeReturnUrl(
   rawReturnUrl: unknown,
   role: Role,
 ): string {
-  const fallback = DEFAULT_ROLE_REDIRECT[role] || "/student";
+  const fallback = ROLE_HOME[role] || PATHS.STUDENT.ROOT;
 
   if (!rawReturnUrl || typeof rawReturnUrl !== "string") {
     return fallback;
@@ -89,18 +83,12 @@ export function resolveSafeReturnUrl(
   const pathname = parsed.pathname;
 
   // Prohibited routes check: e.g. /student/cases (removed from MVP scope in Phase 3.3)
-  if (pathname === "/student/cases" || pathname === "/student/cases/") {
+  if (PROHIBITED_RETURN_PATHS.has(pathname)) {
     return fallback;
   }
 
-  // Role-aware authorization check
-  const allowedPatterns = ROLE_ALLOWED_ROUTE_PATTERNS[role];
-  if (!allowedPatterns) {
-    return fallback;
-  }
-
-  const isRoleAllowed = allowedPatterns.some((pattern) => pattern.test(pathname));
-  if (!isRoleAllowed) {
+  // Role-aware authorization check (unknown roles fall back too)
+  if (!ROLE_ROOT[role] || !isInsideRoleTree(pathname, role)) {
     return fallback;
   }
 

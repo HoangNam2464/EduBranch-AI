@@ -9,6 +9,51 @@
 
 ---
 
+## 0. TRẠNG THÁI HIỆN TẠI (cập nhật 2026-11-13) — ĐỌC TRƯỚC
+
+- **Cả 15 task DES đã Done** (Jira `EBA`, 2026-11-13). Giao diện đã chốt nằm ở Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page **`EduBranch AI – Screens`**. Khi mục §1–§3 bên dưới khác với page EduBranch AI – Screens, **làm theo Figma page EduBranch AI – Screens**; các mục đó là đặc tả ban đầu, giữ lại để tra cứu Acceptance Criteria.
+- **Đổi tên page (PO, 2026-11-18):** file chỉ còn 2 page: `EduBranch AI – Design System` (`445:239`, trước đây "05 · EduBranch – Design System") và `EduBranch AI – Screens` (`483:9634`, trước đây "08 · EduBranch – Bản hoàn chỉnh"). ID page và frame không đổi. Hai page Eduva ("02 · Eduva – Design System", "03 · Eduva – Screens") đã chuyển sang một file Figma lưu trữ riêng; 72 component EduBranch đang dùng được chuyển trước sang page Design System (section `696:297`, giữ nguyên node ID). Các nhật ký quyết định cũ ghi "page 08" hoặc "page 02" nghĩa là hai page này; không sửa nhật ký.
+- Ghi chú từng màn: [`design/UX-SCREEN-NOTES.md`](design/UX-SCREEN-NOTES.md). Token và component: [`design/GLOBAL-DESIGN-SYSTEM.md`](design/GLOBAL-DESIGN-SYSTEM.md). Route: [`design/SITE-ARCHITECTURE.md §5`](design/SITE-ARCHITECTURE.md).
+
+### 0.1. DES → frame trên page EduBranch AI – Screens
+
+| Task | Frame trên page EduBranch AI – Screens |
+|---|---|
+| DES-001 IA & app shell | 00.2 trang công khai (một trang cuộn), 00.3–00.5 đăng nhập/đăng ký; sidebar, header, footer dùng chung cho 3 vai trò |
+| DES-002 Trạng thái dùng chung | 01.1–01.8 |
+| DES-003 Tải tài liệu | 02.4, 02.5 |
+| DES-004 Trạng thái xử lý & lỗi | 02.4 (danh sách tài liệu), 02.5, 02.6 |
+| DES-005 Nguồn trích dẫn | 02.7 |
+| DES-006 Cấu hình sinh case | 07.6 → 07.5 → 07.7 (wizard 3 bước, OPD-006), 03.2, 03.3 |
+| DES-007 Cây quyết định | 03.4 (panel cây quyết định, kiểm tra cây) |
+| DES-008 Trình sửa node & phương án | 03.4, 03.5 |
+| DES-009 Thanh duyệt vòng đời | 03.6 (4 trạng thái), 03.7 |
+| DES-010 Branching player | 05.1, 05.2, 05.3 |
+| DES-011 Journey Review | 05.4 |
+| DES-012 Làm lại | 05.8, 05.9, 05.10 |
+| DES-013 Review Study | 06.1, 06.2 |
+| DES-014 Phản hồi giảng viên | 04.1, 04.2, 04.2b, 06.3 |
+| DES-015 AI Challenge Support | 05.5, 05.6 (OPD-005 còn HOLD) |
+
+Ngoài 15 task DES, page EduBranch AI – Screens còn các màn MVP đã chốt nhưng chưa có task: 04.3 thống kê, 07.1–07.8 (dashboard giảng viên, Bàn học, Khóa học của tôi, Tham gia lớp học, AI Studio, Rubric), 09.1–09.2 hồ sơ, 10.1–10.10 Admin.
+
+### 0.2. Các giá trị trong §1–§3 đã bị thay thế
+
+| Đặc tả ban đầu | Theo Figma page EduBranch AI – Screens |
+|---|---|
+| Cấu trúc 6 page Figma (§1.1) | Một page canonical `EduBranch AI – Screens`, các khu 00–10 |
+| Màu chính `#2563EB`, `bg-canvas #F9FAFB`, viền `#E5E7EB` | Navy `#2A4E7F` (`action/primary`), sky `#00A5F5` (`action/accent`), token `EduBranch · Color` |
+| Sinh viên: Top Bar 56px + cột đọc 768px, không sidebar | Sinh viên dùng cùng khung sidebar thu gọn được như giảng viên; vùng đọc/viết giữ độ rộng 65–75 ký tự |
+| Sidebar giảng viên 240px có vạch active 3px | Sidebar dùng chung (`Navigation/Sidebar`), mục đang chọn nền navy, không vạch; bản thu gọn 72px |
+| Chữ giao diện tiếng Anh ("Approve Case", "Publish to Students"…) | Tiếng Việt; có nút chuyển VI/EN (mặc định tiếng Việt) |
+| DES-006 dạng modal | Wizard 3 bước ở `/lecturer/ai-studio` |
+| DES-009 hiện link chia sẻ sau khi xuất bản | Trạng thái Đã xuất bản chỉ còn nút "Sao chép đường dẫn" (03.6) |
+| Đăng nhập Google là Phase 2 | Google + Microsoft thuộc MVP (PSD-09), không có ở đăng nhập quản trị |
+| Card phẳng không viền, không bóng | Thêm viền 1px 80% và đổ bóng kép `shadow-eb-card` (PO 2026-11-17 "Sửa Figma rồi code") |
+| Khung giao diện toàn màn hình dàn phẳng | Bọc container `max-w-7xl mx-auto` căn giữa, lề canvas 12px nổi, form Auth tối đa 440px |
+
+---
+
 ## 1. HỆ THỐNG CÀI ĐẶT CHUẨN TRÊN FIGMA (FIGMA WORKSPACE & DESIGN SYSTEM SETUP)
 
 Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt buộc phải thiết lập đúng **Cấu trúc Pages**, **Frame Grid**, **Local Variables (Color/Radius/Spacing)**, **Text Styles**, và **Vector Icon Library** dưới đây.
@@ -67,7 +112,7 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 | | `semantic/error` | `#DC2626` | Trạng thái `Failed` (nền `#FEF2F2`, viền `#FECACA`), lỗi form, nút Xóa/Hủy |
 
 ### 1.4. Hệ thống Typography Styles, Spacing & Vector Icons trên Figma
-1. **Font chữ**: Sử dụng **`Inter`** trên Figma (tương đương System UI khi lên web).
+1. **Font chữ**: trên web dùng **font hệ thống** (`system-ui`, Segoe UI trên Windows), theo quyết định PO 2026-11-21. Các text style trên Figma hiện ghi Roboto; đổi Figma cần PO duyệt riêng. Dòng cũ ghi "Inter" đã lỗi thời.
    - `Display` (`28px / Line-height 36px / SemiBold 600 / Tracking -0.02em`): Tiêu đề trang lớn.
    - `H1` (`24px / 32px / SemiBold 600`): Tiêu đề khu vực.
    - `H2` (`20px / 28px / SemiBold 600`): Tiêu đề Card, tiêu đề Modal, tiêu đề Tình huống.
