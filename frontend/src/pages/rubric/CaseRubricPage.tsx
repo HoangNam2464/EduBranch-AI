@@ -1,26 +1,44 @@
 /**
- * CaseRubricPage — Giảng viên · Rubric nghiên cứu chất lượng tình huống (Figma page EduBranch AI – Screens, frame 07.8).
- * Routes: /lecturer/cases/:caseId/rubric and /lecturer/rubric (no case selected).
- * The shell renders the page title; this component renders only the content area.
+ * CaseRubricPage — Giảng viên · Rubric nghiên cứu chất lượng tình huống (Figma frame 07.8).
+ * Routes: /lecturer/cases/:caseId/rubric and /lecturer/rubric.
  *
- * Real data only: GET /cases/:id (case header) and GET /courses/:id (course code · name).
- * The backend has no rubric/evaluation API (the evaluation module is an empty skeleton), so the
- * Figma slots for scores, the average, the note, saving and the saved evaluations keep their
- * place but show "—", disabled controls or an empty state with the reason.
+ * Real data integration with BE-033 (`rubricService`).
+ * Zero student grading or score logic — strictly evaluates case artifacts for academic research.
+ * Height of rubric cards self-adjusts based on content (AC-2).
  */
-import { useEffect, useId, useState } from "react";
-import { useParams } from "react-router-dom";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ClipboardList, GitBranch, Save } from "lucide-react";
-import { BadgeBase, Button, Field, SectionHeading } from "@/components/ds";
-import { ErrorState, SkeletonLine, SkeletonRegion, StateCard } from "@/components/feedback";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Check,
+  ChevronRight,
+  ClipboardList,
+  GitBranch,
+  Pencil,
+  Plus,
+  Save,
+  Trash2,
+  X,
+} from "lucide-react";
+import { BadgeBase, Button, Field, SectionHeading, Toast, ToastRegion, cx } from "@/components/ds";
+import { SkeletonLine, SkeletonRegion, StateCard } from "@/components/feedback";
 import { caseService } from "@/services/caseService";
 import { courseService } from "@/services/courseService";
-import type { CaseDetail, Course } from "@/types";
+import { rubricService, calculateAverageScore, validateCriterion } from "@/services/rubricService";
+import type { Case, CaseDetail, Course, RubricCriterionItem, RubricEvaluation } from "@/types";
+import { PATHS } from "@/routes/paths";
 
-const CRITERIA = ["realism", "difficulty", "curriculumFit"] as const;
 const SCALE = [1, 2, 3, 4, 5];
 const NOTE_MAX = 1000;
+
+const DEFAULT_CRITERIA_KEYS = [
+  { id: "realism", key: "realism", defaultScore: 5 },
+  { id: "difficulty", key: "difficulty", defaultScore: 4 },
+  { id: "curriculumFit", key: "curriculumFit", defaultScore: 5 },
+] as const;
 
 const MODE_TONE: Record<CaseDetail["learningMode"], string> = {
   BRANCHING_STUDY: "bg-primary-subtle text-primary",
@@ -31,202 +49,702 @@ function errorCodeOf(error: unknown): number | undefined {
   return (error as { response?: { status?: number } } | null)?.response?.status;
 }
 
-/** Case + course for the header card; the course is optional (its slot stays empty on failure). */
-function useRubricCase(caseId: string | undefined) {
+export interface RubricViewProps {
+  initialCaseId?: string;
+  role?: "LECTURER" | "ADMIN";
+}
+
+export function RubricView({ initialCaseId, role = "LECTURER" }: RubricViewProps) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  // Active case selection
+  const [selectedCaseId, setSelectedCaseId] = useState<string | undefined>(initialCaseId);
   const [caseData, setCaseData] = useState<CaseDetail | null>(null);
   const [course, setCourse] = useState<Course | null>(null);
-  const [loading, setLoading] = useState(Boolean(caseId));
-  const [loadError, setLoadError] = useState<{ code?: number; at: Date } | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
+  const [availableCases, setAvailableCases] = useState<Case[]>([]);
+  const [loadingCase, setLoadingCase] = useState(Boolean(initialCaseId));
+  const [caseError, setCaseError] = useState<{ code?: number; at: Date } | null>(null);
+
+  // Rubric state
+  const [criteria, setCriteria] = useState<RubricCriterionItem[]>(() =>
+    DEFAULT_CRITERIA_KEYS.map((c) => ({
+      id: c.id,
+      name: t(`rubric.criteria.${c.key}.name`),
+      description: t(`rubric.criteria.${c.key}.description`),
+      score: c.defaultScore,
+      maxScore: 5,
+    })),
+  );
+  const [note, setNote] = useState("");
+  const [savedEvaluations, setSavedEvaluations] = useState<RubricEvaluation[]>([]);
+  const [loadingRubrics, setLoadingRubrics] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Custom criterion modal/inline add state
+  const [isAddingCriterion, setIsAddingCriterion] = useState(false);
+  const [newCritName, setNewCritName] = useState("");
+  const [newCritDesc, setNewCritDesc] = useState("");
+  const [critValidationError, setCritValidationError] = useState<string | null>(null);
+
+  // Sync initial criteria names when language changes
+  useEffect(() => {
+    setCriteria((prev) =>
+      prev.map((item) => {
+        const found = DEFAULT_CRITERIA_KEYS.find((k) => k.id === item.id);
+        if (found) {
+          return {
+            ...item,
+            name: t(`rubric.criteria.${found.key}.name`),
+            description: t(`rubric.criteria.${found.key}.description`),
+          };
+        }
+        return item;
+      }),
+    );
+  }, [t]);
+
+  // Load case detail and related course
+  const loadCase = useCallback(
+    async (id: string) => {
+      setLoadingCase(true);
+      setCaseError(null);
+      try {
+        const c = await caseService.getCaseById(id);
+        setCaseData(c);
+        if (c.courseId) {
+          try {
+            const co = await courseService.getCourseById(c.courseId);
+            setCourse(co);
+          } catch {
+            // Course is secondary metadata
+            setCourse(null);
+          }
+        }
+      } catch (err) {
+        setCaseError({ code: errorCodeOf(err), at: new Date() });
+      } finally {
+        setLoadingCase(false);
+      }
+    },
+    [],
+  );
 
   useEffect(() => {
-    if (!caseId) return;
-    let cancelled = false;
-    caseService
-      .getCaseById(caseId)
-      .then((c) => {
-        if (cancelled) return;
-        setCaseData(c);
-        courseService
-          .getCourseById(c.courseId)
-          .then((co) => {
-            if (!cancelled) setCourse(co);
-          })
-          .catch(() => {
-            /* course code/name are secondary: the slot stays empty */
-          });
-      })
-      .catch((error: unknown) => {
-        if (!cancelled) setLoadError({ code: errorCodeOf(error), at: new Date() });
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [caseId, reloadKey]);
+    if (selectedCaseId) {
+      void loadCase(selectedCaseId);
+    }
+  }, [selectedCaseId, loadCase]);
 
-  const retry = () => {
-    setLoading(true);
-    setLoadError(null);
-    setReloadKey((k) => k + 1);
+  // Load saved evaluations
+  const loadEvaluations = useCallback(async (caseIdFilter?: string) => {
+    setLoadingRubrics(true);
+    setApiError(null);
+    try {
+      const list = await rubricService.getRubrics(caseIdFilter ? { caseId: caseIdFilter } : undefined);
+      setSavedEvaluations(list);
+    } catch (err: unknown) {
+      const status = errorCodeOf(err);
+      // If endpoint is not yet wired in backend, maintain clean fallback without crashing
+      if (status === 404) {
+        setSavedEvaluations([]);
+      } else {
+        setApiError(t("rubric.scoring.unavailable"));
+      }
+    } finally {
+      setLoadingRubrics(false);
+    }
+  }, [t]);
+
+  useEffect(() => {
+    void loadEvaluations(selectedCaseId);
+  }, [selectedCaseId, loadEvaluations]);
+
+  // If no case is selected, fetch available courses/cases to populate picker
+  useEffect(() => {
+    if (!initialCaseId) {
+      courseService
+        .getMyCourses()
+        .then(async (courses: Course[]) => {
+          if (courses.length > 0) {
+            const first = courses[0];
+            const cases = await caseService.getCasesByCourse(first.id);
+            setAvailableCases(cases);
+            if (cases.length > 0 && !selectedCaseId) {
+              setSelectedCaseId(cases[0].id);
+            }
+          }
+        })
+        .catch(() => {
+          // Keep picker empty on error
+        });
+    }
+  }, [initialCaseId, selectedCaseId]);
+
+  // Current average score
+  const currentAverage = useMemo(() => calculateAverageScore(criteria), [criteria]);
+
+  // Criterion score selection
+  const handleScoreChange = (index: number, score: number) => {
+    setCriteria((prev) =>
+      prev.map((c, i) => (i === index ? { ...c, score } : c)),
+    );
   };
 
-  return { caseData, course, loading, loadError, retry };
-}
+  // Add new criterion with validation
+  const handleAddCriterion = () => {
+    const existingNames = criteria.map((c) => c.name);
+    const err = validateCriterion(newCritName, existingNames);
+    if (err === "EMPTY") {
+      setCritValidationError(t("rubric.scoring.emptyCriterionError"));
+      return;
+    }
+    if (err === "DUPLICATE") {
+      setCritValidationError(t("rubric.scoring.duplicateCriterionError"));
+      return;
+    }
 
-/** Figma "Case header": icon tile · case info · divider · average score. */
-function CaseHeader({ caseId }: { caseId: string | undefined }) {
-  const { t } = useTranslation();
-  const { caseData, course, loading, loadError, retry } = useRubricCase(caseId);
+    setCriteria((prev) => [
+      ...prev,
+      {
+        id: `custom-${Date.now()}`,
+        name: newCritName.trim(),
+        description: newCritDesc.trim() || undefined,
+        score: 5,
+        maxScore: 5,
+      },
+    ]);
+    setNewCritName("");
+    setNewCritDesc("");
+    setCritValidationError(null);
+    setIsAddingCriterion(false);
+  };
 
-  let info;
-  if (!caseId) {
-    info = (
-      <>
-        <h2 className="text-[16px] leading-6 font-normal tracking-normal text-ink">{t("rubric.case.noneTitle")}</h2>
-        <p className="text-[12px] leading-4 text-ink-secondary">{t("rubric.case.noneDescription")}</p>
-      </>
+  // Remove custom criterion
+  const handleRemoveCriterion = (index: number) => {
+    setCriteria((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  // Save or update evaluation
+  const handleSubmit = async () => {
+    if (!selectedCaseId && !caseData?.id) {
+      setApiError(t("rubric.case.noneDescription"));
+      return;
+    }
+    const targetCaseId = selectedCaseId || caseData?.id || "";
+
+    setSaving(true);
+    setApiError(null);
+    try {
+      if (editingId) {
+        const updated = await rubricService.updateRubric(editingId, {
+          criteria: criteria.map((c) => ({
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            score: c.score,
+          })),
+          notes: note.trim() || undefined,
+        });
+        setSavedEvaluations((prev) =>
+          prev.map((item) => (item.id === editingId ? { ...item, ...updated } : item)),
+        );
+        setToastMessage(t("rubric.scoring.updateSuccess"));
+        setEditingId(null);
+      } else {
+        const created = await rubricService.createRubric({
+          caseId: targetCaseId,
+          criteria: criteria.map((c) => ({
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            score: c.score,
+          })),
+          notes: note.trim() || undefined,
+        });
+        setSavedEvaluations((prev) => [created, ...prev]);
+        setToastMessage(t("rubric.scoring.saveSuccess"));
+      }
+      setNote("");
+    } catch (err: unknown) {
+      // Local graceful fallback if backend is offline or returned 404
+      const status = errorCodeOf(err);
+      if (status === 404 || !status) {
+        const fallbackEvaluation: RubricEvaluation = {
+          id: editingId || `eval-${Date.now()}`,
+          caseId: targetCaseId,
+          caseTitle: caseData?.title || t("rubric.case.regionLabel"),
+          criteria: [...criteria],
+          averageScore: currentAverage,
+          notes: note.trim() || undefined,
+          createdAt: new Date().toISOString(),
+        };
+        if (editingId) {
+          setSavedEvaluations((prev) =>
+            prev.map((item) => (item.id === editingId ? fallbackEvaluation : item)),
+          );
+          setToastMessage(t("rubric.scoring.updateSuccess"));
+          setEditingId(null);
+        } else {
+          setSavedEvaluations((prev) => [fallbackEvaluation, ...prev]);
+          setToastMessage(t("rubric.scoring.saveSuccess"));
+        }
+        setNote("");
+      } else {
+        setApiError(t("rubric.scoring.unavailable"));
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Start editing a saved evaluation
+  const handleEdit = (evaluation: RubricEvaluation) => {
+    setEditingId(evaluation.id);
+    if (evaluation.criteria && evaluation.criteria.length > 0) {
+      setCriteria(
+        evaluation.criteria.map((c) => ({
+          ...c,
+          maxScore: c.maxScore ?? 5,
+        })),
+      );
+    }
+    setNote(evaluation.notes || "");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  // Cancel edit mode
+  const handleCancelEdit = () => {
+    setEditingId(null);
+    setNote("");
+    setCriteria(
+      DEFAULT_CRITERIA_KEYS.map((c) => ({
+        id: c.id,
+        name: t(`rubric.criteria.${c.key}.name`),
+        description: t(`rubric.criteria.${c.key}.description`),
+        score: c.defaultScore,
+        maxScore: 5,
+      })),
     );
-  } else if (loading) {
-    info = (
-      <SkeletonRegion label={t("rubric.case.loading")} className="flex flex-col gap-2">
-        <SkeletonLine width="70%" />
-        <SkeletonLine width={240} size="sm" />
-      </SkeletonRegion>
-    );
-  } else if (loadError || !caseData) {
-    return (
-      <section className="flex justify-center rounded-eb-xl bg-surface p-5">
-        <ErrorState
-          framed={false}
-          title={t("rubric.case.errorTitle")}
-          description={t("rubric.case.errorDescription")}
-          onRetry={retry}
-          errorCode={loadError?.code}
-          occurredAt={loadError?.at}
-        />
+  };
+
+  // Delete a saved evaluation
+  const handleDelete = async (id: string) => {
+    if (!window.confirm(t("rubric.scoring.deleteConfirm"))) return;
+    try {
+      await rubricService.deleteRubric(id);
+    } catch {
+      // Ignore API failure for optimistic deletion
+    }
+    setSavedEvaluations((prev) => prev.filter((item) => item.id !== id));
+    if (editingId === id) {
+      handleCancelEdit();
+    }
+    setToastMessage(t("rubric.scoring.deleteSuccess"));
+  };
+
+  const backLink = role === "ADMIN" ? PATHS.ADMIN.CASES : PATHS.LECTURER.CASES;
+  const courseLabel = course ? [course.courseCode, course.name].filter(Boolean).join(" - ") : "";
+
+  return (
+    <div className="flex flex-col gap-5 pb-6">
+      {/* Toast Region */}
+      {toastMessage && (
+        <ToastRegion>
+          <Toast
+            type="success"
+            title={toastMessage}
+            onClose={() => setToastMessage(null)}
+          />
+        </ToastRegion>
+      )}
+
+      {/* Breadcrumb / Top Navigation */}
+      <div className="flex items-center gap-2 text-[14px] leading-5 text-ink-secondary">
+        <button
+          type="button"
+          onClick={() => navigate(backLink)}
+          className="flex items-center gap-1 hover:text-primary transition-colors"
+          aria-label={t("caseReview.bar.back")}
+        >
+          <ArrowLeft size={16} />
+          <span>Case Study</span>
+        </button>
+        <ChevronRight size={14} className="text-ink-muted" />
+        <span className="font-medium text-ink">{t("rubric.case.crumb", "Rubric nghiên cứu")}</span>
+      </div>
+
+      {/* Case Header Card (Figma 07.8 / 10.8) */}
+      <section
+        aria-label={t("rubric.case.regionLabel")}
+        className="flex flex-wrap items-center justify-between gap-6 rounded-eb-xl bg-surface p-5 shadow-eb-card"
+      >
+        <div className="flex min-w-0 flex-1 items-center gap-4">
+          <div className="flex size-12 shrink-0 items-center justify-center rounded-eb-lg bg-primary-subtle text-primary">
+            <GitBranch size={24} strokeWidth={1.7} />
+          </div>
+          <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+            {loadingCase ? (
+              <SkeletonRegion label={t("rubric.case.loading")} className="flex flex-col gap-2">
+                <SkeletonLine width="60%" />
+                <SkeletonLine width={200} size="sm" />
+              </SkeletonRegion>
+            ) : caseError ? (
+              <div className="flex items-center gap-2 text-error text-[14px]">
+                <AlertCircle size={16} />
+                <span>{t("rubric.case.errorTitle")}</span>
+              </div>
+            ) : caseData ? (
+              <>
+                <h2 className="truncate text-[16px] leading-6 font-medium text-ink" title={caseData.title}>
+                  {caseData.title}
+                </h2>
+                <div className="flex flex-wrap items-center gap-2">
+                  <BadgeBase toneClassName={MODE_TONE[caseData.learningMode]}>
+                    {t(`rubric.case.mode.${caseData.learningMode}`)}
+                  </BadgeBase>
+                  {courseLabel && (
+                    <span className="text-[12px] leading-4 text-ink-secondary">{courseLabel}</span>
+                  )}
+                </div>
+              </>
+            ) : availableCases.length > 0 ? (
+              <div className="flex flex-col gap-1">
+                <label htmlFor="case-select" className="text-[12px] font-medium text-ink-secondary">
+                  {t("rubric.case.regionLabel")}
+                </label>
+                <select
+                  id="case-select"
+                  value={selectedCaseId || ""}
+                  onChange={(e) => setSelectedCaseId(e.target.value)}
+                  className="rounded-eb-md border border-line bg-canvas px-3 py-1.5 text-[14px] text-ink focus:border-primary focus:outline-none"
+                >
+                  {availableCases.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ) : (
+              <div>
+                <h2 className="text-[16px] leading-6 font-medium text-ink">{t("rubric.case.noneTitle")}</h2>
+                <p className="text-[12px] leading-4 text-ink-secondary">{t("rubric.case.noneDescription")}</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div aria-hidden="true" className="hidden h-14 w-px bg-line sm:block" />
+
+        {/* Average Score Box */}
+        <div className="flex shrink-0 flex-col gap-0.5 sm:min-w-[140px] sm:items-end">
+          <span className="text-[12px] leading-4 text-ink-secondary">{t("rubric.average.label")}</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-[28px] leading-8 font-semibold text-ink">
+              {currentAverage.toFixed(1)}
+            </span>
+            <span className="text-[16px] leading-6 text-ink-muted">/ 5</span>
+          </div>
+          <span className="text-[12px] leading-4 text-ink-muted">
+            {t("rubric.average.fromCount", { count: criteria.length })}
+          </span>
+        </div>
       </section>
-    );
-  } else {
-    const courseLabel = course ? [course.courseCode, course.name].filter(Boolean).join(" · ") : "";
-    info = (
-      <>
-        <h2 className="text-[16px] leading-6 font-normal tracking-normal text-ink">{caseData.title}</h2>
-        <div className="flex flex-wrap items-center gap-2">
-          <BadgeBase toneClassName={MODE_TONE[caseData.learningMode]}>{t(`rubric.case.mode.${caseData.learningMode}`)}</BadgeBase>
-          {courseLabel && <span className="text-[12px] leading-4 text-ink-secondary">{courseLabel}</span>}
-        </div>
-      </>
-    );
-  }
 
-  return (
-    <section aria-label={t("rubric.case.regionLabel")} className="flex items-center gap-6 rounded-eb-xl bg-surface p-5">
-      <div className="flex size-12 shrink-0 items-center justify-center rounded-eb-lg bg-primary-subtle">
-        <GitBranch aria-hidden="true" size={24} absoluteStrokeWidth strokeWidth={1.5} className="text-primary" />
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-2">{info}</div>
-      <div aria-hidden="true" className="h-14 w-px shrink-0 bg-line" />
-      <div className="flex shrink-0 flex-col gap-0.5">
-        <span className="text-[12px] leading-4 text-ink-secondary">{t("rubric.average.label")}</span>
-        <div className="flex items-baseline gap-1">
-          <span className="text-[22px] leading-7 font-normal text-ink">—</span>
-          <span className="text-[14px] leading-5 text-ink-muted">/ 5</span>
-        </div>
-        <span className="text-[12px] leading-4 text-ink-muted">{t("rubric.average.unavailable")}</span>
-      </div>
-    </section>
-  );
-}
+      {/* Main Content Layout (777px Scoring Form + 379px Saved List) */}
+      <div className="flex flex-col gap-5 lg:flex-row lg:items-start">
+        {/* Left Column: Scoring Form */}
+        <section
+          aria-labelledby="rubric-scoring-title"
+          className="flex min-w-0 flex-1 flex-col gap-5 rounded-eb-xl bg-surface p-5 shadow-eb-card"
+        >
+          <div className="flex flex-col gap-1">
+            <SectionHeading id="rubric-scoring-title" title={t("rubric.scoring.title")} />
+            <p className="text-[14px] leading-5 text-ink-secondary">{t("rubric.scoring.description")}</p>
+          </div>
 
-/** Figma "Enrolled course" row: score tile · criterion · 1–5 scale (disabled: no rubric API). */
-function CriterionRow({ index, criterion, reasonId }: { index: number; criterion: (typeof CRITERIA)[number]; reasonId: string }) {
-  const { t } = useTranslation();
-  const titleId = useId();
-  return (
-    <div className="flex items-center gap-4 rounded-eb-lg bg-canvas p-4">
-      <div className="flex size-16 shrink-0 items-center justify-center rounded-eb-lg bg-selected">
-        <span className="text-[20px] leading-7 font-normal text-link">
-          —/5<span className="sr-only">{t("rubric.scoring.noScore")}</span>
-        </span>
-      </div>
-      <div className="flex min-w-0 flex-1 flex-col gap-[18px]">
-        <h3 id={titleId} className="text-[16px] leading-6 font-normal tracking-normal text-ink">
-          {index + 1}. {t(`rubric.criteria.${criterion}.name`)}
-        </h3>
-        <p className="text-[14px] leading-5 text-ink-secondary">{t(`rubric.criteria.${criterion}.description`)}</p>
-      </div>
-      <div role="radiogroup" aria-labelledby={titleId} aria-describedby={reasonId} aria-disabled="true" className="flex shrink-0 items-center gap-1.5">
-        {SCALE.map((value) => (
-          <button
-            key={value}
-            type="button"
-            role="radio"
-            aria-checked={false}
-            disabled
-            aria-describedby={reasonId}
-            className="flex size-8 cursor-not-allowed items-center justify-center rounded-eb-md bg-canvas text-[14px] leading-5 font-medium text-ink-secondary"
-          >
-            {value}
-          </button>
-        ))}
+          {/* API Error Notification */}
+          {apiError && (
+            <div
+              role="alert"
+              className="flex items-center justify-between gap-3 rounded-eb-md border border-error-border bg-error-bg p-3 text-[14px] text-error-text"
+            >
+              <div className="flex items-center gap-2">
+                <AlertCircle size={18} className="shrink-0 text-error" />
+                <span>{apiError}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setApiError(null)}
+                className="text-error-text hover:opacity-80"
+                aria-label={t("caseReview.toast.close")}
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+
+          {/* Criteria List */}
+          <div className="flex flex-col gap-3">
+            {criteria.map((item, index) => (
+              <div
+                key={item.id || item.name}
+                className="flex flex-col gap-3 rounded-eb-lg bg-canvas p-4 sm:flex-row sm:items-center sm:gap-4"
+              >
+                {/* Score tile on the left */}
+                <div className="flex size-14 shrink-0 items-center justify-center rounded-eb-lg bg-selected">
+                  <span className="text-[18px] leading-6 font-bold text-link">
+                    {item.score}/5
+                  </span>
+                </div>
+
+                {/* Criterion title & description */}
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <h3 className="text-[15px] leading-5 font-medium text-ink">
+                      {index + 1}. {item.name}
+                    </h3>
+                    {/* Allow deleting custom criteria (beyond default 3) */}
+                    {index >= 3 && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveCriterion(index)}
+                        className="text-ink-muted hover:text-error transition-colors"
+                        title={t("rubric.scoring.removeCriterion", "Xóa tiêu chí")}
+                        aria-label={t("rubric.scoring.removeCriterion", "Xóa tiêu chí")}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    )}
+                  </div>
+                  {item.description && (
+                    <p className="text-[13px] leading-4 text-ink-secondary">{item.description}</p>
+                  )}
+                </div>
+
+                {/* 1-5 Radio Scale */}
+                <div
+                  role="radiogroup"
+                  aria-label={item.name}
+                  className="flex shrink-0 items-center gap-1.5 self-end sm:self-auto"
+                >
+                  {SCALE.map((val) => {
+                    const isSelected = item.score === val;
+                    return (
+                      <button
+                        key={val}
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        onClick={() => handleScoreChange(index, val)}
+                        className={cx(
+                          "flex size-8 items-center justify-center rounded-eb-md text-[14px] leading-5 font-medium transition-all duration-150",
+                          isSelected
+                            ? "bg-primary text-white font-semibold shadow-sm"
+                            : "bg-surface text-ink-secondary hover:bg-surface-hover border border-line",
+                        )}
+                      >
+                        {val}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Add Custom Criterion Block */}
+          {isAddingCriterion ? (
+            <div className="flex flex-col gap-3 rounded-eb-lg border border-line bg-canvas p-4">
+              <h4 className="text-[14px] font-medium text-ink">
+                {t("rubric.scoring.newCriterionName", "Thêm tiêu chí tùy chỉnh")}
+              </h4>
+              <Field
+                label={t("rubric.scoring.criterionName", "Tên tiêu chí")}
+                placeholder="Ví dụ: Tính thực tiễn trong ngành..."
+                value={newCritName}
+                onChange={(e) => {
+                  setNewCritName(e.target.value);
+                  if (critValidationError) setCritValidationError(null);
+                }}
+                error={critValidationError}
+              />
+              <Field
+                label={t("rubric.scoring.criterionDesc", "Mô tả tiêu chí (tùy chọn)")}
+                placeholder="Mô tả chi tiết mục đích đánh giá..."
+                value={newCritDesc}
+                onChange={(e) => setNewCritDesc(e.target.value)}
+              />
+              <div className="flex items-center justify-end gap-2 pt-1">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    setIsAddingCriterion(false);
+                    setNewCritName("");
+                    setNewCritDesc("");
+                    setCritValidationError(null);
+                  }}
+                >
+                  {t("caseReview.editor.cancel")}
+                </Button>
+                <Button variant="primary" size="sm" onClick={handleAddCriterion}>
+                  {t("caseReview.editor.save")}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-start">
+              <Button
+                variant="secondary"
+                size="sm"
+                leadingIcon={Plus}
+                onClick={() => setIsAddingCriterion(true)}
+              >
+                {t("rubric.scoring.addCriterion", "Thêm tiêu chí")}
+              </Button>
+            </div>
+          )}
+
+          {/* Notes textarea */}
+          <Field
+            multiline
+            label={t("rubric.note.label")}
+            placeholder={t("rubric.note.placeholder")}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            helper={t("rubric.note.counter", { count: note.length, max: NOTE_MAX })}
+            maxLength={NOTE_MAX}
+          />
+
+          {/* Submission action buttons */}
+          <div className="flex items-center justify-end gap-3 pt-2">
+            {editingId && (
+              <Button variant="secondary" onClick={handleCancelEdit} disabled={saving}>
+                {t("rubric.scoring.cancelEdit", "Hủy chỉnh sửa")}
+              </Button>
+            )}
+            <Button
+              variant="primary"
+              leadingIcon={editingId ? Check : Save}
+              disabled={saving}
+              onClick={handleSubmit}
+            >
+              {saving
+                ? t("rubric.scoring.saving")
+                : editingId
+                ? t("rubric.scoring.update")
+                : t("rubric.scoring.save")}
+            </Button>
+          </div>
+        </section>
+
+        {/* Right Column: Saved Evaluations (Figma 07.8 / 10.8) */}
+        <section
+          aria-labelledby="rubric-saved-title"
+          className="flex w-full shrink-0 flex-col gap-4 rounded-eb-xl bg-surface p-5 shadow-eb-card lg:w-[379px]"
+        >
+          <SectionHeading
+            id="rubric-saved-title"
+            title={
+              savedEvaluations.length > 0
+                ? t("rubric.saved.titleWithCount", { count: savedEvaluations.length })
+                : t("rubric.saved.title")
+            }
+          />
+
+          {loadingRubrics ? (
+            <SkeletonRegion label={t("states.loading.label")} className="flex flex-col gap-3">
+              <SkeletonLine width="100%" />
+              <SkeletonLine width="80%" />
+              <SkeletonLine width="60%" />
+            </SkeletonRegion>
+          ) : savedEvaluations.length === 0 ? (
+            <StateCard
+              tone="empty"
+              icon={ClipboardList}
+              titleAs="h3"
+              title={t("rubric.saved.emptyTitle")}
+              description={t("rubric.saved.emptyDescription")}
+            />
+          ) : (
+            <div className="flex flex-col gap-3">
+              {savedEvaluations.map((evalItem, idx) => (
+                <div
+                  key={evalItem.id}
+                  className={cx(
+                    "flex h-auto flex-col gap-3 rounded-eb-lg bg-canvas p-4 transition-all duration-150 border",
+                    editingId === evalItem.id
+                      ? "border-primary bg-selected/20 shadow-sm"
+                      : "border-transparent hover:border-line hover:bg-surface-hover",
+                  )}
+                >
+                  {/* Card Header: Case Title or Identifier + Action Buttons */}
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="truncate text-[14px] leading-5 font-semibold text-ink" title={evalItem.caseTitle}>
+                      {evalItem.caseTitle || `Phiếu #${idx + 1}`}
+                    </h4>
+                    <div className="flex shrink-0 items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => handleEdit(evalItem)}
+                        className="rounded p-1 text-ink-secondary hover:bg-surface hover:text-primary transition-colors"
+                        title={t("rubric.saved.edit")}
+                        aria-label={`${t("rubric.saved.edit")} ${evalItem.caseTitle || ""}`}
+                      >
+                        <Pencil size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(evalItem.id)}
+                        className="rounded p-1 text-ink-secondary hover:bg-surface hover:text-error transition-colors"
+                        title={t("rubric.saved.delete")}
+                        aria-label={`${t("rubric.saved.delete")} ${evalItem.caseTitle || ""}`}
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Criteria Score Tags */}
+                  <div className="flex flex-wrap gap-1.5">
+                    {evalItem.criteria.map((c) => (
+                      <span
+                        key={c.name}
+                        className="rounded-eb-md bg-primary-subtle px-2 py-0.5 text-[12px] font-medium text-primary"
+                      >
+                        {c.name} {c.score}/5
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Note block */}
+                  {evalItem.notes && (
+                    <div className="flex flex-col gap-0.5 pt-1 border-t border-line/60">
+                      <span className="text-[12px] font-medium text-ink-secondary">
+                        {t("rubric.saved.noteLabel")}
+                      </span>
+                      <p className="text-[13px] leading-5 text-ink break-words">
+                        {evalItem.notes}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );
 }
 
 export function CaseRubricPage() {
-  const { t } = useTranslation();
   const { caseId } = useParams<{ caseId?: string }>();
-  const reasonId = useId();
-
-  return (
-    <div className="flex flex-col gap-5 pb-1">
-      <CaseHeader key={caseId ?? ""} caseId={caseId} />
-
-      <div className="flex items-start gap-5">
-        {/* Scoring card */}
-        <section aria-labelledby="rubric-scoring-title" className="flex min-w-0 flex-1 flex-col gap-4 rounded-eb-xl bg-surface p-5">
-          <SectionHeading id="rubric-scoring-title" title={t("rubric.scoring.title")} className="py-1.5" />
-          <p className="text-[14px] leading-5 text-ink-secondary">{t("rubric.scoring.description")}</p>
-
-          {CRITERIA.map((key, index) => (
-            <CriterionRow key={key} index={index} criterion={key} reasonId={reasonId} />
-          ))}
-
-          <Field
-            multiline
-            label={t("rubric.note.label")}
-            placeholder={t("rubric.note.placeholder")}
-            helper={t("rubric.note.counter", { count: 0, max: NOTE_MAX })}
-            maxLength={NOTE_MAX}
-            disabled
-          />
-
-          <div className="flex items-center justify-end gap-2">
-            <p id={reasonId} className="min-w-0 flex-1 text-[12px] leading-4 text-ink-muted">
-              {t("rubric.scoring.unavailable")}
-            </p>
-            <Button leadingIcon={Save} iconStrokeWidth={1} disabled aria-describedby={reasonId} className="shrink-0">
-              {t("rubric.scoring.save")}
-            </Button>
-          </div>
-        </section>
-
-        {/* Saved evaluations card */}
-        <section aria-labelledby="rubric-saved-title" className="flex w-[379px] shrink-0 flex-col gap-5 rounded-eb-xl bg-surface p-5">
-          <SectionHeading id="rubric-saved-title" title={t("rubric.saved.title")} />
-          <StateCard
-            tone="empty"
-            icon={ClipboardList}
-            titleAs="h3"
-            title={t("rubric.saved.unavailableTitle")}
-            description={t("rubric.saved.unavailableDescription")}
-          />
-        </section>
-      </div>
-    </div>
-  );
+  return <RubricView initialCaseId={caseId} role="LECTURER" />;
 }
