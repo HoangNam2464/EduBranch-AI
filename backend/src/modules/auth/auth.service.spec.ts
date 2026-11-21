@@ -179,7 +179,7 @@ describe("AuthService", () => {
       const response = await service.login(loginDto);
 
       expect(mockDbService.query).toHaveBeenCalledWith(
-        "SELECT id, email, password_hash, full_name, role FROM users WHERE email = $1",
+        "SELECT id, email, password_hash, full_name, role, is_active FROM users WHERE email = $1",
         ["user@university.edu.vn"],
       );
 
@@ -254,7 +254,7 @@ describe("AuthService", () => {
       });
 
       expect(mockDbService.query).toHaveBeenCalledWith(
-        "SELECT id, email, full_name, role FROM users WHERE id = $1",
+        "SELECT id, email, full_name, role, is_active FROM users WHERE id = $1",
         ["user-uuid-1"],
       );
 

@@ -5,8 +5,10 @@ import {
   Injectable,
   Logger,
   NotFoundException,
+  Optional,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
+import { AuditService } from "../../common/audit/audit.service";
 import { MinioService } from "../../common/minio/minio.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
 import { randomUUID } from "crypto";
@@ -27,6 +29,7 @@ export class MaterialService {
     private readonly db: DatabaseService,
     private readonly minio: MinioService,
     private readonly aiClient: AiClientService,
+    @Optional() private readonly audit?: AuditService,
   ) {}
 
   async uploadMaterial(
@@ -108,6 +111,13 @@ export class MaterialService {
     }
 
     const material = insertRes.rows[0];
+    await this.audit?.record({
+      type: "MATERIAL_UPLOADED",
+      outcome: "SUCCESS",
+      actorId: uploadedBy,
+      targetId: materialId,
+      meta: { courseId, fileName: file.originalname },
+    });
 
     // 3. Trigger AI Ingestion
     try {
