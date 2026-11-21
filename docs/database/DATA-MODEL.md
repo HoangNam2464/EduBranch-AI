@@ -107,3 +107,18 @@ Migrations are maintained in SQL files executed against PostgreSQL:
 - Primary keys: `id UUID DEFAULT uuid_generate_v4()`
 - Foreign keys: `<referenced_entity>_id UUID`
 - Timestamps: `created_at TIMESTAMPTZ`, `updated_at TIMESTAMPTZ`
+
+---
+
+## 6. Additions from spec 007 (migrations V6–V8)
+
+Source: `specs/007-mvp-completion-backend/data-model.md`. All additive; no existing column or constraint changes.
+
+| Migration | Table / column | Purpose |
+|---|---|---|
+| **V6__user_preferred_language.sql** | `users.preferred_language` `VARCHAR(5) NOT NULL DEFAULT 'vi'`, `CHECK IN ('vi','en')` | Interface language of the profile (BE-031) |
+| **V7__audit_events_and_settings.sql** | `audit_events(id, event_type, outcome, actor_id → users ON DELETE SET NULL, target_id, meta JSONB, created_at)` with a `CHECK` on the 10 event types | System activity log for Admin 10.2 / 10.7 / 10.9 (BE-032). `meta` holds non-sensitive context only: no passwords, tokens, typed e-mails of failed logins or student text |
+| | `system_settings(key PK CHECK IN 5 keys, value, updated_by, updated_at)` | Editable platform information for Admin 10.10 (BE-032) |
+| **V8__case_rubric_evaluations.sql** | `case_rubric_evaluations(case_id → cases ON DELETE CASCADE, evaluator_id → users, realism/difficulty/alignment_score SMALLINT 1–5, notes ≤ 2000, UNIQUE(case_id, evaluator_id))` | Case quality rubric (BE-033, FR-EVAL-01, OPD-011 → A). Rates the case, never a student |
+
+`users.is_active` (V1) is now enforced: a locked account cannot log in and its issued tokens are refused (spec 007 AC-A5).
