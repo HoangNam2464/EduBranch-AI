@@ -1,5 +1,7 @@
 # CHỈ THỊ BÀN GIAO & ĐỒNG BỘ TOÀN DIỆN CHO AI — DỰ ÁN EDUBRANCH-AI
 
+> **SUPERSEDED (2026-11-21)** — lịch sử, không phải hướng dẫn (AGENTS.md rule 2). Tài liệu này mô tả bàn giao ngày 2026-10-12 (đường dẫn Windows, "20 file modified", 63 unit test, 84 task là toàn bộ backlog). Hiện hành: `CLAUDE.md`, `AGENTS.md`, `.agents/rules/02-agent-operating-policy.md`, `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`; trạng thái task ở Jira và `docs/04_JIRA/JIRA-KEY-MAP.md` (105 issue); đội ngũ ở `docs/team/TEAM-CAPABILITY-MATRIX.md`. Các bước 1–4 bên dưới đã thực hiện xong; không chạy lại.
+
 > **Tài liệu bàn giao chuyên dụng cho AI Assistant (AI Handover & Alignment Directive)**  
 > **Dự án áp dụng**: EduBranch AI (Capstone C1SE.65 — Đại học Duy Tân)  
 > **Thư mục làm việc của dự án**: `D:\CAPSTONE_2026\EduBranch-AI`  

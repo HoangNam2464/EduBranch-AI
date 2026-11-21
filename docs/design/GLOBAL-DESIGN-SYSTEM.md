@@ -1,4 +1,4 @@
- EduBranch-AI — Global Design System
+# EduBranch-AI — Global Design System
 
 > **Status**: CANONICAL — supersedes `.stitch/DESIGN.md` (retired/deleted).
 > **Visual language v2 (2026-11-12, PO decision in chat)** (typography and imagery aligned to the Eduva template later on 2026-11-12; canonical Figma reference: page `EduBranch AI – Screens`): §1.1 (tone), §2, §3.1, §3.2 (colors), §4, §5, §6 (colors/shapes), §7 and §8 were updated to the layered navy/sky visual language derived from the licensed Eduva template (14 original desktop screens, now in the Eduva archive file (separate Figma file, copied by the PO on 2026-11-18; removed from the EduBranch file)). The previous flat gray/`#2563EB` values are retired. Product behaviour, pedagogy guardrails and accessibility rules are unchanged.
@@ -6,6 +6,41 @@
 > **Companion Agent Rule**: [`.agents/rules/01-ui-design-standards.md`](../../.agents/rules/01-ui-design-standards.md)
 > **Scope**: All EduBranch-AI product screens (14 routes across P0–P4). Does NOT cover the internal "Start Design" tooling — see [`SITE-ARCHITECTURE.md §7`](SITE-ARCHITECTURE.md) for its classification.
 > **Source of truth**: Product Direction V2 (EduBranch-AI), `C1SE_65-EduBranch-AI-Proposal_V1.2.docx`.
+
+---
+
+## 0. Source map and status register
+
+> **Status of this section**: PROPOSED (written 2026-11-21 by Claude; PO approval pending). `AGENTS.md`, `CLAUDE.md`, `.claude/rules/ui-design.md`, the workflow and the constitution all cite "GDS §0", but no §0 existed in this file on any branch (checked `develop`, `main`, `feature/design-system` on 2026-11-21). Until the PO approves this section, it records facts and pointers only; it decides nothing.
+
+### 0.1 Design and product sources (read in this order)
+| ID | Source | Role | Status |
+|---|---|---|---|
+| S1 | Approved PO decisions (chat, recorded in rule files with dates) | Overrides every document below | binding |
+| S2 | Proposal V1.2 (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`, not in the repo) | Product requirements | binding; cite section |
+| S3 | `AGENTS.md`, FND `.agents/rules/00-project-foundation.md` | Agent rules, architecture, invariants | binding |
+| S4 | Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens` (`483:9634`, 71 desktop frames, sections 00–10) and page `EduBranch AI – Design System` (`445:239`) | Approved UI (layout, colours, data fields, behaviour) | evidence, read-only |
+| S5 | This file (GDS) | Tokens and component rules mirrored in `frontend/src/index.css` `@theme` | provisional (see §0.2) |
+| S6 | R01 `.agents/rules/01-ui-design-standards.md` | Working UI rules shared with Antigravity | provisional; protected local edits (policy §7) |
+| S7 | `docs/05_FIGMA.md`, `docs/design/screens/P0`–`P4`, `UX-SCREEN-NOTES.md`, `SITE-ARCHITECTURE.md` | Frame register and screen notes | reference |
+| S8 | `docs/design/DESIGN-DIRECTION.md` | Proposed evolution of the visual language | PROPOSED |
+| R1 | `docs/design/STITCH-GENERATION-GUIDELINES.md`, `.agents/skills/stitch-*`, `design-md`, `enhance-prompt` | Google Stitch generation | RETIRED — never a template (AGENTS.md rule 3) |
+
+### 0.2 Token approval
+No PO record approving the token set as "Ready for Dev" was found. Per AGENTS.md rule 9 every value in §1–§8 is provisional, and no frame is Ready for Dev on these values alone. Recorded PO decisions that fix individual values: visual language v2 (2026-11-12), card elevation (2026-11-17, R01 §1 rule 5), system web font (2026-11-21, §3.1), light mode + navy `#2A4E7F` + sky `#00A5F5` + 1440px desktop baseline (2026-11-20, chat).
+
+### 0.3 Banners
+Text under a SUPERSEDED or UNRESOLVED banner is history, not guidance (AGENTS.md rule 2).
+
+### 0.4 Register IDs used across documents
+OPD-nnn: open product decisions (`docs/OPEN_PRODUCT_DECISIONS.md` on branch `feature/design-system`; read with `git show`). PSD-nn: product scope decisions (`docs/mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md`). PO-n: numbered PO decisions cited in rule files. An ID not found in these places is UNKNOWN (AGENTS.md rule 4).
+
+### 0.5 Conflicts register (UNRESOLVED until marked DECIDED)
+| ID | Conflict | Sources | Status |
+|---|---|---|---|
+| U-01 | Theme: §1.1 and R01 §2 say light only; `develop` ships a dark theme toggle (PR #54, `src/components/ds/ThemeToggle.tsx`, `index.css` `.dark`), and the Figma header frames show a moon button. | GDS §1.1, R01 §2, PR #54, Figma `540:347` | DECIDED — PO, chat 2026-11-21: "baseline PO trước đó đã chốt Light Mode và loại bỏ nút chuyển Dark Mode". Open work: remove the toggle and `.dark` styles from code; the Figma moon button needs a PO-approved Figma edit. |
+| U-02 | Figma text styles name Roboto; the web uses the system font (PO 2026-11-21). Visual QA text widths differ until Figma is updated (needs PO approval to edit Figma). | §3.1 | accepted difference |
+| U-03 | Shell content inset: Figma frames place content 20px from the canvas edge; `develop` used 48px (`AppShell.tsx` `lg:px-8` + `px-4`). Trial fix 2026-11-21 (not merged): 20px. | Figma 02.1, 09.1 | pending PO review of the trial |
 
 ---
 

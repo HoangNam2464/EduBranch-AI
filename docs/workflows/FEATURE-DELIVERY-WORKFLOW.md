@@ -126,8 +126,8 @@ After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR
 **CI commands (from `.github/workflows/`, run locally before push):**
 - backend (`backend-ci.yml`): `npm ci && npm run build && npm test -- --runInBand && npm run test:e2e -- --runInBand` (Node 20)
 - ai-service (`ai-service-ci.yml`): `pip install -r requirements.txt && pytest --cov=app --cov-report=xml -v` (Python 3.12; env `AI_SERVICE_API_KEY=ci-test-key AI_PROVIDER=gemini GEMINI_API_KEY=ci-fake-key-not-called-in-unit-tests POSTGRES_HOST=localhost POSTGRES_PORT=5432 POSTGRES_DB=edubranch_ai POSTGRES_USER=edubranch POSTGRES_PASSWORD=test`). `ci.yml` (main only) runs `pytest -v` without coverage.
-- frontend (`frontend-ci.yml`): `npm ci && npm run build` (Node 20, `VITE_API_BASE_URL=http://localhost:8080/api`). `ci.yml` (main only) runs the same with `VITE_API_BASE_URL=http://localhost:8080/api/v1`.
-- Added checks that no workflow runs yet: frontend `npm test` and `npm run lint`.
+- frontend (`frontend-ci.yml`): `npm ci && npm run lint && npm test && npm run build` (Node 20, `VITE_API_BASE_URL=http://localhost:8080/api`). `ci.yml` (main only) runs the build with `VITE_API_BASE_URL=http://localhost:8080/api/v1`.
+- [DỮ-KIỆN 2026-11-21] `frontend-ci.yml` already runs `npm run lint` and `npm test` (since commit `26755ef`); the earlier line "no workflow runs them yet" was outdated.
 - Live tests need the docker stack (`docker compose up -d postgres redis minio ai-service backend`). Run backend e2e against a clean database, as CI does.
 
 ### CI coverage and proposals
@@ -144,8 +144,7 @@ After QG1–QG4 pass, Claude commits, pushes the feature branch and opens the PR
 |---|---|---|
 | Backend build & unit/e2e tests | Non-required GitHub check (`backend-ci.yml` on `backend/**`) | Integration tests (`migration.integration.e2e-spec.ts`) skip because CI has no Postgres/MinIO `services:`. Ruleset does not require check. |
 | AI service pytest & coverage | Non-required GitHub check (`ai-service-ci.yml` on `ai-service/**`) | Live tests (`test_live_flow1.py`, `test_*_live.py`) skip because CI lacks live database/MinIO services. Ruleset does not require check. |
-| Frontend build (`npm run build`) | Non-required GitHub check (`frontend-ci.yml` on `frontend/**`) | `npm test` and `npm run lint` (`oxlint`) have NEVER run in CI. Ruleset does not require check. |
-| Frontend tests & lint | Local only (`npm test`, `npm run lint`) | Not automated on PRs; relies entirely on local execution in QG1. |
+| Frontend lint, unit tests, build | Non-required GitHub check (`frontend-ci.yml` on `frontend/**`: `npm run lint`, `npm test`, `npm run build`) | Visual QA (`npm run test:visual`) and the l10n checker are local only. Ruleset does not require the check. |
 | Integration CI Gate | Main branch only (`ci.yml` on push/PR to `main`) | Does not run on PRs to `develop`; runs after features have already merged. |
 | Documentation & Specs validation | Local only / manual | Branches `docs/**` and paths `docs/**`, `specs/**`, `.specify/**`, `AGENTS.md` trigger zero workflows; PRs are check-less (`gh pr checks 38` reports no checks). |
 | Code Owner approval gate | Manual / GitHub PR review | `CODEOWNERS` specifies `* @HoangNam2464` (single owner). When a PR is opened from that same account, GitHub cannot count self-approval; requires a second code owner or a recorded PO merge procedure. Recorded procedure (PO decision 2026-11-17): admin-merge per PR on the PO's direct order in chat (policy §7). |
@@ -155,7 +154,7 @@ Each proposed change requires PO approval; modifying repository rulesets, workfl
 
 | Proposal ID | Proposed Action | Objective & Rationale | Action Owner |
 |---|---|---|---|
-| `CI-PROP-1` | Add `npm run lint` and `npm test` to `frontend-ci.yml` | Ensure frontend unit tests and oxlint run on every frontend PR, preventing test regressions. | PO approval / PO action |
+| `CI-PROP-1` | ~~Add `npm run lint` and `npm test` to `frontend-ci.yml`~~ — already in place (commit `26755ef`); remaining: add `node scripts/l10n-approval-check.mjs` | Keep the l10n registry in step with the locale files on every PR. | PO approval / PO action |
 | `CI-PROP-2` | Add Postgres 16 + pgvector (and MinIO where needed) `services:` container blocks to `backend-ci.yml` and `ai-service-ci.yml` | Allow backend migration integration tests and AI service live retrieval tests to execute in CI instead of silently skipping. | PO approval / PO action |
 | `CI-PROP-3` | Add a docs/specs verification workflow for `AGENTS.md`, `CLAUDE.md`, `docs/**`, `specs/**`, `.specify/**` | Automatically validate that no machine paths exist, cited repository paths exist (`git ls-files`), and `specify integration status` passes, ensuring docs PRs are not check-less. | PO approval / PO action |
 | `CI-PROP-4` | Configure workflow job names as Required checks in the `develop` branch protection ruleset | Prevent merging PRs when CI workflows fail or are bypassed. | PO action |
