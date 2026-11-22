@@ -14,7 +14,7 @@ Extracts, chunks, embeds, and indexes university teaching materials to power Ret
 - **Backend Gateway**: Triggers ingestion after material upload; requests relevant context chunks during case generation.
 - **FastAPI AI Service**: Coordinates document parsing, chunking, embedding generation, and vector retrieval.
 - **PostgreSQL + pgvector**: Stores text chunks with vector embeddings and executes cosine similarity queries.
-- **LLM Embedding Provider**: Generates dense vector representations (e.g. Gemini `text-embedding-004` or OpenAI `text-embedding-3-small`).
+- **LLM Embedding Provider**: Generates dense vector representations (e.g. Gemini `gemini-embedding-001` (768 dims; `text-embedding-004` retired) or OpenAI `text-embedding-3-small`).
 
 ---
 

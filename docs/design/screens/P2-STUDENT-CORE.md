@@ -1,7 +1,7 @@
 # P2 — Core Student Flow
 
 > **Priority**: NOW. The other half of the MVP-critical loop.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+> **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`.
 > **Covers**: `/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/reflect`, `/student/cases/:caseId/challenge/:sessionId`.
 
 ---
@@ -13,10 +13,10 @@ The Branching Study **Experience phase**: seamless, immersive decision-making jo
 
 ### User & Context
 Student only. Requires the case to be `PUBLISHED` (`INV-01`) — non-published cases must 404.
-Student accesses via a direct link provided by the Lecturer. There is no student browse page.
+Student opens the case from the student desk or "My courses" after joining the class by invite code (OPD-001 → A, 2026-11-12; Figma 07.2–07.4), or via a direct link from the lecturer.
 
 ### Layout
-Full-width immersive reading layout (distraction-free decision interface). Top: case title + a subtle progress indicator (e.g. "Decision 2 of ?" — not a percentage bar, since branch length is variable and unknown). Center: current node's `situation` text in a readable, capped-width column (`GLOBAL-DESIGN-SYSTEM.md §3` line-length rule). Below: Option Selector (`§6.5`).
+Full-width immersive reading layout (distraction-free decision interface). Top: case title + a subtle progress indicator (e.g. "Decision 2 of ?" — not a percentage bar, since branch length is variable and unknown). Center: current node's `situation` text in a readable, capped-width column (R01 line-length rule). Below: Option Selector (`§6.5`).
 
 **Important**: After selecting an option, the player advances immediately to the next situation. There is NO reasoning form, NO consequence card, NO delay between Decision Points during the Experience phase.
 
@@ -71,7 +71,7 @@ Consequences revealed here, never mid-flow. No grading/scoring. No "correct path
 Post-journey meta-cognitive reflection (`FEATURE-REFLECTION.md`). Accessed after the student completes the REVIEW phase.
 
 ### Layout
-Focused single-column page (not a modal — reflection deserves a full, unhurried writing space). Shows a compact summary of the completed path (optional — e.g. final outcome title) above the Reflection Input (`GLOBAL-DESIGN-SYSTEM.md §6.8`).
+Focused single-column page (not a modal — reflection deserves a full, unhurried writing space). Shows a compact summary of the completed path (optional — e.g. final outcome title) above the Reflection Input (R01).
 
 ### Data
 `reflection_text` (student-authored), `reflection_status` (`NOT_STARTED` → `SUBMITTED`).
@@ -94,7 +94,7 @@ No AI grading or scoring of the reflection text (`FEATURE-REFLECTION.md §4` —
 Optional, cross-mode Socratic challenge on a piece of submitted reasoning — probes assumptions/trade-offs via targeted counter-questions, capped at 2 rounds, never grades (`FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md`). In P2 this is entered from the Branching Case Player (§1); the same screen also serves Review Study (`FEATURE-REVIEW-STUDY.md`), but that entry path is documented in `P4-review-study.md`.
 
 ### Layout
-Challenge Support Panel (`GLOBAL-DESIGN-SYSTEM.md §6.11`): round indicator at top ("Round 1 of 2"), the AI's counter-question rendered as a neutral card with the `ai-support` tag, an optional student response textarea below it for Round 2.
+Challenge Support Panel (R01): round indicator at top ("Round 1 of 2"), the AI's counter-question rendered as a neutral card with the `ai-support` tag, an optional student response textarea below it for Round 2.
 
 ### Data
 `challenge_support_sessions.current_round`, `challenge_messages` (`role`, `content`, `round_number`).
@@ -109,4 +109,4 @@ Challenge Support Panel (`GLOBAL-DESIGN-SYSTEM.md §6.11`): round indicator at t
 - **Declined**: a student may skip Challenge Support entirely from the Branching Case Player without penalty — this is optional by design (`FEATURE-BRANCHING-STUDY.md §5` step 9 is marked "[Optional]").
 
 ### Boundary
-Absolutely no grading, scoring, letter marks, or "correct/incorrect" language in any AI message rendered here (`FR-CS-08`). Not a debate UI — no adversarial "vs." framing, no chat-avatar face, no open-ended free chat after the round cap (`GLOBAL-DESIGN-SYSTEM.md §8`).
+Absolutely no grading, scoring, letter marks, or "correct/incorrect" language in any AI message rendered here (`FR-CS-08`). Not a debate UI — no adversarial "vs." framing, no chat-avatar face, no open-ended free chat after the round cap (R01).

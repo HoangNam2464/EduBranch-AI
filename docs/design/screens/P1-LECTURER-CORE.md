@@ -1,7 +1,7 @@
 # P1 — Core Lecturer Flow
 
 > **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+> **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`.
 > **Covers**: `/lecturer/courses`, `/lecturer/courses/:courseId/materials`, `/lecturer/courses/:courseId/cases`, `/lecturer/cases/:caseId/review`.
 
 ---
@@ -12,7 +12,7 @@
 Entry point for the Lecturer role. Lists owned courses; allows creating a new course (`FEATURE-COURSE-AND-MATERIALS.md` FR-MAT-01).
 
 ### User & Context
-Lecturer only. First screen after login.
+Lecturer only. Main entry for course work; since D-05 was decided (2026-11-12) the first screen after login is the lecturer dashboard (`/lecturer/dashboard`, Figma 07.1), which links here.
 
 ### Layout
 Page header ("Courses", `text-display`) + primary button "New Course" (top-right) + grid or table of course cards.
@@ -47,7 +47,7 @@ Per material: `originalFilename`, `mimeType`, `sizeBytes`, `processingStatus` (`
 
 ### Actions
 - Upload file (PDF/DOCX only — reject other types client-side before the request, matching `BR-MAT-01`).
-- Delete material (destructive — requires confirmation dialog per `GLOBAL-DESIGN-SYSTEM.md §5.10`; deletion cascades per `BR-MAT-03`, so the confirmation copy must say so plainly).
+- Delete material (destructive — requires confirmation dialog per R01; deletion cascades per `BR-MAT-03`, so the confirmation copy must say so plainly).
 
 ### States
 - **Processing status per row**: `PENDING`/`PROCESSING` show a small inline spinner + muted label; `COMPLETED` shows a `semantic-success` check + chunk count; `FAILED` shows `semantic-error` + the `processing_error` message (plain language, not a raw stack trace).
@@ -65,17 +65,17 @@ No in-browser document editing/preview beyond filename/status (`FEATURE-COURSE-A
 Lists cases for the course, filterable by learning mode, and is where AI case generation is triggered (`FEATURE-CASE-GENERATION.md`).
 
 ### Layout
-Breadcrumb (Courses → [Course Name] → Cases). Filter tabs or segmented control: **All / Branching Study / Review Study** (§5.6 Tabs pattern, using `mode-branching`/`mode-review` tokens on the active filter). Primary button "Generate Case" (top-right). Case card grid below (Case Card component, `GLOBAL-DESIGN-SYSTEM.md §6.1`).
+Breadcrumb (Courses → [Course Name] → Cases). Filter tabs or segmented control: **All / Branching Study / Review Study** (§5.6 Tabs pattern, using `mode-branching`/`mode-review` tokens on the active filter). Primary button "Generate Case" (top-right). Case card grid below (Case Card component, R01).
 
 ### Data
 Per case (Case Card): `title`, `learning_mode` badge, `status` badge, short `description`, `updatedAt`, AI-origin marker while `status = DRAFT`.
 
 ### Actions
-- **Generate Case**: opens a modal — `topic` (required text, 10–500 chars per `FR-GEN-01`/inputs table), optional `materialIds` multi-select (sourced from the course's completed materials only), optional `targetNodeCount`. On submit, redirects to `/lecturer/cases/:caseId/review` once the draft is created.
+- **Generate Case** ("Tạo Case mới bằng AI"): opens the **3-step AI Studio wizard** at `/lecturer/ai-studio` (OPD-006 decided 2026-11-12; Figma 07.6 course & mode → 07.5 topic & source documents → 07.7 confirm). The wizard collects `topic` (required text, 10–500 chars per `FR-GEN-01`/inputs table), optional `materialIds` multi-select (sourced from the course's completed materials only), optional `targetNodeCount`. On submit, redirects to `/lecturer/cases/:caseId/review` once the draft is created.
 - Click a case card → `/lecturer/cases/:caseId/review`.
 
 ### States
-- **Generation in progress**: after submitting the Generate Case modal, show a loading state (this can take several seconds — LLM call + validation retries per `FEATURE-CASE-GENERATION.md` FR-GEN-05); do not block the whole screen silently — show a visible "Generating your case…" state, and route to Case Review once ready.
+- **Generation in progress**: after confirming the last wizard step, show a loading state (this can take several seconds — LLM call + validation retries per `FEATURE-CASE-GENERATION.md` FR-GEN-05); do not block the whole screen silently — show a visible "Generating your case…" state, and route to Case Review once ready.
 - **Generation failure**: if the AI service exhausts retries (HTTP 502 per §12), show an error toast: "Case generation failed — please try again, or refine your topic." Do not create a broken/partial case record for the lecturer to see.
 - **Empty (no materials yet)**: if the course has zero completed materials, disable "Generate Case" and show a hint pointing to the Materials screen first — generation quality depends on ingested material (`FEATURE-DOCUMENT-PROCESSING-AND-RAG.md`), and this is a real prerequisite, not an invented restriction.
 
@@ -92,9 +92,9 @@ Generation is Lecturer-only (`FR-GEN-01`/§9 permissions) — never expose a "Ge
 Lets the Lecturer inspect, edit, approve, and publish an AI-generated (or lecturer-authored) case. For `BRANCHING_STUDY` cases: a ReactFlow tree canvas + node-edit side panel. For `REVIEW_STUDY` cases: a simpler form editor (context/problem text) — **no tree**, since Review Study cases have no `case_nodes` (`FEATURE-REVIEW-STUDY.md §4`: "No Decision Tree").
 
 ### Layout — Branching Study variant
-- Top: Publish/Review Status Stepper (`GLOBAL-DESIGN-SYSTEM.md §6.3`) showing `DRAFT → REVIEWED → APPROVED → PUBLISHED`, plus case title (editable inline) and learning-mode badge.
+- Top: Publish/Review Status Stepper (R01) showing `DRAFT → REVIEWED → APPROVED → PUBLISHED`, plus case title (editable inline) and learning-mode badge.
 - Main area: two-pane split — left/center is the ReactFlow canvas (ratio ~65%), right is the node-edit side panel (~35%), collapsible on narrower screens.
-- Canvas: Decision Node component per node (`GLOBAL-DESIGN-SYSTEM.md §6.4`); edges represent `CaseOption` → labeled with a short excerpt of the option text.
+- Canvas: Decision Node component per node (R01); edges represent `CaseOption` → labeled with a short excerpt of the option text.
 - Side panel (opens when a node is selected): editable `situation` textarea, list of that node's options — each with editable `option text` and `consequence` textareas, plus a next-node selector (dropdown of existing nodes, or "Mark as terminal outcome").
 - Bottom/footer bar (sticky): "Save Changes," "Approve Case," "Publish Case" — buttons enabled/disabled per current status (see Actions below).
 

@@ -16,14 +16,14 @@ trigger: always_on
 - **Target Domain**: Quá trình học tập tình huống thực nghiệm & rèn luyện tư duy phản biện bậc Đại học (University-Level Experiential Case-Based Learning Process)
 - **Primary Actors**:
   - **Lecturer** (`LECTURER` — Giảng viên / Người hướng dẫn): Creates courses, uploads teaching materials, triggers AI case generation, edits/approves/publishes cases, inspects student attempts/submissions, authors qualitative feedback, views cohort statistics.
-  - **Student** (`STUDENT` — Sinh viên / Người học): Accesses published cases via direct link, navigates Branching Study experiences, completes retrospective Journey Review, submits Review Study analyses, engages in optional Socratic AI Challenge Support (max 2 rounds), writes post-activity reflections.
+  - **Student** (`STUDENT` — Sinh viên / Người học): Accesses published cases from the student desk / my courses after joining a class by invite code, or via a direct link (OPD-001 → A, 2026-11-12); navigates Branching Study experiences, completes retrospective Journey Review, submits Review Study analyses, engages in optional Socratic AI Challenge Support (max 2 rounds), writes post-activity reflections.
   - **Admin** (`ADMIN` — Quản trị hệ thống): System-level account/role and operational health boundary per Proposal V1.2.
 - **Technology Stack**:
   - **Backend Gateway**: Node.js 20 LTS (NestJS 10 + TypeScript)
   - **Internal AI Service**: Python 3.12 (FastAPI + Pydantic v2 + LangChain)
   - **Frontend Web App**: React 19 + Vite + TypeScript + TailwindCSS v4 + Zustand + ReactFlow
   - **Data & Storage**: PostgreSQL 16 + pgvector | MinIO (Object Storage) | Redis 7 (Cache/Session)
-  - **LLM Providers**: Google Gemini 2.0 Flash / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`)
+  - **LLM Providers**: Google Gemini 3.5 Flash (`gemini-3.5-flash`, pinned; `gemini-2.0-flash` was retired by Google — PO 2026-11-17) / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`); embeddings Gemini `gemini-embedding-001` at 768 dims
 
 ### 1.1. Core Pedagogical Model
 1. **Experiential Case-Based Learning**: EduBranch-AI immerses university students into realistic multi-branch decision-making scenarios (`Branching Study`) and open analytical problems (`Review Study`) grounded in the lecturer's actual course materials (Business, Law, Medicine, Management, Engineering, etc.).
@@ -55,20 +55,21 @@ EduBranch-AI/
 ├── scripts/                    ← Development and verification scripts
 ├── .agents/rules/              ← AI coding agent governance rules
 │   ├── 00-project-foundation.md
-│   ├── 01-ui-design-standards.md
+│   ├── 01-ui-design-standards.md ← R01: single UI/UX design source
+│   ├── 02-agent-operating-policy.md
 │   └── feature-*.md            ← 15 domain-specific feature rule files
 └── docs/                       ← Authoritative Project Documentation
     ├── 01_MASTER-TASKS.md      ← 84 Master Tasks (EBA-101 → EBA-435) across 4 Sprints
     ├── 02_SPRINT-TASKS.md      ← Role breakdown: DES (15), FE (22), BE (25), OPS (3), QA (19)
     ├── 03_TASK-DETAILS.md      ← Deliverables, Acceptance Criteria & Dependencies per task
-    ├── 04_JIRA/                ← Jira CSV import & 3-way audit reports
-    ├── 05_FIGMA.md             ← 15 Figma UI/UX Design tasks (DES-001 → DES-015)
+    ├── 04_JIRA/                ← Jira backlog reference & key map
+    ├── 05_FIGMA.md             ← Figma frame register (DES-001 → DES-015 → frames)
     ├── 06_QA.md                ← 19 QA & Security test tasks (QA-001 → QA-019)
     ├── 5.Sprint_Backlog/       ← Immutable Sprint Backlog baseline (SPRINT-BACKLOG.md)
-    ├── architecture/           ← System Architecture, Data Flow, Boundaries, ADRs & Audits
+    ├── architecture/           ← System Architecture, Data Flow, Boundaries, ADRs
     ├── database/               ← Relational + pgvector Data Model & Operational Guide
     ├── ai/                     ← RAG Pipeline & Challenge Support AI specs
-    ├── design/                 ← Global Design System, Site Architecture, Stitch Guide & Screens (P0–P4)
+    ├── design/                 ← UX screen notes, Site Architecture, Screens (P0–P4), improvement plan, audit
     ├── features/               ← 15 canonical FEATURE-*.md specifications
     ├── qa/                     ← Testing Strategy & Verification Reports
     ├── requirements/           ← Proposal V1.2 Requirement Traceability Matrix
@@ -79,8 +80,8 @@ EduBranch-AI/
 1. **No Scattered Duplicate Docs**: Do not create hidden top-level folders (such as `.stitch/`) for documentation. All UI/UX specifications belong strictly inside `docs/design/` and `.agents/rules/01-ui-design-standards.md`.
 2. **File Naming Convention**:
    - Rules in `.agents/rules/`: `00-project-foundation.md`, `01-ui-design-standards.md`, and `feature-<domain-kebab-case>.md`.
-   - Technical & Design Docs in `docs/**/`: `UPPER-KEBAB-CASE.md` (e.g., `GLOBAL-DESIGN-SYSTEM.md`, `P0-FOUNDATION.md`, `FEATURE-BRANCHING-STUDY.md`).
-   - Sprint Governance Root Docs in `docs/`: `01_MASTER-TASKS.md` through `06_QA.md`, `PROJECT_OVERVIEW.md`, `HANDOVER_DIRECTIVE.md`.
+   - Technical & Design Docs in `docs/**/`: `UPPER-KEBAB-CASE.md` (e.g., `UX-SCREEN-NOTES.md`, `P0-FOUNDATION.md`, `FEATURE-BRANCHING-STUDY.md`).
+   - Sprint Governance Root Docs in `docs/`: `01_MASTER-TASKS.md` through `06_QA.md`, `PROJECT_OVERVIEW.md`.
 
 ---
 
@@ -176,6 +177,7 @@ docs/<topic>             →  develop
 3. **Quy ước phân tách Backend & Frontend**:
    - **Frontend (hoặc tính năng chung)**: Dùng format chuẩn `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`).
    - **Backend khi phát triển riêng biệt**: Bắt buộc thêm hậu tố `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
+   - **AI service (`ai-service/`)**: Dùng chung nhánh `-backend` của tính năng, không tạo hậu tố riêng (ví dụ: `feature/rag-backend`). Code AI tiếp nối trên nhánh `-backend` đã có (PO quyết định 2026-11-19).
    - **Quy trình chuẩn**: Cả hai nhánh đều phân nhánh từ `develop` mới nhất (`git checkout develop && git pull`), kiểm thử độc lập qua Docker (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
 4. **Tính bền vững của nhánh**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task đơn lẻ.
 
@@ -195,4 +197,4 @@ docs/<topic>             →  develop
 
 - **Backend Gateway (`backend/`)**: NestJS modular architecture (`auth/`, `user/`, `course/`, `material/`, `case/`, `branching-attempt/`, `reasoning/`, `challenge-support/`, `review-study/`, `lecturer-feedback/`, `statistics/`, `evaluation/`, `notification/`, `common/`). Mandatory `class-validator` DTOs; never return raw DB entities.
 - **AI Service (`ai-service/`)**: FastAPI domain packages (`core/`, `providers/`, `ingestion/`, `retrieval/`, `generation/`, `challenge_support/`, `evaluation/`). Always route LLM calls through `providers/factory.py`; strict Pydantic v2 schemas.
-- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI strictly governed by `.agents/rules/01-ui-design-standards.md` and `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI strictly governed by `.agents/rules/01-ui-design-standards.md` (single design source; token values in `frontend/src/index.css`).

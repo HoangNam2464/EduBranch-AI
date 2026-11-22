@@ -105,7 +105,7 @@ Provides secure identity management, authentication, and role-based access contr
 ---
 
 ## 13. Out of Scope
-- Social OAuth / OpenID login (Google, Facebook, GitHub) — strictly excluded.
+- Social OAuth / OpenID login with providers other than Google and Microsoft (e.g. Facebook, GitHub). *Updated 2026-11-12 (PO decision): sign-in / sign-up with Google and Microsoft is now in MVP on the public login and register pages; see `docs/mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md` PSD-09.*
 - Single Sign-On (SSO) with university campus LDAP/SAML.
 - Multi-factor authentication (MFA / SMS OTP).
 - Multi-tenant university administration dashboards.

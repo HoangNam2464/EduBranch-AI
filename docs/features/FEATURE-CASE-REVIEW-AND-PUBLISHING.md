@@ -1,7 +1,7 @@
 # Feature: Lecturer Case Review, Edit & Publishing Workflow
 
 > **Authoritative Traceability**: Items 17, 18, 19 (Proposal Section 2 p. 6, Section 4 p. 7, Section 7 p. 11, Section 10 p. 14)  
-> **Target Package / Module**: Backend `case/` · Frontend `pages/lecturer/CaseReviewPage.tsx`, `features/case-review/`
+> **Target Package / Module**: Backend `case/` · Frontend `pages/cases/CaseReviewPage.tsx`, `features/case-review/`
 
 ---
 

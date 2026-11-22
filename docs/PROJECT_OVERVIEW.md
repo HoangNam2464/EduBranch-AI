@@ -1,7 +1,7 @@
 # EduBranch AI — Project Overview
 
 **Full Name**: EduBranch AI — AI Platform for Experiential Case-Based Learning in University Teaching
-**Version**: 0.0.1-SNAPSHOT (Scaffolded)
+**Version**: development (`develop`); live task status in Jira EBA and `docs/04_JIRA/JIRA-KEY-MAP.md`
 **Repository**: https://github.com/HoangNam2464/EduBranch-AI
 
 ---
@@ -31,10 +31,10 @@ Students learn not by passively reading outcomes, but by making decisions, compl
 | Actor | Role |
 |---|---|
 | **Lecturer** | Creates courses; uploads teaching materials; triggers AI case generation; inspects, edits, approves, and publishes cases; shares case link with students; reviews student attempts/submissions; writes qualitative feedback; uses statistics for class discussion. |
-| **Student** | Accesses case via direct link from lecturer. In Branching Study: navigates the experience, makes consecutive decisions, completes the journey, reviews the full path retrospectively, writes reasoning and reflection, and may retry. In Review Study: analyzes context, proposes solution, receives feedback, reflects. |
+| **Student** | Joins a class by invite code and opens published cases from the student desk or "My courses"; a direct link from the lecturer also works. In Branching Study: navigates the experience, makes consecutive decisions, completes the journey, reviews the full path retrospectively, writes reasoning and reflection, and may retry. In Review Study: analyzes context, proposes solution, receives feedback, reflects. |
 | **Admin** | System administrator (Proposal V1.2 Context Diagram): manages user accounts and roles, manages courses, monitors API and system health logs. |
 
-> **Students do not create cases.** Students do not browse case lists. Student access is always via a direct link provided by the Lecturer.
+> **Students do not create cases.** Students only ever open `PUBLISHED` cases (INV-01); the student desk and My courses list only classes they joined. Update 2026-11-12 (PO decision OPD-001 → A): students join a class with an invite code and browse their courses and assigned cases on the student desk; the direct case link from the lecturer remains available.
 
 ---
 
@@ -113,7 +113,7 @@ Student submits overall Reflection
 | Vector DB | PostgreSQL 16 + pgvector | Embeddings + relational business data |
 | Cache & Session | Redis 7 | Caching, session store |
 | Object Storage | MinIO | PDF/DOCX teaching material storage |
-| LLM | Gemini 2.0 Flash / OpenAI GPT-4o-mini | Provider abstraction for text & embeddings |
+| LLM | Gemini 3.5 Flash (`gemini-3.5-flash`; embeddings `gemini-embedding-001` 768-dim) / OpenAI GPT-4o-mini | Provider abstraction for text & embeddings |
 
 ---
 
@@ -128,13 +128,13 @@ Student submits overall Reflection
 | | [Service Boundaries](architecture/SERVICE-BOUNDARIES.md) | Inter-service contracts, protocols & security |
 | | [System Data Flows](architecture/DATA-FLOW.md) | End-to-end sequence diagrams & lifecycle |
 | | [Decision Tree Model](architecture/DECISION-TREE-MODEL.md) | Invariants & JSON schema for branching cases |
-| | [Architecture Audits & Reports](architecture/audits/README.md) | Historical audits, baseline validations & migration reports |
 | **Features** | [Feature Specifications](features/) | Comprehensive per-feature specifications |
-| **UI / UX Design System** | [Global Design System](design/GLOBAL-DESIGN-SYSTEM.md) | Canonical light-first color tokens, vector SVG icons, typography & components |
+| **UI / UX Design System** | [R01 UI/UX Design Rules](../.agents/rules/01-ui-design-standards.md) | Single design source: identity, tokens by name (values in `frontend/src/index.css`), layout, components, states, quality bar |
 | | [Site Architecture](design/SITE-ARCHITECTURE.md) | 14-route sitemap, role boundaries & 6 product workflows |
 | | [Screen Specifications (P0–P4)](design/screens/) | Detailed per-screen layout, state & component specs |
-| | [Stitch Generation Guidelines](design/STITCH-GENERATION-GUIDELINES.md) | 9-field prompt specification for UI generation |
-| **Task Catalogs** | [Master Task Backlog](01_MASTER-TASKS.md) | Master 100-task backlog (`01_MASTER-TASKS.md`–`06_QA.md`) |
+| | [Design Direction](design/DESIGN-DIRECTION.md) | Proposed visual/UX evolution within the fixed identity (PROPOSED) |
+| **Task Catalogs** | [Master Task Backlog](01_MASTER-TASKS.md) | 84-task baseline (`01_MASTER-TASKS.md`–`06_QA.md`); Jira holds 105 issues — see [Jira Key Map](04_JIRA/JIRA-KEY-MAP.md) |
+| **Team** | [Team Capability Matrix](team/TEAM-CAPABILITY-MATRIX.md) | Members, assignments, role playbooks |
 | **Data & AI** | [Data Model](database/DATA-MODEL.md) | PostgreSQL schema & SQL migration guide |
 | | [RAG Pipeline](ai/RAG-PIPELINE.md) | Document parsing, chunking, retrieval & sources |
 | | [Reasoning & Challenge Support](ai/REASONING-CHALLENGE-SUPPORT.md) | Counter-question rules, 2-round cap, non-grading mandate |
@@ -143,28 +143,25 @@ Student submits overall Reflection
 
 ---
 
-## Feature Status Standard
+## Feature Status (as of 2026-11-21)
 
-All features are classified strictly under three states:
-- **`Documented`**: Specification authored in `docs/` according to the 15-section standard.
-- **`Structurally Scaffolded`**: Specification documented AND non-business architectural skeleton exists.
-- **`Implemented`**: Complete business logic and workflow active (**Strictly ZERO in this snapshot**).
+> The previous table ("Implemented: strictly ZERO in this snapshot", 2026-10) is SUPERSEDED: it described the scaffold, not the current code. Status words: **Implemented** = code on `develop` with automated tests; **Partial** = some flows or screens missing; **Not started**. Implemented never means PO-accepted or Done in Jira (AGENTS.md rule 10). Evidence: `develop` `6f903f2` — backend build 0, unit 300/300, e2e 148 pass/33 skipped; AI service 153 pass/1 fail/11 skipped; frontend lint 0, unit 169/169, build 0.
 
-| Feature Area | Status | Notes |
+| Feature Area | Status | Evidence / gap |
 |---|---|---|
-| Authentication & Roles | Structurally Scaffolded | JWT security, entity, and layout shell |
-| Course Context | Structurally Scaffolded | Course entity, DTOs, and page shell |
-| Teaching Materials & Upload | Structurally Scaffolded | Material metadata entity, MinIO config |
-| Document Processing & RAG | Structurally Scaffolded | Parser/chunker shells, pgvector retrieval schema |
-| AI Case Generation | Structurally Scaffolded | Pydantic schema, DFS validator, provider abstraction |
-| Decision Tree Model | Structurally Scaffolded | Node, Option, Consequence domain models |
-| Lecturer Review & Publishing | Structurally Scaffolded | ReactFlow canvas shell, status lifecycle |
-| Branching Case Player & Attempts | Structurally Scaffolded | Attempt entity, node navigation shell, seamless experience flow |
-| Student Reasoning Capture (REVIEW phase) | Structurally Scaffolded | Reasoning entity — captured retrospectively after journey completion |
-| Review Study Mode | Structurally Scaffolded | Submission entity, solution/reasoning forms |
-| AI Reasoning / Challenge Support | Structurally Scaffolded | 2-round schema validator, challenge message model |
-| Student Reflection | Structurally Scaffolded | Post-journey / post-feedback reflection shell |
-| Lecturer Feedback & Review | Structurally Scaffolded | Qualitative feedback entity, review dashboard |
-| Lecturer Statistics | Structurally Scaffolded | Statistics aggregation query shells, page shell |
-| Notifications | Documented (Phase 2) | Proposal options (In-App / Email / Hybrid). In MVP, deadlines are presented with published cases; automated reminder push is Phase 2. |
-| Quantitative Evaluation & Research | Documented (Research Boundary) | Rubric / export boundary. In MVP classroom trial, survey responses are captured via standardized external instrument (e.g. Google Forms/Likert link), while core activity metrics are logged in-platform. |
+| Authentication & Roles | Implemented (email/password, JWT, RBAC, rate limit) | Google/Microsoft sign-in (BE-034) not started; password reset UI exists without API |
+| Course Context & Enrollment | Implemented | Soft archive (OPD-014), invite code + student desk (BE-029, V5) |
+| Teaching Materials & Upload | Implemented | MinIO storage, PDF/DOCX validation |
+| Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary |
+| AI Case Generation | Implemented | DAG validation, grounded prompting; one stale boundary test (QA-006 AC3) |
+| Decision Tree / Case Editor | Implemented | node save with topology checks (BE-017), editor (FE-009/010) |
+| Lecturer Review & Publishing | Implemented | lifecycle state machine, published-only student gate |
+| Branching Case Player & Attempts | Implemented | play → review → reflect → retry; reasoning access fix pending (PR #77) |
+| Review Study | Implemented (BE) / Partial (FE) | BE-025 Done; student feedback view in open PR #69 |
+| AI Challenge Support | Implemented | 2-round cap in gateway and AI service (BE-027, FE-021) |
+| Lecturer Feedback & Statistics | Implemented (BE) / Partial (FE) | BE-026/028 Done; FE-019/FE-022 in open PRs #68/#70 |
+| Lecturer Dashboard | Partial | FE-027 open PR #73; aggregation API BE-030 not started |
+| Profile | Partial | view implemented; update API BE-031 not started |
+| Admin Portal | Partial | shell/dashboard UI (shows placeholder data — defect), admin APIs BE-032 not started, screens in PR #75 |
+| Evaluation & Rubric | Partial | rubric UI in PR #74; storage/export BE-033 not started |
+| Notifications | Documented (Phase 2) | automated reminders are Phase 2 |
