@@ -44,14 +44,24 @@ function FeatureLine({ label, children }: { label: string; children: ReactNode }
 
 // ── 02.4 uploaded material row ───────────────────────────────────────────────
 
-function MaterialRow({ material, courseId, onDelete }: { material: TeachingMaterial; courseId: string; onDelete: () => void }) {
+function MaterialRow({
+  material,
+  courseId,
+  onDelete,
+  onRetry,
+}: {
+  material: TeachingMaterial;
+  courseId: string;
+  onDelete: () => void;
+  onRetry: () => void;
+}) {
   const { t } = useTranslation();
   const ext = extensionOf(material.originalFilename).slice(1).toUpperCase();
   const size = formatFileSize(material.sizeBytes, t);
   const status = material.processingStatus;
   const meta =
     status === "FAILED"
-      ? t("g2.materials.statusFailed")
+      ? (material.processingError || t("g2.materials.statusFailedReason"))
       : status === "COMPLETED" && material.chunkCount !== undefined
         ? `${t("g2.materials.chunks", { count: material.chunkCount })} · ${size}`
         : size;
@@ -73,6 +83,12 @@ function MaterialRow({ material, courseId, onDelete }: { material: TeachingMater
         <LoaderCircle aria-hidden="true" size={14} absoluteStrokeWidth strokeWidth={1.33} className="motion-safe:animate-spin" />
         {t("g2.materials.statusProcessing")}
       </span>
+    );
+  } else if (status === "FAILED") {
+    indicator = (
+      <Button variant="secondary" size="sm" onClick={onRetry}>
+        {t("g2.materials.retry")}
+      </Button>
     );
   }
 
@@ -226,6 +242,19 @@ function UploadDialog({ courseId, onClose, onUploaded }: { courseId: string; onC
                       </span>
                     )}
                   </span>
+                  {q.error === "failed" && !uploading && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setQueue((prev) =>
+                          prev.map((x) => (x.key === q.key ? { ...x, error: undefined, progress: undefined } : x)),
+                        )
+                      }
+                      className={cx("text-[12px] leading-4 font-medium text-ink hover:underline cursor-pointer", FOCUS_RING)}
+                    >
+                      {t("g2.materials.retry")}
+                    </button>
+                  )}
                   <button
                     type="button"
                     disabled={uploading}
@@ -291,6 +320,19 @@ export function MaterialsPage() {
     const materials = await materialService.getMaterialsByCourse(courseId);
     setInsights((prev) => (prev ? { ...prev, materials } : prev));
   }, [courseId]);
+
+  useEffect(() => {
+    const hasProcessing = insights?.materials.some(
+      (m) => m.processingStatus === "PENDING" || m.processingStatus === "PROCESSING",
+    );
+    if (!hasProcessing) return;
+
+    const interval = window.setInterval(() => {
+      void refreshMaterials();
+    }, 3000);
+
+    return () => window.clearInterval(interval);
+  }, [insights?.materials, refreshMaterials]);
 
   async function confirmDelete() {
     if (!toDelete) return;
@@ -505,6 +547,7 @@ export function MaterialsPage() {
                     setDeleteError(null);
                     setToDelete(m);
                   }}
+                  onRetry={() => setUploadOpen(true)}
                 />
               ))}
             </ul>

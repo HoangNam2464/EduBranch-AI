@@ -51,16 +51,7 @@ export interface ReviewStudyWorkspaceContext {
 async function loadReviewStudyWorkspace(caseId: string): Promise<ReviewStudyWorkspaceContext> {
   const caseData = await caseService.getCaseById(caseId);
   const course = await courseService.getCourseById(caseData.courseId);
-  let initialSubmission: ReviewStudySubmission | null = null;
-  try {
-    initialSubmission = await reviewStudyService.getMySubmission(caseId);
-  } catch (err: unknown) {
-    if (isAxiosError(err) && (err.response?.status === 404 || err.response?.status === 501)) {
-      initialSubmission = null;
-    } else {
-      throw err;
-    }
-  }
+  const initialSubmission = await reviewStudyService.getMySubmission(caseId);
   return { caseData, course, initialSubmission };
 }
 

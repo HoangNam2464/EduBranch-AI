@@ -117,3 +117,15 @@ Chưa bắt đầu (sau G7).
 - QG2 (Claude): #68 build 0, test 182/182, lint sạch file đã sửa, l10n 1400; #69 build 0, test 180/180, l10n 1422 (Claude thêm: `getFeedback` báo lỗi khi phản hồi sai định dạng, đăng ký 36 key `g5.feedback.*`); #70 build 0, test 176/176, l10n 1407. Mức `develop`: 1424.
 - Commit/push (không force): #68 `3d13f6b` (`feature/lecturer-feedback`), #69 `94f7ef8` (`feature/review-feedback`), #70 `95a8730` (`feature/statistics`).
 - Còn lại: T054 Visual QA, T060 Converge; khi merge sẽ có xung đột ở `frontend/src/components/feedback/index.ts`, `vi.json`/`en.json`, `docs/l10n/shared-copy-review.md` giữa #68/#69/#70 — Claude xử lý khi merge.
+
+### QG7 — post-merge retest (Claude, 2026-11-21)
+Merge SHA `55eb9ef` (PR #76), isolated worktree, fresh database `qg7_55eb9ef` (Postgres 16 + pgvector 0.6.0, Redis 7, no MinIO/AI service):
+
+| Command | Exit | Result |
+|---|---|---|
+| `npm run build` | 0 | — |
+| `npm test -- --runInBand` | 0 | 30 suites, 300/300 |
+| `npm run test:e2e -- --runInBand` | 0 | 148 pass, 33 skipped (live suites need MinIO/AI or `QA_LIVE=1`) |
+| `QA_LIVE=1 npx jest -c test/jest-e2e.json feedback-stats.live --runInBand` | 0 | 7/7 |
+
+QG3 not applicable (backend). Result: QG7 PASS for BE-025, BE-026, BE-028; Jira EBA-72, EBA-73, EBA-75 moved to Done with this evidence. The FE fixes in PRs #68–#70 are not covered here; their Visual QA (T054) is still required before merge.
