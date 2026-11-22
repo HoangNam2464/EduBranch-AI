@@ -4,19 +4,19 @@
 > **Figma**: file `6CtSgJPKo4jCIbB7WwCaWw`, page `Page 1` (`0:1`), đọc bằng `get_metadata` và `get_screenshot` (session `d524bf8e-77e9-416f-986d-699eff2ab367`). Không dùng `use_figma`.
 > **Nguồn đối chiếu**: Proposal V1.2 (PO-10; bản cục bộ `docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`, đoạn trích theo số đoạn `¶`), `docs/01_MASTER-TASKS.md` (84 task / 336 SP), `docs/OPEN_PRODUCT_DECISIONS.md` v1.1.2 trên nhánh `feature/design-system` (Draft; mọi OPD `OPEN / PENDING`; mục CPD cũng là Draft), các quyết định PO-1..27, route trong `backend/src/**/*.controller.ts` tại `02028b2`.
 > **Không frame nào được đánh dấu Ready for Dev hay Approved trong tài liệu này.** Phân loại dưới đây là đề xuất có bằng chứng; PO duyệt riêng.
-> **Cập nhật 2026-11-12 (quyết định PO):** Admin thuộc MVP, không chờ duyệt thêm (OPD-015 → phương án B, đủ 10 màn). Màn "Dịch vụ AI" chỉ để xem vì provider cố định trong `.env` (OPD-013). "Nghiên cứu & Rubric" của Admin thuộc MVP từ khi OPD-011 được chốt (xem cập nhật dưới). Thiết kế mới nằm ở page `08 · EduBranch – Bản hoàn chỉnh`, section `10 · Admin · Quản trị hệ thống` (frame 10.1–10.10). Backlog `01_MASTER-TASKS.md` chưa có task Admin — cần bổ sung.
-> **Cập nhật 2026-11-12 (quyết định PO):** đăng nhập/đăng ký bằng **Google và Microsoft** (OAuth / OpenID Connect) thuộc MVP, trên 00.3, 00.4, 00.5 (không áp dụng cho đăng nhập quản trị 10.1). Thay thế kết luận PHASE 2 trong `AUTHENTICATION_SCOPE_ANALYSIS.md` và PSD-09. `01_MASTER-TASKS.md §4.6` (giữ nguyên theo HANDOVER_DIRECTIVE) vẫn ghi OAuth là Post-MVP — cần PO/mentor xác nhận việc bổ sung task BE/FE/QA.
+> **Cập nhật 2026-11-12 (quyết định PO):** Admin thuộc MVP, không chờ duyệt thêm (OPD-015 → phương án B, đủ 10 màn). Màn "Dịch vụ AI" chỉ để xem vì provider cố định trong `.env` (OPD-013). "Nghiên cứu & Rubric" của Admin thuộc MVP từ khi OPD-011 được chốt (xem cập nhật dưới). Thiết kế mới nằm ở page `EduBranch AI – Screens`, section `10 · Admin · Quản trị hệ thống` (frame 10.1–10.10). Backlog `01_MASTER-TASKS.md` chưa có task Admin — cần bổ sung.
+> **Cập nhật 2026-11-12 (quyết định PO):** đăng nhập/đăng ký bằng **Google và Microsoft** (OAuth / OpenID Connect) thuộc MVP, trên 00.3, 00.4, 00.5 (không áp dụng cho đăng nhập quản trị 10.1). Thay thế kết luận PHASE 2 trong `AUTHENTICATION_SCOPE_ANALYSIS.md` và PSD-09. `01_MASTER-TASKS.md §4.6` (giữ nguyên baseline 84 task) vẫn ghi OAuth là Post-MVP — cần PO/mentor xác nhận việc bổ sung task BE/FE/QA.
 
-> **Cập nhật 2026-11-12 (quyết định PO):** trang công khai gộp thành **một trang cuộn** (00.2). Hai frame đề xuất 00.6 "Cách hoạt động" và 00.7 "Câu hỏi thường gặp" trên page 08 đã gộp vào 00.2 thành khối neo và bị xóa. Hai frame này chưa từng được tính trong register, nên tổng số frame không đổi.
+> **Cập nhật 2026-11-12 (quyết định PO):** trang công khai gộp thành **một trang cuộn** (00.2). Hai frame đề xuất 00.6 "Cách hoạt động" và 00.7 "Câu hỏi thường gặp" trên page EduBranch AI – Screens đã gộp vào 00.2 thành khối neo và bị xóa. Hai frame này chưa từng được tính trong register, nên tổng số frame không đổi.
 
-> **Cập nhật 2026-11-12 (quyết định PO):** section **07** và **09** trên page 08 đã chốt, **không còn HOLD**. Các quyết định được đóng theo đó:
-> - **OPD-001 → A** (mã mời + trang của sinh viên): Bàn học, Khóa học của tôi, Tham gia lớp học thuộc MVP (page 08: 07.2, 07.3, 07.4); phần tử mã mời trên màn giảng viên và nút "Về Bàn học" trên 05.8 không còn bị chặn.
-> - **OPD-006 → wizard 3 bước** (AI Studio, page 08: 07.5–07.7). Tên task DES-006 *"Case Generation Modal"* cần cập nhật cho khớp.
+> **Cập nhật 2026-11-12 (quyết định PO):** section **07** và **09** trên page EduBranch AI – Screens đã chốt, **không còn HOLD**. Các quyết định được đóng theo đó:
+> - **OPD-001 → A** (mã mời + trang của sinh viên): Bàn học, Khóa học của tôi, Tham gia lớp học thuộc MVP (page EduBranch AI – Screens: 07.2, 07.3, 07.4); phần tử mã mời trên màn giảng viên và nút "Về Bàn học" trên 05.8 không còn bị chặn.
+> - **OPD-006 → wizard 3 bước** (AI Studio, page EduBranch AI – Screens: 07.5–07.7). Tên task DES-006 *"Case Generation Modal"* cần cập nhật cho khớp.
 > - **OPD-011 → A** (rubric trong nền tảng): Rubric giảng viên (07.8) và Admin "Nghiên cứu & Rubric" (10.8) thuộc MVP.
 > - **D-05 → có** dashboard giảng viên (07.1).
-> - **Hồ sơ tài khoản** giảng viên / sinh viên (09.1, 09.2) thuộc MVP; hai frame này mới có ở page 08 nên được thêm vào register.
+> - **Hồ sơ tài khoản** giảng viên / sinh viên (09.1, 09.2) thuộc MVP; hai frame này mới có ở page EduBranch AI – Screens nên được thêm vào register.
 >
-> Hệ quả chưa xử lý: backlog `01_MASTER-TASKS.md` (giữ nguyên theo HANDOVER_DIRECTIVE) chưa có task cho các màn trên; DB chưa có bảng ghi danh (`course_enrollments`) và chưa có module `evaluation/`. Cần PO/mentor bổ sung task BE/FE/QA. Nút "Tạo thủ công từ đầu" trong AI Studio vẫn chờ **D-07**.
+> Hệ quả chưa xử lý: backlog `01_MASTER-TASKS.md` (giữ nguyên baseline 84 task) chưa có task cho các màn trên; DB chưa có bảng ghi danh (`course_enrollments`) và chưa có module `evaluation/`. Cần PO/mentor bổ sung task BE/FE/QA. Nút "Tạo thủ công từ đầu" trong AI Studio vẫn chờ **D-07**.
 
 ## 1. Quy tắc phân loại
 
@@ -39,7 +39,7 @@
 | HOLD | 3 (05.5, 05.6 chờ OPD-005; Email kích hoạt chờ OPD-008) |
 | PHASE 2 | 5 |
 | OUT OF SCOPE | 2 |
-| **Tổng frame** | **68** (66 + 2 frame Hồ sơ tài khoản của page 08) |
+| **Tổng frame** | **68** (66 + 2 frame Hồ sơ tài khoản của page EduBranch AI – Screens) |
 | Node không phải frame (section 09) | 2 (`30:1127` Vector, `81:2036` instance Badge) — node rác, không phân loại |
 
 ## 3. Register
@@ -51,7 +51,7 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 | Node | Frame | Nhóm | Bằng chứng | Phần tử cần xử lý |
 |---|---|---|---|---|
 | `91:2601` | 00.1 · Sơ đồ ứng dụng & luồng người dùng | MVP (tài liệu IA, không phải màn dev) | DES-001 (3 SP); SITE-ARCHITECTURE §5 | Nội dung sơ đồ ghi "15 route MVP" và "sinh viên vào case qua đường dẫn trực tiếp" — cần sửa theo OPD-001 → A (2026-11-12): sinh viên vào bằng mã mời và Bàn học |
-| `90:2572` | 00.2 · Trang giới thiệu | MVP | P0 §0; `05_FIGMA.md §1.5` gom vào DES-001 | **PO 2026-11-12**: trang công khai là một trang cuộn; "Cách hoạt động" (`#cach-hoat-dong`) và "Câu hỏi thường gặp" (`#cau-hoi`) là khối neo trong trang, không có route riêng. Thiết kế hiện hành: page 08, frame `496:4734` |
+| `90:2572` | 00.2 · Trang giới thiệu | MVP | P0 §0; `05_FIGMA.md §1.5` gom vào DES-001 | **PO 2026-11-12**: trang công khai là một trang cuộn; "Cách hoạt động" (`#cach-hoat-dong`) và "Câu hỏi thường gặp" (`#cau-hoi`) là khối neo trong trang, không có route riêng. Thiết kế hiện hành: page EduBranch AI – Screens, frame `496:4734` |
 | `1:2` | 00.3 · Đăng nhập · Mặc định | MVP | Proposal ¶129 "Account and role management"; BE-001, FE-002; route `POST /api/v1/auth/login` có trong code | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft" (component `EB/Social Sign-in`); **P2**: liên kết "Quên mật khẩu?" (`01_MASTER-TASKS §4.6`) |
 | `1:52` | 00.4 · Đăng ký · Sinh viên | MVP | ¶129; BE-001, FE-002; `POST /api/v1/auth/register` | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft" |
 | `1:122` | 00.5 · Đăng ký · Giảng viên | MVP | ¶129; BE-001, FE-002 | **MVP (PO 2026-11-12)**: "Tiếp tục với Google / Microsoft"; **H(OPD-008)**: khối "Lưu ý" về kích hoạt tài khoản giảng viên |
@@ -121,7 +121,7 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 | `88:2877` | 06.2 · Đã nộp, chờ phản hồi | MVP | FE-018, BE-025 | Instance badge tên "Đã có phản hồi" trên frame "chờ phản hồi" — cần kiểm nội dung hiển thị |
 | `1:297` | 06.3 · Đã phản hồi | MVP | DES-014, FE-020 | — |
 
-### Section `93:2608` — 07 · Chờ quyết định → page 08 `07 · Màn bổ sung · Bàn học, AI Studio, Rubric`
+### Section `93:2608` — 07 · Chờ quyết định → page EduBranch AI – Screens `07 · Màn bổ sung · Bàn học, AI Studio, Rubric`
 
 | Node | Frame | Nhóm | Bằng chứng | Ghi chú |
 |---|---|---|---|---|
@@ -133,9 +133,9 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 | `1:1202` | Sinh viên · Khóa học của tôi → `07.3` | **MVP** (PO 2026-11-12, OPD-001 → A) | idem | idem |
 | `1:1084` | Sinh viên · Tham gia lớp học → `07.4` | **MVP** (PO 2026-11-12, OPD-001 → A) | idem | DB chưa có bảng ghi danh `course_enrollments` |
 | `1:3490` | Giảng viên · Tổng quan (bản gốc) | **OUT OF SCOPE** (lưu trữ tham chiếu) | Hướng PO §4: giữ làm bản tham chiếu | Không xóa |
-| `34:3183` | Lecturer Dashboard — Revision 01 → `07.1` Bảng điều khiển | **MVP** (PO 2026-11-12, D-05 → có) | Quyết định PO | Chưa có task; P1 §1 đang ghi Courses là màn đầu tiên — cần sửa. Kiểm lại hai điểm lùi ở §4 trên page 08 |
+| `34:3183` | Lecturer Dashboard — Revision 01 → `07.1` Bảng điều khiển | **MVP** (PO 2026-11-12, D-05 → có) | Quyết định PO | Chưa có task; P1 §1 đang ghi Courses là màn đầu tiên — cần sửa. Kiểm lại hai điểm lùi ở §4 trên page EduBranch AI – Screens |
 | `26:148` | Email · Kích hoạt tài khoản | **HOLD (OPD-008)** | Không có task | — |
-| `1:4477` | Admin · Đăng nhập → page 08 `10.1` | **MVP** (PO 2026-11-12) | Context Diagram: Admin; OPD-015 → B | Không có liên kết đăng ký |
+| `1:4477` | Admin · Đăng nhập → page EduBranch AI – Screens `10.1` | **MVP** (PO 2026-11-12) | Context Diagram: Admin; OPD-015 → B | Không có liên kết đăng ký |
 | `1:3715` | Admin · Bảng điều khiển → `10.2` | **MVP** (PO 2026-11-12) | idem | Chỉ số toàn hệ thống; không giám sát chi phí AI |
 | `1:4025` | Admin · Quản lý người dùng → `10.3` | **MVP** (PO 2026-11-12) | Context Diagram *"Manage accounts & roles"* | **H(OPD-008)**: chưa có tab chờ duyệt giảng viên; khóa/mở khóa dựa trên `users.is_active` |
 | `30:1864` | Admin · Khóa người dùng → `10.4` | **MVP** (PO 2026-11-12) | idem | — |
@@ -146,9 +146,9 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 | `1:5302` | Admin · Nhật ký hệ thống → `10.9` | **MVP** (PO 2026-11-12) | Context Diagram *"API & system logs"* | — |
 | `1:4345` | Admin · Cài đặt hệ thống → `10.10` | **MVP** (PO 2026-11-12) | Quyết định PO | Mục AI chỉ tham chiếu (OPD-013) |
 
-### Page 08 — section `09 · Hồ sơ tài khoản` (bổ sung 2026-11-12)
+### Page EduBranch AI – Screens — section `09 · Hồ sơ tài khoản` (bổ sung 2026-11-12)
 
-| Node (page 08) | Frame | Nhóm | Bằng chứng | Ghi chú |
+| Node (page EduBranch AI – Screens) | Frame | Nhóm | Bằng chứng | Ghi chú |
 |---|---|---|---|---|
 | `484:11904` | 09.1 · Giảng viên · Hồ sơ tài khoản | **MVP** (PO 2026-11-12) | Quyết định PO | Thông tin tài khoản chỉ xem, khóa học phụ trách. Chưa có task |
 | `484:12467` | 09.2 · Sinh viên · Hồ sơ tài khoản | **MVP** (PO 2026-11-12) | Quyết định PO; dựa trên OPD-001 → A | Không có điểm số; tiến độ và nhận xét. Chưa có task |
@@ -181,7 +181,7 @@ Ký hiệu cột "Phần tử cần xử lý": **P2** = phần tử Phase 2 · *
 
 - Revision 01 có **hai điểm lùi**: (1) nút chính bị tách khỏi component; (2) chữ "chấm" mâu thuẫn nguyên tắc AI và hệ thống không chấm điểm (CPD-04, Draft) và quy ước tránh thuật ngữ chấm điểm (R01 §7).
 - Cả hai đều hiển thị mã sinh viên trong ngoặc (D-04) và trùng chức năng với Courses / Phản hồi / Thống kê.
-- Đề xuất: giữ `34:3183` làm ứng viên theo hướng PO, ghi nhận hai điểm lùi để sửa ở giai đoạn thiết kế; giữ `1:3490` làm bản tham chiếu. Không duyệt khi D-05 chưa có quyết định. **D-05 đã chốt 2026-11-12: có dashboard giảng viên (page 08 `07.1`).**
+- Đề xuất: giữ `34:3183` làm ứng viên theo hướng PO, ghi nhận hai điểm lùi để sửa ở giai đoạn thiết kế; giữ `1:3490` làm bản tham chiếu. Không duyệt khi D-05 chưa có quyết định. **D-05 đã chốt 2026-11-12: có dashboard giảng viên (page EduBranch AI – Screens `07.1`).**
 
 ## 5. Kiểm tra màn quyết định của sinh viên (`1:906`)
 
