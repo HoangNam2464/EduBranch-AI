@@ -100,7 +100,7 @@ Mã task **CHỈ ĐƯỢC XUẤT HIỆN trong Commit Message**, format:
 | `feat` | Add new feature | `feat(ai-service): add structured case generation with JSON schema` |
 | `fix` | Fix a bug | `fix(backend): fix DRAFT→APPROVED status transition validation` |
 | `docs` | Documentation update | `docs: update RAG pipeline architecture diagram` |
-| `style` | Code formatting (no logic change) | `style(frontend): apply prettier formatting` |
+| `style` | Code formatting (no logic change) | `style(frontend): align sidebar footer spacing` |
 | `refactor` | Code restructuring | `refactor(ai-service): optimize pgvector retrieval query` |
 | `test` | Add or fix tests | `test(backend): add branching attempt integration test` |
 | `chore` | Library updates, config | `chore: upgrade nestjs to 10.x` |
@@ -162,7 +162,7 @@ Controller → Service (Interface + Impl) → Repository → Entity / DTO
 
 ### PR Requirements
 
-- **Title**: `<type>(<scope>): <description>` — same as commit convention
+- **Title**: `<type>(<scope>): <description> [<TASK-ID>]` — same as commit convention; body follows `.github/pull_request_template.md`
 - **Description**: Use the PR template (`.github/pull_request_template.md`)
 - **CI must pass**: All GitHub Actions checks must be green before merging
 - **Review**: At least one approval required before merging to `develop`
