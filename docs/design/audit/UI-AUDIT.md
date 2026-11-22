@@ -1,7 +1,7 @@
 # UI Audit — running app vs Figma (1440px)
 
 > **Status**: Audit + trial result (2026-11-21, Claude). The trial code (§4) is **not** in the repository: the PO chose (2026-11-21) to ship the docs package without it, because PR #79 (spec 006, fluid app layout) changes the same shell files. Re-measure X1/X2 after PR #79 merges and redo the trial on top of it if still needed. The `after/` and `compare/` images record what the trial produced.
-> **Environment**: `develop` `6f903f2`; backend on local Postgres 16 + pgvector + Redis (no MinIO, no AI provider key → no materials, no cases); Vite dev server; Chromium (Playwright) 1440×900, deviceScaleFactor 1; language `vi`. Seed: `frontend/tests/visual/seed-local.mjs` (3 accounts, 8 courses; material upload failed without MinIO).
+> **Environment**: `develop` `6f903f2` (before PRs #68–#75 merged on 2026-11-22; the measurements must be re-run on the current `develop`, with MinIO, case/attempt/submission data and on Windows/Chrome, before they serve as acceptance evidence); backend on local Postgres 16 + pgvector + Redis (no MinIO, no AI provider key → no materials, no cases); Vite dev server; Chromium (Playwright) 1440×900, deviceScaleFactor 1; language `vi`. Seed: `frontend/tests/visual/seed-local.mjs` (3 accounts, 8 courses; material upload failed without MinIO).
 > **Evidence**: `baseline/` (before), `after/` (trial), `compare/` (side by side, before left), `capture-report.json` (URL, height, console errors per screen). Figma baselines: `frontend/tests/visual/figma/*.png`.
 > **Limit**: screens that need cases, attempts or submissions (05.x player/review, 06.x Review Study, 04.2 detail, 03.4 editor) could not be audited with data; they are NOT VERIFIED here.
 

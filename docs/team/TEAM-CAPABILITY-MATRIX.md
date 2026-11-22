@@ -1,6 +1,6 @@
 # EduBranch-AI — Team Capability Matrix
 
-> **Status**: Reference (evidence-based snapshot) · **Read on**: 2026-11-21 · **Owner**: PO · **Used by**: `CLAUDE.md` §19.
+> **Status**: Reference (evidence-based snapshot) · **Read on**: 2026-11-21 (Hướng's row updated 2026-11-22 after PRs #68–#75 merged) · **Owner**: PO · **Used by**: `CLAUDE.md` §19.
 > **Sources**: Jira EBA assignees (105 issues, `docs/04_JIRA/JIRA-KEY-MAP.md`), `git log` on `develop` and remote branches, GitHub PRs #1–#78, `docs/02_SPRINT-TASKS.md` role groups (DES/FE/BE/OPS/QA).
 > **Rules**: assignments are facts from Jira; who wrote the code is a fact from git; everything else is labelled. Never change an assignee, reporter or attribution from this file; Jira is the source of the current assignment. This file is not a performance review.
 > **GitHub evidence per member and task** (PRs, own commits on `develop`, local test runs): `docs/team/MEMBER-CONTRIBUTION-EVIDENCE.md`.
@@ -9,10 +9,10 @@
 
 | Member (Jira) | GitHub / git identity | Jira scope (count · SP) | Code that reached `develop` (git author) | Open work |
 |---|---|---|---|---|
-| **Nam Hoàng** | `HoangNam2464` (git: HoangNam2464 / Nguyễn Hoàng Nam) — PO, sole Code Owner (`.github/CODEOWNERS`) | DES-001…015, QA-001…016, QA-018, QA-020…023, BE-007…010, BE-012, BE-014, BE-015, BE-027, BE-033 (45 · 176 SP) | 171 commits: governance/docs, RAG pipeline, case generation, FE rebuild (FE-025), most Sprint 3–4 BE (BE-017, BE-025/026/028, BE-027, BE-029), QA suites | PR #77 (reasoning access fix) |
+| **Nam Hoàng** | `HoangNam2464` (git: HoangNam2464 / Nguyễn Hoàng Nam) — PO, sole Code Owner (`.github/CODEOWNERS`) | DES-001…015, QA-001…016, QA-018, QA-020…023, BE-007…010, BE-012, BE-014, BE-015, BE-027, BE-033 (45 · 176 SP) | 171 commits: governance/docs, RAG pipeline, case generation, FE rebuild (FE-025), most Sprint 3–4 BE (BE-017, BE-025/026/028, BE-027, BE-029), QA suites | PRs #77 (reasoning access, BE-024), #79 (fluid app layout, FE-025), #80 (BE-030…BE-033, Claude), #81 (docs) |
 | **Đức Anh Nguyễn** | `DucAnh1906` (git on PR branch: "Nguyen Duc Anh" `<EMAIL_GITHUB_CUA_BAN>` — identity not configured) | BE-001…003, BE-005, BE-013, BE-016…026, BE-028…032, BE-034, OPS-001…003 (25 · 106 SP) | No commit under this identity on `develop` [FACT]; BE-016…BE-023 commits sit on open PR #59 | PR #59 (material-backend, overlaps code already on `develop`) |
 | **Baohy Nguyenduc** | `Baohy-14` (git: `nguyenducbaohy22`) | FE-001, FE-008, FE-010, FE-012…017, FE-021, FE-023, FE-025, FE-028, FE-030, FE-031 (15 · 65 SP) | FE-001 (PR #7), FE-021 (PR #64), FE-030 (PR #66), FE-031 (PR #67); PRs #33–#37, #41–#47, #56, #57 closed without merge | — |
-| **Hướng Nguyễn** | `Myth28-De` (git: "Nguyen Duc Huong") | FE-002…007, FE-009, FE-011, FE-018…020, FE-022, FE-024, FE-026, FE-027, FE-029, FE-032 (17 · 65 SP) | FE-002 (PR #20), FE-018 (PR #63), FE-024 (PR #71) | PRs #68 FE-019, #69 FE-020, #70 FE-022, #72 FE-026, #73 FE-027, #74 FE-029, #75 FE-032 |
+| **Hướng Nguyễn** | `Myth28-De` (git: "Nguyen Duc Huong") | FE-002…007, FE-009, FE-011, FE-018…020, FE-022, FE-024, FE-026, FE-027, FE-029, FE-032 (17 · 65 SP) | FE-002 (PR #20), FE-018 (PR #63), FE-024 (PR #71); merged 2026-11-22: FE-019 (#68), FE-020 (#69), FE-022 (#70), FE-026 (#72), FE-027 (#73), FE-032 (#75) — in Jira review, not Done | PR #74 FE-029 |
 | **Ngoc Duc** | UNKNOWN (no GitHub/git identity matched) | QA-017 UAT, QA-019 release readiness, QA-024 test-case docs & user guide (3 · 11 SP) | none found | — |
 
 Also seen: git identity `THT154` (`thangth.23ns@…`) authored one merged commit (`f6436a8`, material CRUD ownership gates, BE-005 scope). Which member it belongs to is UNKNOWN; do not attribute it without the PO.
