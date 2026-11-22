@@ -2,7 +2,7 @@
 
 > **Cập nhật**: 2026-11-16 · **Nguồn thiết kế**: Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens` (canonical).
 > **Mục đích**: thay cho các lớp ghi chú `_note / …` đã xóa khỏi canvas. Người làm UX/FE đọc file này để biết mỗi màn dùng để làm gì, có những hành động và trạng thái nào, và các quy tắc chung phải giữ.
-> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; token và component theo `docs/design/GLOBAL-DESIGN-SYSTEM.md`; trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn, register quyết định phạm vi, Figma page EduBranch AI – Screens quyết định giao diện.
+> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; token, component và trạng thái theo R01 (`.agents/rules/01-ui-design-standards.md`, nguồn thiết kế duy nhất); trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn, register quyết định phạm vi, Figma page EduBranch AI – Screens quyết định giao diện.
 > **Ghi chú hành vi trong Figma**: một số hành vi được gắn thẳng vào node dưới dạng *annotation* (xem ở Dev Mode). File này chép lại toàn bộ các annotation đó ở mục tương ứng.
 
 ---
