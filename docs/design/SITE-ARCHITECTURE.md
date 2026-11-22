@@ -1,7 +1,7 @@
  EduBranch-AI — Website & Application Architecture Reference
 
 > **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md` (formerly `docs/design/SITE-ARCHITECTURE.md`)  
-> **Companion Specs**: `.agents/rules/01-ui-design-standards.md` · `docs/design/GLOBAL-DESIGN-SYSTEM.md` · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`  
+> **Companion Specs**: `.agents/rules/01-ui-design-standards.md` (R01, single design source) · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`
 > **Product Name**: EduBranch-AI  
 > **Full Title**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios
 
@@ -46,7 +46,7 @@ The system serves two academic user roles plus a system administrator (Admin, in
 - **Academic & Focused**: Engineered for critical thinking — zero Unicode emojis, zero ASCII symbol hacks, zero gamified badges, and zero purple/indigo "AI-slop" gradients.
 - **Efficient & Professional**: One shared app shell (sidebar, header actions, footer) for lecturer, student and admin; reading and writing areas keep a 65–75 character measure.
 - **Predictable & Governed**: Transparent AI provenance showing which teaching materials informed each case dilemma.
-- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`bg/canvas` page background, white cards, light hairlines, navy `#2A4E7F` primary action and sky `#00A5F5` accent — see `GLOBAL-DESIGN-SYSTEM.md`) suitable for extended analytical reading and review sessions.
+- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`bg/canvas` page background, white cards, light hairlines, navy `#2A4E7F` primary action and sky `#00A5F5` accent — see R01) suitable for extended analytical reading and review sessions.
 
 ---
 

@@ -55,20 +55,21 @@ EduBranch-AI/
 ├── scripts/                    ← Development and verification scripts
 ├── .agents/rules/              ← AI coding agent governance rules
 │   ├── 00-project-foundation.md
-│   ├── 01-ui-design-standards.md
+│   ├── 01-ui-design-standards.md ← R01: single UI/UX design source
+│   ├── 02-agent-operating-policy.md
 │   └── feature-*.md            ← 15 domain-specific feature rule files
 └── docs/                       ← Authoritative Project Documentation
     ├── 01_MASTER-TASKS.md      ← 84 Master Tasks (EBA-101 → EBA-435) across 4 Sprints
     ├── 02_SPRINT-TASKS.md      ← Role breakdown: DES (15), FE (22), BE (25), OPS (3), QA (19)
     ├── 03_TASK-DETAILS.md      ← Deliverables, Acceptance Criteria & Dependencies per task
-    ├── 04_JIRA/                ← Jira CSV import & 3-way audit reports
-    ├── 05_FIGMA.md             ← 15 Figma UI/UX Design tasks (DES-001 → DES-015)
+    ├── 04_JIRA/                ← Jira backlog reference & key map
+    ├── 05_FIGMA.md             ← Figma frame register (DES-001 → DES-015 → frames)
     ├── 06_QA.md                ← 19 QA & Security test tasks (QA-001 → QA-019)
     ├── 5.Sprint_Backlog/       ← Immutable Sprint Backlog baseline (SPRINT-BACKLOG.md)
-    ├── architecture/           ← System Architecture, Data Flow, Boundaries, ADRs & Audits
+    ├── architecture/           ← System Architecture, Data Flow, Boundaries, ADRs
     ├── database/               ← Relational + pgvector Data Model & Operational Guide
     ├── ai/                     ← RAG Pipeline & Challenge Support AI specs
-    ├── design/                 ← Global Design System, Site Architecture, Stitch Guide & Screens (P0–P4)
+    ├── design/                 ← UX screen notes, Site Architecture, Screens (P0–P4), improvement plan, audit
     ├── features/               ← 15 canonical FEATURE-*.md specifications
     ├── qa/                     ← Testing Strategy & Verification Reports
     ├── requirements/           ← Proposal V1.2 Requirement Traceability Matrix
@@ -79,8 +80,8 @@ EduBranch-AI/
 1. **No Scattered Duplicate Docs**: Do not create hidden top-level folders (such as `.stitch/`) for documentation. All UI/UX specifications belong strictly inside `docs/design/` and `.agents/rules/01-ui-design-standards.md`.
 2. **File Naming Convention**:
    - Rules in `.agents/rules/`: `00-project-foundation.md`, `01-ui-design-standards.md`, and `feature-<domain-kebab-case>.md`.
-   - Technical & Design Docs in `docs/**/`: `UPPER-KEBAB-CASE.md` (e.g., `GLOBAL-DESIGN-SYSTEM.md`, `P0-FOUNDATION.md`, `FEATURE-BRANCHING-STUDY.md`).
-   - Sprint Governance Root Docs in `docs/`: `01_MASTER-TASKS.md` through `06_QA.md`, `PROJECT_OVERVIEW.md`, `HANDOVER_DIRECTIVE.md`.
+   - Technical & Design Docs in `docs/**/`: `UPPER-KEBAB-CASE.md` (e.g., `UX-SCREEN-NOTES.md`, `P0-FOUNDATION.md`, `FEATURE-BRANCHING-STUDY.md`).
+   - Sprint Governance Root Docs in `docs/`: `01_MASTER-TASKS.md` through `06_QA.md`, `PROJECT_OVERVIEW.md`.
 
 ---
 
@@ -196,4 +197,4 @@ docs/<topic>             →  develop
 
 - **Backend Gateway (`backend/`)**: NestJS modular architecture (`auth/`, `user/`, `course/`, `material/`, `case/`, `branching-attempt/`, `reasoning/`, `challenge-support/`, `review-study/`, `lecturer-feedback/`, `statistics/`, `evaluation/`, `notification/`, `common/`). Mandatory `class-validator` DTOs; never return raw DB entities.
 - **AI Service (`ai-service/`)**: FastAPI domain packages (`core/`, `providers/`, `ingestion/`, `retrieval/`, `generation/`, `challenge_support/`, `evaluation/`). Always route LLM calls through `providers/factory.py`; strict Pydantic v2 schemas.
-- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI strictly governed by `.agents/rules/01-ui-design-standards.md` and `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI strictly governed by `.agents/rules/01-ui-design-standards.md` (single design source; token values in `frontend/src/index.css`).
