@@ -1,297 +1,55 @@
-# EduBranch-AI — Figma UI/UX Design Catalog (15 Tasks / 50 Story Points)
+# EduBranch-AI — Figma Frame Register (15 DES Tasks / 50 Story Points)
 
-> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
-> **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
-> **Tài liệu tham chiếu thiết kế**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`  
-> **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma)  
-> **Quy mô**: 15 Tasks | 50 Story Points (14.88% toàn dự án)  
-> **Quy chuẩn thiết kế**: Chuẩn mực học tập tình huống chuyên sâu & chuyên nghiệp (EduBranch-AI Design Standards).  
-
----
-
-## 1. NGUYÊN TẮC THIẾT KẾ & HỆ THỐNG DESIGN TOKENS (GLOBAL DESIGN SYSTEM)
-
-### 1.1. Triết lý thẩm mỹ học thuật đại học
-- **Light Theme Only**: Giao diện sáng, tinh tế, trang nhã, tập trung vào nội dung học thuật chuyên sâu. Không áp dụng dark mode trong giai đoạn này.
-- **Không lạm dụng biểu tượng AI**: AI là một tính năng hỗ trợ, không phải nhận diện thương hiệu. Tuyệt đối không dùng avatar hoạt hình, biểu tượng lấp lánh (sparkles), viền neon, hoặc typing animation gây xao nhãng.
-- **Phân định rõ 2 cổng người dùng**:
-  - **Lecturer Portal**: Tập trung vào quản lý học phần (Course), tải lên giáo trình (Teaching Materials), sinh case bằng AI, biên tập cây quyết định (Decision Tree via ReactFlow), và duyệt bài (Review & Qualitative Feedback).
-  - **Student Portal**: Trải nghiệm giải quyết tình huống rẽ nhánh (Branching Case Player) liên tục không gián đoạn, xem lại hành trình (Journey Review & Consequence Reveal), phản biện mở (Review Study), và tương tác Socratic (AI Challenge Support tối đa 2 vòng).
-
-### 1.2. Bảng mã màu chuẩn (Design Tokens)
-
-| Token Name | Mã Hex | Vai trò & Mục đích sử dụng |
-|---|:---:|---|
-| `bg-canvas` | `#F9FAFB` | Màu nền toàn bộ trang web (Page background) |
-| `bg-surface` | `#FFFFFF` | Nền các thẻ Card, Modal, Panel, Bảng dữ liệu |
-| `bg-surface-muted` | `#F3F4F6` | Nền khối trích dẫn, hàng bảng xen kẽ, ô disabled |
-| `text-primary` | `#111827` | Tiêu đề chính, văn bản trọng tâm, nội dung tình huống |
-| `text-secondary` | `#4B5563` | Văn bản phụ trợ, nhãn mô tả, nội dung diễn giải |
-| `text-muted` | `#9CA3AF` | Placeholder, timestamp, chú thích phụ |
-| `border-default` | `#E5E7EB` | Đường viền Card, đường phân cách bảng, viền ô nhập liệu |
-| `action-primary` | `#2563EB` | Màu nhấn hành động chính (Nút chính, tab active, link) |
-| `action-success` | `#059669` | Trạng thái Approved, Published, Completed |
-| `action-warning` | `#D97706` | Trạng thái Review, Processing, Cảnh báo rẽ nhánh |
-| `action-danger` | `#DC2626` | Trạng thái Failed, Error, Hành động hủy bỏ |
+> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện bậc Đại học  
+> **Nguồn quản trị gốc**: [`docs/01_MASTER-TASKS.md`](01_MASTER-TASKS.md) · [`docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`](5.Sprint_Backlog/SPRINT-BACKLOG.md)  
+> **Quy tắc thiết kế (nguồn duy nhất)**: [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (R01); giá trị token chỉ ở `frontend/src/index.css` · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md)
+> **Đặc tả chi tiết từng cụm màn hình**: [`P0-FOUNDATION.md`](design/screens/P0-FOUNDATION.md) · [`P1-LECTURER-CORE.md`](design/screens/P1-LECTURER-CORE.md) · [`P2-STUDENT-CORE.md`](design/screens/P2-STUDENT-CORE.md) · [`P3-SUPPORT-AND-STATISTICS.md`](design/screens/P3-SUPPORT-AND-STATISTICS.md) · [`P4-REVIEW-STUDY.md`](design/screens/P4-REVIEW-STUDY.md)  
+> **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma — Làm chuẩn gốc trước khi đập đi xây lại giao diện Frontend)  
+> **Quy mô**: 15 Tasks (`DES-001` → `DES-015`) | 50 Story Points (14.88% toàn dự án)
 
 ---
 
-## 2. MA TRẬN PHÂN BỔ 15 TASKS THIẾT KẾ FIGMA THEO SPRINT
-
-| Group ID | Master Task ID | Tên công việc thiết kế | Sprint | Flow | Priority | SP | Dependencies (Master Task ID) |
-|:---:|:---:|---|:---:|:---:|:---:|:---:|---|
-| `DES-001` | **EBA-101** | **Information Architecture for Lecturer, Student & Dual Learning Modes** | Sprint 1 | Foundation | Highest | 3 | *None* |
-| `DES-002` | **EBA-102** | **Shared Design States: Loading, Empty, Error & Permissions** | Sprint 1 | Foundation | High | 5 | is blocked by Master Task EBA-101 |
-| `DES-003` | **EBA-201** | **Material Library & Upload Interaction Flow Design** | Sprint 2 | Flow 1 | Highest | 3 | is blocked by Master Task EBA-102 |
-| `DES-004` | **EBA-202** | **Material Processing, Progress Bar & Failure Recovery States** | Sprint 2 | Flow 1 | High | 3 | is blocked by Master Task EBA-201 |
-| `DES-005` | **EBA-203** | **RAG Grounding Evidence & Source Inspection UI Design** | Sprint 2 | Flow 1 | High | 3 | is blocked by Master Task EBA-201 |
-| `DES-006` | **EBA-301** | **Case Generation Modal & Parameter Configuration Flow Design** | Sprint 3 | Flow 2 | Highest | 3 | is blocked by Master Task EBA-203 |
-| `DES-007` | **EBA-302** | **ReactFlow Decision Tree Visualization & Topology Layout Design** | Sprint 3 | Flow 2 | Highest | 5 | is blocked by Master Task EBA-301 |
-| `DES-008` | **EBA-303** | **Side-by-Side Node & Option Form Editor UX Design** | Sprint 3 | Flow 2 | Highest | 3 | is blocked by Master Task EBA-302 |
-| `DES-009` | **EBA-304** | **Case Governance Lifecycle Action Bar & Approval Status Design** | Sprint 3 | Flow 2 | Highest | 3 | is blocked by Master Task EBA-302 |
-| `DES-010` | **EBA-401** | **Branching Case Player Experience-First UI/UX Design** | Sprint 4 | Branching Study | Highest | 3 | is blocked by Master Task EBA-309 |
-| `DES-011` | **EBA-402** | **Journey Review Path Visualization & Consequence Reveal Design** | Sprint 4 | Branching Study | Highest | 5 | is blocked by Master Task EBA-401 |
-| `DES-012` | **EBA-403** | **Retry & New Attempt Initiation UX Design** | Sprint 4 | Branching Study | High | 2 | is blocked by Master Task EBA-402 |
-| `DES-013` | **EBA-404** | **Review Study Open Analysis & Solution Proposal UI Design** | Sprint 4 | Review Study | High | 3 | is blocked by Master Task EBA-102 |
-| `DES-014` | **EBA-405** | **Lecturer Qualitative Feedback & Review Dashboard Design** | Sprint 4 | Review Study | High | 3 | is blocked by Master Task EBA-404 |
-| `DES-015` | **EBA-406** | **AI Challenge Support Socratic Interaction UI Design** | Sprint 4 | Challenge Support | High | 3 | is blocked by Master Task EBA-402, EBA-404 |
-
----
-
-## 3. ĐẶC TẢ CHI TIẾT TỪNG TASK THIẾT KẾ (DES-001 ĐẾN DES-015)
-
-### DES-001: [DES-001] Information Architecture for Lecturer, Student & Dual Learning Modes
-
-- **Master Task ID**: `EBA-101`
-- **Sprint**: `Sprint 1` | **Flow**: `Foundation` | **Priority**: `Highest` | **Story Points**: `3`
-- **Dependencies**: None
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Tách rõ Lecturer Portal và Student Portal.
-- [ ] **AC-2**: Có navigation riêng cho Branching Study và Review Study.
-- [ ] **AC-3**: Được FE/BE review và phê duyệt.
-
----
-
-### DES-002: [DES-002] Shared Design States: Loading, Empty, Error & Permissions
-
-- **Master Task ID**: `EBA-102`
-- **Sprint**: `Sprint 1` | **Flow**: `Foundation` | **Priority**: `High` | **Story Points**: `5`
-- **Dependencies**: is blocked by Master Task EBA-101
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế đầy đủ loading, empty, error, 403 và processing states.
-- [ ] **AC-2**: Token màu sắc, typography dùng thống nhất theo Design System.
-
----
-
-### DES-003: [DES-003] Material Library & Upload Interaction Flow Design
-
-- **Master Task ID**: `EBA-201`
-- **Sprint**: `Sprint 2` | **Flow**: `Flow 1` | **Priority**: `Highest` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-102
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế modal tải lên tài liệu hỗ trợ Drag-and-Drop cho định dạng PDF và DOCX.
-- [ ] **AC-2**: Thiết kế bảng danh sách tài liệu hiển thị metadata và thanh tìm kiếm/lọc.
-
----
-
-### DES-004: [DES-004] Material Processing, Progress Bar & Failure Recovery States
-
-- **Master Task ID**: `EBA-202`
-- **Sprint**: `Sprint 2` | **Flow**: `Flow 1` | **Priority**: `High` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-201
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế các trạng thái tiến độ: Pending, Processing (Parsing/Embedding), Completed, Failed.
-- [ ] **AC-2**: Thiết kế thông báo lỗi và nút bấm Retry khi xử lý tài liệu thất bại.
-
----
-
-### DES-005: [DES-005] RAG Grounding Evidence & Source Inspection UI Design
-
-- **Master Task ID**: `EBA-203`
-- **Sprint**: `Sprint 2` | **Flow**: `Flow 1` | **Priority**: `High` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-201
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế modal/drawer hiển thị các đoạn văn bản trích dẫn nguồn (evidence chunks) đã retrieval.
-- [ ] **AC-2**: Tuyệt đối không để lộ thông tin nhạy cảm (API keys, system prompt, internal ID).
-
----
-
-### DES-006: [DES-006] Case Generation Modal & Parameter Configuration Flow Design
-
-- **Master Task ID**: `EBA-301`
-- **Sprint**: `Sprint 3` | **Flow**: `Flow 2` | **Priority**: `Highest` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-203
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế picker chọn tài liệu tham khảo trong khóa học.
-- [ ] **AC-2**: Thiết kế trường nhập chủ đề gợi ý (topic hint), số lượng node mong muốn và chọn chế độ học.
-- [ ] **AC-3**: Thiết kế trạng thái spinner đang tạo case kèm thông báo tiến độ.
-
----
-
-### DES-007: [DES-007] ReactFlow Decision Tree Visualization & Topology Layout Design
-
-- **Master Task ID**: `EBA-302`
-- **Sprint**: `Sprint 3` | **Flow**: `Flow 2` | **Priority**: `Highest` | **Story Points**: `5`
-- **Dependencies**: is blocked by Master Task EBA-301
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế trực quan sơ đồ cây trên canvas ReactFlow (Root node, Decision node, Terminal node).
-- [ ] **AC-2**: Thiết kế màu sắc, icon phân biệt các nhánh và đường nối (edges) thể hiện lựa chọn.
-- [ ] **AC-3**: Hỗ trợ thao tác zoom, pan và căn chỉnh tự động cây quyết định.
-
----
-
-### DES-008: [DES-008] Side-by-Side Node & Option Form Editor UX Design
-
-- **Master Task ID**: `EBA-303`
-- **Sprint**: `Sprint 3` | **Flow**: `Flow 2` | **Priority**: `Highest` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-302
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế drawer/panel bên phải để xem và chỉnh sửa chi tiết từng node khi click trên canvas.
-- [ ] **AC-2**: Thiết kế các trường chỉnh sửa: Situation text, Option text, Consequence explanation.
-- [ ] **AC-3**: Thiết kế nút lưu thay đổi và hiển thị tức thì trên sơ đồ cây.
-
----
-
-### DES-009: [DES-009] Case Governance Lifecycle Action Bar & Approval Status Design
-
-- **Master Task ID**: `EBA-304`
-- **Sprint**: `Sprint 3` | **Flow**: `Flow 2` | **Priority**: `Highest` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-302
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế thanh công cụ hiển thị trạng thái hiện tại (DRAFT, REVIEWED, APPROVED, PUBLISHED).
-- [ ] **AC-2**: Thiết kế các nút hành động chuyển trạng thái có điều kiện (Mark as Reviewed, Approve, Publish).
-- [ ] **AC-3**: Thiết kế hộp thoại xác nhận xuất bản kèm link chia sẻ cho sinh viên.
-
----
-
-### DES-010: [DES-010] Branching Case Player Experience-First UI/UX Design
-
-- **Master Task ID**: `EBA-401`
-- **Sprint**: `Sprint 4` | **Flow**: `Branching Study` | **Priority**: `Highest` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-309
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế màn hình ra quyết định tập trung, không phân tâm.
-- [ ] **AC-2**: Tuyệt đối không hiển thị thẻ hệ quả (consequence card) giữa chừng.
-- [ ] **AC-3**: Tuyệt đối không có form bắt buộc nhập lập luận (reasoning form) giữa các bước.
-
----
-
-### DES-011: [DES-011] Journey Review Path Visualization & Consequence Reveal Design
-
-- **Master Task ID**: `EBA-402`
-- **Sprint**: `Sprint 4` | **Flow**: `Branching Study` | **Priority**: `Highest` | **Story Points**: `5`
-- **Dependencies**: is blocked by Master Task EBA-401
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế lộ trình toàn bộ các bước đã đi qua theo thứ tự thời gian.
-- [ ] **AC-2**: Mở khóa và hiển thị đầy đủ văn bản hệ quả (consequences) lần đầu tiên tại màn hình Review.
-- [ ] **AC-3**: Thiết kế form nhập lập luận hồi cứu (retrospective reasoning) cho các quyết định then chốt.
-
----
-
-### DES-012: [DES-012] Retry & New Attempt Initiation UX Design
-
-- **Master Task ID**: `EBA-403`
-- **Sprint**: `Sprint 4` | **Flow**: `Branching Study` | **Priority**: `High` | **Story Points**: `2`
-- **Dependencies**: is blocked by Master Task EBA-402
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế nút và modal Retry bắt đầu lượt chơi mới.
-- [ ] **AC-2**: Truyền đạt rõ ràng việc lượt chơi cũ được bảo lưu trọn vẹn và không bị ghi đè.
-
----
-
-### DES-013: [DES-013] Review Study Open Analysis & Solution Proposal UI Design
-
-- **Master Task ID**: `EBA-404`
-- **Sprint**: `Sprint 4` | **Flow**: `Review Study` | **Priority**: `High` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-102
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế giao diện hiển thị ngữ cảnh & dữ liệu thực tế (context) và bài toán mở (problem).
-- [ ] **AC-2**: Thiết kế form nhập phân tích, đề xuất giải pháp và giải thích lập luận.
-- [ ] **AC-3**: Không sử dụng cây quyết định hay câu hỏi trắc nghiệm đúng/sai.
-
----
-
-### DES-014: [DES-014] Lecturer Qualitative Feedback & Review Dashboard Design
-
-- **Master Task ID**: `EBA-405`
-- **Sprint**: `Sprint 4` | **Flow**: `Review Study` | **Priority**: `High` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-404
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế dashboard cho giảng viên xem các bài nộp của sinh viên (cả Branching và Review Study).
-- [ ] **AC-2**: Thiết kế khung soạn thảo nhận xét định tính (qualitative feedback).
-- [ ] **AC-3**: Thiết kế giao diện cho sinh viên đọc nhận xét và viết bài phản tư (reflection).
-
----
-
-### DES-015: [DES-015] AI Challenge Support Socratic Interaction UI Design
-
-- **Master Task ID**: `EBA-406`
-- **Sprint**: `Sprint 4` | **Flow**: `Challenge Support` | **Priority**: `High` | **Story Points**: `3`
-- **Dependencies**: is blocked by Master Task EBA-402, EBA-404
-
-#### Mục tiêu thiết kế Figma & User Experience
-Thiết kế frame và components trên Figma cho màn hình/thành phần giao diện tương ứng của dự án EduBranch AI. Đảm bảo chuẩn giao diện phẳng, hiện đại, tuân thủ bảng màu học thuật và đáp ứng đầy đủ yêu cầu cho đội ngũ Frontend React 19 triển khai.
-
-#### Tiêu chuẩn nghiệm thu (Acceptance Criteria)
-- [ ] **AC-1**: Thiết kế giao diện hội thoại câu hỏi gợi mở phản biện của AI (tối đa 2 vòng).
-- [ ] **AC-2**: Hiển thị rõ ranh giới: AI chỉ đặt câu hỏi chất vấn giả định, tuyệt đối không chấm điểm.
-- [ ] **AC-3**: Thiết kế thanh tiến trình 2 vòng rõ ràng.
-
----
-
+## 0. TRẠNG THÁI HIỆN TẠI (cập nhật 2026-11-13) — ĐỌC TRƯỚC
+
+- **Cả 15 task DES đã Done** (Jira `EBA`, 2026-11-13). Giao diện đã chốt nằm ở Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page **`EduBranch AI – Screens`**. Figma cho biết mỗi màn có nội dung gì; về hình thức, code + R01 là chuẩn (PO 2026-11-22, xem ghi chú cuối file).
+- **Đổi tên page (PO, 2026-11-18):** file chỉ còn 2 page: `EduBranch AI – Design System` (`445:239`, trước đây "05 · EduBranch – Design System") và `EduBranch AI – Screens` (`483:9634`, trước đây "08 · EduBranch – Bản hoàn chỉnh"). ID page và frame không đổi. Hai page Eduva ("02 · Eduva – Design System", "03 · Eduva – Screens") đã chuyển sang một file Figma lưu trữ riêng; 72 component EduBranch đang dùng được chuyển trước sang page Design System (section `696:297`, giữ nguyên node ID). Các nhật ký quyết định cũ ghi "page 08" hoặc "page 02" nghĩa là hai page này; không sửa nhật ký.
+- Ghi chú từng màn: [`design/UX-SCREEN-NOTES.md`](design/UX-SCREEN-NOTES.md). Token, component và trạng thái: R01 (`.agents/rules/01-ui-design-standards.md`). Route: [`design/SITE-ARCHITECTURE.md §5`](design/SITE-ARCHITECTURE.md).
+
+### 0.1. DES → frame trên page EduBranch AI – Screens
+
+| Task | Frame trên page EduBranch AI – Screens |
+|---|---|
+| DES-001 IA & app shell | 00.2 trang công khai (một trang cuộn), 00.3–00.5 đăng nhập/đăng ký; sidebar, header, footer dùng chung cho 3 vai trò |
+| DES-002 Trạng thái dùng chung | 01.1–01.8 |
+| DES-003 Tải tài liệu | 02.4, 02.5 |
+| DES-004 Trạng thái xử lý & lỗi | 02.4 (danh sách tài liệu), 02.5, 02.6 |
+| DES-005 Nguồn trích dẫn | 02.7 |
+| DES-006 Cấu hình sinh case | 07.6 → 07.5 → 07.7 (wizard 3 bước, OPD-006), 03.2, 03.3 |
+| DES-007 Cây quyết định | 03.4 (panel cây quyết định, kiểm tra cây) |
+| DES-008 Trình sửa node & phương án | 03.4, 03.5 |
+| DES-009 Thanh duyệt vòng đời | 03.6 (4 trạng thái), 03.7 |
+| DES-010 Branching player | 05.1, 05.2, 05.3 |
+| DES-011 Journey Review | 05.4 |
+| DES-012 Làm lại | 05.8, 05.9, 05.10 |
+| DES-013 Review Study | 06.1, 06.2 |
+| DES-014 Phản hồi giảng viên | 04.1, 04.2, 04.2b, 06.3 |
+| DES-015 AI Challenge Support | 05.5, 05.6 (OPD-005 còn HOLD) |
+
+Ngoài 15 task DES, page EduBranch AI – Screens còn các màn MVP đã chốt nhưng chưa có task: 04.3 thống kê, 07.1–07.8 (dashboard giảng viên, Bàn học, Khóa học của tôi, Tham gia lớp học, AI Studio, Rubric), 09.1–09.2 hồ sơ, 10.1–10.10 Admin.
+
+### 0.2. Đặc tả ban đầu (đã gỡ) so với Figma page EduBranch AI – Screens
+
+| Đặc tả ban đầu | Theo Figma page EduBranch AI – Screens |
+|---|---|
+| Cấu trúc 6 page Figma (§1.1) | Một page canonical `EduBranch AI – Screens`, các khu 00–10 |
+| Màu chính `#2563EB`, `bg-canvas #F9FAFB`, viền `#E5E7EB` | Navy `#2A4E7F` (`action/primary`), sky `#00A5F5` (`action/accent`), token `EduBranch · Color` |
+| Sinh viên: Top Bar 56px + cột đọc 768px, không sidebar | Sinh viên dùng cùng khung sidebar thu gọn được như giảng viên; vùng đọc/viết giữ độ rộng 65–75 ký tự |
+| Sidebar giảng viên 240px có vạch active 3px | Sidebar dùng chung (`Navigation/Sidebar`), mục đang chọn nền navy, không vạch; bản thu gọn 72px |
+| Chữ giao diện tiếng Anh ("Approve Case", "Publish to Students"…) | Tiếng Việt; có nút chuyển VI/EN (mặc định tiếng Việt) |
+| DES-006 dạng modal | Wizard 3 bước ở `/lecturer/ai-studio` |
+| DES-009 hiện link chia sẻ sau khi xuất bản | Trạng thái Đã xuất bản chỉ còn nút "Sao chép đường dẫn" (03.6) |
+| Đăng nhập Google là Phase 2 | Google + Microsoft thuộc MVP (PSD-09), không có ở đăng nhập quản trị |
+| Card phẳng không viền, không bóng | Thêm viền 1px 80% và đổ bóng kép `shadow-eb-card` (PO 2026-11-17 "Sửa Figma rồi code") |
+| Khung giao diện toàn màn hình dàn phẳng | Trang công khai và Auth: bọc `max-w-7xl mx-auto`, form Auth tối đa 440px. Trong app shell: dùng hết chiều rộng cạnh sidebar, lề cố định (PO 2026-11-21, spec 006 / PR #79; thay quyết định 17/11 cho app shell) |
+
+> **Cập nhật 2026-11-22 (PO, "theo đề xuất")**: code + R01 là chuẩn giao diện; Figma là tham chiếu về **nội dung** của từng màn (trường dữ liệu, khối, hành động) và sẽ được cập nhật theo code sau. Bản đặc tả pixel ban đầu của 15 task DES (§1–§3 cũ: 6 page Figma, màu `#2563EB`/`#F9FAFB`/`#E5E7EB`, giao diện tiếng Anh) đã bị thay thế từ 2026-11-12 và được **gỡ khỏi file này** ngày 2026-11-22 để tránh nhầm lẫn; nội dung cũ vẫn còn trong lịch sử git (`git log -- docs/05_FIGMA.md`). Tiêu chí nghiệm thu của từng task DES nằm ở `docs/01_MASTER-TASKS.md` và `docs/03_TASK-DETAILS.md`.

@@ -92,7 +92,8 @@ This ADR establishes the current baseline, clearly distinguishing confirmed deci
 
 ### 2.8 LLM Providers & Provider Abstraction
 - **Status**: `[A. Proposal Requirement]` & `[D. Architectural Decision]`
-- **Selection**: **Google Gemini 2.0 Flash / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`)**
+- **Selection**: **Google Gemini 3.5 Flash / OpenAI GPT-4o-mini via Provider Abstraction (`providers/factory.py`)**
+  - **Update 2026-11-17 (PO)**: Google retired `gemini-2.0-flash` (404) and does not offer `gemini-2.5-flash` to new keys; the model is pinned to `gemini-3.5-flash` (valid structured JSON for a 3-node tree in about 34 s in a probe; `gemini-3.8-flash` and the moving alias `gemini-flash-latest` took over 5 minutes). Embeddings moved from the retired `text-embedding-004` to `gemini-embedding-001` requested at 768 dims (PR #48). The model stays configurable through `GEMINI_MODEL`.
 - **Rationale**:
   - The Proposal explicitly identifies low-cost, fast models: *"AI/LLM: OpenAI GPT-4o-mini / Gemini Flash API"* (Section 6, p. 10 & Section 11, p. 16).
   - A provider abstraction layer decouples route handlers from vendor-specific SDK changes, allowing runtime switching via `AI_PROVIDER=gemini` or `AI_PROVIDER=openai`.
@@ -126,7 +127,7 @@ AI Service (Python FastAPI — Internal Only)
     ├─────────► PostgreSQL 16 + pgvector (Vector search)
     │
     ▼ [HTTPS API]
-LLM Providers (Gemini 2.0 Flash / OpenAI GPT-4o-mini)
+LLM Providers (Gemini 3.5 Flash / OpenAI GPT-4o-mini)
 ```
 
 ---

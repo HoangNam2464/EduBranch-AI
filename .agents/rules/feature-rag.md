@@ -1,7 +1,6 @@
-﻿---
+--
 description: Rules for the RAG pipeline in EduBranch-AI.
-trigger: keyword
-keywords: [rag, retrieval, embedding, pgvector, chunking, vector search, langchain]
+trigger: model_decision
 ---
 
 # Feature Rules: RAG Pipeline

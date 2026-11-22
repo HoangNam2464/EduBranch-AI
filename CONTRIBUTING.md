@@ -5,6 +5,45 @@
 
 ---
 
+## 🚀 Quick Start: Cài đặt Môi trường Phát triển (Dành cho thành viên)
+
+### 1. Kích hoạt Git Hooks bảo vệ mã nguồn (Bắt buộc chạy 1 lần)
+Để tự động ngăn chặn commit file nhạy cảm (`.env`), kiểm tra đúng chuẩn commit message và chặn đặt sai tên nhánh:
+- **Trên Windows (PowerShell)**:
+  ```powershell
+  powershell -ExecutionPolicy Bypass -File .\scripts\setup-git.ps1
+  ```
+- **Trên macOS / Linux / Git Bash**:
+  ```bash
+  chmod +x scripts/setup-git.sh
+  ./scripts/setup-git.sh
+  ```
+*(Lệnh trên sẽ thiết lập `git config core.hooksPath .githooks`, kích hoạt `pre-commit`, `commit-msg` và `pre-push` hooks).*
+
+### 2. Khởi chạy toàn bộ hệ thống bằng Docker Compose
+Dự án đã tích hợp đầy đủ cả hạ tầng dữ liệu và ứng dụng (Postgres, Redis, MinIO, Backend Gateway, Frontend Web App):
+```bash
+# Khởi động toàn bộ dịch vụ và build mới nhất
+docker compose up --build -d
+
+# Xem log các dịch vụ
+docker compose logs -f
+
+# Dừng hệ thống
+docker compose down
+```
+
+| Dịch vụ | URL / Port | Tài khoản mặc định |
+| :--- | :--- | :--- |
+| **Frontend Web App** | `http://localhost:5173` | — |
+| **Backend Gateway API** | `http://localhost:8080/api/v1` | — |
+| **AI Service (FastAPI)** | `http://localhost:8000/health` | — |
+| **MinIO Console** | `http://localhost:9001` | `minioadmin` / `changeme_minio_password` |
+| **PostgreSQL 16 + pgvector** | `localhost:5432` | `edubranch` / `changeme_db_password` / DB: `edubranch_ai` |
+| **Redis 7** | `localhost:6379` | pass: `changeme_redis_password` |
+
+---
+
 ## 🌿 1. Git Branching Strategy
 
 EduBranch-AI uses **Git Feature Branch Workflow**. **Never** push code directly to `main` or `develop`.
@@ -28,12 +67,15 @@ feature/<name>  →  develop  →  main
 > [!IMPORTANT]
 > **Quy tắc đặt tên nhánh nghiêm ngặt:**
 > - **TUYỆT ĐỐI KHÔNG dùng mã task** (như `TASK-123`, `BE-001`, `FE-010`, `EBA-105`) để đặt tên nhánh Git.
-> - **Tên nhánh BẮT BUỘC đặt theo tên domain/feature chung**: format `feature/<feature-name>` (ví dụ: `feature/auth`, `feature/branching-attempt`, `feature/course`, `feature/material`).
-> - **Tính bền vững**: Nhánh feature được dùng bền vững cho toàn bộ các công việc liên quan đến tính năng đó, không tạo nhánh vụn vặt theo task.
+> - **Tên nhánh Frontend (hoặc chung)**: Đặt theo domain feature chung: format `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`, `feature/auth`).
+> - **Tên nhánh Backend (khi phát triển độc lập)**: Bắt buộc thêm đuôi `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
+> - **Code AI service (`ai-service/`)**: Dùng chung nhánh `-backend` của tính năng, không tạo hậu tố riêng (ví dụ: `feature/rag-backend`). Code AI tiếp nối trên nhánh `-backend` đã có.
+> - **Quy trình chuẩn**: Luôn tách nhánh từ `develop` mới nhất (`git checkout develop && git pull`), bật Docker test độc lập (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
 
 | Type | Pattern | Example |
 | :--- | :--- | :--- |
-| Feature | `feature/<feature-name>` | `feature/auth`, `feature/course`, `feature/material` |
+| Feature (Frontend / Chung) | `feature/<feature-name>` | `feature/material`, `feature/course`, `feature/auth` |
+| Feature (Backend riêng, gồm cả `ai-service/`) | `feature/<feature-name>-backend` | `feature/material-backend`, `feature/course-backend`, `feature/rag-backend` |
 | Bug fix | `fix/<feature-name>-<description>` | `fix/auth-token-refresh` |
 | Hotfix | `hotfix/<description>` | `hotfix/jwt-expiry` |
 | Refactor | `refactor/<feature-name>` | `refactor/challenge-support` |
@@ -58,7 +100,7 @@ Mã task **CHỈ ĐƯỢC XUẤT HIỆN trong Commit Message**, format:
 | `feat` | Add new feature | `feat(ai-service): add structured case generation with JSON schema` |
 | `fix` | Fix a bug | `fix(backend): fix DRAFT→APPROVED status transition validation` |
 | `docs` | Documentation update | `docs: update RAG pipeline architecture diagram` |
-| `style` | Code formatting (no logic change) | `style(frontend): apply prettier formatting` |
+| `style` | Code formatting (no logic change) | `style(frontend): align sidebar footer spacing` |
 | `refactor` | Code restructuring | `refactor(ai-service): optimize pgvector retrieval query` |
 | `test` | Add or fix tests | `test(backend): add branching attempt integration test` |
 | `chore` | Library updates, config | `chore: upgrade nestjs to 10.x` |
@@ -120,7 +162,7 @@ Controller → Service (Interface + Impl) → Repository → Entity / DTO
 
 ### PR Requirements
 
-- **Title**: `<type>(<scope>): <description>` — same as commit convention
+- **Title**: `<type>(<scope>): <description> [<TASK-ID>]` — same as commit convention; body follows `.github/pull_request_template.md`
 - **Description**: Use the PR template (`.github/pull_request_template.md`)
 - **CI must pass**: All GitHub Actions checks must be green before merging
 - **Review**: At least one approval required before merging to `develop`

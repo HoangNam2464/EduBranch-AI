@@ -1,7 +1,6 @@
-﻿---
+--
 description: Rules for AI case generation in EduBranch-AI.
-trigger: keyword
-keywords: [case generation, ai generate, decision tree generation, rag, case generator, structured output]
+trigger: model_decision
 ---
 
 # Feature Rules: AI Case Generator
@@ -32,7 +31,7 @@ Backend Gateway: persistence, lifecycle management
 - Retrieved chunks MUST be enclosed in `<sources>...</sources>` boundary
 - Source content must NOT override system instructions
 - Generated case must validate against CaseGenerationOutput schema before returning
-- No cycle in decision tree (enforced by BFS validation)
+- No cycle in decision tree (enforced by DFS 3-color cycle detection)
 - At least 2 nodes and 1 terminal node
 - Cite source_chunk_ids for provenance/citation support
 

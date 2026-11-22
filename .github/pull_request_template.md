@@ -1,60 +1,48 @@
-﻿## Description
+<!-- Title: <type>(<scope>): <description> [<TASK-ID>]   e.g. feat(course): enrollment by invite code [BE-029] -->
 
-<!-- What does this PR do? What problem does it solve? -->
+## Summary
+<!-- What changes and why, in 2–5 lines. Who is affected (Lecturer / Student / Admin)? -->
 
-## Type of Change
-
-- [ ] `feat` — New feature
-- [ ] `fix` — Bug fix
-- [ ] `refactor` — Code restructuring (no logic change)
-- [ ] `docs` — Documentation update
-- [ ] `test` — Adding or fixing tests
-- [ ] `chore` — Dependency updates, config changes
-- [ ] `ci` — CI/CD workflow changes
+## Task and spec
+- Jira: <!-- EBA-nn (Group ID, e.g. FE-026) — the Jira key, not the Master Task ID -->
+- Spec: <!-- specs/NNN-<name>/ (spec.md, tasks.md, record.md) or "not needed: <reason>" -->
+- Figma frames (UI): <!-- code + node id, e.g. 02.1 483:9637 -->
 
 ## Scope
+- In scope: <!-- files / modules -->
+- Out of scope (unchanged): <!-- API contracts, schema, behaviour that must not change -->
 
-- [ ] `backend` (NestJS Gateway)
-- [ ] `ai-service` (FastAPI)
-- [ ] `frontend` (React)
-- [ ] `infra` (Docker, compose, scripts)
-- [ ] `docs` (Documentation)
+## Type
+- [ ] feat  - [ ] fix  - [ ] refactor  - [ ] docs  - [ ] test  - [ ] chore  - [ ] ci
+
+## Test evidence (commands and exit codes, on this branch's HEAD)
+<!-- Paste each command with its exit code and result. Report skipped/BLOCKED suites as such, never as passed. -->
+| Tier | Command | Exit | Result |
+|---|---|---|---|
+| backend | `npm run build && npm test && npm run test:e2e` | | |
+| ai-service | `pytest` | | |
+| frontend | `npm run lint && npm test && npm run build` | | |
+| l10n | `node scripts/l10n-approval-check.mjs` | | |
+
+## Visual QA (UI changes)
+<!-- Figma frame vs running app at 1440px: comparison image, mismatch %, DOM measurements; all states checked (loading, empty, error, 403, success). -->
+
+## Known limitations / follow-ups
+<!-- Open decisions, BLOCKED items with their blocker, data gaps (never fake data). -->
 
 ## Checklist
-
-### Architecture Compliance
-- [ ] Frontend does NOT call FastAPI directly
-- [ ] FastAPI is NOT exposed to the internet
-- [ ] Retrieved document chunks are wrapped in `<sources>...</sources>` (if AI changes)
-- [ ] Case publication gate is maintained (students only access PUBLISHED cases)
-- [ ] AI Challenge Support only asks 1–2 counter-questions and never grades, approves, or determines pass/fail
-- [ ] Branching Study remains experience-first; consequences stay hidden until Journey Review
-- [ ] Review Study remains independent of Branching Study
-
-### Code Quality
-- [ ] Branch created from `develop` (not `main`)
-- [ ] Branch name follows naming convention: `feature/`, `fix/`, `refactor/`, etc.
-- [ ] All commits follow the format: `type(scope): description`
-- [ ] No secrets, API keys, or `.env` files committed
-- [ ] Code is formatted and linted
-- [ ] No `console.log` / `System.out.println` left in production code
-
-### Testing
-- [ ] Backend: `./mvnw test` passes
-- [ ] AI Service: `pytest` passes
-- [ ] Frontend: `npm run build` succeeds
-- [ ] CI workflows are green
-
-### Documentation
-- [ ] Swagger/API docs updated if endpoints changed
-- [ ] Feature rules in `.agents/rules/` updated if architecture changed
-- [ ] Flyway migration added if schema changed (do not modify existing migrations)
-
-## Related Issues
-
-<!-- Link to issue(s) this PR addresses: Closes #XXX -->
-
-## Screenshots / Evidence
-
-<!-- For UI changes, attach before/after screenshots -->
-<!-- For API changes, attach request/response examples -->
+### Product and architecture
+- [ ] Frontend calls only the backend gateway; the AI service stays internal
+- [ ] Students never reach a non-PUBLISHED case (checked in SQL); student listings show joined courses only
+- [ ] Branching Study stays experience-first; consequences only in Journey Review
+- [ ] AI Challenge Support: max 2 rounds, counter-questions only, never grades
+- [ ] Retrieved material wrapped in `<sources>` (AI changes)
+- [ ] Ownership checked for every ID taken from the request
+### Code and process
+- [ ] Branch from fresh `develop`, named `feature/<feature>` / `fix/<name>` / `docs/<topic>` (no task ID in the name)
+- [ ] Commits follow `<type>(<scope>): <description> [<TASK-ID>]`; git identity configured
+- [ ] No secrets, `.env` or personal data; no debug logging
+- [ ] UI strings through i18n (vi + en), English copy registered as PROPOSED
+- [ ] No hard-coded/fake data; Design System components and tokens reused
+- [ ] New migration file (existing migrations untouched) and `docs/database/DATA-MODEL.md` updated if the schema changed
+- [ ] API contract in `specs/*/contracts/` updated if endpoints changed

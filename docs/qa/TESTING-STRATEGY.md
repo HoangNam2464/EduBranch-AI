@@ -1,4 +1,4 @@
-﻿# EduBranch AI — Testing Strategy
+# EduBranch AI — Testing Strategy
 
 **Status**: Scaffolded
 
@@ -17,9 +17,10 @@
 ### Critical Tests Required
 
 - Auth: login success/failure, JWT validation, role access control
-- Case: status transition (valid and invalid), student cannot access non-PUBLISHED cases
-- Simulation: session creation, node navigation, terminal detection
-- Debate: round enforcement (max 2), completed session rejection
+- Case: status transition (valid and invalid), student cannot access non-`PUBLISHED` cases (`INV-01`)
+- Branching Study (`branching-attempt` & `reasoning`): attempt creation, node navigation (`selected_option_id` recorded immediately), terminal detection, retrospective reasoning capture in REVIEW phase, immutable retry (`attempt_number + 1`)
+- Review Study (`review-study`): single submission per student per case, forward-only status lifecycle (`SUBMITTED → REVIEWED → REFLECTED`)
+- AI Reasoning / Challenge Support (`challenge-support`): round enforcement (max 2 rounds), completed session rejection, target XOR (`chk_challenge_one_target`)
 - Statistics: ownership enforcement (lecturer sees only own courses)
 
 ---
@@ -28,14 +29,14 @@
 
 | Layer | Tool | Scope |
 |---|---|---|
-| Unit tests | pytest | Pydantic schema validation, chunking, cycle detection |
+| Unit tests | pytest | Pydantic schema validation, chunking, DFS 3-color cycle detection |
 | Integration tests | pytest + httpx | FastAPI route handlers (mock LLM providers) |
 
 ### Critical Tests Required
 
 - Decision tree schema: valid tree, invalid cycle, orphan node, no terminal node
 - Provider abstraction: mock provider returns correct structure
-- Debate: counter-question does not contain grade/pass-fail language
+- AI Reasoning / Challenge Support: counter-question does not contain grade/pass-fail language
 
 ---
 
