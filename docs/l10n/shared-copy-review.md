@@ -218,3 +218,8 @@
 | `g1.register.customDepartmentLabel` | Tên Khoa / Đơn vị công tác cụ thể | Specific Faculty / Department name | PROPOSED | — | — | PR-71-FIX |
 | `g1.register.customDepartmentPlaceholder` | Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao | e.g. Institute of Advanced Technology Research | PROPOSED | — | — | PR-71-FIX |
 | `g1.register.departmentOther` | Đơn vị / Khoa khác... | Other Faculty / Department... | PROPOSED | — | — | PR-71-FIX |
+| `g2.common.error` | Lỗi | Error | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.courses.details.retry` | Thử lại | Retry | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.courses.details.statAttempts` | Lượt làm bài | Attempts | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.materials.retry` | Thử lại | Retry | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.materials.statusFailedReason` | Không đọc được nội dung tệp | Could not read file content | PROPOSED | — | — | FE-026 PR #72 |

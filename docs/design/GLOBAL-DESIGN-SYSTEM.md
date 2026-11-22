@@ -147,8 +147,10 @@ Do not introduce arbitrary hex values outside ยง2 in prompts or component code โ
 ### 3.1. Typography Scale
 
 ```
-font-family: 'Roboto', ui-sans-serif, system-ui, -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+font-family: system-ui, "Segoe UI", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
 ```
+
+> **PO decision 2026-11-21 (chat):** the web uses the system font (Segoe UI on Windows), as on `develop` before FE-025. Roboto is no longer loaded. Reason given by the PO: Roboto looked narrow and unnatural. The Figma text styles still name Roboto: updating them needs separate PO approval (Figma is read-only by default). Until then, text widths in Visual QA differ from the Figma baselines by the font difference only. The sizes, line heights and weights below are unchanged. Wherever a "Roboto" font name appears in the rest of this section, read it as the system font.
 
 | Token | Size / Line-height | Weight | Usage |
 |---|---|---|---|
