@@ -288,3 +288,211 @@
 | `g4.stats.errors.forbidden` | Bạn không có quyền xem thống kê của tình huống này. | You do not have permission to view statistics for this case. | PROPOSED | — | — | FE-022 PR #70 |
 | `g4.stats.errors.serverError` | Lỗi máy chủ khi tải thống kê. Vui lòng thử lại sau. | Server error loading statistics. Please try again later. | PROPOSED | — | — | FE-022 PR #70 |
 | `g4.stats.errors.network` | Không thể kết nối đến máy chủ. Kiểm tra mạng rồi thử lại. | Cannot connect to server. Check your connection and try again. | PROPOSED | — | — | FE-022 PR #70 |
+| `g6.noData.apiUnavailable` | Dịch vụ quản trị chưa sẵn sàng trên máy chủ. | The administration service is not available on the server yet. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.noData.forbidden` | Bạn không có quyền quản trị để thực hiện thao tác này. | You do not have administrator permissions for this action. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.noData.serverError` | Máy chủ gặp sự cố khi xử lý dữ liệu quản trị. Vui lòng thử lại sau. | The server encountered an error processing admin data. Please try again later. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.noData.networkError` | Không kết nối được máy chủ. Vui lòng kiểm tra mạng và thử lại. | Cannot connect to server. Please check your network and try again. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.loadErrorTitle` | Lỗi tải dữ liệu người dùng | Failed to load user data | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.emptyFilteredTitle` | Không tìm thấy người dùng | No users found | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.emptyFilteredDescription` | Không có tài khoản người dùng nào khớp với bộ lọc hiện tại. | No user accounts match the current filters. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.loading` | Đang tải danh sách người dùng... | Loading users... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.kpi.totalUsers` | Tổng người dùng | Total users | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.kpi.lecturers` | Giảng viên | Lecturers | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.kpi.students` | Sinh viên | Students | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.kpi.lockedUsers` | Tài khoản bị khóa | Locked accounts | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.searchPlaceholder` | Tìm hoặc email người dùng... | Search by name or email... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterRoleAria` | Lọc theo vai trò | Filter by role | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterRole.all` | Mọi vai trò | All roles | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterRole.lecturer` | Giảng viên | Lecturers | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterRole.student` | Sinh viên | Students | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterRole.admin` | Quản trị viên | Administrators | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterStatusAria` | Lọc theo trạng thái | Filter by status | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterStatus.all` | Tất cả trạng thái | All statuses | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterStatus.active` | Hoạt động | Active | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.filterStatus.locked` | Đã khóa | Locked | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.sortAria` | Sắp xếp | Sort | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.sort.newest` | Sắp xếp: Mới tạo | Sort: Newest | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.sort.name` | Sắp xếp: Tên A-Z | Sort: Name A-Z | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.columns.user` | Người dùng | User | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.columns.createdAt` | Ngày tạo | Created date | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.columns.role` | Vai trò & Khóa học | Role & Courses | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.columns.attempts` | Lượt làm | Attempts | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.columns.action` | Hành động | Action | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.columns.status` | Trạng thái | Status | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.role.lecturer` | Giảng viên | Lecturer | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.role.student` | Sinh viên | Student | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.role.admin` | Quản trị viên | Administrator | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.action.lock` | Khóa tài khoản | Lock account | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.action.unlock` | Mở khóa | Unlock account | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.status.active` | Hoạt động | Active | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.status.locked` | Đã khóa | Locked | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.pagination.showing` | Hiển thị {{shown}} trên {{total}} người dùng | Showing {{shown}} of {{total}} users | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.pagination.prev` | Trang trước | Previous page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.pagination.next` | Trang sau | Next page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.dialog.lockTitle` | Khóa tài khoản {{name}}? | Lock account {{name}}? | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.dialog.unlockTitle` | Mở khóa tài khoản {{name}}? | Unlock account {{name}}? | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.dialog.lockDescription` | Người dùng sẽ không đăng nhập được cho tới khi được mở khóa. Lượt làm, bài nộp và suy ngẫm vẫn được giữ nguyên. | The user will not be able to sign in until unlocked. Attempts, submissions, and reflections are preserved. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.dialog.unlockDescription` | Người dùng sẽ có thể đăng nhập lại và tiếp tục truy cập các học phần bình thường. | The user will be able to sign in again and access courses normally. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.dialog.lockConfirm` | Khóa tài khoản | Lock account | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.dialog.unlockConfirm` | Mở khóa | Unlock | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.dialog.cancel` | Hủy bỏ | Cancel | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.toast.lockSuccess` | Đã khóa tài khoản {{name}} | Locked account {{name}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.toast.unlockSuccess` | Đã mở khóa tài khoản {{name}} | Unlocked account {{name}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.users.toast.actionError` | Có lỗi xảy ra khi thay đổi trạng thái tài khoản. | An error occurred while changing user account status. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.header` | Khóa học toàn hệ thống | System-wide courses | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.loadErrorTitle` | Lỗi tải danh sách khóa học | Failed to load courses | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.emptyFilteredTitle` | Không có khóa học nào | No courses found | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.emptyFilteredDescription` | Không tìm thấy khóa học nào phù hợp với điều kiện tìm kiếm. | No courses matched the search criteria. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.loading` | Đang tải danh sách khóa học... | Loading courses... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.searchPlaceholder` | Tìm khóa học... | Search courses... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.filterStatusAria` | Lọc theo trạng thái | Filter by status | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.filterStatus.all` | Tất cả trạng thái | All statuses | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.filterStatus.active` | Đang mở | Open | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.filterStatus.archived` | Đã lưu trữ | Archived | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.status.teaching` | Đang dạy | Active | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.status.archived` | Đã lưu trữ | Archived | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.stats.materials` | {{ready}}/{{total}} tài liệu sẵn sàng | {{ready}}/{{total}} materials ready | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.stats.cases` | {{count}} case | {{count}} cases | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.stats.indexingError` | {{count}} tệp lỗi lập chỉ mục | {{count}} indexing errors | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.pagination.showing` | Hiển thị {{shown}} trên {{total}} khóa học | Showing {{shown}} of {{total}} courses | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.pagination.prev` | Trang trước | Previous page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.pagination.next` | Trang sau | Next page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.title` | Chi tiết khóa học | Course details | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.viewDetail` | Xem chi tiết | View details | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.close` | Đóng chi tiết | Close details | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.attempts` | Lượt làm bài | Study attempts | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.materials` | Tài liệu | Materials | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.cases` | Case Study | Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.about` | Về khóa học | About this course | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.infoTitle` | Thông tin khóa học | Course information | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.courseCode` | Mã học phần: | Course code: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.statusLabel` | Trạng thái: | Status: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.statusOpen` | Đang mở cho sinh viên | Open for students | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.statusArchived` | Đã lưu trữ | Archived | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.lecturerLabel` | Giảng viên phụ trách: | Lead lecturer: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.navTitle` | Đi tới | Go to | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.navMaterials` | Tài liệu môn học | Course materials | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.navMaterialsSub` | {{count}} tệp - {{ready}} sẵn sàng{{errorPart}} | {{count}} files - {{ready}} ready{{errorPart}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.navMaterialsError` | , {{count}} lỗi | , {{count}} errors | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.navCases` | Case Study | Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.navCasesSub` | {{count}} case | {{count}} cases | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.header` | Case Study toàn hệ thống | System-wide Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.loadErrorTitle` | Lỗi tải Case Study | Failed to load Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.emptyFilteredTitle` | Không tìm thấy Case Study | No Case Studies found | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.emptyFilteredDescription` | Không có tình huống nào khớp với bộ lọc hiện tại. | No cases matched the current filters. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.loading` | Đang tải danh sách Case... | Loading Case Studies... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.totalSuffix` | Case Study | Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.status.draft` | Bản nháp | Draft | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.status.reviewed` | Đã rà soát | Reviewed | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.status.approved` | Đã phê duyệt | Approved | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.status.published` | Đã xuất bản | Published | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.analytics.modeBranching` | Branching | Branching | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.analytics.modeReview` | Review | Review | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.analytics.recentTitle` | Case cập nhật gần đây | Recently updated cases | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.searchPlaceholder` | Tìm case... | Search cases... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.tabs.all` | Tất cả {{total}} | All {{total}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.tabs.draft` | Bản nháp {{count}} | Draft {{count}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.tabs.reviewed` | Đã rà soát {{count}} | Reviewed {{count}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.tabs.published` | Đã xuất bản {{count}} | Published {{count}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.card.aiDraft` | AI Draft | AI Draft | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.card.branchingMode` | Branching Study | Branching Study | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.card.reviewMode` | Review Study | Review Study | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.card.nodesCount` | {{count}} nút | {{count}} nodes | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.card.noTree` | Không dùng cây | No decision tree | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.card.updatedAt` | Cập nhật {{date}} | Updated {{date}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.card.viewAction` | Xem | View | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.pagination.showing` | Hiển thị {{shown}} trên {{total}} Case Study | Showing {{shown}} of {{total}} Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.pagination.prev` | Previous page | Previous page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.pagination.next` | Next page | Next page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.config.lastUpdatedLabel` | Cập nhật lần cuối | Last updated | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.loadErrorTitle` | Lỗi dịch vụ AI | AI service error | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.loading` | Đang tải thông tin dịch vụ AI... | Loading AI service information... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.kpi.totalGenerated` | Lượt sinh case | Case generations | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.kpi.totalGeneratedDesc` | Tổng số bản nháp AI đã sinh | Total AI drafts generated | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.kpi.avgDuration` | Thời gian sinh TB | Avg duration | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.kpi.avgDurationValue` | {{seconds}} giây | {{seconds}} seconds | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.kpi.avgDurationDesc` | Từ lúc gửi yêu cầu đến khi có bản nháp | From request to draft generation | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.kpi.readyMaterials` | Tài liệu sẵn sàng | Ready materials | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.kpi.readyMaterialsDesc` | Đã lập chỉ mục, AI có thể trích dẫn | Indexed and ready for AI citations | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.gen.duration` | Hoàn tất sau {{seconds}} giây | Completed in {{seconds}} seconds | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.gen.decisions` |  · {{count}} điểm quyết định |  · {{count}} decision points | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.gen.materialsCited` |  · trích từ {{count}} tài liệu |  · cited from {{count}} materials | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.status.completed` | Hoàn tất | Completed | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.status.pending` | Đang chờ | Pending | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.status.processing` | Đang xử lý | Processing | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.status.failed` | Thất bại | Failed | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.status.active` | Hoạt động | Active | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.idx.completed` | {{count}} đoạn trích, sẵn sàng cho AI trích dẫn | {{count}} excerpts, ready for AI citations | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.idx.pending` | Đang chờ trong hàng đợi xử lý | Queued for processing | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.idx.processing` | Đang tách đoạn và tạo vector ({{percent}}%) | Chunking and embedding ({{percent}}%) | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.aiService.idx.failedFallback` | Không đọc được nội dung tệp | Unable to read file content | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.loadErrorTitle` | Lỗi tải nhật ký hệ thống | Failed to load system logs | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.emptyFilteredTitle` | Không tìm thấy sự kiện nhật ký | No log events found | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.emptyFilteredDescription` | Không có bản ghi nhật ký nào khớp với điều kiện lọc. | No log records match the filter criteria. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.loading` | Đang tải nhật ký... | Loading logs... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.kpi.eventsToday` | Sự kiện hôm nay | Events today | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.kpi.loginCount` | Lượt đăng nhập | Sign-ins | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.kpi.aiGenerationsCount` | Lượt sinh case AI | AI case generations | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.kpi.errorsCount` | Lỗi cần xem | Errors to review | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.searchPlaceholder` | Tìm trong nhật ký... | Search logs... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterEventAria` | Lọc theo loại sự kiện | Filter by event type | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterEvent.all` | Mọi loại sự kiện | All event types | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterEvent.login` | Đăng nhập | Sign-in | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterEvent.aiGen` | Sinh case | AI case generation | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterEvent.submission` | Nộp bài | Submission | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterEvent.material` | Tài liệu | Materials | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterTimeAria` | Lọc theo thời gian | Filter by time | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterTime.today` | Hôm nay | Today | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterTime.sevenDays` | 7 ngày qua | Past 7 days | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterTime.thirtyDays` | 30 ngày qua | Past 30 days | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.filterTime.all` | Tất cả thời gian | All time | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.sortAria` | Sắp xếp | Sort | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.sort.newest` | Sắp xếp: Mới nhất | Sort: Newest | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.sort.oldest` | Sắp xếp: Cũ nhất | Sort: Oldest | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.columns.actor` | Người thực hiện | Actor | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.columns.time` | Thời gian | Time | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.columns.event` | Sự kiện | Event | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.columns.code` | Mã | Code | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.columns.detail` | Chi tiết | Details | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.columns.result` | Kết quả | Result | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.action.viewDetail` | Xem chi tiết | View details | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.status.success` | Thành công | Success | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.status.warning` | Cảnh báo | Warning | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.status.error` | Lỗi | Error | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.pagination.showing` | Hiển thị {{shown}} trên {{total}} sự kiện | Showing {{shown}} of {{total}} events | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.pagination.prev` | Trang trước | Previous page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.pagination.next` | Trang sau | Next page | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.title` | Chi tiết sự kiện {{code}} | Event details {{code}} | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.close` | Đóng | Close | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.actor` | Người thực hiện: | Actor: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.time` | Thời gian: | Time: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.action` | Hành động: | Action: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.target` | Đối tượng liên quan: | Related target: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.technicalDetails` | Chi tiết kỹ thuật: | Technical details: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.logs.dialog.noDetails` | Không có chi tiết bổ sung. | No additional details. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.breadcrumb` | Quản trị hệ thống > Cài đặt | Administration > Settings | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.header` | Cài đặt hệ thống | System settings | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.loadErrorTitle` | Lỗi cài đặt hệ thống | Failed to load system settings | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.loading` | Đang tải cài đặt hệ thống... | Loading system settings... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.toast.saveSuccess` | Đã lưu và áp dụng cài đặt hệ thống thành công. | System settings saved and applied successfully. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.toast.saveError` | Lỗi khi lưu cài đặt hệ thống. | Failed to save system settings. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.form.platformName` | Tên nền tảng * | Platform name * | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.form.operatorUnit` | Đơn vị vận hành | Operating unit | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.form.loginNoticeTitle` | Thông báo trên trang đăng nhập | Sign-in page notice | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.form.loginNoticeLabel` | Nội dung thông báo (hiển thị công khai) | Notice content (publicly visible) | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.form.loginNoticeHelper` | Thông báo sẽ hiển thị nổi bật tại trang đăng nhập cho mọi người dùng. | The notice will be prominently displayed on the sign-in page for all users. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.form.supportEmailTitle` | Email hỗ trợ * | Support email * | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.form.supportEmailLabel` | Địa chỉ email liên hệ hỗ trợ kỹ thuật | Technical support contact email | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.limitLabels.fileFormats` | Định dạng tài liệu: | Document formats: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.limitLabels.maxFileSize` | Dung lượng tối đa: | Max file size: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.limitLabels.registration` | Đăng ký tài khoản: | Account registration: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.limitLabels.version` | Phiên bản: | Version: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.limitLabels.timezone` | Múi giờ: | Timezone: | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.actions.cancel` | Hủy thay đổi | Discard changes | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.actions.note` | Thay đổi áp dụng cho toàn hệ thống sau khi lưu. | Changes apply system-wide upon saving. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.actions.save` | Lưu cài đặt | Save settings | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.actions.publish` | Xuất bản | Publish | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.dialog.title` | Lưu thay đổi cài đặt hệ thống? | Save system settings changes? | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.dialog.description` | Các thông tin cập nhật sẽ được lưu và áp dụng cho toàn bộ người dùng trong nền tảng EduBranch AI. | Updated details will be saved and applied to all users across the EduBranch AI platform. | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.dialog.confirm` | Lưu & Áp dụng | Save & Apply | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.settings.dialog.cancel` | Hủy bỏ | Cancel | PROPOSED | — | — | FE-032 PR #75 |
