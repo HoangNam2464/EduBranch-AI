@@ -1,8 +1,8 @@
 # Ghi chú UX theo màn hình — EduBranch AI
 
-> **Cập nhật**: 2026-11-16 · **Nguồn thiết kế**: Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `08 · EduBranch – Bản hoàn chỉnh` (canonical).
+> **Cập nhật**: 2026-11-16 · **Nguồn thiết kế**: Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens` (canonical).
 > **Mục đích**: thay cho các lớp ghi chú `_note / …` đã xóa khỏi canvas. Người làm UX/FE đọc file này để biết mỗi màn dùng để làm gì, có những hành động và trạng thái nào, và các quy tắc chung phải giữ.
-> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; token và component theo `docs/design/GLOBAL-DESIGN-SYSTEM.md`; trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn, register quyết định phạm vi, Figma page 08 quyết định giao diện.
+> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; token, component và trạng thái theo R01 (`.agents/rules/01-ui-design-standards.md`, nguồn thiết kế duy nhất); trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn, register quyết định phạm vi, Figma page EduBranch AI – Screens quyết định giao diện.
 > **Ghi chú hành vi trong Figma**: một số hành vi được gắn thẳng vào node dưới dạng *annotation* (xem ở Dev Mode). File này chép lại toàn bộ các annotation đó ở mục tương ứng.
 
 ---
@@ -12,7 +12,7 @@
 ### 1.1 Khung ứng dụng
 - Desktop 1440px. Sidebar trái dùng component `Navigation/Sidebar` (biến thể Lecturer / Admin × Collapsed False/True). Sinh viên dùng cùng sidebar với mục Bàn học, Khóa học của tôi, Tham gia lớp học.
 - **Sidebar thu gọn**: nút "Thu gọn" nằm trên khu tài khoản. Bản thu gọn rộng 72px, chỉ hiện icon, ẩn nhãn; avatar và nút đăng xuất căn giữa. Mục đang chọn tô nền navy, không có vạch trắng bên cạnh. Mỗi sidebar luôn có đúng một mục đang chọn. Ví dụ: 03.4b, 05.2b, 10.2b.
-- **Header dùng chung** `EB/Header Actions` cho cả 3 vai trò: ô tìm kiếm có phím tắt Ctrl K, chuyển ngôn ngữ VI | EN (nút chuyển VI/EN là thành phần thuộc shared header đã duyệt trên Figma page 08, mặc định tiếng Việt, hỗ trợ tiếng Anh), nút sáng/tối, thông báo (chấm đỏ khi có tin chưa đọc), cài đặt, tài khoản. Không tạo bản riêng theo vai trò. Giao diện tối **chưa thiết kế**, nút chỉ là chỗ đặt.
+- **Header dùng chung** `EB/Header Actions` cho cả 3 vai trò: ô tìm kiếm có phím tắt Ctrl K, chuyển ngôn ngữ VI | EN (nút chuyển VI/EN là thành phần thuộc shared header đã duyệt trên Figma page EduBranch AI – Screens, mặc định tiếng Việt, hỗ trợ tiếng Anh), nút sáng/tối, thông báo (chấm đỏ khi có tin chưa đọc), cài đặt, tài khoản. Không tạo bản riêng theo vai trò. Giao diện tối **chưa thiết kế**, nút chỉ là chỗ đặt.
 - **Footer dùng chung** `EB/App Footer` luôn nằm ở đáy nội dung. Màn có ít nội dung (trạng thái trống, lỗi) dùng khung 900px để khối nội dung kéo dài và footer chạm đáy, không để khoảng trống lớn bên dưới.
 - Ngôn ngữ giao diện: mặc định tiếng Việt; tiếng Anh qua nút VI/EN đã duyệt trên Figma; mỗi màn một ngôn ngữ, không trộn (PO 2026-11-16). Màu chính navy `#2A4E7F`, nhấn sky `#00A5F5`. Không dùng xanh lá làm màu thương hiệu; xanh lá chỉ dành cho trạng thái thành công.
 
@@ -52,7 +52,7 @@
 - Dải vòng đời: Bản nháp → Đã rà soát → Đã phê duyệt → (ổ khóa "Mở cho lớp") → Đã xuất bản. Thẻ cuối nền trắng, nhãn "Sinh viên thấy từ đây".
 - FAQ: tìm kiếm, chủ đề phổ biến, 4 nhóm câu hỏi dạng lưới 2 cột rộng bằng nhau (hai thẻ cùng hàng cao bằng nhau), khối liên hệ email hỗ trợ rộng bằng lưới.
 
-**00.3 Đăng nhập** — bố cục 50/50 bọc trong `max-w-7xl mx-auto`: bên trái thẻ minh họa sản phẩm (Product preview theo Figma page 08), bên phải form email + mật khẩu giới hạn `max-w-[440px]`. Có "Tiếp tục với Google" và "Tiếp tục với Microsoft" (component `EB/Social Sign-in`, MVP theo PSD-09). Có liên kết "Quên mật khẩu?" dẫn đến `/forgot-password`. Đã dọn sạch các nút demo giả lập. Liên kết "Đăng ký ngay" được nhấn mạnh.
+**00.3 Đăng nhập** — bố cục 50/50 bọc trong `max-w-7xl mx-auto`: bên trái thẻ minh họa sản phẩm (Product preview theo Figma page EduBranch AI – Screens), bên phải form email + mật khẩu giới hạn `max-w-[440px]`. Có "Tiếp tục với Google" và "Tiếp tục với Microsoft" (component `EB/Social Sign-in`, MVP theo PSD-09). Có liên kết "Quên mật khẩu?" dẫn đến `/forgot-password`. Đã dọn sạch các nút demo giả lập. Liên kết "Đăng ký ngay" được nhấn mạnh.
 
 **00.4 Đăng ký · Sinh viên / 00.5 Đăng ký · Giảng viên** — một form bọc trong `max-w-7xl mx-auto`, form giới hạn `max-w-[480px]`, chọn vai trò bằng hai nút "Sinh viên" / "Giảng viên" (nhãn "Vai trò"). Sinh viên có ô Mã số sinh viên; giảng viên có ô dropdown tùy chọn "Khoa / Đơn vị công tác" với khoảng đệm chuẩn `px-4` (16px), tích hợp thanh tìm kiếm thông minh và 29 khoa chuẩn chia theo 7 khối ngành đào tạo đại học kèm tùy chọn "Đơn vị / Khoa khác...". Có đăng ký bằng Google/Microsoft. 00.5 có khối lưu ý kích hoạt tài khoản giảng viên — còn chờ **OPD-008**.
 
