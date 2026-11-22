@@ -496,3 +496,93 @@
 | `g6.settings.dialog.description` | Các thông tin cập nhật sẽ được lưu và áp dụng cho toàn bộ người dùng trong nền tảng EduBranch AI. | Updated details will be saved and applied to all users across the EduBranch AI platform. | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.settings.dialog.confirm` | Lưu & Áp dụng | Save & Apply | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.settings.dialog.cancel` | Hủy bỏ | Cancel | PROPOSED | — | — | FE-032 PR #75 |
+| `common.loading` | Đang tải... | Loading... | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.errors.validation` | Dữ liệu yêu cầu chưa hợp lệ. Vui lòng kiểm tra lại. | Invalid request data. Please check and try again. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.errors.forbidden` | Bạn không có quyền thực hiện thao tác này. | You do not have permission to perform this action. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.errors.notFound` | Không tìm thấy dữ liệu bài nộp hoặc hàng đợi phản hồi. | Submission or feedback queue data not found. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.errors.conflict` | Dữ liệu bị xung đột hoặc đã được cập nhật bởi phiên khác. | Data conflict occurred or submission was updated elsewhere. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.errors.network` | Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối mạng. | Cannot connect to server. Please check your network connection. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.errors.generic` | Đã có lỗi xảy ra. Vui lòng thử lại. | Something went wrong. Please try again. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.errors.loadTitle` | Không thể tải hàng đợi bài nộp | Unable to load submissions queue | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.actions.review` | Xem & Nhận xét | Inspect & Review | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.actions.viewDetail` | Chi tiết | Details | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.allCourses` | Mọi khóa học | All courses | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.badges.completed` | Hoàn thành | Completed | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.badges.pending` | Chờ phản hồi | Pending | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.badges.reflected` | Đã phản tư | Reflected | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.badges.reviewed` | Đã phản hồi | Reviewed | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.columns.action` | Thao tác | Action | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.columns.attempt` | Lần làm | Attempt | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.columns.case` | Case Study & Khóa học | Case Study & course | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.columns.mode` | Chế độ học | Mode | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.columns.status` | Trạng thái xét duyệt | Review Status | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.columns.student` | Sinh viên | Student | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.columns.submittedAt` | Thời gian nộp | Submitted | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.courseFilter` | Lọc theo khóa học | Filter by course | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.emptyDescription` | Hiện chưa có sinh viên nào nộp bài hoặc không có bài nộp nào khớp với bộ lọc hiện tại. | No student submissions exist yet or no submissions match the current filter criteria. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.emptyTitle` | Chưa có bài nộp nào | No submissions found | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.analysisTitle` | 1. Phân tích tình huống (Situation Analysis) | 1. Situation Analysis | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.attemptNumber` | Lần làm #{{n}} | Attempt #{{n}} | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.close` | Đóng panel | Close panel | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.composerNotice` | Nhận xét 100% mang tính định tính sư phạm. Không có AI chấm điểm và không gán điểm số/thang điểm. | 100% human qualitative academic feedback. No AI grading and no numerical scoring. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.composerTitle` | Nhận xét định tính của giảng viên | Lecturer Qualitative Feedback | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.emptyAnalysis` | Sinh viên không điền phân tích tình huống | No situation analysis provided | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.emptyReflection` | Sinh viên chưa nộp bài phản tư tổng kết | Reflection not yet submitted | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.feedbackFailed` | Không thể lưu nhận xét: {{error}} | Failed to save feedback: {{error}} | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.feedbackLabel` | Nội dung nhận xét định tính * | Qualitative feedback content * | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.feedbackMin` | Nhận xét định tính phải có ít nhất 10 ký tự. | Feedback must contain at least 10 characters. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.feedbackPlaceholder` | Viết nhận xét định tính chi tiết về lập luận, giải pháp hoặc hướng rẽ nhánh của sinh viên... | Write qualitative feedback regarding student reasoning, solution, or journey decisions... | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.feedbackSuccess` | Đã lưu nhận xét định tính và chuyển trạng thái bài nộp sang REVIEWED thành công! | Qualitative feedback saved and submission transitioned to REVIEWED successfully! | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.journeyTitle` | Lộ trình hành trình | Journey Path | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.outcome` | Kết cục hành trình | Terminal Outcome | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.previousFeedback` | Nhận xét đã gửi trước đó: | Previously sent feedback: | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.reasoningTitle` | 3. Lập luận căn cứ & Đánh đổi (Supporting Reasoning) | 3. Supporting Reasoning & Trade-offs | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.reflectionTitle` | Bài phản tư tổng kết của sinh viên | Student Reflection Summary | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.selectPromptDesc` | Nhấp vào bất kỳ bài nộp nào ở danh sách bên trái để kiểm tra chi tiết bài làm và soạn nhận xét định tính. | Click any submission in the list on the left to inspect student work and compose qualitative feedback. | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.selectPromptTitle` | Chọn bài nộp để xét duyệt | Select a submission to review | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.sentAt` | Gửi ngày {{time}} | Sent on {{time}} | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.solutionTitle` | 2. Phương án giải pháp (Proposed Solution) | 2. Proposed Solution | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.stepsCount` | {{count}} bước quyết định | {{count}} decision steps | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.studentInfo` | Thông tin sinh viên | Student information | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.submissionDetails` | Nội dung bài làm | Submission work | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.submitFeedback` | Lưu & Gửi nhận xét cho sinh viên | Save & Send Feedback to Student | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.submittingFeedback` | Đang lưu nhận xét... | Saving feedback... | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.title` | Chi tiết bài nộp & Nhận xét | Submission Inspection & Feedback | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.listLabel` | Danh sách bài nộp | Submissions | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.metrics.cases` | Case Study có bài nộp | Cases with submissions | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.metrics.pending` | Chờ phản hồi | Awaiting feedback | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.metrics.reviewed` | Đã phản hồi | Feedback given | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.metrics.total` | Tổng bài làm đã nộp | Submitted attempts | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.modeFilter` | Lọc theo chế độ học | Filter by learning mode | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.modes.all` | Mọi chế độ học | All learning modes | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.modes.branching` | Branching Study | Branching Study | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.modes.review` | Review Study | Review Study | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.searchLabel` | Tìm bài nộp | Search submissions | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.searchPlaceholder` | Tên sinh viên, case hoặc mã lớp... | Student name, case title, or course... | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.sort.newest` | Mới nhất | Newest | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.sort.oldest` | Cũ nhất | Oldest | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.sortLabel` | Sắp xếp | Sort | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.all` | Mọi trạng thái | All statuses | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.completed` | Hành trình hoàn thành (COMPLETED) | Completed Journey (COMPLETED) | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.pending` | Chờ phản hồi | Awaiting feedback | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.pendingReview` | Chờ phản hồi (PENDING_REVIEW) | Awaiting Review (PENDING_REVIEW) | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.reflected` | Đã hoàn tất phản tư (REFLECTED) | Reflected (REFLECTED) | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.reflectionPending` | Chưa nộp bài phản tư | Reflection Pending | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.reflectionSubmitted` | Đã nộp bài phản tư | Reflection Submitted | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.status.reviewed` | Đã phản hồi | Reviewed | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.statusFilter` | Lọc theo trạng thái | Filter by status | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.alreadyReviewedNotice` | Bài làm này đã có nhận xét định tính (chỉ xem, không thể sửa đổi). | This submission already has qualitative feedback (read-only, cannot be modified). | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.emptyStepReasoning` | Chưa có lập luận hồi cứu | No retrospective reasoning provided | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.emptySteps` | Chưa có bước quyết định nào được ghi nhận | No decision steps recorded | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.selectedOption` | Lựa chọn đã chọn: | Selected option: | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.situation` | Tình huống | Situation | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.stepNumber` | Bước {{n}} | Step {{n}} | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.inspector.stepReasoningTitle` | Lập luận hồi cứu của sinh viên | Student retrospective reasoning | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.actions.viewFeedback` | Xem phản hồi | View feedback | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.pagination.showing` | Hiển thị | Showing | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.pagination.ofTotal` | trên {{count}} bài làm | of {{count}} submissions | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.pagination.pageSize` | Số bài làm mỗi trang | Submissions per page | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.pagination.nav` | Phân trang bài làm | Submissions pagination | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.pagination.previous` | Trang trước | Previous page | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.pagination.next` | Trang sau | Next page | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.pagination.pageN` | Trang {{page}} | Page {{page}} | PROPOSED | — | — | FE-019 PR #68 |

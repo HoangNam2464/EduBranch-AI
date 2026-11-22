@@ -3,7 +3,8 @@
     "appName": "EduBranch AI",
     "logout": "Sign out",
     "reload": "Reload page",
-    "backHome": "Back to home"
+    "backHome": "Back to home",
+    "loading": "Loading..."
   },
   "nav": {
     "lecturer": {
@@ -1288,14 +1289,25 @@
       },
       "listLabel": "Submissions",
       "searchLabel": "Search submissions",
-      "searchPlaceholder": "Student name or case",
+      "searchPlaceholder": "Student name or case title",
       "courseFilter": "Filter by course",
       "allCourses": "All courses",
+      "modeFilter": "Filter by learning mode",
+      "modes": {
+        "all": "All learning modes",
+        "branching": "Branching Study",
+        "review": "Review Study"
+      },
       "statusFilter": "Filter by status",
       "status": {
         "all": "All statuses",
         "pending": "Awaiting feedback",
-        "reviewed": "Feedback given"
+        "reviewed": "Reviewed",
+        "pendingReview": "Awaiting feedback",
+        "reflected": "Reflected",
+        "completed": "Completed journey",
+        "reflectionSubmitted": "Reflection submitted",
+        "reflectionPending": "Reflection pending"
       },
       "sortLabel": "Sort",
       "sort": {
@@ -1304,14 +1316,80 @@
       },
       "columns": {
         "student": "Student",
+        "mode": "Mode",
         "submittedAt": "Submitted",
         "case": "Case Study & course",
         "attempt": "Attempt",
         "action": "Action",
         "status": "Status"
       },
-      "emptyTitle": "No submission data",
-      "emptyDescription": "The system does not provide student work to lecturers yet."
+      "actions": {
+        "review": "Assess & review",
+        "viewFeedback": "View feedback",
+        "viewDetail": "Details"
+      },
+      "badges": {
+        "pending": "Awaiting feedback",
+        "reviewed": "Reviewed",
+        "reflected": "Reflected",
+        "completed": "Completed"
+      },
+      "pagination": {
+        "showing": "Showing",
+        "ofTotal": "of {{count}} submissions",
+        "pageSize": "Submissions per page",
+        "nav": "Submissions pagination",
+        "previous": "Previous page",
+        "next": "Next page",
+        "pageN": "Page {{page}}"
+      },
+      "emptyTitle": "No submissions found",
+      "emptyDescription": "No student submissions exist yet or no submissions match the current filter criteria.",
+      "errors": {
+        "validation": "Invalid request data. Please check and try again.",
+        "forbidden": "You do not have permission to perform this action.",
+        "notFound": "Submission or feedback queue data not found.",
+        "conflict": "Data conflict occurred or submission was updated elsewhere.",
+        "network": "Cannot connect to server. Please check your network connection.",
+        "generic": "Something went wrong. Please try again.",
+        "loadTitle": "Unable to load submissions queue"
+      },
+      "inspector": {
+        "title": "Submission Inspection & Feedback",
+        "studentInfo": "Student information",
+        "submissionDetails": "Submission work",
+        "analysisTitle": "1. Situation Analysis",
+        "solutionTitle": "2. Proposed Solution",
+        "reasoningTitle": "3. Supporting Reasoning & Trade-offs",
+        "journeyTitle": "Journey Path",
+        "attemptNumber": "Attempt #{{n}}",
+        "stepsCount": "{{count}} decision steps",
+        "outcome": "Terminal Outcome",
+        "reflectionTitle": "Student Reflection Summary",
+        "emptyAnalysis": "No situation analysis provided",
+        "emptyReflection": "Reflection not yet submitted",
+        "composerTitle": "Lecturer Qualitative Feedback",
+        "composerNotice": "100% human qualitative academic feedback. No AI grading and no numerical scoring.",
+        "feedbackLabel": "Qualitative feedback content *",
+        "feedbackPlaceholder": "Write qualitative feedback regarding student reasoning, solution, or journey decisions...",
+        "feedbackMin": "Feedback must contain at least 10 characters.",
+        "submitFeedback": "Save & Send Feedback to Student",
+        "submittingFeedback": "Saving feedback...",
+        "feedbackSuccess": "Qualitative feedback saved and submission transitioned to REVIEWED successfully!",
+        "feedbackFailed": "Failed to save feedback: {{error}}",
+        "previousFeedback": "Previously sent feedback:",
+        "alreadyReviewedNotice": "This submission already has qualitative feedback (read-only, cannot be modified).",
+        "emptyStepReasoning": "No retrospective reasoning provided",
+        "emptySteps": "No decision steps recorded",
+        "selectedOption": "Selected option:",
+        "situation": "Situation",
+        "stepNumber": "Step {{n}}",
+        "stepReasoningTitle": "Student retrospective reasoning",
+        "sentAt": "Sent on {{time}}",
+        "close": "Close panel",
+        "selectPromptTitle": "Select a submission to review",
+        "selectPromptDesc": "Click any submission in the list on the left to inspect student work and compose qualitative feedback."
+      }
     },
     "detail": {
       "unavailableTitle": "This submission cannot be shown",
