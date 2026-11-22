@@ -9,6 +9,7 @@ import * as path from "path";
 import { DatabaseService } from "../../common/database/database.service";
 import { AuditService } from "../../common/audit/audit.service";
 import { AiHealthService } from "./ai-health.service";
+import { MAX_SIZE_BYTES } from "../material/material.service";
 import {
   APP_TIME_ZONE,
   describeEventMeta,
@@ -688,8 +689,8 @@ export class AdminService {
       ...values,
       limits: {
         fileFormats: "PDF, DOCX",
-        // No upload size limit is enforced by the backend today (spec 007 record §4).
-        maxFileSize: null,
+        // The limit MaterialService enforces after upload (multer sets no early limit; spec 007 record §4).
+        maxFileSize: `${MAX_SIZE_BYTES / (1024 * 1024)} MB`,
         registration: "OPEN_LECTURER_STUDENT",
         version: this.version,
         timezone: APP_TIME_ZONE,

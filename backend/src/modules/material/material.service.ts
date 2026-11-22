@@ -19,7 +19,7 @@ const ALLOWED_MIME_TYPES = new Set([
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ]);
 
-const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
+export const MAX_SIZE_BYTES = 50 * 1024 * 1024; // 50MB
 
 @Injectable()
 export class MaterialService {

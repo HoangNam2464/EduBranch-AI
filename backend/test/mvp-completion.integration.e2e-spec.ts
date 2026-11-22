@@ -316,7 +316,7 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
 
       const before = await admin.getSettings();
       expect(before.platformName).toBe("EduBranch AI");
-      expect(before.limits.maxFileSize).toBeNull();
+      expect(before.limits.maxFileSize).toBe("50 MB");
       const after = await admin.updateSettings(id.admin1, { loginNotice: "Bảo trì 22h", supportEmail: "help@uni.edu.vn" });
       expect(after).toMatchObject({ platformName: "EduBranch AI", loginNotice: "Bảo trì 22h", supportEmail: "help@uni.edu.vn" });
       const ev = await pool.query(`SELECT meta FROM audit_events WHERE event_type = 'SETTINGS_UPDATED'`);

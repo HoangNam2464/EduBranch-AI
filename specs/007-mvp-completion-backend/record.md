@@ -59,7 +59,7 @@ Giới hạn của bằng chứng:
 - Trên CI không có Postgres, suite tích hợp tự bỏ qua. Các test khi đó vẫn báo "passed" nhưng không chạy gì (cùng mẫu với `migration.integration.e2e-spec.ts`), nên không được tính là bằng chứng CI.
 - Test migration cục bộ đã áp V6–V8 lên database `edubranch_ai` cục bộ (không ảnh hưởng môi trường dùng chung).
 
-Phát hiện ngoài phạm vi (báo PO, không sửa): backend không giới hạn dung lượng tệp tải lên. `FileInterceptor("file")` không có `limits` (`backend/src/modules/material/material.controller.ts:34`), nên `GET /admin/settings` trả `maxFileSize: null`.
+Phát hiện ngoài phạm vi (báo PO, không sửa): `MaterialService` có giới hạn 50 MB (`MAX_SIZE_BYTES`, `material.service.ts:20`), nhưng chỉ kiểm tra sau khi đã nhận xong tệp. `FileInterceptor("file")` không đặt `limits` (`material.controller.ts:34`), nên tệp lớn vẫn bị đọc hết vào bộ nhớ trước khi bị từ chối. Đính chính 2026-11-22: bản ghi trước nói "không có giới hạn" là sai. `GET /admin/settings` trả `maxFileSize: "50 MB"` lấy từ chính hằng số này.
 
 ## 5. QG2 — review độc lập (2026-11-21)
 
