@@ -1,7 +1,7 @@
 # P4 — Secondary Review Study (LATER)
 
 > **Priority**: LATER — Proposal V1.2 explicitly calls Review Study "supported at a simple level in the MVP," lowest build priority. Lighter-pass spec per Phase 2 plan.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md`.
+> **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`.
 > **Covers**: `/student/cases/:caseId/review-study`, `/student/cases/:caseId/review-study/:submissionId/feedback`.
 
 ---
@@ -12,7 +12,7 @@
 Context/Data → Problem/Question → Student Analysis → Proposed Solution → Student Reasoning, for cases with `learning_mode = REVIEW_STUDY` (`FEATURE-REVIEW-STUDY.md`). No decision tree — `context_text`/`problem_text` only.
 
 ### Layout
-Single-column reading + writing flow, same capped-width readable column as the Branching Case Player: `context_text` → `problem_text` → an optional `student_analysis` field → `proposed_solution` (required) → `reasoning_text` (required), using the Reasoning Input pattern (`GLOBAL-DESIGN-SYSTEM.md §6.6`) for the reasoning field specifically.
+Single-column reading + writing flow, same capped-width readable column as the Branching Case Player: `context_text` → `problem_text` → an optional `student_analysis` field → `proposed_solution` (required) → `reasoning_text` (required), using the Reasoning Input pattern (R01) for the reasoning field specifically.
 
 ### Data
 `context_text`, `problem_text` (from the case), `student_analysis`, `proposed_solution`, `reasoning_text` (student-authored, `review_study_submissions`).
@@ -35,7 +35,7 @@ No AI grading of `proposed_solution` or `reasoning_text`. No "correct answer" fr
 Student view of the Lecturer's feedback on their Review Study submission, and the entry point to submit a reflection (`FEATURE-LECTURER-FEEDBACK.md §3`, `FEATURE-REFLECTION.md`).
 
 ### Layout
-Read-only recap of the student's own `proposed_solution`/`reasoning_text` → Lecturer Feedback Block (`GLOBAL-DESIGN-SYSTEM.md §6.10`) → Reflection Input (`§6.8`), shown only once `submission_status = REVIEWED`.
+Read-only recap of the student's own `proposed_solution`/`reasoning_text` → Lecturer Feedback Block (R01) → Reflection Input (`§6.8`), shown only once `submission_status = REVIEWED`.
 
 ### States
 - **Not yet reviewed**: if the lecturer hasn't submitted feedback yet, show a waiting state ("Your lecturer hasn't reviewed this submission yet") rather than an empty feedback block.
