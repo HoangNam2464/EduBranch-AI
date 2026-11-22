@@ -128,12 +128,10 @@ Student submits overall Reflection
 | | [Service Boundaries](architecture/SERVICE-BOUNDARIES.md) | Inter-service contracts, protocols & security |
 | | [System Data Flows](architecture/DATA-FLOW.md) | End-to-end sequence diagrams & lifecycle |
 | | [Decision Tree Model](architecture/DECISION-TREE-MODEL.md) | Invariants & JSON schema for branching cases |
-| | [Architecture Audits & Reports](architecture/audits/README.md) | Historical audits, baseline validations & migration reports |
 | **Features** | [Feature Specifications](features/) | Comprehensive per-feature specifications |
-| **UI / UX Design System** | [Global Design System](design/GLOBAL-DESIGN-SYSTEM.md) | Canonical light-first color tokens, vector SVG icons, typography & components |
+| **UI / UX Design System** | [R01 UI/UX Design Rules](../.agents/rules/01-ui-design-standards.md) | Single design source: identity, tokens by name (values in `frontend/src/index.css`), layout, components, states, quality bar |
 | | [Site Architecture](design/SITE-ARCHITECTURE.md) | 14-route sitemap, role boundaries & 6 product workflows |
 | | [Screen Specifications (P0–P4)](design/screens/) | Detailed per-screen layout, state & component specs |
-| | [Stitch Generation Guidelines](design/STITCH-GENERATION-GUIDELINES.md) | RETIRED — history only, never a template (AGENTS.md rule 3) |
 | | [Design Direction](design/DESIGN-DIRECTION.md) | Proposed visual/UX evolution within the fixed identity (PROPOSED) |
 | **Task Catalogs** | [Master Task Backlog](01_MASTER-TASKS.md) | 84-task baseline (`01_MASTER-TASKS.md`–`06_QA.md`); Jira holds 105 issues — see [Jira Key Map](04_JIRA/JIRA-KEY-MAP.md) |
 | **Team** | [Team Capability Matrix](team/TEAM-CAPABILITY-MATRIX.md) | Members, assignments, role playbooks |

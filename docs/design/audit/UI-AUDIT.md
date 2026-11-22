@@ -2,7 +2,7 @@
 
 > **Status**: Audit + trial result (2026-11-21, Claude). The trial code (§4) is **not** in the repository: the PO chose (2026-11-21) to ship the docs package without it, because PR #79 (spec 006, fluid app layout) changes the same shell files. Re-measure X1/X2 after PR #79 merges and redo the trial on top of it if still needed. The `after/` and `compare/` images record what the trial produced.
 > **Environment**: `develop` `6f903f2` (before PRs #68–#75 merged on 2026-11-22; the measurements must be re-run on the current `develop`, with MinIO, case/attempt/submission data and on Windows/Chrome, before they serve as acceptance evidence); backend on local Postgres 16 + pgvector + Redis (no MinIO, no AI provider key → no materials, no cases); Vite dev server; Chromium (Playwright) 1440×900, deviceScaleFactor 1; language `vi`. Seed: `frontend/tests/visual/seed-local.mjs` (3 accounts, 8 courses; material upload failed without MinIO).
-> **Evidence**: `baseline/` (before), `after/` (trial), `compare/` (side by side, before left), `capture-report.json` (URL, height, console errors per screen). Figma baselines: `frontend/tests/visual/figma/*.png`.
+> **Evidence**: the before/after/compare images and capture reports of 2026-11-21 were removed from the repository on 2026-11-22 (the trial was not shipped and `develop` has changed since). Re-capture on the current `develop` when this audit is used; the findings below are the input of `docs/design/DESIGN-DIRECTION.md`.
 > **Limit**: screens that need cases, attempts or submissions (05.x player/review, 06.x Review Study, 04.2 detail, 03.4 editor) could not be audited with data; they are NOT VERIFIED here.
 
 ## 1. Cross-cutting findings (root causes)
@@ -14,7 +14,7 @@
 | X4 | Admin Dashboard shows placeholder data when the API is missing (186 users, 92/6/2%, 5 named log rows, fixed week axis); 2 console 404s | `AdminDashboardPage.tsx` ~L320, ~L543; capture-report | REDESIGN states (defect, EBA-95) |
 | X5 | Statistics: six cards each with the same "Chưa có dữ liệu thống kê" | baseline 04.3 | IMPROVE — one page-level empty state (after PR #70) |
 | X6 | Auth screens 00.3/00.4/10.1 differ ~35% from Figma (brand panel is a small centred card, not full height) | `npm run test:visual` 2026-11-21 | IMPROVE — confirm on Windows first (EBA-87) |
-| X7 | Theme toggle in header vs "light mode only" | GDS §0.5 U-01 | DECIDED (PO 2026-11-21: remove) — implementation pending |
+| X7 | Theme toggle in header vs "light mode only" | R01 §0 | DECIDED (PO 2026-11-21: remove) — implementation pending |
 | X8 | Search placeholder gets clipped when the search shrinks (trial side effect) | after 07.8 | accepted trade-off; shorter placeholder copy needs PO-approved Vietnamese text |
 
 ## 2. Screen verdicts (KEEP / IMPROVE / REDESIGN)

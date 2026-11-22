@@ -20,8 +20,8 @@ Sources: FND §7 (branches, commits), workflow §5 (Quality Gates, CI commands),
 3. Scan for secrets and personal data in the diff.
 4. Lint (`frontend: npm run lint`; backend has no working linter).
 5. Typecheck/build of every touched tier (`npm run build`).
-6. Relevant tests, including negative and ownership cases (commands in `CLAUDE.md` §13), and `node scripts/l10n-approval-check.mjs` for any locale change.
-7. Visual QA for UI changes (`CLAUDE.md` §17).
+6. Relevant tests, including negative and ownership cases (commands in `CLAUDE.md` "Commands"), and `node scripts/l10n-approval-check.mjs` for any locale change.
+7. Browser check for UI changes (`CLAUDE.md` §5 step 5, R01 §8).
 8. Re-read the acceptance criteria and the spec; every AC has evidence or a stated status (policy §8).
 9. Stage by explicit path (`git add -- <path>`); force-add tracked files under `.claude/` and `.agents/skills/` (`git add -f -- <path>`, workflow §10).
 

@@ -62,7 +62,7 @@ The platform includes embedded **AI Reasoning & Challenge Support** (1–2 round
 > - ⚠️ Backend domain controllers do not yet expose persistent case, attempt, Review Study, reasoning, feedback, or challenge APIs.
 > - ⚠️ The frontend prototype is not yet connected to the backend and its in-memory state is lost on refresh.
 >
-> See [Final Product-Direction Validation](docs/architecture/audits/FINAL-PRODUCT-DIRECTION-VALIDATION.md)
+> See [Project Overview](docs/PROJECT_OVERVIEW.md)
 > for the source-versus-documentation audit and correction plan.
 
 ---

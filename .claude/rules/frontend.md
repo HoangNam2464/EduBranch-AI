@@ -4,7 +4,7 @@ paths:
 ---
 # Frontend rules (React 19 + TypeScript + TailwindCSS v4)
 
-Read first: `.claude/rules/ui-design.md` (design sources), the screen's Figma frames, and the feature rule `.agents/rules/feature-<domain>.md`.
+Read first: R01 `.agents/rules/01-ui-design-standards.md` (single design source), the screen's Figma frame and `docs/design/UX-SCREEN-NOTES.md` entry, and the feature rule `.agents/rules/feature-<domain>.md`.
 
 ## Structure
 - Pages `src/pages/<domain>/`; layouts `src/layouts/` (`AppShell`, `Sidebar`, `HeaderActions` in `layouts/shell/`; role layouts `LecturerLayout`, `StudentLayout`, `AdminLayout`, `PublicLayout`).
@@ -14,11 +14,7 @@ Read first: `.claude/rules/ui-design.md` (design sources), the screen's Figma fr
 - Routes: only `PATHS` and `buildPath()` from `src/routes/paths.ts`; guards in `src/routes/`; role homes in `ROLE_HOME`. Never hard-code a route string.
 
 ## Styling
-- Tokens from `src/index.css` `@theme` (mirror of the Figma variables, GDS §2). No raw hex or arbitrary values where a token exists; no `indigo/violet/purple`.
-- App-shell screens use the full width next to the sidebar with fixed side gutters (PO 2026-11-21, spec 006 / PR #79); cap only long paragraphs for reading. `max-w-7xl` stays only on the public landing, public header/footer and auth pages. Thin borders, soft shadows; surface ladder page → canvas → card → one inset (R01 §1 rule 5).
-- Icons: `lucide-react` outline icons with `aria-label` or `aria-hidden`; no emoji or ASCII glyphs as icons (R01 §1 rules 1–2).
-- Motion: framer-motion (ADR-002) for purposeful transitions only; respect `prefers-reduced-motion`.
-- Light mode only (PO 2026-11-21: Light Mode baseline, dark-mode toggle removed). The `ThemeToggle` and `.dark` styles still on `develop` (PR #54) are pending removal: never extend them or add `dark:` classes.
+Follow R01 §2–§5. In short: tokens from `src/index.css` `@theme` (the only place values live; add a missing token there, never inline a hex); app-shell screens fluid beside the sidebar, `max-w-7xl` only on landing, public header/footer and auth; surface ladder page → canvas → card → one inset; `lucide-react` icons; framer-motion only for purposeful transitions with `prefers-reduced-motion`. Light mode only: the `ThemeToggle` and `.dark` styles still on `develop` (PR #54) are to be removed; never extend them or add `dark:` classes.
 
 ## Copy and i18n
 - Every UI string goes through i18next. Today all strings live in `src/locales/vi.json` and `src/locales/en.json` (consolidated in commit `b4854d1`), grouped by top-level key: `g1` public/auth, `g2` courses/materials, `g3` cases, `g4` lecturer dashboard/feedback/statistics/profile, `g5` student flows, `g6` admin, plus `common`, `nav`, `errors`, `shell`, `states`, `authRecovery`, `caseReview`, `ragInspector`, `rubric`. Same key set in both files.
@@ -28,10 +24,10 @@ Read first: `.claude/rules/ui-design.md` (design sources), the screen's Figma fr
 ## Data and states
 - Real API data only. When Figma shows a field the API lacks, report the gap; never fake it.
 - Every data view handles default, loading (`Skeleton`), empty, error (with retry), 403 and success; mutations show pending and a toast; destructive actions use a confirm `Dialog`.
-- Accessibility: labelled inputs, visible focus ring (GDS §5.4), keyboard-reachable dialogs with focus trap, contrast AA.
+- Accessibility: labelled inputs, visible focus ring (R01 §4), keyboard-reachable dialogs with focus trap, contrast AA.
 
 ## Tests and checks
-`npm run lint`, `npm test` (add new `*.spec.ts` to the `test` script list), `npm run build`; for UI, the Visual QA gate in `CLAUDE.md` §17 and `npm run test:visual` (frames and budgets in `tests/visual/screens.ts`). E2E: `npm run test:e2e`.
+`npm run lint`, `npm test` (add new `*.spec.ts` to the `test` script list), `npm run build`; for UI, the browser check in `CLAUDE.md` §5 step 5 and the R01 §8 quality bar. `npm run test:visual` (frames and budgets in `tests/visual/screens.ts`) is a pixel diff against Figma for reference, not the pass criterion. E2E: `npm run test:e2e`.
 
 Visual QA in a cloud session (no Google Chrome, no Docker):
 - Seed: `node tests/visual/seed-local.mjs` promotes the admin with `docker exec edubranch_postgres psql …` and reads `backend/.env`; without Docker put a temporary `docker` shim on `PATH` that forwards to `psql -h localhost`, and a temporary `backend/.env` with `POSTGRES_USER`/`POSTGRES_DB`. Material upload fails without MinIO; cases need an AI provider key.

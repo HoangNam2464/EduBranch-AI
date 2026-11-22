@@ -1,6 +1,6 @@
 # EduBranch AI - AI Coding Agent Instructions
 
-> **Note (2026-11-21)**: not in the GDS §0 source register and partly outdated (rule counts, examples). Current agent rules: `AGENTS.md`, `CLAUDE.md`, `.agents/rules/00-project-foundation.md`, `.agents/rules/02-agent-operating-policy.md`, `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`. Where this file disagrees with them, they win.
+> **Note (2026-11-21)**: partly outdated (rule counts, examples). Current agent rules: `AGENTS.md`, `CLAUDE.md`, `.agents/rules/00-project-foundation.md`, `.agents/rules/02-agent-operating-policy.md`, `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`. Where this file disagrees with them, they win.
 
 > **Document Status**: Authoritative Agent Governance Instructions  
 > **Target Audience**: GitHub Copilot, Antigravity, Claude, and all AI coding assistants operating on this repository.

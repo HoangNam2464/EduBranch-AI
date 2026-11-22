@@ -32,10 +32,10 @@ Each playbook lists scope, task groups, tools, domain knowledge, workflow, files
 - **Mistakes to avoid**: treating code as requirement; closing an OPD; confusing Master Task ID with Jira key.
 
 ### 2.2 UI/UX Designer (DES-001…015 owner: Nam)
-- **Scope**: Figma page `EduBranch AI – Screens`, GDS tokens, screen states, UX copy (Vietnamese source).
+- **Scope**: Figma page `EduBranch AI – Screens`, R01 tokens, screen states, UX copy (Vietnamese source).
 - **Tasks**: frame review, design direction, UI audit (KEEP/IMPROVE/REDESIGN), state coverage, UX writing.
 - **Tools**: Figma MCP read-only (edit only with PO approval), Playwright screenshots, `docs/design/`.
-- **Knowledge**: GDS, R01, `docs/05_FIGMA.md`, `docs/design/DESIGN-DIRECTION.md`, pedagogy guardrails (no grading UI, consequences only in review).
+- **Knowledge**: R01 (single design source), `docs/05_FIGMA.md`, `docs/design/DESIGN-DIRECTION.md`, pedagogy guardrails (no grading UI, consequences only in review).
 - **Output**: annotated audit with screenshots, measurable deltas (px, %), token-level proposals marked PROPOSED.
 - **Mistakes**: changing brand colours; dark mode; sparkle/chat AI imagery; one layout for every screen; redesign without a real problem.
 

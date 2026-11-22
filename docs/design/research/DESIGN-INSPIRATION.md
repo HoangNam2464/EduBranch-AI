@@ -1,7 +1,7 @@
 # Design Inspiration — Research Notes
 
 > **Status**: Research (2026-11-21) · **Author**: Claude · **Feeds**: `docs/design/DESIGN-DIRECTION.md` (PROPOSED).
-> **Method**: full-page screenshots at 1440px with Playwright (Chromium), saved in `screenshots/`. Pages that rendered without CSS (Linear, Gradescope, Stripe: their asset CDNs were not reachable from the session) or behind a bot challenge (Khan Academy) were discarded, not described from memory. Third-party screenshots are kept for internal design study only; nothing is copied into the product.
+> **Method**: full-page screenshots at 1440px with Playwright (Chromium). The third-party screenshots are not kept in the repository (removed 2026-11-22); re-capture them locally, compressed to about 50%, when needed (R01 / `.claude/rules/ui-design.md`). Pages that rendered without CSS (Linear, Gradescope, Stripe: their asset CDNs were not reachable from the session) or behind a bot challenge (Khan Academy) were discarded, not described from memory. Third-party screenshots are kept for internal design study only; nothing is copied into the product.
 > **Limit**: only public pages were reachable; logged-in product UIs (Canvas course pages, Gradescope grading, Coursera learner dashboard) were not, so their in-app UX is inferred from the marketing screenshots they publish. Claims marked INFERENCE are not verified in the live product.
 
 ## 1. Sources reviewed
@@ -34,7 +34,7 @@ Learn for the Branching Case Player: one decision per screen, generous space aro
 Learn: limit reading width for long case text (~70–80 characters per line); reduce border noise where whitespace separates enough.
 
 **PostHog / Vercel** — Data-dense screens stay readable through a strict type scale, tabular numerals, right-aligned numbers, and one accent colour for focal data.
-Learn: KPI cards with label above value, units always shown, tabular figures; one focal series in navy, others neutral (already GDS §2.9 — KEEP).
+Learn: KPI cards with label above value, units always shown, tabular figures; one focal series in navy, others neutral (already R01 §2 — KEEP).
 
 ## 3. Patterns selected for EduBranch-AI
 
