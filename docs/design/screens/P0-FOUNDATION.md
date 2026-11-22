@@ -1,7 +1,7 @@
 # P0 — Global Foundation (Figma Master Template Baseline)
 
 > **Priority**: NOW. Nothing else can be built consistently without this.
-> **Visual system**: `docs/design/GLOBAL-DESIGN-SYSTEM.md` (all tokens/components referenced below live there).
+> **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`. Section numbers of the former Global Design System cited below are historical; use the matching R01 section.
 > **Covers**: Landing / Introduction Page (`/`), App shell & role-aware navigation (`LecturerLayout`, `StudentLayout`, `PublicLayout`), `/login`, `/register`, 403/404 & session states, case status/mode badges, core component library.
 > **Important Note**: Because Sprint feature tasks focus on core academic workflows, `P0 — Global Foundation` in the Figma Master File serves as the **authoritative visual template** for all public, onboarding, navigation shell, and system state screens when rebuilding the Frontend UI.
 
@@ -129,10 +129,10 @@ Same card pattern as Login.
 
 ## 4. Case Status & Learning-Mode Badges
 
-Not a screen — a shared visual primitive used everywhere a case is listed or referenced (case cards, Case Review header, statistics). Fully specified in `GLOBAL-DESIGN-SYSTEM.md §2.5–2.6, §6.1–6.3`. This entry exists in P0 only to confirm it is a **foundation-priority** deliverable: no other screen (P1–P4) can be built correctly without these badges existing first, since every list/detail screen in the product references case status and/or learning mode.
+Not a screen — a shared visual primitive used everywhere a case is listed or referenced (case cards, Case Review header, statistics). Fully specified in R01. This entry exists in P0 only to confirm it is a **foundation-priority** deliverable: no other screen (P1–P4) can be built correctly without these badges existing first, since every list/detail screen in the product references case status and/or learning mode.
 
 ---
 
 ## 5. Core Component Library
 
-The following shared components (fully specified in `GLOBAL-DESIGN-SYSTEM.md §5`) are P0 deliverables, required before any P1+ screen work begins: Button (primary/secondary/destructive), Input, Select, Textarea, Card, Table, Tabs, Badge, Modal, Toast, Empty/Loading/Error states, Confirmation dialog. Build/spec these once, generically, and reuse — do not re-derive per screen.
+The following shared components (fully specified in R01) are P0 deliverables, required before any P1+ screen work begins: Button (primary/secondary/destructive), Input, Select, Textarea, Card, Table, Tabs, Badge, Modal, Toast, Empty/Loading/Error states, Confirmation dialog. Build/spec these once, generically, and reuse — do not re-derive per screen.
