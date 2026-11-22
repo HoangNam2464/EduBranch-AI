@@ -167,6 +167,49 @@
 | `g5.challenge.errors.forbidden` | Bạn không có quyền truy cập phiên phản biện này. | You do not have permission to access this challenge session. | PROPOSED | — | — | FE-021/BE-027 |
 | `g5.challenge.errors.notFound` | Không tìm thấy dữ liệu phiên phản biện. | Challenge support session not found. | PROPOSED | — | — | FE-021/BE-027 |
 | `g5.challenge.errors.generic` | Đã xảy ra lỗi trong quá trình phản biện. Vui lòng thử lại. | An error occurred during challenge support. Please retry. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.feedback.errors.validation` | Nội dung phản tư không hợp lệ (tối thiểu 10 ký tự, tối đa 3000 ký tự). | Invalid reflection content (must be between 10 and 3000 characters). | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.forbidden` | Bạn không có quyền thực hiện thao tác này. | You do not have permission to perform this action. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.notFound` | Không tìm thấy bài nộp hoặc tình huống học tập. | The submission or learning case could not be found. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.conflict` | Bài nộp chưa có nhận xét của giảng viên hoặc đã được phản tư trước đó. | The submission is either not yet reviewed or reflection has already been submitted. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.network` | Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng và thử lại. | Unable to connect to the server. Please check your connection and try again. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.generic` | Đã xảy ra lỗi không xác định. Vui lòng thử lại sau. | An unexpected error occurred. Please try again later. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.loadFeedback` | Không thể tải nhận xét của giảng viên. | Unable to load lecturer feedback. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.analysisTitle` | 1. Phân tích tình huống (Situation Analysis) | 1. Situation Analysis | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.backToCase` | Quay lại tình huống | Back to Case | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.backToDesk` | Về Bàn học | Back to Desk | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.caseAndCourse` | Tình huống: {{case}} · Học phần: {{course}} | Case: {{case}} · Course: {{course}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.emptyAnalysis` | Sinh viên không điền phân tích tình huống | No situation analysis provided | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.feedbackSentAt` | Gửi ngày {{time}} | Sent on {{time}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.lecturerFeedbackNotice` | Nhận xét 100% mang tính định tính sư phạm từ giảng viên. Tuyệt đối không có điểm số hay AI chấm điểm. | 100% human qualitative academic feedback. Strictly no grading, points, or AI scoring. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.lecturerFeedbackTitle` | Nhận xét định tính của giảng viên | Lecturer Qualitative Feedback | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.noFeedbackYet` | Chưa có nhận xét nào từ giảng viên | No feedback provided yet | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.notFoundBody` | Bài nộp không tồn tại hoặc đã bị xóa. | The submission does not exist or has been removed. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.notFoundTitle` | Không tìm thấy bài làm | Submission Not Found | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.pendingBody` | Giảng viên của bạn chưa gửi nhận xét định tính cho bài làm này. Ô phản tư sẽ được mở sau khi có nhận xét từ giảng viên. | Your lecturer has not provided qualitative feedback for this submission yet. The reflection composer will unlock once feedback is available. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.pendingTitle` | Bài làm đang chờ Giảng viên nhận xét | Awaiting Lecturer Feedback | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reasoningTitle` | 3. Lập luận căn cứ & Đánh đổi (Supporting Reasoning) | 3. Supporting Reasoning & Trade-offs | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectedBadge` | Đã phản tư (REFLECTED) | Reflected (REFLECTED) | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionDescription` | Sau khi đọc nhận xét định tính của giảng viên, hãy viết bài phản tư so sánh, đánh giá lại lập luận hoặc giải pháp ban đầu của bạn. | After reading the lecturer's qualitative feedback, write a reflective commentary comparing your initial reasoning and proposed solution. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionFailed` | Không thể nộp bài phản tư: {{error}} | Failed to submit reflection: {{error}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionHelper` | {{current}} / {{max}} ký tự | {{current}} / {{max}} characters | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionLockedNotice` | Bài phản tư chỉ được mở sau khi giảng viên đã gửi nhận xét định tính (trạng thái REVIEWED). | Reflection unlocks only after the lecturer has submitted qualitative feedback (REVIEWED status). | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionLockedTitle` | Ô nhập bài phản tư đang bị khóa | Reflection Composer is Locked | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionMin` | Bài phản tư phải có ít nhất 10 ký tự. | Reflection commentary must contain at least 10 characters. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionPlaceholder` | Viết bài phản tư của bạn tại đây (tối thiểu 10 ký tự)... | Write your post-feedback reflection here (minimum 10 characters)... | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionSubmittedAt` | Đã nộp phản tư lúc {{time}} | Reflection submitted at {{time}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionSubmittedNotice` | Bạn đã hoàn tất nộp bài phản tư cho tình huống này. Bài làm đã hoàn tất chu trình học tập. | You have completed your post-feedback reflection. Your learning cycle for this case is complete. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionSuccess` | Đã nộp bài phản tư thành công. Trạng thái bài làm đã chuyển sang REFLECTED. | Reflection submitted successfully. Submission status transitioned to REFLECTED. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionTitle` | Bài phản tư tổng kết của sinh viên | Student Post-Feedback Reflection | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reviewedBadge` | Đã nhận xét (REVIEWED) | Reviewed (REVIEWED) | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.solutionTitle` | 2. Phương án giải pháp (Proposed Solution) | 2. Proposed Solution | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submissionDetailsTitle` | Nội dung bài làm của bạn | Your Submitted Work | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submitReflection` | Nộp bài phản tư | Submit Reflection | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submittedAt` | Nộp lúc {{time}} | Submitted at {{time}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submittedBadge` | Đã nộp bài (SUBMITTED) | Submitted (SUBMITTED) | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submittingReflection` | Đang nộp bài phản tư... | Submitting reflection... | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.title` | Nhận xét của Giảng viên & Bài phản tư | Lecturer Feedback & Student Reflection | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.unauthorizedBody` | Bạn không có quyền xem bài làm hoặc nhận xét này. Chỉ sinh viên sở hữu bài nộp mới có thể truy cập. | You do not have permission to view this submission or its feedback. Only the author student can access this view. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.unauthorizedTitle` | Không có quyền truy cập | Access Denied | PROPOSED | — | — | FE-020 PR #69 |
 | `g1.select.placeholder` | -- Chọn một mục -- | -- Select an item -- | PROPOSED | — | — | PR-71-FIX |
 | `g1.select.searchPlaceholder` | Tìm nhanh khoa hoặc đơn vị... | Search faculty or department... | PROPOSED | — | — | PR-71-FIX |
 | `g1.select.noResults` | Không tìm thấy khoa phù hợp. Bạn có thể chọn mục "Đơn vị / Khoa khác..." ở dưới cùng. | No matching faculty found. You can select "Other Faculty / Department..." at the bottom. | PROPOSED | — | — | PR-71-FIX |
