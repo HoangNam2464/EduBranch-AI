@@ -1,7 +1,7 @@
  EduBranch-AI — Website & Application Architecture Reference
 
 > **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md` (formerly `docs/design/SITE-ARCHITECTURE.md`)  
-> **Companion Specs**: `.agents/rules/01-ui-design-standards.md` · `docs/design/GLOBAL-DESIGN-SYSTEM.md` · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`  
+> **Companion Specs**: `.agents/rules/01-ui-design-standards.md` (R01, single design source) · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`
 > **Product Name**: EduBranch-AI  
 > **Full Title**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios
 
@@ -46,11 +46,11 @@ The system serves two academic user roles plus a system administrator (Admin, in
 - **Academic & Focused**: Engineered for critical thinking — zero Unicode emojis, zero ASCII symbol hacks, zero gamified badges, and zero purple/indigo "AI-slop" gradients.
 - **Efficient & Professional**: One shared app shell (sidebar, header actions, footer) for lecturer, student and admin; reading and writing areas keep a 65–75 character measure.
 - **Predictable & Governed**: Transparent AI provenance showing which teaching materials informed each case dilemma.
-- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`bg/canvas` page background, white cards, light hairlines, navy `#2A4E7F` primary action and sky `#00A5F5` accent — see `GLOBAL-DESIGN-SYSTEM.md`) suitable for extended analytical reading and review sessions.
+- **Light-First Academic Presentation**: Clean, neutral, high-contrast light surfaces (`bg/canvas` page background, white cards, light hairlines, navy `#2A4E7F` primary action and sky `#00A5F5` accent — see R01) suitable for extended analytical reading and review sessions.
 
 ---
 
-## 5. Canonical Application Sitemap (Figma page 08)
+## 5. Canonical Application Sitemap (Figma page EduBranch AI – Screens)
 
 Because the Sprint Backlog tasks focus on core functional workflows, the Figma Master Template (`docs/05_FIGMA.md`) explicitly covers both the **foundational/public screens** (`/`, `/login`, `/register`, App Shells, Course Catalog, 403/404) and the **core academic feature screens**:
 
@@ -59,7 +59,7 @@ Because the Sprint Backlog tasks focus on core functional workflows, the Figma M
 - `/login` — **Sign In Page**: University email & password authentication (`pages/auth/LoginPage.tsx`).
 - `/register` — **Account Registration Page**: University account creation with explicit `Lecturer` / `Student` role selection (`pages/auth/RegisterPage.tsx`).
 
-> Update 2026-11-13: Figma page `08 · EduBranch – Bản hoàn chỉnh` is the finalized UI. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md). The same list is mirrored in `.agents/rules/01-ui-design-standards.md §8`.
+> Update 2026-11-13: Figma page `EduBranch AI – Screens` is the finalized UI. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md). The same list is mirrored in `.agents/rules/01-ui-design-standards.md §8`.
 
 ### 5.2. Lecturer Portal (`LecturerLayout` — shared collapsible sidebar)
 - `/lecturer/dashboard` — Lecturer dashboard [07.1] (D-05 → in MVP).
