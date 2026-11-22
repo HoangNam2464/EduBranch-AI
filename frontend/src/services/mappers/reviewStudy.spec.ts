@@ -55,6 +55,21 @@ describe("toReviewStudySubmission", () => {
     assert.equal(result.submissionStatus, "REVIEWED");
     assert.equal(result.reflectionStatus, "SUBMITTED");
     assert.equal(result.reflectionText, "Insightful feedback");
+    assert.equal(result.submittedAt, "2026-11-18T09:00:00.000Z");
+  });
+
+  it("throws an error when submittedAt is missing (no fabricated timestamps)", () => {
+    const row: ReviewStudySubmissionRow = {
+      id: "sub-103",
+      studentId: "stu-202",
+      caseId: "case-303",
+      proposedSolution: "Policy revision",
+      reasoningText: "Regulatory compliance required",
+    };
+
+    assert.throws(
+      () => toReviewStudySubmission(row),
+      /Missing required field: submittedAt/,
+    );
   });
 });
-
