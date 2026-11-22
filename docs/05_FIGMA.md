@@ -112,7 +112,7 @@ Trước khi vẽ bất kỳ màn hình nào, file Figma của dự án bắt bu
 | | `semantic/error` | `#DC2626` | Trạng thái `Failed` (nền `#FEF2F2`, viền `#FECACA`), lỗi form, nút Xóa/Hủy |
 
 ### 1.4. Hệ thống Typography Styles, Spacing & Vector Icons trên Figma
-1. **Font chữ**: Sử dụng **`Inter`** trên Figma (tương đương System UI khi lên web).
+1. **Font chữ**: trên web dùng **font hệ thống** (`system-ui`, Segoe UI trên Windows), theo quyết định PO 2026-11-21. Các text style trên Figma hiện ghi Roboto; đổi Figma cần PO duyệt riêng. Dòng cũ ghi "Inter" đã lỗi thời.
    - `Display` (`28px / Line-height 36px / SemiBold 600 / Tracking -0.02em`): Tiêu đề trang lớn.
    - `H1` (`24px / 32px / SemiBold 600`): Tiêu đề khu vực.
    - `H2` (`20px / 28px / SemiBold 600`): Tiêu đề Card, tiêu đề Modal, tiêu đề Tình huống.

@@ -175,7 +175,7 @@ export function Sidebar({
             type="button"
             onClick={onToggleCollapsed}
             aria-expanded="true"
-            className={`flex h-9 w-full items-center gap-[14px] rounded-eb-md text-left text-xs leading-4 font-normal text-ink-secondary hover:bg-canvas ${FOCUS}`}
+            className={`flex h-9 w-full items-center gap-[14px] rounded-eb-md px-3 text-left text-xs leading-4 font-normal text-ink-secondary hover:bg-canvas ${FOCUS}`}
           >
             <ChevronLeft size={16} strokeWidth={1.71} aria-hidden="true" className="shrink-0" />
             {t("shell.collapse")}
@@ -192,7 +192,7 @@ export function Sidebar({
           <button
             type="button"
             onClick={onSignOut}
-            className={`flex h-9 w-fit items-center gap-[14px] rounded-eb-md pr-0 pl-2 text-sm leading-5 font-normal text-ink-secondary hover:bg-canvas ${FOCUS}`}
+            className={`flex h-9 w-full items-center gap-[14px] rounded-eb-md px-3 text-left text-sm leading-5 font-normal text-ink-secondary hover:bg-canvas ${FOCUS}`}
           >
             <LogOut size={16} strokeWidth={2} aria-hidden="true" />
             {t("common.logout")}

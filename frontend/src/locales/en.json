@@ -734,6 +734,7 @@
     "common": {
       "cancel": "Cancel",
       "close": "Close",
+      "error": "Error",
       "retry": "Retry",
       "fileSize": {
         "b": "{{value}} B",
@@ -772,6 +773,7 @@
         "title": "Course details",
         "open": "Open course",
         "close": "Close course details",
+        "statAttempts": "Attempts",
         "statDocuments": "Documents",
         "statCases": "Case Study",
         "attention": "Needs attention",
@@ -781,6 +783,7 @@
         "draftCase": "AI draft awaiting review",
         "reviewedCase": "Reviewed, awaiting approval",
         "view": "View",
+        "retry": "Retry",
         "openMaterials": "Open course materials",
         "about": "About the course",
         "noDescription": "This course has no description yet.",
@@ -879,6 +882,8 @@
       "statusPending": "Pending",
       "statusProcessing": "Processing",
       "statusFailed": "Indexing failed",
+      "statusFailedReason": "Could not read file content",
+      "retry": "Retry",
       "openSources": "View chunks of {{name}}",
       "delete": "Delete {{name}}",
       "noMaterials": "No materials yet. Upload materials so the AI has sources when generating cases.",
@@ -891,9 +896,9 @@
         "ready": "{{size}} · Ready to upload",
         "uploading": "{{size}} · Uploading {{percent}}%",
         "uploaded": "{{size}} · Uploaded",
-        "invalidType": "Only PDF and DOCX files are supported.",
-        "tooLarge": "The file exceeds the 50 MB limit.",
-        "failed": "Upload failed. Please try again.",
+        "invalidType": "Only PDF and DOCX files are supported",
+        "tooLarge": "The file exceeds the 50 MB limit",
+        "failed": "Upload failed due to connection error",
         "remove": "Remove {{name}} from the list",
         "submit_one": "Upload {{count}} file",
         "submit_other": "Upload {{count}} files"
@@ -1396,15 +1401,51 @@
       "kpi": {
         "completion": "Completion rate",
         "avgAttempts": "Average attempts",
-        "inProgress": "Currently in a journey"
+        "inProgress": "Currently in a journey",
+        "totalAttempts": "Total attempts",
+        "singleVsRetry": "Single / Retry",
+        "reflectionsSubmitted": "Reflections submitted"
+      },
+      "filters": {
+        "course": "Filter by course",
+        "allCourses": "All courses",
+        "case": "Filter by case",
+        "allCases": "All cases",
+        "selectCase": "— Select a case study —",
+        "branchingOnly": "Branching Study Cases"
       },
       "panels": {
-        "choices": "Choices per situation",
-        "attempts": "Attempts distribution",
-        "outcomes": "Final outcomes",
+        "choices": "Branch selection distribution",
+        "attempts": "Attempts statistics (Single vs. Retry)",
+        "outcomes": "Terminal outcomes distribution",
         "timing": "When students work",
         "progress": "Progress of students who opened a case",
         "popular": "Popular choices per decision point"
+      },
+      "branchChart": {
+        "title": "Branch selection distribution chart",
+        "subtitle": "Frequency and percentage of students choosing options at each decision point",
+        "nodeTitle": "Decision Point: {{title}}",
+        "selections": "{{count}} selections",
+        "percent": "{{percent}}%",
+        "noBranches": "This case has no branch data or is in Review Study mode.",
+        "emptyCase": "No students have traversed branches in this case yet."
+      },
+      "outcomes": {
+        "title": "Terminal outcomes distribution",
+        "subtitle": "Percentage of students reaching each terminal conclusion node",
+        "terminalNode": "Outcome: {{title}}",
+        "reachCount": "{{count}} completions ({{percent}}%)",
+        "emptyOutcomes": "No students have reached a terminal outcome yet."
+      },
+      "attempts": {
+        "title": "Attempts statistics",
+        "subtitle": "Ratio of single-attempt completions versus retry attempts to explore alternative paths",
+        "singleLabel": "Single Attempt",
+        "retryLabel": "Retry Attempt",
+        "singleVsRetry": "Single / Retry Ratio: {{single}} / {{retry}}",
+        "totalLabel": "Total attempts: {{total}}",
+        "emptyAttempts": "No attempts data available yet."
       },
       "openCases": "Open cases",
       "openCasesEmpty": "No case has been published yet.",
@@ -1412,7 +1453,37 @@
       "published": "Published",
       "updatedOn": "Updated on {{date}}",
       "recent": "Recent submissions",
-      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet."
+      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
+      "prompt": {
+        "title": "Select a case study to view learning analytics",
+        "description": "Select a course and a case study from the filters above to track branching data and student cohort behavior."
+      },
+      "emptyCase": {
+        "title": "No attempts yet",
+        "description": "No students have participated in or submitted work for this case yet."
+      },
+      "reviewStudy": {
+        "title": "Review Study analytical progress",
+        "subtitle": "Submission statistics across stages: Submitted, Lecturer reviewed, and Student reflected",
+        "submitted": "Submitted (awaiting review)",
+        "reviewed": "Lecturer reviewed",
+        "reflected": "Student reflected",
+        "totalSubmissions": "Total submissions"
+      },
+      "flow": {
+        "title": "Learning flow status",
+        "subtitle": "Student distribution across learning journey stages",
+        "inProgress": "In progress",
+        "completed": "Journey completed",
+        "reflected": "Reflection completed",
+        "participants": "Participating students"
+      },
+      "errors": {
+        "notFound": "Statistics data for this case was not found.",
+        "forbidden": "You do not have permission to view statistics for this case.",
+        "serverError": "Server error loading statistics. Please try again later.",
+        "network": "Cannot connect to server. Check your connection and try again."
+      }
     },
     "profile": {
       "loadError": "Could not load your profile",
@@ -1769,9 +1840,52 @@
       }
     },
     "feedback": {
-      "unavailableTitle": "Feedback cannot be shown yet",
-      "unavailableBody": "The server has no API to read Review Study submissions and lecturer feedback.",
-      "backToWork": "Back to my work"
+      "title": "Lecturer Feedback & Student Reflection",
+      "backToCase": "Back to Case",
+      "backToDesk": "Back to Desk",
+      "backToWork": "Back to Workspace",
+      "caseAndCourse": "Case: {{case}} · Course: {{course}}",
+      "submittedBadge": "Submitted (SUBMITTED)",
+      "reviewedBadge": "Reviewed (REVIEWED)",
+      "reflectedBadge": "Reflected (REFLECTED)",
+      "pendingTitle": "Awaiting Lecturer Feedback",
+      "pendingBody": "Your lecturer has not provided qualitative feedback for this submission yet. The reflection composer will unlock once feedback is available.",
+      "unauthorizedTitle": "Access Denied",
+      "unauthorizedBody": "You do not have permission to view this submission or its feedback. Only the author student can access this view.",
+      "notFoundTitle": "Submission Not Found",
+      "notFoundBody": "The submission does not exist or has been removed.",
+      "submissionDetailsTitle": "Your Submitted Work",
+      "analysisTitle": "1. Situation Analysis",
+      "emptyAnalysis": "No situation analysis provided",
+      "solutionTitle": "2. Proposed Solution",
+      "reasoningTitle": "3. Supporting Reasoning & Trade-offs",
+      "submittedAt": "Submitted at {{time}}",
+      "lecturerFeedbackTitle": "Lecturer Qualitative Feedback",
+      "lecturerFeedbackNotice": "100% human qualitative academic feedback. Strictly no grading, points, or AI scoring.",
+      "feedbackSentAt": "Sent on {{time}}",
+      "noFeedbackYet": "No feedback provided yet",
+      "reflectionTitle": "Student Post-Feedback Reflection",
+      "reflectionDescription": "After reading the lecturer's qualitative feedback, write a reflective commentary comparing your initial reasoning and proposed solution.",
+      "reflectionPlaceholder": "Write your post-feedback reflection here (minimum 10 characters)...",
+      "reflectionHelper": "{{current}} / {{max}} characters",
+      "reflectionMin": "Reflection commentary must contain at least 10 characters.",
+      "reflectionLockedTitle": "Reflection Composer is Locked",
+      "reflectionLockedNotice": "Reflection unlocks only after the lecturer has submitted qualitative feedback (REVIEWED status).",
+      "submitReflection": "Submit Reflection",
+      "submittingReflection": "Submitting reflection...",
+      "reflectionSuccess": "Reflection submitted successfully. Submission status transitioned to REFLECTED.",
+      "reflectionFailed": "Failed to submit reflection: {{error}}",
+      "reflectionSubmittedNotice": "You have completed your post-feedback reflection. Your learning cycle for this case is complete.",
+      "reflectionSubmittedAt": "Reflection submitted at {{time}}",
+      "errors": {
+        "validation": "Invalid reflection content (must be between 10 and 3000 characters).",
+        "forbidden": "You do not have permission to perform this action.",
+        "notFound": "The submission or learning case could not be found.",
+        "conflict": "The submission is either not yet reviewed or reflection has already been submitted.",
+        "network": "Unable to connect to the server. Please check your connection and try again.",
+        "generic": "An unexpected error occurred. Please try again later.",
+        "loadFeedback": "Unable to load lecturer feedback."
+      }
     },
     "desk": {
       "title": "Student Desk",
@@ -1830,7 +1944,11 @@
   "g6": {
     "noData": {
       "title": "No data yet",
-      "description": "This section appears once the server provides admin data."
+      "description": "This section appears once the server provides admin data.",
+      "apiUnavailable": "The administration service is not available on the server yet.",
+      "forbidden": "You do not have administrator permissions for this action.",
+      "serverError": "The server encountered an error processing admin data. Please try again later.",
+      "networkError": "Cannot connect to server. Please check your network and try again."
     },
     "dashboard": {
       "attentionTitle": "{{count}} items need attention",
@@ -1888,19 +2006,173 @@
     },
     "users": {
       "emptyTitle": "No user data yet",
-      "emptyDescription": "Accounts appear once the server provides user administration data."
+      "emptyDescription": "Accounts appear once the server provides user administration data.",
+      "loadErrorTitle": "Failed to load user data",
+      "emptyFilteredTitle": "No users found",
+      "emptyFilteredDescription": "No user accounts match the current filters.",
+      "loading": "Loading users...",
+      "kpi": {
+        "totalUsers": "Total users",
+        "lecturers": "Lecturers",
+        "students": "Students",
+        "lockedUsers": "Locked accounts"
+      },
+      "searchPlaceholder": "Search by name or email...",
+      "filterRoleAria": "Filter by role",
+      "filterRole": {
+        "all": "All roles",
+        "lecturer": "Lecturers",
+        "student": "Students",
+        "admin": "Administrators"
+      },
+      "filterStatusAria": "Filter by status",
+      "filterStatus": {
+        "all": "All statuses",
+        "active": "Active",
+        "locked": "Locked"
+      },
+      "sortAria": "Sort",
+      "sort": {
+        "newest": "Sort: Newest",
+        "name": "Sort: Name A-Z"
+      },
+      "columns": {
+        "user": "User",
+        "createdAt": "Created date",
+        "role": "Role & Courses",
+        "attempts": "Attempts",
+        "action": "Action",
+        "status": "Status"
+      },
+      "role": {
+        "lecturer": "Lecturer",
+        "student": "Student",
+        "admin": "Administrator"
+      },
+      "action": {
+        "lock": "Lock account",
+        "unlock": "Unlock account"
+      },
+      "status": {
+        "active": "Active",
+        "locked": "Locked"
+      },
+      "pagination": {
+        "showing": "Showing {{shown}} of {{total}} users",
+        "prev": "Previous page",
+        "next": "Next page"
+      },
+      "dialog": {
+        "lockTitle": "Lock account {{name}}?",
+        "unlockTitle": "Unlock account {{name}}?",
+        "lockDescription": "The user will not be able to sign in until unlocked. Attempts, submissions, and reflections are preserved.",
+        "unlockDescription": "The user will be able to sign in again and access courses normally.",
+        "lockConfirm": "Lock account",
+        "unlockConfirm": "Unlock",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "lockSuccess": "Locked account {{name}}",
+        "unlockSuccess": "Unlocked account {{name}}",
+        "actionError": "An error occurred while changing user account status."
+      }
     },
     "courses": {
       "title": "All courses",
       "emptyTitle": "No course data yet",
-      "emptyDescription": "System-wide courses appear once the server provides course administration data."
+      "emptyDescription": "System-wide courses appear once the server provides course administration data.",
+      "header": "System-wide courses",
+      "loadErrorTitle": "Failed to load courses",
+      "emptyFilteredTitle": "No courses found",
+      "emptyFilteredDescription": "No courses matched the search criteria.",
+      "loading": "Loading courses...",
+      "searchPlaceholder": "Search courses...",
+      "filterStatusAria": "Filter by status",
+      "filterStatus": {
+        "all": "All statuses",
+        "active": "Open",
+        "archived": "Archived"
+      },
+      "status": {
+        "teaching": "Active",
+        "archived": "Archived"
+      },
+      "stats": {
+        "materials": "{{ready}}/{{total}} materials ready",
+        "cases": "{{count}} cases",
+        "indexingError": "{{count}} indexing errors"
+      },
+      "pagination": {
+        "showing": "Showing {{shown}} of {{total}} courses",
+        "prev": "Previous page",
+        "next": "Next page"
+      },
+      "detail": {
+        "title": "Course details",
+        "viewDetail": "View details",
+        "close": "Close details",
+        "attempts": "Study attempts",
+        "materials": "Materials",
+        "cases": "Case Studies",
+        "about": "About this course",
+        "infoTitle": "Course information",
+        "courseCode": "Course code:",
+        "statusLabel": "Status:",
+        "statusOpen": "Open for students",
+        "statusArchived": "Archived",
+        "lecturerLabel": "Lead lecturer:",
+        "navTitle": "Go to",
+        "navMaterials": "Course materials",
+        "navMaterialsSub": "{{count}} files - {{ready}} ready{{errorPart}}",
+        "navMaterialsError": ", {{count}} errors",
+        "navCases": "Case Studies",
+        "navCasesSub": "{{count}} cases"
+      }
     },
     "cases": {
       "byStatus": "Case Studies by status",
       "byMode": "Learning mode per case",
       "library": "Case Study library",
       "emptyTitle": "No Case Study data yet",
-      "emptyDescription": "System-wide Case Studies appear once the server provides Case Study administration data."
+      "emptyDescription": "System-wide Case Studies appear once the server provides Case Study administration data.",
+      "header": "System-wide Case Studies",
+      "loadErrorTitle": "Failed to load Case Studies",
+      "emptyFilteredTitle": "No Case Studies found",
+      "emptyFilteredDescription": "No cases matched the current filters.",
+      "loading": "Loading Case Studies...",
+      "totalSuffix": "Case Studies",
+      "status": {
+        "draft": "Draft",
+        "reviewed": "Reviewed",
+        "approved": "Approved",
+        "published": "Published"
+      },
+      "analytics": {
+        "modeBranching": "Branching",
+        "modeReview": "Review",
+        "recentTitle": "Recently updated cases"
+      },
+      "searchPlaceholder": "Search cases...",
+      "tabs": {
+        "all": "All {{total}}",
+        "draft": "Draft {{count}}",
+        "reviewed": "Reviewed {{count}}",
+        "published": "Published {{count}}"
+      },
+      "card": {
+        "aiDraft": "AI Draft",
+        "branchingMode": "Branching Study",
+        "reviewMode": "Review Study",
+        "nodesCount": "{{count}} nodes",
+        "noTree": "No decision tree",
+        "updatedAt": "Updated {{date}}",
+        "viewAction": "View"
+      },
+      "pagination": {
+        "showing": "Showing {{shown}} of {{total}} Case Studies",
+        "prev": "Previous page",
+        "next": "Next page"
+      }
     },
     "aiService": {
       "recent": {
@@ -1916,11 +2188,41 @@
         "providerLabel": "AI provider",
         "providerValue": "Fixed in the server configuration",
         "modelLabel": "Model",
-        "modelValue": "Set by the engineering team"
+        "modelValue": "Set by the engineering team",
+        "lastUpdatedLabel": "Last updated"
       },
       "change": {
         "title": "Changing the configuration",
         "body": "The AI provider and model are fixed in the server environment file (OPD-013). This screen is for monitoring only; it has no action to change the configuration."
+      },
+      "loadErrorTitle": "AI service error",
+      "loading": "Loading AI service information...",
+      "kpi": {
+        "totalGenerated": "Case generations",
+        "totalGeneratedDesc": "Total AI drafts generated",
+        "avgDuration": "Avg duration",
+        "avgDurationValue": "{{seconds}} seconds",
+        "avgDurationDesc": "From request to draft generation",
+        "readyMaterials": "Ready materials",
+        "readyMaterialsDesc": "Indexed and ready for AI citations"
+      },
+      "gen": {
+        "duration": "Completed in {{seconds}} seconds",
+        "decisions": " · {{count}} decision points",
+        "materialsCited": " · cited from {{count}} materials"
+      },
+      "status": {
+        "completed": "Completed",
+        "pending": "Pending",
+        "processing": "Processing",
+        "failed": "Failed",
+        "active": "Active"
+      },
+      "idx": {
+        "completed": "{{count}} excerpts, ready for AI citations",
+        "pending": "Queued for processing",
+        "processing": "Chunking and embedding ({{percent}}%)",
+        "failedFallback": "Unable to read file content"
       }
     },
     "rubric": {
@@ -1932,7 +2234,69 @@
     },
     "logs": {
       "emptyTitle": "No log data yet",
-      "emptyDescription": "The system log appears once the server provides activity log data."
+      "emptyDescription": "The system log appears once the server provides activity log data.",
+      "loadErrorTitle": "Failed to load system logs",
+      "emptyFilteredTitle": "No log events found",
+      "emptyFilteredDescription": "No log records match the filter criteria.",
+      "loading": "Loading logs...",
+      "kpi": {
+        "eventsToday": "Events today",
+        "loginCount": "Sign-ins",
+        "aiGenerationsCount": "AI case generations",
+        "errorsCount": "Errors to review"
+      },
+      "searchPlaceholder": "Search logs...",
+      "filterEventAria": "Filter by event type",
+      "filterEvent": {
+        "all": "All event types",
+        "login": "Sign-in",
+        "aiGen": "AI case generation",
+        "submission": "Submission",
+        "material": "Materials"
+      },
+      "filterTimeAria": "Filter by time",
+      "filterTime": {
+        "today": "Today",
+        "sevenDays": "Past 7 days",
+        "thirtyDays": "Past 30 days",
+        "all": "All time"
+      },
+      "sortAria": "Sort",
+      "sort": {
+        "newest": "Sort: Newest",
+        "oldest": "Sort: Oldest"
+      },
+      "columns": {
+        "actor": "Actor",
+        "time": "Time",
+        "event": "Event",
+        "code": "Code",
+        "detail": "Details",
+        "result": "Result"
+      },
+      "action": {
+        "viewDetail": "View details"
+      },
+      "status": {
+        "success": "Success",
+        "warning": "Warning",
+        "error": "Error"
+      },
+      "pagination": {
+        "showing": "Showing {{shown}} of {{total}} events",
+        "prev": "Previous page",
+        "next": "Next page"
+      },
+      "dialog": {
+        "title": "Event details {{code}}",
+        "close": "Close",
+        "actor": "Actor:",
+        "time": "Time:",
+        "action": "Action:",
+        "target": "Related target:",
+        "technicalDetails": "Technical details:",
+        "noDetails": "No additional details."
+      }
     },
     "settings": {
       "platform": "Platform information",
@@ -1943,6 +2307,42 @@
         "provider": "Provider: fixed in the server configuration",
         "monitor": "Monitor its status under AI service",
         "note": "The AI configuration is not edited in the interface (OPD-013)."
+      },
+      "breadcrumb": "Administration > Settings",
+      "header": "System settings",
+      "loadErrorTitle": "Failed to load system settings",
+      "loading": "Loading system settings...",
+      "toast": {
+        "saveSuccess": "System settings saved and applied successfully.",
+        "saveError": "Failed to save system settings."
+      },
+      "form": {
+        "platformName": "Platform name *",
+        "operatorUnit": "Operating unit",
+        "loginNoticeTitle": "Sign-in page notice",
+        "loginNoticeLabel": "Notice content (publicly visible)",
+        "loginNoticeHelper": "The notice will be prominently displayed on the sign-in page for all users.",
+        "supportEmailTitle": "Support email *",
+        "supportEmailLabel": "Technical support contact email"
+      },
+      "limitLabels": {
+        "fileFormats": "Document formats:",
+        "maxFileSize": "Max file size:",
+        "registration": "Account registration:",
+        "version": "Version:",
+        "timezone": "Timezone:"
+      },
+      "actions": {
+        "cancel": "Discard changes",
+        "note": "Changes apply system-wide upon saving.",
+        "save": "Save settings",
+        "publish": "Publish"
+      },
+      "dialog": {
+        "title": "Save system settings changes?",
+        "description": "Updated details will be saved and applied to all users across the EduBranch AI platform.",
+        "confirm": "Save & Apply",
+        "cancel": "Cancel"
       }
     }
   },
