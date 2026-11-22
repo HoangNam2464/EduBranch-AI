@@ -1,6 +1,6 @@
-# Implementation Plan: 007-ui-foundations
+# Implementation Plan: 008-ui-foundations
 
-**Spec**: `specs/007-ui-foundations/spec.md` · **Tier**: frontend only (không đổi API, DB, AI service)
+**Spec**: `specs/008-ui-foundations/spec.md` · **Tier**: frontend only (không đổi API, DB, AI service)
 
 ## Constitution check
 - FND §3: chỉ frontend, không gọi API mới. Đạt.

@@ -1,4 +1,4 @@
-# Feature Record: 007-ui-foundations [FE-025]
+# Feature Record: 008-ui-foundations [FE-025]
 
 > Theo `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` §4. **Created**: 2026-11-22.
 

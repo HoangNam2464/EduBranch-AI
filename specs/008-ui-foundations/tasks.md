@@ -1,4 +1,4 @@
-# Tasks: 007-ui-foundations [FE-025]
+# Tasks: 008-ui-foundations [FE-025]
 
 Chỉ bắt đầu sau G7 và sau khi PR #79 đã merge (rebase `fix/ui-foundations` lên `develop`).
 
