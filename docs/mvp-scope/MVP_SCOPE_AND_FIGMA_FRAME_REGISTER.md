@@ -5,7 +5,7 @@
 > **Nguồn đối chiếu**: Proposal V1.2 (PO-10; bản cục bộ `docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`, đoạn trích theo số đoạn `¶`), `docs/01_MASTER-TASKS.md` (84 task / 336 SP), `docs/OPEN_PRODUCT_DECISIONS.md` v1.1.2 trên nhánh `feature/design-system` (Draft; mọi OPD `OPEN / PENDING`; mục CPD cũng là Draft), các quyết định PO-1..27, route trong `backend/src/**/*.controller.ts` tại `02028b2`.
 > **Không frame nào được đánh dấu Ready for Dev hay Approved trong tài liệu này.** Phân loại dưới đây là đề xuất có bằng chứng; PO duyệt riêng.
 > **Cập nhật 2026-11-12 (quyết định PO):** Admin thuộc MVP, không chờ duyệt thêm (OPD-015 → phương án B, đủ 10 màn). Màn "Dịch vụ AI" chỉ để xem vì provider cố định trong `.env` (OPD-013). "Nghiên cứu & Rubric" của Admin thuộc MVP từ khi OPD-011 được chốt (xem cập nhật dưới). Thiết kế mới nằm ở page `EduBranch AI – Screens`, section `10 · Admin · Quản trị hệ thống` (frame 10.1–10.10). Backlog `01_MASTER-TASKS.md` chưa có task Admin — cần bổ sung.
-> **Cập nhật 2026-11-12 (quyết định PO):** đăng nhập/đăng ký bằng **Google và Microsoft** (OAuth / OpenID Connect) thuộc MVP, trên 00.3, 00.4, 00.5 (không áp dụng cho đăng nhập quản trị 10.1). Thay thế kết luận PHASE 2 trong `AUTHENTICATION_SCOPE_ANALYSIS.md` và PSD-09. `01_MASTER-TASKS.md §4.6` (giữ nguyên theo HANDOVER_DIRECTIVE) vẫn ghi OAuth là Post-MVP — cần PO/mentor xác nhận việc bổ sung task BE/FE/QA.
+> **Cập nhật 2026-11-12 (quyết định PO):** đăng nhập/đăng ký bằng **Google và Microsoft** (OAuth / OpenID Connect) thuộc MVP, trên 00.3, 00.4, 00.5 (không áp dụng cho đăng nhập quản trị 10.1). Thay thế kết luận PHASE 2 trong `AUTHENTICATION_SCOPE_ANALYSIS.md` và PSD-09. `01_MASTER-TASKS.md §4.6` (giữ nguyên baseline 84 task) vẫn ghi OAuth là Post-MVP — cần PO/mentor xác nhận việc bổ sung task BE/FE/QA.
 
 > **Cập nhật 2026-11-12 (quyết định PO):** trang công khai gộp thành **một trang cuộn** (00.2). Hai frame đề xuất 00.6 "Cách hoạt động" và 00.7 "Câu hỏi thường gặp" trên page EduBranch AI – Screens đã gộp vào 00.2 thành khối neo và bị xóa. Hai frame này chưa từng được tính trong register, nên tổng số frame không đổi.
 
@@ -16,7 +16,7 @@
 > - **D-05 → có** dashboard giảng viên (07.1).
 > - **Hồ sơ tài khoản** giảng viên / sinh viên (09.1, 09.2) thuộc MVP; hai frame này mới có ở page EduBranch AI – Screens nên được thêm vào register.
 >
-> Hệ quả chưa xử lý: backlog `01_MASTER-TASKS.md` (giữ nguyên theo HANDOVER_DIRECTIVE) chưa có task cho các màn trên; DB chưa có bảng ghi danh (`course_enrollments`) và chưa có module `evaluation/`. Cần PO/mentor bổ sung task BE/FE/QA. Nút "Tạo thủ công từ đầu" trong AI Studio vẫn chờ **D-07**.
+> Hệ quả chưa xử lý: backlog `01_MASTER-TASKS.md` (giữ nguyên baseline 84 task) chưa có task cho các màn trên; DB chưa có bảng ghi danh (`course_enrollments`) và chưa có module `evaluation/`. Cần PO/mentor bổ sung task BE/FE/QA. Nút "Tạo thủ công từ đầu" trong AI Studio vẫn chờ **D-07**.
 
 ## 1. Quy tắc phân loại
 
