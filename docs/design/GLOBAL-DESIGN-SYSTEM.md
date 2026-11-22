@@ -272,8 +272,10 @@ Surface ladder (max 3 levels below the shell): `bg-page` → `bg-canvas` panel �
 | `elevation-2` | `0 12px 32px rgba(32,33,36,0.16)` | Modals, dialogs |
 | `elevation-toast` | `0 4px 16px rgba(32,33,36,0.12)` | Toast notifications |
 
-### 4.4. Container Widths & Responsive Gutters (Centered Container Mandate)
-- **Wide Screens (PO Decision 2026-11-17)**: Canvas workspace content (header, main content, footer) is capped at `max-w-7xl` (1280px) and centered horizontally (`mx-auto`). This prevents cards from stretching unnaturally on 1920/2K/4K monitors while keeping generous side gutters.
+### 4.4. Container Widths & Responsive Gutters
+- **App shell (PO decision 2026-11-21, chat "Tràn theo màn hình" + "Chỉ trong app"; spec 006, PR #79)**: screens inside the app shell use the full width next to the sidebar with fixed side gutters; long paragraphs are capped (about 80 characters per line) for reading. This supersedes the "Centered Container Mandate" below for the app shell only.
+- > **SUPERSEDED for the app shell (2026-11-21)** — history: *Wide Screens (PO Decision 2026-11-17): canvas workspace content (header, main content, footer) is capped at `max-w-7xl` (1280px) and centered horizontally (`mx-auto`).*
+- **Public pages**: landing, public header/footer and auth keep `max-w-7xl mx-auto`.
 - **Floating Workspace**: App canvas panel floats with 12px margins (`min-h-[calc(100vh-24px)] my-2 mr-2 sm:my-3 sm:mr-3 rounded-[18px] bg-canvas`).
 - **Auth Screens**: `AuthSplitLayout` centers in `max-w-7xl mx-auto px-6 sm:px-8 lg:px-12`. Auth forms are capped at `max-w-[440px]` (`max-w-[480px]` for 2-column register) instead of raw 562px slabs, with product preview device mockup shown on the brand panel.
 

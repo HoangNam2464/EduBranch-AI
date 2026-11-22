@@ -15,7 +15,7 @@ Read first: `.claude/rules/ui-design.md` (design sources), the screen's Figma fr
 
 ## Styling
 - Tokens from `src/index.css` `@theme` (mirror of the Figma variables, GDS §2). No raw hex or arbitrary values where a token exists; no `indigo/violet/purple`.
-- Content capped at `max-w-7xl` inside the canvas; thin borders, soft shadows; surface ladder page → canvas → card → one inset (R01 §1 rule 5).
+- App-shell screens use the full width next to the sidebar with fixed side gutters (PO 2026-11-21, spec 006 / PR #79); cap only long paragraphs for reading. `max-w-7xl` stays only on the public landing, public header/footer and auth pages. Thin borders, soft shadows; surface ladder page → canvas → card → one inset (R01 §1 rule 5).
 - Icons: `lucide-react` outline icons with `aria-label` or `aria-hidden`; no emoji or ASCII glyphs as icons (R01 §1 rules 1–2).
 - Motion: framer-motion (ADR-002) for purposeful transitions only; respect `prefers-reduced-motion`.
 - Light mode only (PO 2026-11-21: Light Mode baseline, dark-mode toggle removed). The `ThemeToggle` and `.dark` styles still on `develop` (PR #54) are pending removal: never extend them or add `dark:` classes.

@@ -50,7 +50,7 @@ Ngoài 15 task DES, page EduBranch AI – Screens còn các màn MVP đã chốt
 | DES-009 hiện link chia sẻ sau khi xuất bản | Trạng thái Đã xuất bản chỉ còn nút "Sao chép đường dẫn" (03.6) |
 | Đăng nhập Google là Phase 2 | Google + Microsoft thuộc MVP (PSD-09), không có ở đăng nhập quản trị |
 | Card phẳng không viền, không bóng | Thêm viền 1px 80% và đổ bóng kép `shadow-eb-card` (PO 2026-11-17 "Sửa Figma rồi code") |
-| Khung giao diện toàn màn hình dàn phẳng | Bọc container `max-w-7xl mx-auto` căn giữa, lề canvas 12px nổi, form Auth tối đa 440px |
+| Khung giao diện toàn màn hình dàn phẳng | Trang công khai và Auth: bọc `max-w-7xl mx-auto`, form Auth tối đa 440px. Trong app shell: dùng hết chiều rộng cạnh sidebar, lề cố định (PO 2026-11-21, spec 006 / PR #79; thay quyết định 17/11 cho app shell) |
 
 ---
 
