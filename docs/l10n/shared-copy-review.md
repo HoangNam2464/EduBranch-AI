@@ -167,6 +167,49 @@
 | `g5.challenge.errors.forbidden` | Bạn không có quyền truy cập phiên phản biện này. | You do not have permission to access this challenge session. | PROPOSED | — | — | FE-021/BE-027 |
 | `g5.challenge.errors.notFound` | Không tìm thấy dữ liệu phiên phản biện. | Challenge support session not found. | PROPOSED | — | — | FE-021/BE-027 |
 | `g5.challenge.errors.generic` | Đã xảy ra lỗi trong quá trình phản biện. Vui lòng thử lại. | An error occurred during challenge support. Please retry. | PROPOSED | — | — | FE-021/BE-027 |
+| `g5.feedback.errors.validation` | Nội dung phản tư không hợp lệ (tối thiểu 10 ký tự, tối đa 3000 ký tự). | Invalid reflection content (must be between 10 and 3000 characters). | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.forbidden` | Bạn không có quyền thực hiện thao tác này. | You do not have permission to perform this action. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.notFound` | Không tìm thấy bài nộp hoặc tình huống học tập. | The submission or learning case could not be found. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.conflict` | Bài nộp chưa có nhận xét của giảng viên hoặc đã được phản tư trước đó. | The submission is either not yet reviewed or reflection has already been submitted. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.network` | Không thể kết nối đến máy chủ. Vui lòng kiểm tra mạng và thử lại. | Unable to connect to the server. Please check your connection and try again. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.generic` | Đã xảy ra lỗi không xác định. Vui lòng thử lại sau. | An unexpected error occurred. Please try again later. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.errors.loadFeedback` | Không thể tải nhận xét của giảng viên. | Unable to load lecturer feedback. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.analysisTitle` | 1. Phân tích tình huống (Situation Analysis) | 1. Situation Analysis | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.backToCase` | Quay lại tình huống | Back to Case | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.backToDesk` | Về Bàn học | Back to Desk | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.caseAndCourse` | Tình huống: {{case}} · Học phần: {{course}} | Case: {{case}} · Course: {{course}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.emptyAnalysis` | Sinh viên không điền phân tích tình huống | No situation analysis provided | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.feedbackSentAt` | Gửi ngày {{time}} | Sent on {{time}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.lecturerFeedbackNotice` | Nhận xét 100% mang tính định tính sư phạm từ giảng viên. Tuyệt đối không có điểm số hay AI chấm điểm. | 100% human qualitative academic feedback. Strictly no grading, points, or AI scoring. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.lecturerFeedbackTitle` | Nhận xét định tính của giảng viên | Lecturer Qualitative Feedback | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.noFeedbackYet` | Chưa có nhận xét nào từ giảng viên | No feedback provided yet | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.notFoundBody` | Bài nộp không tồn tại hoặc đã bị xóa. | The submission does not exist or has been removed. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.notFoundTitle` | Không tìm thấy bài làm | Submission Not Found | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.pendingBody` | Giảng viên của bạn chưa gửi nhận xét định tính cho bài làm này. Ô phản tư sẽ được mở sau khi có nhận xét từ giảng viên. | Your lecturer has not provided qualitative feedback for this submission yet. The reflection composer will unlock once feedback is available. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.pendingTitle` | Bài làm đang chờ Giảng viên nhận xét | Awaiting Lecturer Feedback | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reasoningTitle` | 3. Lập luận căn cứ & Đánh đổi (Supporting Reasoning) | 3. Supporting Reasoning & Trade-offs | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectedBadge` | Đã phản tư (REFLECTED) | Reflected (REFLECTED) | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionDescription` | Sau khi đọc nhận xét định tính của giảng viên, hãy viết bài phản tư so sánh, đánh giá lại lập luận hoặc giải pháp ban đầu của bạn. | After reading the lecturer's qualitative feedback, write a reflective commentary comparing your initial reasoning and proposed solution. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionFailed` | Không thể nộp bài phản tư: {{error}} | Failed to submit reflection: {{error}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionHelper` | {{current}} / {{max}} ký tự | {{current}} / {{max}} characters | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionLockedNotice` | Bài phản tư chỉ được mở sau khi giảng viên đã gửi nhận xét định tính (trạng thái REVIEWED). | Reflection unlocks only after the lecturer has submitted qualitative feedback (REVIEWED status). | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionLockedTitle` | Ô nhập bài phản tư đang bị khóa | Reflection Composer is Locked | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionMin` | Bài phản tư phải có ít nhất 10 ký tự. | Reflection commentary must contain at least 10 characters. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionPlaceholder` | Viết bài phản tư của bạn tại đây (tối thiểu 10 ký tự)... | Write your post-feedback reflection here (minimum 10 characters)... | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionSubmittedAt` | Đã nộp phản tư lúc {{time}} | Reflection submitted at {{time}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionSubmittedNotice` | Bạn đã hoàn tất nộp bài phản tư cho tình huống này. Bài làm đã hoàn tất chu trình học tập. | You have completed your post-feedback reflection. Your learning cycle for this case is complete. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionSuccess` | Đã nộp bài phản tư thành công. Trạng thái bài làm đã chuyển sang REFLECTED. | Reflection submitted successfully. Submission status transitioned to REFLECTED. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionTitle` | Bài phản tư tổng kết của sinh viên | Student Post-Feedback Reflection | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reviewedBadge` | Đã nhận xét (REVIEWED) | Reviewed (REVIEWED) | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.solutionTitle` | 2. Phương án giải pháp (Proposed Solution) | 2. Proposed Solution | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submissionDetailsTitle` | Nội dung bài làm của bạn | Your Submitted Work | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submitReflection` | Nộp bài phản tư | Submit Reflection | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submittedAt` | Nộp lúc {{time}} | Submitted at {{time}} | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submittedBadge` | Đã nộp bài (SUBMITTED) | Submitted (SUBMITTED) | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.submittingReflection` | Đang nộp bài phản tư... | Submitting reflection... | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.title` | Nhận xét của Giảng viên & Bài phản tư | Lecturer Feedback & Student Reflection | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.unauthorizedBody` | Bạn không có quyền xem bài làm hoặc nhận xét này. Chỉ sinh viên sở hữu bài nộp mới có thể truy cập. | You do not have permission to view this submission or its feedback. Only the author student can access this view. | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.unauthorizedTitle` | Không có quyền truy cập | Access Denied | PROPOSED | — | — | FE-020 PR #69 |
 | `g1.select.placeholder` | -- Chọn một mục -- | -- Select an item -- | PROPOSED | — | — | PR-71-FIX |
 | `g1.select.searchPlaceholder` | Tìm nhanh khoa hoặc đơn vị... | Search faculty or department... | PROPOSED | — | — | PR-71-FIX |
 | `g1.select.noResults` | Không tìm thấy khoa phù hợp. Bạn có thể chọn mục "Đơn vị / Khoa khác..." ở dưới cùng. | No matching faculty found. You can select "Other Faculty / Department..." at the bottom. | PROPOSED | — | — | PR-71-FIX |
@@ -175,6 +218,76 @@
 | `g1.register.customDepartmentLabel` | Tên Khoa / Đơn vị công tác cụ thể | Specific Faculty / Department name | PROPOSED | — | — | PR-71-FIX |
 | `g1.register.customDepartmentPlaceholder` | Ví dụ: Viện Nghiên cứu & Phát triển Công nghệ cao | e.g. Institute of Advanced Technology Research | PROPOSED | — | — | PR-71-FIX |
 | `g1.register.departmentOther` | Đơn vị / Khoa khác... | Other Faculty / Department... | PROPOSED | — | — | PR-71-FIX |
+| `g2.common.error` | Lỗi | Error | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.courses.details.retry` | Thử lại | Retry | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.courses.details.statAttempts` | Lượt làm bài | Attempts | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.materials.retry` | Thử lại | Retry | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.materials.statusFailedReason` | Không đọc được nội dung tệp | Could not read file content | PROPOSED | — | — | FE-026 PR #72 |
+| `g4.stats.noData` | Chưa có dữ liệu thống kê | No statistics yet | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.kpi.completion` | Tỷ lệ hoàn thành | Completion rate | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.kpi.avgAttempts` | Số lần làm trung bình | Average attempts | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.kpi.inProgress` | Đang trong hành trình | Currently in a journey | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.kpi.totalAttempts` | Tổng lượt làm | Total attempts | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.kpi.singleVsRetry` | Lần đầu / Làm lại | Single / Retry | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.kpi.reflectionsSubmitted` | Bài phản tư đã nộp | Reflections submitted | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.filters.course` | Lọc theo khóa học | Filter by course | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.filters.allCourses` | Mọi khóa học | All courses | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.filters.case` | Lọc theo tình huống | Filter by case | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.filters.allCases` | Tất cả tình huống | All cases | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.filters.selectCase` | — Chọn tình huống — | — Select a case study — | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.filters.branchingOnly` | Tình huống rẽ nhánh (Branching Study) | Branching Study Cases | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.panels.choices` | Phân bổ nhánh quyết định sinh viên lựa chọn | Branch selection distribution | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.panels.attempts` | Thống kê số lượt thử (Single vs. Retry) | Attempts statistics (Single vs. Retry) | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.panels.outcomes` | Kết cục cuối cùng của hành trình | Terminal outcomes distribution | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.panels.timing` | Thời điểm làm bài | When students work | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.panels.progress` | Tiến độ của sinh viên đã mở case | Progress of students who opened a case | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.panels.popular` | Lựa chọn phổ biến theo điểm | Popular choices per decision point | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.branchChart.title` | Biểu đồ phân bổ nhánh quyết định sinh viên lựa chọn | Branch selection distribution chart | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.branchChart.subtitle` | Tần suất và tỷ lệ sinh viên lựa chọn từng phương án rẽ nhánh tại các điểm quyết định | Frequency and percentage of students choosing options at each decision point | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.branchChart.nodeTitle` | Điểm quyết định: {{title}} | Decision Point: {{title}} | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.branchChart.selections` | {{count}} lượt chọn | {{count}} selections | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.branchChart.percent` | {{percent}}% | {{percent}}% | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.branchChart.noBranches` | Tình huống này chưa có dữ liệu rẽ nhánh hoặc thuộc chế độ Review Study. | This case has no branch data or is in Review Study mode. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.branchChart.emptyCase` | Chưa có sinh viên nào tham gia rẽ nhánh cho tình huống này. | No students have traversed branches in this case yet. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.outcomes.title` | Kết cục cuối cùng của hành trình | Terminal outcomes distribution | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.outcomes.subtitle` | Tỷ lệ sinh viên kết thúc tại các nút kết cục (terminal nodes) | Percentage of students reaching each terminal conclusion node | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.outcomes.terminalNode` | Kết cục: {{title}} | Outcome: {{title}} | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.outcomes.reachCount` | {{count}} lượt kết thúc ({{percent}}%) | {{count}} completions ({{percent}}%) | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.outcomes.emptyOutcomes` | Chưa có sinh viên nào đi đến kết cục cuối cùng. | No students have reached a terminal outcome yet. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.attempts.title` | Thống kê số lượt thử (Attempts) | Attempts statistics | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.attempts.subtitle` | Tỷ lệ lượt làm một lần duy nhất so với các lượt thử lại để khám phá các nhánh khác | Ratio of single-attempt completions versus retry attempts to explore alternative paths | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.attempts.singleLabel` | Lượt làm lần đầu (Single Attempt) | Single Attempt | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.attempts.retryLabel` | Lượt làm lại (Retry Attempt) | Retry Attempt | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.attempts.singleVsRetry` | Tỷ lệ Lần đầu / Làm lại: {{single}} / {{retry}} | Single / Retry Ratio: {{single}} / {{retry}} | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.attempts.totalLabel` | Tổng lượt thực hiện: {{total}} | Total attempts: {{total}} | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.attempts.emptyAttempts` | Chưa có dữ liệu lượt làm. | No attempts data available yet. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.openCases` | Case đang mở | Open cases | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.openCasesEmpty` | Chưa có case nào được xuất bản. | No case has been published yet. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.openCasesError` | Không tải được danh sách case | Could not load cases | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.published` | Xuất bản | Published | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.updatedOn` | Cập nhật ngày {{date}} | Updated on {{date}} | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.recent` | Bài nộp gần đây | Recent submissions | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.recentUnavailable` | Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên. | No submission data: the system does not provide student work to lecturers yet. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.prompt.title` | Chọn tình huống để xem thống kê luồng học tập | Select a case study to view learning analytics | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.prompt.description` | Chọn một khóa học và tình huống từ thanh bộ lọc phía trên để theo dõi dữ liệu rẽ nhánh và hành vi của người học. | Select a course and a case study from the filters above to track branching data and student cohort behavior. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.emptyCase.title` | Chưa có lượt làm nào | No attempts yet | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.emptyCase.description` | Tình huống này chưa có sinh viên nào tham gia làm bài hoặc gửi kết quả. | No students have participated in or submitted work for this case yet. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.reviewStudy.title` | Tiến độ bài phân tích tình huống (Review Study) | Review Study analytical progress | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.reviewStudy.subtitle` | Thống kê bài nộp theo các giai đoạn: Đã nộp bài, Giảng viên đã nhận xét và Sinh viên đã hoàn tất phản tư | Submission statistics across stages: Submitted, Lecturer reviewed, and Student reflected | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.reviewStudy.submitted` | Đã nộp bài (chờ nhận xét) | Submitted (awaiting review) | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.reviewStudy.reviewed` | Giảng viên đã nhận xét | Lecturer reviewed | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.reviewStudy.reflected` | Sinh viên đã phản tư | Student reflected | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.reviewStudy.totalSubmissions` | Tổng số bài nộp | Total submissions | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.flow.title` | Trạng thái luồng học tập | Learning flow status | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.flow.subtitle` | Phân bổ sinh viên qua các giai đoạn của hành trình học tập | Student distribution across learning journey stages | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.flow.inProgress` | Đang trong hành trình | In progress | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.flow.completed` | Đã hoàn thành hành trình | Journey completed | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.flow.reflected` | Đã hoàn tất phản tư | Reflection completed | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.flow.participants` | Sinh viên tham gia | Participating students | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.errors.notFound` | Không tìm thấy dữ liệu thống kê cho tình huống này. | Statistics data for this case was not found. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.errors.forbidden` | Bạn không có quyền xem thống kê của tình huống này. | You do not have permission to view statistics for this case. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.errors.serverError` | Lỗi máy chủ khi tải thống kê. Vui lòng thử lại sau. | Server error loading statistics. Please try again later. | PROPOSED | — | — | FE-022 PR #70 |
+| `g4.stats.errors.network` | Không thể kết nối đến máy chủ. Kiểm tra mạng rồi thử lại. | Cannot connect to server. Check your connection and try again. | PROPOSED | — | — | FE-022 PR #70 |
 | `g6.noData.apiUnavailable` | Dịch vụ quản trị chưa sẵn sàng trên máy chủ. | The administration service is not available on the server yet. | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.noData.forbidden` | Bạn không có quyền quản trị để thực hiện thao tác này. | You do not have administrator permissions for this action. | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.noData.serverError` | Máy chủ gặp sự cố khi xử lý dữ liệu quản trị. Vui lòng thử lại sau. | The server encountered an error processing admin data. Please try again later. | PROPOSED | — | — | FE-032 PR #75 |
