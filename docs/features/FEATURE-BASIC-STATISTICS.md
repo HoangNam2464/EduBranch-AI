@@ -1,7 +1,7 @@
 # Feature: Basic Learning-Flow Statistics
 
 > **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
-> **Target Package / Module**: Backend `statistics/` · Frontend `pages/lecturer/StatisticsPage.tsx`
+> **Target Package / Module**: Backend `statistics/` · Frontend `pages/statistics/StatisticsPage.tsx`
 
 ---
 

@@ -62,7 +62,7 @@ The platform includes embedded **AI Reasoning & Challenge Support** (1–2 round
 > - ⚠️ Backend domain controllers do not yet expose persistent case, attempt, Review Study, reasoning, feedback, or challenge APIs.
 > - ⚠️ The frontend prototype is not yet connected to the backend and its in-memory state is lost on refresh.
 >
-> See [Final Product-Direction Validation](docs/architecture/audits/FINAL-PRODUCT-DIRECTION-VALIDATION.md)
+> See [Project Overview](docs/PROJECT_OVERVIEW.md)
 > for the source-versus-documentation audit and correction plan.
 
 ---
@@ -169,7 +169,7 @@ flowchart TD
     end
 
     subgraph Providers ["☁️ External LLM Providers"]
-        LLM["Google Gemini 2.0 Flash / OpenAI GPT-4o-mini\n(Provider Abstraction)"]
+        LLM["Google Gemini 3.5 Flash / OpenAI GPT-4o-mini\n(Provider Abstraction)"]
     end
 
     FE -->|REST API + JWT| BG
@@ -203,12 +203,12 @@ flowchart TD
 | **HTTP Client** | Axios | Centralized client with JWT auth interceptors |
 | **Backend Gateway** | Node.js 20 LTS, NestJS 10, TypeScript | REST API Gateway, Auth, RBAC, Business State |
 | **AI / RAG Service** | Python 3.12, FastAPI, LangChain | Internal AI microservice, document chunking, RAG |
-| **LLM Providers** | Gemini 2.0 Flash / OpenAI GPT-4o-mini | Unified via Provider Abstraction (`providers/factory.py`) |
+| **LLM Providers** | Gemini 3.5 Flash (`gemini-3.5-flash`) / OpenAI GPT-4o-mini | Unified via Provider Abstraction (`providers/factory.py`) |
 | **Relational & Vector**| PostgreSQL 16 + pgvector | Relational entities & 1536/768-dim embeddings |
 | **Cache & Sessions** | Redis 7 | Revocation blacklist, transient session cache |
 | **Object Storage** | MinIO (S3 Compatible) | PDF / DOCX teaching syllabus uploads |
 | **Infrastructure** | Docker, Docker Compose | Multi-container local development stack |
-| **Database Migrations**| Flyway / SQL Migrations | Versioned DDL scripts (`V1__init_schema.sql`, `V2__new_flow_schema.sql`) |
+| **Database Migrations**| Plain SQL + built-in runner (no Flyway) | `backend/migrations/V<n>__*.sql`, applied on backend start under an advisory lock (`common/database/migration-runner.ts`) |
 
 ---
 
@@ -252,12 +252,14 @@ EduBranch-AI/
 │
 ├── frontend/                        ← React 19 + TypeScript + Vite Client
 │   ├── src/
-│   │   ├── app/router.tsx           ← React Router configuration
-│   │   ├── components/              ← UI primitives & decision tree components
-│   │   ├── layouts/                 ← PublicLayout, LecturerLayout, StudentLayout
-│   │   ├── pages/                   ← Route view shells (Lecturer / Student)
-│   │   ├── services/apiClient.ts    ← Centralized Axios API client
-│   │   ├── stores/authStore.ts      ← Zustand authentication state
+│   │   ├── routes/                  ← paths.ts (route SSOT), AppRoutes.tsx, PrivateRoute.tsx
+│   │   ├── layouts/                 ← Public, Lecturer, Student, Admin layouts
+│   │   ├── pages/<feature>/         ← Screens grouped by feature (auth, courses, cases, branching…)
+│   │   ├── components/              ← ui/ primitives + feature components
+│   │   ├── services/                ← apiClient.ts (single Axios client) + one service per feature
+│   │   ├── stores/                  ← Zustand state (auth, case study)
+│   │   ├── config/ · providers/     ← API config · app-wide providers
+│   │   ├── lib/i18n.ts · locales/   ← i18n setup · vi.json / en.json (Vietnamese default)
 │   │   └── types/index.ts           ← Shared domain TypeScript declarations
 │   └── package.json
 │
@@ -380,14 +382,14 @@ The root `.gitignore` ignores all local environment files, caches, build artifac
 Each tier includes independent verification commands:
 
 ```bash
-# Backend Gateway (NestJS)
-cd backend && npm run test
+# Backend Gateway (NestJS, Jest)
+cd backend && npm run build && npm test && npm run test:e2e   # e2e needs Postgres
 
 # AI Service (FastAPI & Pydantic Schemas)
 cd ai-service && pytest
 
-# Frontend (React 19 & Vitest)
-cd frontend && npm test
+# Frontend (React 19; Node test runner via tsx, oxlint)
+cd frontend && npm run lint && npm test && npm run build
 ```
 
 ---
@@ -397,17 +399,18 @@ cd frontend && npm test
 Development follows a strict **Feature Branch Workflow**:
 
 ```
-feature/<module>-<name>  →  develop  →  main
-fix/<module>-<name>      →  develop
-hotfix/<description>     →  main
+feature/<feature>          →  develop  →  main   (backend-only work: feature/<feature>-backend)
+fix/<description>          →  develop
+hotfix/<description>       →  main
 ```
+Authoritative rules: FND §7 (`.agents/rules/00-project-foundation.md`) and `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` §5. Never put a task ID in a branch name; put it in the commit: `feat(course): enrollment by invite code [BE-029]`.
 
 ### Branch Naming Standard
 
 | Category | Pattern | Example |
 | :--- | :--- | :--- |
-| **Feature** | `feature/<module>-<name>` | `feature/rag-document-parser` |
-| **Bug Fix** | `fix/<module>-<description>` | `fix/auth-token-refresh` |
+| **Feature** | `feature/<feature>` (`-backend` for backend-only) | `feature/material`, `feature/material-backend` |
+| **Bug Fix** | `fix/<description>` | `fix/reasoning-access` |
 | **Hotfix** | `hotfix/<description>` | `hotfix/cors-origin-fix` |
 | **Refactor** | `refactor/<module>` | `refactor/tree-bfs-validation` |
 | **Docs** | `docs/<topic>` | `docs/system-architecture` |
@@ -415,10 +418,10 @@ hotfix/<description>     →  main
 ### Commit Format (Conventional Commits)
 
 ```
-<type>(<scope>): <short description in present tense>
+<type>(<scope>): <short description> [<TASK-ID>]
 ```
 - **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `ci`
-- **Scopes**: `backend`, `ai-service`, `frontend`, `infra`, `docs`, `repo`
+- **Scopes**: `backend`, `ai-service`, `frontend`, `infra`, `docs`, `design`, `qa` or a feature domain (`auth`, `course`, `case`, `material`, …)
 - **Example**: `feat(ai-service): add pydantic tree validation schema`
 
 ---

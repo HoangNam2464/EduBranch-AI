@@ -16,7 +16,7 @@ Empowers university lecturers to automatically transform static teaching materia
 - **Lecturer**: Triggers generation, specifies topic hints and material context, reviews generated case.
 - **Backend Gateway**: Coordinates generation request between Frontend and AI Service; persists generated case in `DRAFT` status.
 - **FastAPI AI Service**: Retrieves course chunks, formats prompt with JSON Schema, validates response via Pydantic v2.
-- **LLM Provider**: Generates structured JSON matching the decision tree schema (Gemini 2.0 Flash / OpenAI GPT-4o-mini).
+- **LLM Provider**: Generates structured JSON matching the decision tree schema (Gemini 3.5 Flash `gemini-3.5-flash`, pinned 2026-11-17 / OpenAI GPT-4o-mini).
 
 ---
 

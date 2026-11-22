@@ -601,7 +601,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 `ai-service/app/ingestion/embedder.py`, `ai-service/app/providers/factory.py` (Embedding provider abstraction).
 
 ### Acceptance Criteria
-- [ ] **AC-1**: Sinh vector embeddings qua Gemini text-embedding-004 (768-dim) hoặc OpenAI (1536-dim).
+- [ ] **AC-1**: Sinh vector embeddings qua Gemini gemini-embedding-001 (768-dim; text-embedding-004 đã ngừng, cập nhật 2026-11-17) hoặc OpenAI (1536-dim).
 - [ ] **AC-2**: Gọi mô hình thông qua Provider Abstraction Interface.
 - [ ] **AC-3**: Xử lý batching embeddings để tối ưu hóa thời gian và tránh rate limit.
 
@@ -732,7 +732,7 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 ### Acceptance Criteria
 - [ ] **AC-1**: Kiểm thử Lecturer B không thể đọc, tải hoặc xóa tài liệu của Lecturer A.
 - [ ] **AC-2**: Kiểm thử không thể đoán được URL/key tài liệu trên MinIO.
-- [ ] **AC-3**: Kiểm thử tính toàn vẹn khi xóa khóa học thì tài liệu liên quan bị xóa an toàn.
+- [ ] **AC-3**: Kiểm thử tính toàn vẹn khi lưu trữ khóa học (lưu trữ mềm, OPD-014 / C1-B): khóa học rời danh sách đang hoạt động; tài liệu, chunks pgvector, object MinIO và case được giữ nguyên; khóa học đã lưu trữ không nhận tài liệu hoặc case mới; không còn API xóa cứng khóa học. *(AC-3 cũ "xóa khóa học thì tài liệu bị xóa an toàn" được PO thay ngày 2026-11-16 khi chọn lưu trữ mềm C1-B.)*
 
 ---
 
@@ -1032,19 +1032,19 @@ Thực hiện công việc chuyên môn thuộc nhóm **FE** phục vụ phân h
 - **Priority**: `Highest`
 - **Story Points**: `5`
 - **Flow / Milestone**: `Flow 2`
-- **Trạng thái nguồn**: `IN PROGRESS`
+- **Trạng thái nguồn**: `DONE`
 - **Dependencies**: is blocked by Master Task EBA-215 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
 Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
-`ai-service/app/generation/schemas.py`, `ai-service/app/generation/tree_validator.py` (DFS 3-color cycle detection).
+`ai-service/app/generation/schemas/decision_tree.py`, `ai-service/app/generation/tree_validator.py` (DFS 3-color cycle detection, reachability, terminal path), `ai-service/tests/test_case_generation_schema.py`, `ai-service/tests/test_graph_invariants.py`.
 
 ### Acceptance Criteria
-- [ ] **AC-1**: Định nghĩa CaseGenerationOutput, CaseNode, CaseOption Pydantic schemas tại app/generation/schemas/decision_tree.py.
-- [ ] **AC-2**: Thuật toán DFS 3 màu phát hiện và từ chối tuyệt đối cây có chu trình (cycles).
-- [ ] **AC-3**: Xác thực không có nút mồ côi (unreachable nodes) và có ít nhất 1 terminal path.
+- [x] **AC-1**: Định nghĩa CaseGenerationOutput, CaseNode, CaseOption Pydantic schemas tại app/generation/schemas/decision_tree.py.
+- [x] **AC-2**: Thuật toán DFS 3 màu phát hiện và từ chối tuyệt đối cây có chu trình (cycles).
+- [x] **AC-3**: Xác thực không có nút mồ côi (unreachable nodes) và có ít nhất 1 terminal path.
 
 ---
 
@@ -1058,20 +1058,20 @@ Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân h
 - **Priority**: `Highest`
 - **Story Points**: `5`
 - **Flow / Milestone**: `Flow 2`
-- **Trạng thái nguồn**: `IN PROGRESS`
+- **Trạng thái nguồn**: `DONE`
 - **Dependencies**: is blocked by Master Task EBA-310 *(Lưu ý: Khi nhập lên Jira, ánh xạ sang Jira Issue Key thực tế tương ứng)*
 
 ### Description
 Thực hiện công việc chuyên môn thuộc nhóm **BE** phục vụ phân hệ **Flow 2** trong khuôn khổ **Sprint 3** của dự án EduBranch AI (Giáo dục đại học). Đảm bảo tuân thủ triệt để ranh giới nghiệp vụ đại học (Lecturer/Student, Course, Case Study, Decision Tree) phục vụ quá trình học tập tình huống thực nghiệm. Chi tiết yêu cầu kỹ thuật và điều kiện hoàn thành được xác định trong Deliverables và Acceptance Criteria bên dưới.
 
 ### Deliverables
-`ai-service/app/generation/case_generator.py`, `ai-service/app/routers/generation.py`.
+`ai-service/app/generation/case_generator.py`, `ai-service/app/generation/service.py`, `ai-service/app/generation/router.py`, `backend/src/common/ai-client/ai-client.service.ts`, `ai-service/tests/test_case_generator.py`, `ai-service/tests/test_generation/test_generation_api.py`.
 
 ### Acceptance Criteria
-- [ ] **AC-1**: Xây dựng prompt có cấu trúc tích hợp ngữ cảnh RAG từ <sources> tài liệu của giảng viên.
-- [ ] **AC-2**: Yêu cầu LLM trả về Structured Output JSON tuân thủ đúng schema cây quyết định.
-- [ ] **AC-3**: Tự động retry gọi LLM nếu kết quả sinh ra vi phạm ràng buộc đồ thị.
-- [ ] **AC-4**: Thiết lập cơ chế giới hạn thời gian chờ (HTTP Timeout thực thi trong đường gọi dịch vụ, cấu hình linh hoạt qua biến môi trường, đề xuất ban đầu 30s–60s) và giới hạn tối đa 3 lần gọi tổng cộng (1 lần gọi ban đầu + tối đa 2 lần retry đối với các lỗi mạng/quá tải tạm thời như 429, 503, timeout; không retry đối với lỗi 4xx client). Bảo đảm tính idempotency (tính lũy đẳng): Các lần retry của cùng một yêu cầu phải sử dụng định danh ổn định hoặc cơ chế chống trùng tương đương, tránh tạo nhiều case hoặc lưu cùng một kết quả nhiều lần, kể cả khi lần gọi trước đã được xử lý nhưng phản hồi bị timeout; nếu thất bại hoàn toàn, hệ thống kết thúc có kiểm soát (graceful failure) và ghi log lỗi rõ ràng.
+- [x] **AC-1**: Xây dựng prompt có cấu trúc tích hợp ngữ cảnh RAG từ <sources> tài liệu của giảng viên.
+- [x] **AC-2**: Yêu cầu LLM trả về Structured Output JSON tuân thủ đúng schema cây quyết định.
+- [x] **AC-3**: Tự động retry gọi LLM nếu kết quả sinh ra vi phạm ràng buộc đồ thị.
+- [x] **AC-4**: Thiết lập cơ chế giới hạn thời gian chờ (HTTP Timeout thực thi trong đường gọi dịch vụ, cấu hình linh hoạt qua biến môi trường, đề xuất ban đầu 30s–60s) và giới hạn tối đa 3 lần gọi tổng cộng (1 lần gọi ban đầu + tối đa 2 lần retry đối với các lỗi mạng/quá tải tạm thời như 429, 503, timeout; không retry đối với lỗi 4xx client). Bảo đảm tính idempotency (tính lũy đẳng): Các lần retry của cùng một yêu cầu phải sử dụng định danh ổn định hoặc cơ chế chống trùng tương đương, tránh tạo nhiều case hoặc lưu cùng một kết quả nhiều lần, kể cả khi lần gọi trước đã được xử lý nhưng phản hồi bị timeout; nếu thất bại hoàn toàn, hệ thống kết thúc có kiểm soát (graceful failure) và ghi log lỗi rõ ràng.
 
 ---
 
