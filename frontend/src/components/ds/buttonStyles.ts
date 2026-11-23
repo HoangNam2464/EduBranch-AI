@@ -16,9 +16,10 @@ const SIZES: Record<ButtonSize, string> = {
 const ENABLED: Record<ButtonVariant, string> = {
   primary: "cursor-pointer bg-primary text-ink-inverse hover:bg-primary-hover active:bg-primary-active",
   // Figma hover = 1px inside stroke #2A4E7F; drawn as an inset ring so the width does not jump.
-  secondary: "cursor-pointer bg-primary-subtle text-ink hover:shadow-[inset_0_0_0_1px_var(--color-primary)]",
-  ghost: "cursor-pointer bg-transparent text-link hover:bg-canvas",
-  danger: "cursor-pointer bg-error text-ink-inverse hover:bg-danger",
+  secondary:
+    "cursor-pointer bg-primary-subtle text-ink hover:shadow-[inset_0_0_0_1px_var(--color-primary)] active:bg-primary-subtle-hover",
+  ghost: "cursor-pointer bg-transparent text-link hover:bg-canvas active:bg-surface-hover",
+  danger: "cursor-pointer bg-error text-ink-inverse hover:bg-danger active:bg-danger-hover",
 };
 
 const DISABLED: Record<ButtonVariant, string> = {
@@ -46,11 +47,11 @@ const PUBLIC_SIZES: Record<PublicButtonSize, string> = {
 };
 
 const PUBLIC_VARIANTS: Record<PublicButtonVariant, string> = {
-  primary: "bg-primary text-ink-inverse hover:bg-primary-hover",
-  secondary: "border border-line-strong bg-surface text-ink hover:bg-surface-muted",
-  tonal: "bg-primary-subtle text-primary hover:bg-primary-subtle-hover",
-  danger: "bg-danger text-ink-inverse hover:bg-danger-hover",
-  ghost: "bg-transparent text-ink-secondary hover:bg-surface-muted",
+  primary: "bg-primary text-ink-inverse hover:bg-primary-hover active:bg-primary-active",
+  secondary: "border border-line-strong bg-surface text-ink hover:bg-surface-muted active:bg-surface-hover",
+  tonal: "bg-primary-subtle text-primary hover:bg-primary-subtle-hover active:brightness-95",
+  danger: "bg-danger text-ink-inverse hover:bg-danger-hover active:brightness-95",
+  ghost: "bg-transparent text-ink-secondary hover:bg-surface-muted active:bg-surface-hover",
 };
 
 export function publicButtonClassName(variant: PublicButtonVariant, size: PublicButtonSize): string {
