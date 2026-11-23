@@ -11,8 +11,8 @@
 | Gate | Ngày | Nguyên văn |
 |---|---|---|
 | G0 | 2026-11-23 | PO: "đề xuất spec tiếp theo theo kế hoạch UI: sửa lỗi font khi build và cuộn ngang ở landing, rồi tới bước 2 là các component dùng chung" |
-| G1–G6 | — | chờ PO |
-| G7 | — | chờ PO |
+| G1–G6 | 2026-11-23 | PO (gộp) chọn "Duyệt spec 009" cho câu hỏi "Bạn có duyệt spec 009 (G1–G7) để bắt đầu code không?" (phạm vi nêu trong câu hỏi = `spec.md` §2; không gồm việc gỡ `@fontsource/roboto`) |
+| G7 | 2026-11-23 | Cùng câu trả lời. Phạm vi: T001–T005 |
 
 ## 3. Analyze (Claude)
 - Mỗi AC có task (T001–T005); không task nào ngoài phạm vi.

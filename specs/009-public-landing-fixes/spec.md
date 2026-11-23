@@ -2,7 +2,7 @@
 
 **Feature Branch**: `fix/public-landing` (từ `origin/develop` `7f98534`)
 **Feature directory**: `specs/009-public-landing-fixes`
-**Created**: 2026-11-23 · **Status**: Draft, chờ PO duyệt G1–G7
+**Created**: 2026-11-23 · **Status**: G1–G7 do PO duyệt 2026-11-23 (xem `record.md` §2)
 **Parent**: FE-024 (Public landing & auth, Jira `EBA-87`); bước 5 (public/auth) của `docs/design/DESIGN-DIRECTION.md`, làm trước theo yêu cầu PO
 **G0**: PO, chat 2026-11-23: "đề xuất spec tiếp theo theo kế hoạch UI: sửa lỗi font khi build và cuộn ngang ở landing, rồi tới bước 2 là các component dùng chung"
 
