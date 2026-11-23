@@ -1,7 +1,4 @@
 @import "tailwindcss";
-/* Public landing headings only (R01 §0 "EduBranch/Public *" text styles); app screens never use it. */
-@import "@fontsource/be-vietnam-pro/500.css";
-@import "@fontsource/be-vietnam-pro/600.css";
 
 /*
  * EduBranch design tokens — mirrors the "EduBranch" variable collections of
