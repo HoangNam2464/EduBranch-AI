@@ -13,8 +13,8 @@
 | Gate | Ngày | Nguyên văn |
 |---|---|---|
 | G0 | 2026-11-23 | PO: "làm đi" (thứ tự: kiểm nhóm màn Khóa học & Tài liệu → spec 011 với lỗi thật; cho phép tải PDF mẫu vào database Docker local và gỡ sau) |
-| G1–G6 | — | chờ PO |
-| G7 | — | chờ PO |
+| G1–G6 | 2026-11-23 | PO (gộp) chọn "Duyệt spec 011" cho câu hỏi "Duyệt spec 011 (nhóm màn Khóa học & Tài liệu) để bắt đầu code?" (phạm vi nêu trong câu hỏi = `spec.md` §2, chỉ frontend 3 màn) |
+| G7 | 2026-11-23 | Cùng câu trả lời. Phạm vi: T001–T011 |
 
 ## 3. Analyze (Claude)
 - Mỗi phát hiện F1–F10 có AC và task; không task nào ngoài phạm vi; không thêm thư viện, không đổi API.

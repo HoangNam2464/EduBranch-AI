@@ -2,7 +2,7 @@
 
 **Feature Branch**: `fix/courses-materials` (từ `origin/develop` `0e78075`)
 **Feature directory**: `specs/011-courses-materials`
-**Created**: 2026-11-23 · **Status**: Draft, chờ PO duyệt G1–G7
+**Created**: 2026-11-23 · **Status**: G1–G7 do PO duyệt 2026-11-23 (xem `record.md` §2)
 **Parent**: FE-026 (Courses & Materials, Jira `EBA-89`); bước 4 của `docs/design/DESIGN-DIRECTION.md`, nhóm màn đầu tiên
 **G0**: PO, chat 2026-11-23: "làm đi" (cho thứ tự: kiểm nhóm màn Khóa học & Tài liệu trên `develop` với dữ liệu thật → spec 011 với lỗi thật)
 
