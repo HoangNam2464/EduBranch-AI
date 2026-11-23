@@ -1,9 +1,4 @@
 @import "tailwindcss";
-/* Public landing headings only (GDS §3 "EduBranch/Public *" text styles); app screens never use it. */
-@import "@fontsource/be-vietnam-pro/500.css";
-@import "@fontsource/be-vietnam-pro/600.css";
-
-@custom-variant dark (&:where(.dark, .dark *));
 
 /*
  * EduBranch design tokens — mirrors the "EduBranch" variable collections of
@@ -101,65 +96,6 @@
     color-scheme: light;
   }
 
-  :root.dark, .dark {
-    color-scheme: dark;
-    --color-page: #0B1120;
-    --color-canvas: #0F172A;
-    --color-surface: #1E293B;
-    --color-surface-muted: #162032;
-    --color-surface-hover: #273549;
-    --color-selected: #1E3A5F;
-
-    --color-ink: #F8FAFC;
-    --color-ink-secondary: #94A3B8;
-    --color-ink-muted: #64748B;
-    --color-ink-inverse: #FFFFFF;
-    --color-link: #38BDF8;
-
-    --color-line: #334155;
-    --color-line-soft: #1E293B;
-    --color-line-strong: #475569;
-    --color-focus: #38BDF8;
-
-    --color-primary: #1D4ED8;
-    --color-primary-text: #60A5FA;
-    --color-primary-hover: #2563EB;
-    --color-primary-active: #1E40AF;
-    --color-primary-disabled: #475569;
-    --color-primary-subtle: #172554;
-    --color-primary-subtle-hover: #1E3A5F;
-    --color-accent: #38BDF8;
-    --color-danger: #EF4444;
-    --color-danger-hover: #DC2626;
-
-    /* Semantic */
-    --color-success: #10B981;
-    --color-success-text: #34D399;
-    --color-success-bg: #064E3B;
-    --color-success-border: #065F46;
-    --color-warning: #F59E0B;
-    --color-warning-text: #FBBF24;
-    --color-warning-bg: #451A03;
-    --color-warning-border: #78350F;
-    --color-error: #EF4444;
-    --color-error-text: #F87171;
-    --color-error-bg: #450A0A;
-    --color-error-border: #7F1D1D;
-    --color-info: #60A5FA;
-    --color-info-bg: #172554;
-
-    /* Mode & Status */
-    --color-mode-review-bg: #082F49;
-    --color-mode-review-border: #0369A1;
-    --color-mode-review-text: #7DD3FC;
-    --color-status-approved-text: #FBBF24;
-    --color-status-published-text: #34D399;
-
-    /* Elevation for dark surfaces */
-    --shadow-eb-card: inset 0 0 0 1px rgb(51 65 85 / 0.8), 0 1px 2px 0 rgb(0 0 0 / 0.3), 0 1px 3px 0 rgb(0 0 0 / 0.4);
-    --shadow-eb-hover: inset 0 0 0 1px rgb(71 85 105 / 0.9), 0 4px 12px 0 rgb(0 0 0 / 0.5);
-  }
-
   body {
     font-family: var(--font-sans);
     background-color: var(--color-page);
@@ -169,51 +105,6 @@
   h1, h2, h3, h4, h5, h6 {
     font-weight: 600;
     letter-spacing: -0.025em;
-  }
-}
-
-@layer components {
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    background-color: #2563eb;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: white;
-    cursor: pointer;
-  }
-  .btn-primary:hover { background-color: #1d4ed8; }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    border: 1px solid #d1d5db;
-    background-color: white;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #374151;
-  }
-  .btn-secondary:hover { background-color: #f9fafb; }
-
-  .card {
-    background-color: white;
-    border-radius: 0.5rem;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  }
-}
-
-@layer utilities {
-  :root.dark .text-primary,
-  .dark .text-primary {
-    color: var(--color-primary-text);
   }
 }
 

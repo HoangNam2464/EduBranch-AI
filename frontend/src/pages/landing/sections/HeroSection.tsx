@@ -27,11 +27,11 @@ export function HeroSection() {
   const reducedMotion = usePrefersReducedMotion();
 
   return (
-    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] dark:from-page dark:via-canvas dark:to-page pt-10 pb-20 transition-colors duration-300">
+    <section className="relative w-full overflow-hidden bg-gradient-to-b from-[#F8FAFC] via-[#F3F6FD] to-[#F1F5FB] pt-10 pb-20 transition-colors duration-300">
       {/* Soft Ambient Light behind Hero */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/40 via-blue-100/20 to-transparent dark:from-accent/10 dark:via-primary/5 dark:to-transparent blur-3xl -z-10"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[600px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-sky-200/40 via-blue-100/20 to-transparent blur-3xl -z-10"
       />
 
       <div className="mx-auto flex min-h-[720px] max-w-7xl flex-col items-center justify-between gap-12 px-6 lg:flex-row lg:px-12">
@@ -146,10 +146,10 @@ function StudioMockupWindow() {
       aria-label={k("ariaLabel")}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative h-[620px] w-[620px] overflow-hidden rounded-[24px] bg-[#162947] dark:bg-canvas border border-white/20 dark:border-line shadow-2xl shadow-primary/30 flex flex-col text-white transition-colors duration-300"
+      className="relative h-[620px] w-[620px] overflow-hidden rounded-[24px] bg-[#162947] border border-white/20 shadow-2xl shadow-primary/30 flex flex-col text-white transition-colors duration-300"
     >
       {/* ─── Studio Window Titlebar ─── */}
-      <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 dark:border-line bg-white/5 dark:bg-surface-muted/30 px-4 backdrop-blur-md">
+      <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/10 bg-white/5 px-4 backdrop-blur-md">
         {/* Left: Window Dots */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1.5">
@@ -359,7 +359,7 @@ function StudioMockupWindow() {
       </div>
 
       {/* ─── Bottom Status Footer ─── */}
-      <figcaption className="h-10 shrink-0 border-t border-white/10 dark:border-line bg-black/20 dark:bg-canvas px-5 flex items-center justify-between text-[11.5px] text-white/70">
+      <figcaption className="h-10 shrink-0 border-t border-white/10 bg-black/20 px-5 flex items-center justify-between text-[11.5px] text-white/70">
         <span className="flex items-center gap-1.5">
           <span className="size-2 rounded-full bg-accent animate-pulse" />
           <span>

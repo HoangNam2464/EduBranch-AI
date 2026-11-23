@@ -25,6 +25,12 @@ export const LANGUAGE_NAMES: Record<AppLanguage, string> = {
   en: "English",
 };
 
+export function syncDocumentLanguage(lang?: string | null): void {
+  if (typeof document !== "undefined" && document.documentElement) {
+    document.documentElement.lang = lang || DEFAULT_LANGUAGE;
+  }
+}
+
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -43,6 +49,17 @@ void i18n
       caches: ["localStorage"],
       lookupLocalStorage: LANGUAGE_STORAGE_KEY,
     },
+  })
+  .then(() => {
+    syncDocumentLanguage(i18n.resolvedLanguage ?? i18n.language);
   });
+
+if (i18n.isInitialized) {
+  syncDocumentLanguage(i18n.resolvedLanguage ?? i18n.language);
+}
+
+i18n.on("languageChanged", (lng: string) => {
+  syncDocumentLanguage(lng);
+});
 
 export default i18n;

@@ -108,11 +108,9 @@ export function Field(props: FieldProps) {
         </label>
       )}
       {control}
-      {below && (
-        <p id={helperId} className={cx("text-[12px] leading-4 font-normal", hasError ? "text-error" : "text-ink-secondary")}>
-          {below}
-        </p>
-      )}
+      <p id={helperId} className={cx("min-h-4 text-[12px] leading-4 font-normal", hasError ? "text-error" : "text-ink-secondary")}>
+        {below}
+      </p>
     </div>
   );
 }

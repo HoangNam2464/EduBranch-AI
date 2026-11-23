@@ -2,13 +2,12 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Bell, Search, SlidersHorizontal } from "lucide-react";
-import { LanguageSwitcher, ThemeToggle } from "@/components/ds";
+import { LanguageSwitcher } from "@/components/ds";
 
 /*
  * Figma: `EB/Header Actions` (762×40, gap 12) — shared by the three roles.
- * Search 320×40 · Language VI|EN 78×40 · Theme · Notifications · Settings (40×40)
+ * Search 320×40 · Language VI|EN 78×40 · Notifications · Settings (40×40)
  * · divider · account (avatar 40 + name/role).
- * Dark theme is not designed yet (UX notes §1.1): the theme button is a placeholder.
  */
 
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
@@ -76,7 +75,7 @@ export function HeaderActions({
 
   return (
     <div className="flex h-10 items-center gap-3">
-      <form role="search" onSubmit={onSubmit} className="h-10 w-80">
+      <form role="search" onSubmit={onSubmit} className="h-10 w-56 min-[1440px]:w-80">
         <label
           className={`flex h-10 w-full items-center gap-2.5 rounded-[10px] border border-line bg-surface-muted pr-2 pl-3.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus`}
         >
@@ -97,8 +96,6 @@ export function HeaderActions({
       </form>
 
       <LanguageSwitcher />
-
-      <ThemeToggle className={ICON_BUTTON} />
 
       <button
         type="button"
@@ -122,7 +119,7 @@ export function HeaderActions({
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm leading-5 font-medium text-ink-inverse">
           {initials}
         </span>
-        <span className="flex max-w-[160px] flex-col gap-0.5">
+        <span className="hidden max-w-[160px] flex-col gap-0.5 xl:flex">
           <span className="truncate text-sm leading-5 font-medium text-ink">{userName}</span>
           <span className="truncate text-xs leading-4 font-normal text-ink-muted">{roleLabel}</span>
         </span>

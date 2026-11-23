@@ -117,15 +117,15 @@ export function CourseCard({
             <Title className="min-w-0 flex-1 text-[16px] leading-6 font-normal tracking-normal text-ink">{titleNode}</Title>
             <StatusPill tone="info">{code}</StatusPill>
           </div>
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <InstructorLine name={instructorName} initials={instructorInitials} />
-            <div className="flex shrink-0 items-center gap-3 text-[12px] leading-4">
-              <span className="flex min-w-32 items-center gap-1.5 text-ink-secondary">
+            <div className="flex min-w-0 flex-wrap items-center justify-end gap-x-3 gap-y-1 text-[12px] leading-4">
+              <span className="flex items-center gap-1.5 text-ink-secondary min-[1440px]:min-w-32">
                 <FileText aria-hidden="true" size={12} absoluteStrokeWidth strokeWidth={1.7} className="shrink-0 text-ink-muted" />
                 {documentsLabel}
               </span>
-              <span className={cx("min-w-20", NOTE_TONES[casesTone])}>{casesLabel}</span>
-              <span className={cx("min-w-[124px] text-right", NOTE_TONES[noteTone])}>{note}</span>
+              <span className={cx("min-[1440px]:min-w-20", NOTE_TONES[casesTone])}>{casesLabel}</span>
+              <span className={cx("text-right min-[1440px]:min-w-[124px]", NOTE_TONES[noteTone])}>{note}</span>
             </div>
           </div>
         </div>

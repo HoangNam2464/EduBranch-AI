@@ -54,14 +54,14 @@ export function PublicFooter({ brandName, homeTo, description, columns, copyrigh
   return (
     <footer className={cx("w-full border-t border-line bg-canvas", className)}>
       <div className="mx-auto flex max-w-7xl flex-col gap-10 px-6 pt-14 pb-8 sm:px-8 lg:px-12">
-        <div className="flex items-start gap-16">
-          <div className="flex w-[360px] shrink-0 flex-col items-start gap-3">
+        <div className="flex flex-wrap items-start gap-6 xl:flex-nowrap xl:gap-16">
+          <div className="flex w-full max-w-[360px] shrink-0 flex-col items-start gap-3 xl:w-[360px]">
             <PublicBrand brandName={brandName} homeTo={homeTo} />
             <p className="text-[14px] leading-5 font-normal text-ink-secondary">{description}</p>
           </div>
-          <div aria-hidden="true" className="flex-1" />
+          <div aria-hidden="true" className="hidden flex-1 xl:block" />
           {columns.map((column, index) => (
-            <nav key={index} className="flex w-40 shrink-0 flex-col items-start gap-3" aria-label={typeof column.title === "string" ? column.title : undefined}>
+            <nav key={index} className="flex w-40 shrink flex-col items-start gap-3 xl:shrink-0" aria-label={typeof column.title === "string" ? column.title : undefined}>
               <p className="text-[14px] leading-5 font-medium text-ink">{column.title}</p>
               {column.links.map((link, linkIndex) => (
                 <FooterLink key={linkIndex} to={link.to}>

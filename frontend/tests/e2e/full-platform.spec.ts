@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe("1. Public Landing Page & Global Controls", () => {
-  test("landing page renders header, hero, sections, language switch and theme switch", async ({ page }) => {
+  test("landing page renders header, hero, sections, language switch", async ({ page }) => {
     await page.goto("/");
     await expect(page).toHaveTitle(/EduBranch/i);
 
@@ -51,22 +51,15 @@ test.describe("1. Public Landing Page & Global Controls", () => {
       }
     }
 
-    // 3. Theme Toggle (Light <-> Dark)
-    const themeBtn = banner.getByRole("button", { name: /Giao diện|Theme/i });
-    if (await themeBtn.isVisible()) {
-      await themeBtn.click();
-      await themeBtn.click();
-    }
-
-    // 4. Hero Content & CTAs
+    // 3. Hero Content & CTAs
     const main = page.locator("main");
     await expect(main).toBeVisible();
     await expect(main.getByText(/Mỗi quyết định mở ra một nhánh mới|EduBranch AI/i).first()).toBeVisible();
 
-    // 5. Landing Sections
+    // 4. Landing Sections
     await expect(page.getByText(/Hai cách học|Hai chế độ/i).first()).toBeVisible();
 
-    // 6. Navigation to Login Page
+    // 5. Navigation to Login Page
     await page.goto("/login");
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.locator('input[type="email"]')).toBeVisible();

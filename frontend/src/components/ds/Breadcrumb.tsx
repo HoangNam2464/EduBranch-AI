@@ -41,11 +41,11 @@ export function Breadcrumb({ label, items, className }: BreadcrumbProps) {
                     {item.label}
                   </span>
                 ) : item.to !== undefined ? (
-                  <Link to={item.to} className={cx("rounded-sm text-ink-muted hover:text-link", FOCUS_RING)}>
+                  <Link to={item.to} className={cx("rounded-sm text-ink-secondary hover:text-link", FOCUS_RING)}>
                     {item.label}
                   </Link>
                 ) : (
-                  <span className="text-ink-muted">{item.label}</span>
+                  <span className="text-ink-secondary">{item.label}</span>
                 )}
               </li>
             </Fragment>
