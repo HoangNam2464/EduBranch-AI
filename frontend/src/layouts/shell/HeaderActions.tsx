@@ -76,7 +76,7 @@ export function HeaderActions({
 
   return (
     <div className="flex h-10 items-center gap-3">
-      <form role="search" onSubmit={onSubmit} className="h-10 w-80">
+      <form role="search" onSubmit={onSubmit} className="h-10 w-56 min-[1440px]:w-80">
         <label
           className={`flex h-10 w-full items-center gap-2.5 rounded-[10px] border border-line bg-surface-muted pr-2 pl-3.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus`}
         >
@@ -122,7 +122,7 @@ export function HeaderActions({
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm leading-5 font-medium text-ink-inverse">
           {initials}
         </span>
-        <span className="flex max-w-[160px] flex-col gap-0.5">
+        <span className="hidden max-w-[160px] flex-col gap-0.5 xl:flex">
           <span className="truncate text-sm leading-5 font-medium text-ink">{userName}</span>
           <span className="truncate text-xs leading-4 font-normal text-ink-muted">{roleLabel}</span>
         </span>

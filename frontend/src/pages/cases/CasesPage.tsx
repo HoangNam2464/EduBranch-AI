@@ -256,11 +256,11 @@ export function CasesPage() {
       </div>
 
       <section aria-labelledby="g3-library" className="flex flex-col gap-5 rounded-eb-xl bg-surface p-5 shadow-eb-card">
-        <div className="flex h-8 items-center justify-between gap-4">
+        <div className="flex min-h-8 flex-wrap items-center justify-between gap-x-4 gap-y-3">
           <h2 id="g3-library" className="text-[16px] leading-6 font-normal text-ink">
             {t("g3.list.library")}
           </h2>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <SearchField
               label={t("g3.list.search")}
               placeholder={t("g3.list.search")}

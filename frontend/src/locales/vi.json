@@ -1827,6 +1827,7 @@
       },
       "back": "Quay lại",
       "finalNote": "Bài nộp là bản cuối, không chỉnh sửa được sau khi nộp.",
+      "oneSubmissionNote": "Chế độ Review Study cho phép nộp một lần duy nhất.",
       "submit": "Nộp bài",
       "submitting": "Đang gửi bài nộp…",
       "submitSuccess": "Bài nộp đã được gửi thành công!",

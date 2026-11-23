@@ -78,9 +78,9 @@ function ShellFrame({ role }: { role: Role }) {
       />
 
       <div className="flex min-h-[calc(100vh-24px)] min-w-0 flex-1 flex-col my-2 mr-2 sm:my-3 sm:mr-3 rounded-[18px] bg-canvas pt-2">
-        {/* Content is capped at max-w-7xl (1280px) and centred, per reference frontend UX & PO decision 5,
-            so wide screens (1920, 2K) keep generous, comfortable side margins and do not stretch cards. */}
-        <div className="mx-auto flex w-full max-w-7xl min-w-0 flex-1 flex-col px-3 sm:px-6 lg:px-8">
+        {/* Fluid content (PO decision 2026-11-21, spec 006): app screens use the full width next to the
+            sidebar with fixed side gutters; only the public landing and auth pages stay capped at max-w-7xl. */}
+        <div className="flex w-full min-w-0 flex-1 flex-col px-3 sm:px-6 lg:px-8">
           <header className="flex h-[84px] shrink-0 items-center justify-between gap-6 px-2 sm:px-4">
             <h1 className="min-w-0 truncate text-[22px] leading-7 font-normal tracking-normal text-ink">{title}</h1>
             <HeaderActions
