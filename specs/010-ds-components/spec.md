@@ -2,7 +2,7 @@
 
 **Feature Branch**: `fix/ds-components` (từ `origin/develop` `7f98534`)
 **Feature directory**: `specs/010-ds-components`
-**Created**: 2026-11-23 · **Status**: Draft, chờ PO duyệt G1–G7
+**Created**: 2026-11-23 · **Status**: G1–G7 do PO duyệt 2026-11-23 (xem `record.md` §2)
 **Parent**: FE-025 (Shared App Shell & shared states, Jira `EBA-88`); bước 2 của `docs/design/DESIGN-DIRECTION.md`
 **G0**: PO, chat 2026-11-23: "… rồi tới bước 2 là các component dùng chung"
 

@@ -11,8 +11,10 @@
 | Gate | Ngày | Nguyên văn |
 |---|---|---|
 | G0 | 2026-11-23 | PO: "… rồi tới bước 2 là các component dùng chung" |
-| G1–G6 | — | chờ PO |
-| G7 | — | chờ PO |
+| G1–G6 | 2026-11-23 | PO (gộp) chọn "Duyệt spec 010" cho câu hỏi "Duyệt spec 010 (bước 2, component dùng chung) để bắt đầu code?" (phạm vi nêu trong câu hỏi = `spec.md` §2) |
+| G7 | 2026-11-23 | Cùng câu trả lời. Phạm vi: T001–T006 |
+
+Nhánh đã merge `develop` `8123fbc` (PR #84 đã merge) thành `eb5252c` trước khi code.
 
 ## 3. Analyze (Claude)
 - Mỗi AC có task; không task nào ngoài phạm vi; không thêm thư viện, không đổi API.
