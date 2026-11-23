@@ -2,13 +2,12 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Bell, Search, SlidersHorizontal } from "lucide-react";
-import { LanguageSwitcher, ThemeToggle } from "@/components/ds";
+import { LanguageSwitcher } from "@/components/ds";
 
 /*
  * Figma: `EB/Header Actions` (762×40, gap 12) — shared by the three roles.
- * Search 320×40 · Language VI|EN 78×40 · Theme · Notifications · Settings (40×40)
+ * Search 320×40 · Language VI|EN 78×40 · Notifications · Settings (40×40)
  * · divider · account (avatar 40 + name/role).
- * Dark theme is not designed yet (UX notes §1.1): the theme button is a placeholder.
  */
 
 const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
@@ -97,8 +96,6 @@ export function HeaderActions({
       </form>
 
       <LanguageSwitcher />
-
-      <ThemeToggle className={ICON_BUTTON} />
 
       <button
         type="button"
