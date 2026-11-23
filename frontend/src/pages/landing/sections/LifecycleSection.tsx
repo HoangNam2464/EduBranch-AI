@@ -28,7 +28,7 @@ export function LifecycleSection() {
   const { t } = useTranslation();
   const states = t("g1.landing.lifecycle.states", { returnObjects: true }) as StateCopy[];
   return (
-    <section className="w-full bg-primary dark:bg-canvas py-24 border-y border-transparent dark:border-line transition-colors duration-300">
+    <section className="w-full bg-primary py-24 border-y border-transparent transition-colors duration-300">
       <div className="mx-auto flex max-w-7xl flex-col gap-12 px-6 sm:px-8 lg:px-12">
         <div className="flex max-w-3xl flex-col gap-4">
           <h2 className={cx(DISPLAY_FONT, "text-[28px] leading-[38px] font-medium tracking-[-0.01em] whitespace-pre-line text-ink-inverse")}>

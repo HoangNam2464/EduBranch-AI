@@ -92,11 +92,14 @@
 ## 4. Migrations
 
 Migrations are maintained in SQL files executed against PostgreSQL:
-- Backend migrations directory: `backend/migrations/`
-- Infrastructure migrations directory: `infrastructure/postgres/migrations/`
+- Backend migrations directory: `backend/migrations/` — the only directory the migration runner reads (`backend/src/common/database/migration-runner.ts`, advisory lock, on backend start when `AUTO_MIGRATE` is not false).
+- `infrastructure/postgres/migrations/` is a stale copy (V1–V4, no V5) that nothing executes; do not edit it as a source. Compose mounts only `infrastructure/postgres/init/` (extensions).
 - **V1__init_schema.sql**: Initial baseline schema
 - **V2__new_flow_schema.sql**: Proposal V1.2 flow schema (cases extensions, branching_attempts, student_reasoning, review_study_submissions, challenge_support_sessions, challenge_messages, lecturer_feedback)
 - **V3__add_admin_role.sql**: Updates `users.role` check constraint to support `ADMIN` (matches Proposal V1.2 System Context Diagram)
+- **V4__document_chunks.sql**: `document_chunks` with `vector(768)` embeddings for RAG (Gemini `gemini-embedding-001`, 768 dims; the file header still names the retired `text-embedding-004`)
+- **V5__course_enrollments.sql**: `courses.invite_code` (unique) and `invite_code_active`; `course_enrollments(course_id, student_id)` with `UNIQUE(course_id, student_id)` (BE-029, OPD-001 → A)
+- V1 still creates the retired tables `simulation_sessions`, `student_arguments`, `debate_sessions`, `debate_messages`; no code uses them.
 
 ---
 

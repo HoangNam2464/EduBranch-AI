@@ -12,7 +12,7 @@ import { cx, FOCUS_RING } from "@/components/ds/shared";
  *      Info    #DFEDF9 + info stroke 1.295 #2A4E7F
  *  - Content column gap 2: Title Roboto Medium 14/20 #202124, Message Regular 12/16 #696A70
  *  - Close: Icon/x 16px stroke 1.333 #909198
- * Page EduBranch AI – Screens places it at top 96 / right 32 of the screen (frame 03.3): see <ToastRegion>.
+ * Position: bottom-right 24px (PO decision 2026-11-21, spec 006; Figma frame 03.3 still shows top 96 / right 32): see <ToastRegion>.
  */
 export type ToastType = "success" | "error" | "info";
 
@@ -65,10 +65,14 @@ export function Toast({ type = "info", title, message, onClose, closeLabel, widt
   );
 }
 
-/** Fixed stack for toasts: top 96px, right 32px (Figma frame 03.3), gap 12. */
+/**
+ * Fixed stack for toasts, bottom-right 24px from the edges, newest at the bottom, gap 12
+ * (PO decision 2026-11-21, spec 006 AC-T1: the former top-right position covered the header
+ * and the content being read). Below 640px the stack spans the width, 12px from the edges.
+ */
 export function ToastRegion({ children, label }: { children: ReactNode; label?: string }) {
   return (
-    <section aria-label={label} className="pointer-events-none fixed top-24 right-8 z-50 flex flex-col items-end gap-3 [&>*]:pointer-events-auto">
+    <section aria-label={label} className="pointer-events-none fixed inset-x-3 bottom-3 z-50 flex flex-col items-stretch gap-3 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:items-end [&>*]:pointer-events-auto">
       {children}
     </section>
   );

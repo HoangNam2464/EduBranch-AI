@@ -42,7 +42,7 @@ export function CaseLifecycleStepper({ status, labels, ariaLabel, className }: C
               <span
                 className={cx(
                   "text-[14px] leading-5 whitespace-nowrap",
-                  state === "current" ? "font-medium text-ink" : state === "done" ? "font-normal text-ink" : "font-normal text-ink-muted",
+                  state === "current" ? "font-medium text-ink" : state === "done" ? "font-normal text-ink" : "font-normal text-ink-secondary",
                 )}
               >
                 {label}
@@ -69,7 +69,7 @@ function StepMarker({ state, number }: { state: "done" | "current" | "upcoming";
         "flex size-7 shrink-0 items-center justify-center rounded-full text-[12px] leading-4 font-medium",
         state === "current"
           ? "bg-primary-subtle text-link shadow-[inset_0_0_0_1.5px_var(--color-primary)]"
-          : "bg-canvas text-ink-muted",
+          : "bg-canvas text-ink-secondary",
       )}
     >
       {number}

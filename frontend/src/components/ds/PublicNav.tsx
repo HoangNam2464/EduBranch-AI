@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { LogoMark } from "@/components/brand/LogoMark";
 import { PublicButton } from "@/components/ds/PublicButton";
 import { LanguageSwitcher } from "@/components/ds/LanguageSwitcher";
-import { ThemeToggle } from "@/components/ds/ThemeToggle";
 import { cx, FOCUS_RING } from "@/components/ds/shared";
 
 /**
@@ -102,7 +101,6 @@ export function PublicNav({ brandName, homeTo, links, secondaryAction, primaryAc
         <div aria-hidden="true" className="flex-1" />
         <div className="flex items-center gap-3">
           <LanguageSwitcher />
-          <ThemeToggle />
           {(secondaryAction || primaryAction) && (
             <div className="flex items-center gap-2.5 border-l border-line pl-3">
               {secondaryAction && (
