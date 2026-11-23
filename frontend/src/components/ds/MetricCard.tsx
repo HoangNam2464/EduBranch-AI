@@ -1,6 +1,11 @@
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import { cx } from "@/components/ds/shared";
+
+/** Pure decision helper for empty metric values (null, undefined, or empty string). */
+export function isEmptyMetricValue(value: ReactNode): boolean {
+  return value === null || value === undefined || value === "";
+}
 
 /**
  * Page-08 metric cards. Five layouts actually occur:
@@ -37,6 +42,8 @@ export interface MetricCardProps {
   delta?: MetricDelta;
   /** kpi only: 1px left divider (every metric of the band after the first). */
   divided?: boolean;
+  /** Optional reason shown when value is empty (null, undefined, or ""). */
+  emptyReason?: string;
   className?: string;
 }
 
@@ -63,15 +70,34 @@ export function MetricCard({
   iconStrokeWidth = 1.7,
   delta,
   divided = false,
+  emptyReason,
   className,
 }: MetricCardProps) {
+  const autoId = useId();
+  const reasonId = `metric-reason-${autoId}`;
+  const isEmpty = isEmptyMetricValue(value);
+  const showEmpty = Boolean(emptyReason) && isEmpty;
+
+  const renderedValue = showEmpty ? (
+    <>
+      <span title={emptyReason} aria-describedby={reasonId}>
+        —
+      </span>
+      <span id={reasonId} className="sr-only">
+        {emptyReason}
+      </span>
+    </>
+  ) : (
+    value
+  );
+
   if (variant === "kpi") {
     const DeltaIcon = delta?.icon;
     const warning = delta?.tone === "warning";
     return (
       <div className={cx("flex min-w-0 flex-col items-start gap-2 px-6", divided && "border-l border-line", className)}>
         <p className="text-[15px] leading-[22px] text-ink-secondary">{label}</p>
-        <p className="text-[28px] leading-9 font-medium text-ink">{value}</p>
+        <p className="text-[28px] leading-9 font-medium tabular-nums text-ink">{renderedValue}</p>
         {delta && (
           <p
             className={cx(
@@ -96,8 +122,8 @@ export function MetricCard({
       <div className={cx("flex h-[78px] min-w-0 items-center gap-4 rounded-[16px] bg-surface p-2 shadow-eb-card", className)}>
         {tile}
         <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-          <p className="text-[12px] leading-4 text-ink-muted">{label}</p>
-          <p className="text-[22px] leading-7 text-ink">{value}</p>
+          <p className="text-[12px] leading-4 text-ink-secondary">{label}</p>
+          <p className="text-[22px] leading-7 tabular-nums text-ink">{renderedValue}</p>
         </div>
       </div>
     );
@@ -109,7 +135,7 @@ export function MetricCard({
         {tile}
         <div className="flex items-end justify-between gap-2">
           <p className="text-[14px] leading-5 text-ink-secondary">{label}</p>
-          <p className="text-[22px] leading-7 text-ink">{value}</p>
+          <p className="text-[22px] leading-7 tabular-nums text-ink">{renderedValue}</p>
         </div>
       </div>
     );
@@ -120,7 +146,7 @@ export function MetricCard({
       <div className={cx("flex h-[76px] min-w-0 items-center gap-3 rounded-eb-xl bg-surface px-5 shadow-eb-card", className)}>
         {tile}
         <p className="min-w-0 flex-1 text-[14px] leading-5 text-ink-secondary">{label}</p>
-        <p className="shrink-0 text-[20px] leading-7 text-ink">{value}</p>
+        <p className="shrink-0 text-[20px] leading-7 tabular-nums text-ink">{renderedValue}</p>
       </div>
     );
   }
@@ -131,7 +157,7 @@ export function MetricCard({
         {tile}
         <p className="text-[15px] leading-[22px] text-ink">{label}</p>
       </div>
-      <p className="text-[22px] leading-7 text-ink">{value}</p>
+      <p className="text-[22px] leading-7 tabular-nums text-ink">{renderedValue}</p>
     </div>
   );
 }
