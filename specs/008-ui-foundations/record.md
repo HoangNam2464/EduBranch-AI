@@ -11,8 +11,10 @@
 | Gate | Ngày | Nguyên văn |
 |---|---|---|
 | G0 | 2026-11-22 | PO: "theo đề xuất đi, vì dự án tôi k còn nhiều thời gian, cần sản phẩm chất lượng và tiếp cận được người dùng" và, cho các bước tiếp theo, "bạn làm luôn giúp tôi" |
-| G1–G6 | — | chờ PO |
-| G7 | — | chờ PO |
+| G1–G6 | 2026-11-23 | PO (gộp) chọn "Duyệt spec 008" cho câu hỏi "Bạn có duyệt spec 008 (G1–G7) để bắt đầu code không?" (phạm vi nêu trong câu hỏi = `spec.md` §2; không gồm việc gỡ `@fontsource/roboto`) |
+| G7 | 2026-11-23 | Cùng câu trả lời. Phạm vi: T001–T007 |
+
+Phụ thuộc đã thỏa: PR #79 merge ngày 2026-11-23 (`e2fbe71`); nhánh đã merge `develop` (`6a50ea5`); phạm vi kiểm lại khớp `spec.md` §1.
 
 ## 3. Analyze (Claude)
 - Mỗi AC có task (T001–T007); không task nào ngoài phạm vi.
