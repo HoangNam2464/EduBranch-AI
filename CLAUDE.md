@@ -44,6 +44,7 @@ Full rules: **R01** (`.agents/rules/01-ui-design-standards.md`), the single desi
 - **Layout**: web app. App screens are fluid beside the sidebar with fixed gutters; landing and auth centred at `max-w-7xl`. Works from 1024 to 1920+ without horizontal scroll.
 - **Language**: Vietnamese default + English switch, both in the MVP; one language per screen.
 - **Goal now** (PO 2026-11-22): keep the identity and fix everything that looks broken or unprofessional; plan in `docs/design/DESIGN-DIRECTION.md`.
+- **Reference frontend**: file organisation, code conventions, VI/EN setup and UX behaviour were learned from the PO's reference frontend (zip kept in `D:\CAPSTONE_2026\EduBranch-AI-archive\reference\`, outside the repo). The result is written in R01 §5 and §9; learn from the zip only, never copy its files or name that project.
 
 ## 4. Mandatory rules
 
@@ -103,7 +104,7 @@ Backend `npm run lint`/`format` do not work (eslint/prettier not installed).
 
 ## Code map
 
-- Frontend: HTTP `src/services/apiClient.ts` (Axios + JWT), one service per domain in `src/services/` with mappers in `src/services/mappers/`; stores `src/stores/`; routes `src/routes/paths.ts`; shell `src/layouts/shell/` (`AppShell`, `Sidebar`, `HeaderActions`); pages `src/pages/<domain>/`; locales `src/locales/vi.json`, `en.json`.
+- Frontend (full map: R01 §9): entry `src/main.tsx` + `providers/AppProviders.tsx`; config `src/config/`; i18n `src/lib/i18n.ts` + `src/locales/vi.json`, `en.json`; HTTP `src/services/apiClient.ts` (Axios + JWT), one service per domain with mappers in `src/services/mappers/`; stores `src/stores/`; routes `src/routes/paths.ts`; shell `src/layouts/shell/`; shared UI `src/components/ds`, `src/components/feedback`; pages `src/pages/<domain>/`.
 - Backend: `src/main.ts` (prefix, whitelist `ValidationPipe`, global `JwtAuthGuard` + `RolesGuard`, opt out with `@Public()`); domains `src/modules/*`; shared `src/common/` (`database` = `pg` Pool + raw SQL, `ai-client`, `minio`, `config`, `health`); migrations `backend/migrations/V<n>__*.sql` (the copy in `infrastructure/postgres/migrations/` is not read).
 - AI service: `app/{core,providers,ingestion,retrieval,generation,challenge_support,evaluation}`; key check `app/core/security.py`; tree validation `app/generation/schemas/decision_tree.py`; 2-round cap `app/challenge_support/assistant/service.py`; `<sources>` wrapping `app/retrieval/service.py`.
 - Docs: architecture `docs/architecture/`, features `docs/features/`, data model `docs/database/DATA-MODEL.md`, QA `docs/qa/`, specs `specs/NNN-*/`, team `docs/team/`.

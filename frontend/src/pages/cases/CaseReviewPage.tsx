@@ -822,7 +822,7 @@ function SituationCard({
                 <span className="size-3 rounded-[6px] bg-surface" />
               </button>
             </div>
-            <p className={CAPTION}>{t("caseReview.branching.keyDecisionHelp")}</p>
+            <p className={`${CAPTION} max-w-[68ch]`}>{t("caseReview.branching.keyDecisionHelp")}</p>
           </>
         )}
       </div>

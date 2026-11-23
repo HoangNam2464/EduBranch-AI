@@ -428,7 +428,7 @@ export function LecturerDashboardPage() {
                     <div>
                       <h3 className="text-[16px] leading-6 font-medium text-ink line-clamp-1">{c.name}</h3>
                       {c.description && (
-                        <p className="mt-1 text-[13px] leading-5 text-ink-secondary line-clamp-2">{c.description}</p>
+                        <p className="mt-1 line-clamp-2 max-w-[68ch] text-[13px] leading-5 text-ink-secondary">{c.description}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-4 text-[12px] text-ink-secondary pt-2 border-t border-line-soft">
