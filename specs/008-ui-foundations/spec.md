@@ -2,7 +2,7 @@
 
 **Feature Branch**: `fix/ui-foundations` (từ `origin/develop` `7725b85`)
 **Feature directory**: `specs/008-ui-foundations`
-**Created**: 2026-11-22 · **Status**: Draft, chờ G1–G6 (PO có thể duyệt gộp) và G7
+**Created**: 2026-11-22 · **Status**: Approved (G1–G7 PO 2026-11-23)
 **Parent**: FE-025 (Shared App Shell, Jira `EBA-88`); bước 1 của `docs/design/DESIGN-DIRECTION.md`
 **G0**: PO, chat 2026-11-22: "theo đề xuất đi" và "bạn làm luôn giúp tôi" (nguyên văn trong `record.md`)
 
