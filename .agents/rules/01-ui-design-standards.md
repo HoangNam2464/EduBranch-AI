@@ -12,6 +12,7 @@ trigger: always_on
 > - **Values** (colours, radii, shadows, fonts) live only in `frontend/src/index.css` `@theme`. This file names tokens; it never repeats a hex value except the two brand colours below.
 > - **Figma** (file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens`, frame register `docs/05_FIGMA.md`) is the reference for screen content: which fields, sections and actions a screen has. Code and this file are the visual standard; Figma is updated to follow them later (PO 2026-11-22).
 > - **Per-screen behaviour**: `docs/design/UX-SCREEN-NOTES.md`. Routes: `frontend/src/routes/paths.ts`.
+> - **Reference frontend** (PO 2026-11-16/17, confirmed 2026-11-22): the frontend's file organisation, code conventions, VI/EN setup and UX behaviour (§5, §9) were learned from a reference frontend the PO supplied (`D:\CAPSTONE_2026\EduBranch-AI-archive\reference\frontend.zip`, outside the repo). Learn from it only: never copy its files, assets, copy or brand into the repo, never extract it inside the repo, never name that project in EduBranch docs or code. Its font and colours are not used (§0).
 > - **Improvement plan** for the current UI: `docs/design/DESIGN-DIRECTION.md`.
 
 ## 0. Fixed decisions (change only with a new PO decision; update this list in the same change)
@@ -122,3 +123,34 @@ A screen is ready only when, in the running app with real data:
 4. Spacing, type and colours use the tokens and scale above; nothing on the screen violates §1.
 5. Keyboard and focus work; no console errors.
 6. Before/after screenshots exist for the change and a reviewer who did not build it has checked them.
+
+## 9. Frontend code organisation and VI/EN setup (as built; learned from the reference frontend)
+
+### 9.1 Folders (`frontend/src`, TypeScript, import alias `@/` = `src/`)
+| Folder | Holds | Rule |
+|---|---|---|
+| `main.tsx`, `App.tsx` | thin entry and root | no logic beyond mounting providers and routes |
+| `providers/AppProviders.tsx` | app-wide providers (i18n today) | new global providers go here, not in `main.tsx` |
+| `config/` | `api.ts` (base URL, timeout from `VITE_API_BASE_URL`), `devTools.ts` (`VITE_ENABLE_DEV_LOGIN`) | only public, frontend-safe values; no secrets |
+| `lib/` | `i18n.ts` | library setup only |
+| `routes/` | `paths.ts` (`PATHS`, `buildPath`, `ROLE_HOME`), `AppRoutes.tsx`, `PrivateRoute.tsx`, `guards.ts` | every route string comes from `paths.ts` |
+| `layouts/` | `PublicLayout`, `LecturerLayout`, `StudentLayout`, `AdminLayout`; `shell/` = `AppShell`, `Sidebar`, `HeaderActions`, `AppFooter`, `shellRoutes`, `useSidebarCollapsed`, `ShellTitleContext` | role layouts wrap `AppShell`; pages render only their content area |
+| `pages/<domain>/` | one folder per domain (`auth`, `courses`, `materials`, `cases`, `branching`, `challenge`, `review-study`, `feedback`, `statistics`, `rubric`, `dashboard`, `student`, `profile`, `admin`, `landing`, `errors`) | page-only helpers stay beside the page (`*Logic.ts`, `*Helpers.ts`) with a `*.spec.ts` |
+| `components/ds/` | design-system primitives and page patterns (`Button`, `Field`, `SearchField`, `Dialog`, `Toast`/`ToastRegion`, `StatusTabs`, `FilterControl`, `Pagination`, `ResultCount`, `MetricCard`, badges, `CourseCard`, `Breadcrumb`, `PageContext`, `SectionHeading`, `PublicNav`, `PublicFooter`, `LanguageSwitcher`, `cx`, `FOCUS`) exported from `ds/index.ts` | the only place for shared UI; a pattern used by two pages moves here |
+| `components/feedback/` | states (`Skeleton`, `EmptyState`, `ErrorState`, `NoResultsState`, `StatusPage` + 403/404/500 pages, `SessionExpiredDialog`) and shared feedback views | every loading/empty/error state uses these |
+| `components/<domain>/` | domain widgets shared by several pages (`brand/LogoMark`, `cases/CaseGovernanceBar`, `stats/BranchStatsChart`) | no HTTP calls |
+| `services/` | `apiClient.ts` (Axios + JWT interceptors) and one `<domain>Service.ts` per backend domain; `mappers/` turn API DTOs into view models | all HTTP goes through `apiClient`; mappers are unit-tested |
+| `stores/` | Zustand stores for cross-page state (`authStore`, `caseStudyStore`) | page UI state stays local; no server data cached in a store without an invalidation rule |
+| `types/` | shared TypeScript types | |
+| `utils/` | small pure helpers (`navigation.ts`) | pure and tested |
+| `locales/` | `vi.json`, `en.json` | see §9.2 |
+| `qa/` | cross-cutting QA specs | |
+Tests: `*.spec.ts` beside the code, run by the Node test runner (`npm test`, files listed in `package.json`); Playwright e2e in `frontend/tests/e2e`, visual diff in `frontend/tests/visual`. Libraries in use: React 19, React Router, Zustand, Axios, i18next + react-i18next + i18next-browser-languagedetector, framer-motion, lucide-react, ReactFlow, TailwindCSS v4. A new library needs an ADR and PO approval.
+
+### 9.2 VI/EN setup (`src/lib/i18n.ts`)
+- Resources: `locales/vi.json` and `locales/en.json`, one `translation` namespace, the same key set in both files. Keys are grouped by top-level key: `g1` public/auth, `g2` courses/materials, `g3` cases, `g4` lecturer dashboard/feedback/statistics/profile, `g5` student flows, `g6` admin, plus `common`, `nav`, `errors`, `shell`, `states`, `authRecovery`, `caseReview`, `ragInspector`, `rubric`. A new screen adds its keys under its group; never a new locale file.
+- Default and fallback language `vi`; supported `vi`, `en` (`SUPPORTED_LANGUAGES`, `LANGUAGE_NAMES`).
+- The choice is stored in `localStorage["edubranch-lang"]`; the browser language is ignored on purpose, so a first visit always opens in Vietnamese.
+- The switch is `ds/LanguageSwitcher`, in the app header (`HeaderActions`) and the public nav (`PublicNav`). Changing language re-renders in place; no reload, no route change.
+- In components: `const { t } = useTranslation()`; interpolation `{{name}}`; plurals with i18next `_one`/`_other`; never concatenate translated fragments; dates and numbers formatted for the active language.
+- English copy is registered in `docs/l10n/shared-copy-review.md` (or `specs/*/l10n-copy-review.md`) as `PROPOSED` until the PO approves it (§6).
