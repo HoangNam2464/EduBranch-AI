@@ -1,5 +1,7 @@
 # Feature: Branching Study — Experiential Decision Journey
 
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
 > **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx) · Product Direction V2 (EduBranch AI)
 > **Target Package / Module**: Backend `branching-attempt/`, `reasoning/` · Frontend `pages/branching/BranchingCasePlayerPage.tsx`, `pages/branching/BranchingReviewPage.tsx`, `pages/branching/ReflectionPage.tsx`
 
@@ -11,6 +13,13 @@ Provides university students with an immersive, experience-first **Branching Cas
 
 > **Core pedagogical principle**: Experience first → Complete journey → REVIEW → Reflection → Retry.
 > The Branching Study is NOT a quiz. It is a simulated situational experience followed by structured retrospective analysis.
+
+```mermaid
+flowchart LR
+    P1["Phase 1: Experience\n(/branching-play)\nConsecutive choices, NO consequences mid-flow"] --> P2["Phase 2: Journey Review\n(/attempt/:id/review)\nReplay path, reveal consequences, retrospective reasoning"]
+    P2 --> P3["Phase 3: Reflection & Retry\n(/attempt/:id/reflect)\nSubmit reflection, optional <=2 round AI Challenge, optional retry"]
+    P3 -.->|"New immutable attempt (attempt_number + 1)"| P1
+```
 
 ---
 
@@ -60,7 +69,7 @@ Provides university students with an immersive, experience-first **Branching Cas
 2. Frontend sends `POST /api/v1/cases/{caseId}/branching-attempts`.
 3. Backend creates `branching_attempts` (`attempt_number = 1`, `current_node_id = case.root_node_id`) and returns the root `CaseNode`.
 4. Student reads the initial situation and context/data. They see the available options.
-5. Student selects an option. Frontend sends `POST /api/v1/branching-attempts/{attemptId}/select` with `{ nodeId, selectedOptionId }`.
+5. Student selects an option. Frontend sends `POST /api/v1/branching-attempts/{attemptId}/step` with `{ nodeId, selectedOptionId }`.
 6. Backend records `student_reasoning` row (`attempt_id`, `node_id`, `selected_option_id`, `reasoning_text = null`). Advances `current_node_id` to `option.next_node_id`. Returns next `CaseNode`.
 7. **No consequence card is displayed. No reasoning form blocks the flow.** Student is shown the next situation immediately.
 8. Steps 4–7 repeat at each Decision Point until a terminal node is reached.
@@ -75,7 +84,7 @@ Provides university students with an immersive, experience-first **Branching Cas
     - Each Decision Point: situation shown → option chosen (highlighted) → alternatives available → consequence of that choice → next situation.
     - Key moments are surfaced: decisions that significantly affected the outcome.
 14. At each Decision Point in the REVIEW, the student may write reasoning: "Why I chose this" / "What I would change" — forms are optional per node but encouraged for pivotal decisions.
-15. Frontend sends `PATCH /api/v1/branching-attempts/{attemptId}/reasoning/{nodeId}` with `{ reasoningText }` when student fills in reasoning.
+15. Frontend sends `PUT /api/v1/branching-attempts/{attemptId}/reasoning` with `{ nodeId, reasoningText }` when student fills in reasoning.
 
 ### Phase 3 — Reflection & Retry
 
@@ -108,3 +117,11 @@ Provides university students with an immersive, experience-first **Branching Cas
 - `case_options` (`option_text`, `consequence`, `next_node_id`)
 - `branching_attempts` (`attempt_number`, `current_node_id`, `outcome_node_id`, `is_completed`, `reflection_text`, `reflection_status`)
 - `student_reasoning` (`attempt_id`, `node_id`, `selected_option_id`, `reasoning_text`) — `reasoning_text` populated in REVIEW phase, not mid-flow
+
+> **Open PO Decisions**: `OPD-002` (pivotal reasoning requirement rule), `OPD-003` (resume vs cancel in-progress attempt), `OPD-004` (max attempt limit), `OPD-005` (Challenge Support modal vs page), `PSD-07` (two-column vs single-column player layout), and `PSD-08` (confirmation button vs instant advance) remain open in [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md).
+
+---
+
+## 8. Implementation Status
+**Implemented**
+*(Backend `branching-attempt/` & `reasoning/` modules — including PR #77 reasoning owner/completion access gate — and frontend `BranchingCasePlayerPage.tsx`, `BranchingReviewPage.tsx`, `ReflectionPage.tsx`, and `StudentAttemptsHistoryPage.tsx` are implemented on `develop`.)*

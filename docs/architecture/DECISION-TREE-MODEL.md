@@ -1,46 +1,57 @@
 # EduBranch AI — Decision Tree Domain Model
 
-**Status**: Scaffolded | **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]` — **SSOT for Decision Tree Data Structure, Structural Invariants & AI JSON Contract**
+> - **Related Feature Spec**: [`docs/features/FEATURE-DECISION-TREE.md`](../features/FEATURE-DECISION-TREE.md) (functional requirements & permissions)
+> - **Implementation Status**: Implemented in `backend/src/modules/case/` (`CaseTreeValidator`) and `ai-service/app/generation/schemas/` (3-color DFS)
+> - **Source of Truth**: Proposal V1.2 (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`)
 
 ---
 
 ## 1. Overview
 
-The decision tree is the core data structure of EduBranch AI for `BRANCHING_STUDY` mode.
-A Case is composed of CaseNodes connected by CaseOptions.
+The decision tree is the domain structure powering `BRANCHING_STUDY` mode in EduBranch AI (`learning_mode = 'REVIEW_STUDY'` cases use `context_text` and `problem_text` with `root_node_id = NULL`). A Branching Study `Case` is composed of `CaseNode` situations connected by directed `CaseOption` branches.
 
 ## 2. Entity Model
 
-```
-Case
-├── id: UUID
-├── title: String
-├── description: String
-├── course_id: UUID → Course
-├── created_by: UUID → User (LECTURER)
-├── learning_mode: CaseLearningMode (BRANCHING_STUDY | REVIEW_STUDY)
-├── context_text: TEXT?     ← Review Study background data
-├── problem_text: TEXT?     ← Review Study problem statement
-├── status: CaseStatus (DRAFT | REVIEWED | APPROVED | PUBLISHED)
-├── version: int
-├── root_node_id: UUID? → CaseNode (Branching Study only)
-└── nodes: List<CaseNode>
+```mermaid
+erDiagram
+    CASE ||--o{ CASE_NODE : "contains"
+    CASE }o--|| CASE_NODE : "root_node_id (Branching only)"
+    CASE_NODE ||--o{ CASE_OPTION : "offers (2-4 unless terminal)"
+    CASE_OPTION }o--o| CASE_NODE : "next_node_id (NULL if terminal)"
 
-CaseNode
-├── id: UUID
-├── case_id: UUID → Case
-├── situation: TEXT          ← The scenario shown to the student
-├── is_terminal: boolean     ← True = leaf node, no options
-├── node_index: int
-└── options: List<CaseOption>
+    CASE {
+        uuid id PK
+        string title
+        text description
+        uuid course_id FK
+        uuid created_by FK
+        string learning_mode "BRANCHING_STUDY | REVIEW_STUDY"
+        text context_text "Review Study background"
+        text problem_text "Review Study prompt"
+        string status "DRAFT | REVIEWED | APPROVED | PUBLISHED"
+        int version
+        uuid root_node_id FK
+    }
 
-CaseOption
-├── id: UUID
-├── node_id: UUID → CaseNode
-├── text: TEXT               ← The decision choice text
-├── consequence: TEXT        ← The immediate outcome shown after selection
-└── next_node_id: UUID?      ← NULL = terminal path; FK → CaseNode (same Case)
+    CASE_NODE {
+        uuid id PK
+        uuid case_id FK
+        text situation "Scenario presented to student"
+        boolean is_terminal "True = leaf outcome node"
+        int node_index
+    }
+
+    CASE_OPTION {
+        uuid id PK
+        uuid node_id FK
+        text text "Decision option label"
+        text consequence "Lecturer-authored outcome; revealed ONLY in Phase 2 Journey Review"
+        uuid next_node_id FK "Target situation node (same Case) or NULL"
+    }
 ```
+
+> **CRITICAL PEDAGOGICAL RULE (`FND §6.2`, `INV-02`, `INV-03`)**: `CaseOption.consequence` MUST NEVER be displayed immediately after selecting an option during **Phase 1 Experience**. All selected consequences are revealed exclusively during **Phase 2 Journey Review** after reaching a terminal node.
 
 ## 3. Structural Invariants
 
@@ -99,20 +110,18 @@ CaseOption
 
 ## 5. Case Lifecycle Flow
 
+```mermaid
+stateDiagram-v2
+    [*] --> DRAFT: AI Generator or Manual Draft
+    DRAFT --> REVIEWED: Lecturer inspects & saves edits
+    REVIEWED --> DRAFT: Revert for rework
+    REVIEWED --> APPROVED: Lecturer approves content & DAG
+    DRAFT --> APPROVED: Direct approve if valid
+    APPROVED --> DRAFT: Unapprove / revert for rework
+    APPROVED --> PUBLISHED: Lecturer publishes (INV-01 gate opens)
+    PUBLISHED --> [*]
 ```
-AI Generator produces DRAFT case
-          ↓
-Lecturer reviews (DRAFT)
-          ↓
-Lecturer edits nodes/options (DRAFT)
-          ↓
-Lecturer marks as REVIEWED
-          ↓
-Lecturer approves (APPROVED)
-          ↓
-Lecturer publishes (PUBLISHED)
-          ↓
-Students access Branching Case Player
-```
+
+> **Post-Publish Editing (`OPD-007`)**: Versioning/unpublish policy for editing a `PUBLISHED` case with active student attempts remains an `OPEN PO DECISION` tracked in [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md).
 
 Students can ONLY see cases in PUBLISHED status.

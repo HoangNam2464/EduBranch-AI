@@ -1,4 +1,4 @@
---
+---
 description: Rules for Lecturer Feedback / Open Review in EduBranch-AI.
 trigger: model_decision
 ---
@@ -6,8 +6,8 @@ trigger: model_decision
 # Feature Rules: Lecturer Feedback & Review
 
 ## Scope
-Backend Gateway (NestJS `backend/`) — `lecturer-feedback/` module.
-Frontend — `pages/lecturer/LecturerFeedbackPage.tsx`.
+Backend Gateway (NestJS `backend/`) — `lecturer-feedback/` module (`BE-026`).
+Frontend — `pages/feedback/` (`/lecturer/feedback`, `/lecturer/feedback/:submissionId`, `/lecturer/cases/:caseId/feedback` [route convention `OPEN PO DECISION`], and student view `ReviewFeedbackPage.tsx`).
 
 ## Included
 - Lecturer inspects student work across both learning modes:

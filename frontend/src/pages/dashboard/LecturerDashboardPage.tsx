@@ -6,24 +6,22 @@ import {
   ArrowRight,
   BarChart2,
   BookOpen,
-  CircleCheck,
   Clock,
   CloudUpload,
-  Cpu,
   ChevronRight,
   FileText,
   GitBranch,
-  MessageSquare,
   Plus,
   SquarePen,
   type LucideIcon,
 } from "lucide-react";
-import { Avatar, Button, FilterControl, MetricCard, StatusTabs, cx } from "@/components/ds";
+import { Button, FilterControl, MetricCard, StatusTabs, cx } from "@/components/ds";
 import { ErrorState, SkeletonLine, SkeletonRegion } from "@/components/feedback";
 import { PATHS, buildPath } from "@/routes/paths";
 import { addMonths, buildMonthWeeks, startOfMonth } from "@/pages/profile/components/calendar";
 import { MonthStepper } from "@/pages/profile/components/MonthStepper";
 import { countCases, describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo } from "@/pages/statistics/useLecturerCourseCases";
+import { groupCasesByDay } from "./calendarGrouping";
 import { usePrefersReducedMotion } from "@/pages/landing/usePrefersReducedMotion";
 import type { Case } from "@/types";
 
@@ -70,7 +68,16 @@ function TodoList({ todos }: { todos: LecturerTodo[] }) {
               className="group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-surface-hover transition-colors"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <Avatar initials={desc.lead} size="sm" />
+                <span
+                  className={cx(
+                    "flex size-8 shrink-0 items-center justify-center rounded-eb-md text-[13px] font-semibold",
+                    todo.kind === "materialFailed"
+                      ? "bg-error-bg text-error-text"
+                      : "bg-primary-subtle text-primary",
+                  )}
+                >
+                  {desc.lead}
+                </span>
                 <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                   <p className="truncate text-[14px] leading-5 font-medium text-ink group-hover:text-primary transition-colors">
                     {desc.title}
@@ -95,19 +102,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
   const weekdays = t("g4.calendar.weekdays", { returnObjects: true }) as string[];
 
   // Group cases by ISO date key (YYYY-M-D)
-  const casesByDay = useMemo(() => {
-    const map = new Map<string, Case[]>();
-    for (const c of cases) {
-      if (!c.createdAt) continue;
-      const date = new Date(c.createdAt);
-      if (Number.isNaN(date.getTime())) continue;
-      const key = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-      const list = map.get(key) ?? [];
-      list.push(c);
-      map.set(key, list);
-    }
-    return map;
-  }, [cases]);
+  const casesByDay = useMemo(() => groupCasesByDay(cases), [cases]);
 
   return (
     <div className="min-w-0 flex-1 rounded-eb-lg bg-canvas px-2 pb-2 ring-1 ring-line-soft ring-inset">
@@ -158,25 +153,13 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                             key={c.id}
                             to={c.status === "PUBLISHED" ? PATHS.LECTURER.CASES : buildPath(PATHS.LECTURER.CASE_REVIEW, { caseId: c.id })}
                             className={cx(
-                              "group flex items-center gap-1 rounded px-1.5 py-0.5 text-[11px] leading-tight font-medium truncate transition-all duration-150",
+                              "group flex flex-col gap-0.5 rounded px-2 py-1 text-[11px] leading-tight font-medium truncate transition-all duration-150",
                               c.status === "PUBLISHED"
-                                ? "bg-success-bg text-success-text hover:bg-success-bg/80 border border-success-border"
-                                : c.status === "APPROVED"
-                                ? "bg-warning-bg text-warning-text hover:bg-warning-bg/80 border border-warning-border"
-                                : "bg-primary-subtle text-primary hover:bg-primary-subtle-hover border border-line",
+                                ? "bg-primary text-white hover:bg-primary-hover"
+                                : "bg-accent text-white hover:bg-accent/90",
                             )}
                             title={`${c.title} (${c.status})`}
                           >
-                            <span
-                              className={cx(
-                                "size-1.5 rounded-full shrink-0",
-                                c.status === "PUBLISHED"
-                                  ? "bg-success"
-                                  : c.status === "APPROVED"
-                                  ? "bg-warning"
-                                  : "bg-accent",
-                              )}
-                            />
                             <span className="truncate">{c.title}</span>
                           </Link>
                         ))}
@@ -229,10 +212,10 @@ export function LecturerDashboardPage() {
   const metricValue = (value: number | null) => (value === null ? <SkeletonLine width={16} /> : value);
   const metrics = [
     { icon: BookOpen, stroke: 1.7, label: t("g4.dashboard.metrics.courses"), value: metricValue(ready ? ready.length : null) },
-    { icon: CircleCheck, stroke: 0.85, label: t("g4.dashboard.metrics.published"), value: metricValue(ready ? countCases(ready, ["PUBLISHED"]) : null) },
+    { icon: Clock, stroke: 1.5, label: t("g4.dashboard.metrics.published"), value: metricValue(ready ? countCases(ready, ["PUBLISHED"]) : null) },
     { icon: SquarePen, stroke: 1.5, label: t("g4.dashboard.metrics.drafts"), value: metricValue(ready ? countCases(ready, ["DRAFT", "REVIEWED"]) : null) },
     // No lecturer submissions endpoint yet: the count is unknown, never 0.
-    { icon: MessageSquare, stroke: 1.36, label: t("g4.dashboard.metrics.pending"), value: t("g4.common.unknownValue") },
+    { icon: FileText, stroke: 1.7, label: t("g4.dashboard.metrics.pending"), value: t("g4.common.unknownValue") },
   ];
 
   const quickActions: {
@@ -243,7 +226,7 @@ export function LecturerDashboardPage() {
     badge?: string;
   }[] = [
     {
-      icon: Cpu,
+      icon: FileText,
       title: t("g4.dashboard.quickActions.aiStudio.title"),
       desc: t("g4.dashboard.quickActions.aiStudio.desc"),
       to: PATHS.LECTURER.AI_STUDIO,
@@ -256,7 +239,7 @@ export function LecturerDashboardPage() {
       to: PATHS.LECTURER.COURSES,
     },
     {
-      icon: CircleCheck,
+      icon: Clock,
       title: t("g4.dashboard.quickActions.cases.title"),
       desc: t("g4.dashboard.quickActions.cases.desc"),
       to: PATHS.LECTURER.CASES,
@@ -445,7 +428,7 @@ export function LecturerDashboardPage() {
                     <div>
                       <h3 className="text-[16px] leading-6 font-medium text-ink line-clamp-1">{c.name}</h3>
                       {c.description && (
-                        <p className="mt-1 text-[13px] leading-5 text-ink-secondary line-clamp-2">{c.description}</p>
+                        <p className="mt-1 line-clamp-2 max-w-[68ch] text-[13px] leading-5 text-ink-secondary">{c.description}</p>
                       )}
                     </div>
                     <div className="flex items-center gap-4 text-[12px] text-ink-secondary pt-2 border-t border-line-soft">

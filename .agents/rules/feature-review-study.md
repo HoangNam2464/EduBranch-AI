@@ -1,4 +1,4 @@
---
+---
 description: Rules for the Review Study learning mode in EduBranch-AI.
 trigger: model_decision
 ---
@@ -7,7 +7,7 @@ trigger: model_decision
 
 ## Scope
 Backend Gateway (NestJS `backend/`) — `review-study/` module.
-Frontend — `pages/student/ReviewStudyPage.tsx` and `pages/student/ReviewFeedbackPage.tsx`.
+Frontend — `pages/review-study/ReviewStudyPage.tsx` and `pages/feedback/ReviewFeedbackPage.tsx`.
 
 ## Included
 - Student accesses a `PUBLISHED` case with `learning_mode = 'REVIEW_STUDY'`

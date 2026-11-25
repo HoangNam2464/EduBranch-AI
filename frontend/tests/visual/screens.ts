@@ -45,7 +45,7 @@ export const SCREENS: VisualScreen[] = [
   { code: "02.2", name: "Hộp thoại khởi tạo khóa học", nodeId: "483:9866", route: "/lecturer/courses", role: "LECTURER", height: 1413, needsData: true,
     steps: [{ click: 'role=button[name="Tạo khóa học mới"]' }, { waitFor: "role=dialog" }] },
   { code: "02.3", name: "Xác nhận xóa khóa học", nodeId: "483:10111", route: "/lecturer/courses", role: "LECTURER", height: 1413, needsData: true,
-    steps: [{ hover: 'article:has-text("CS402")' }, { click: 'role=button[name=/^Xóa khóa học An ninh mạng/]' }, { waitFor: "role=dialog" }] },
+    steps: [{ hover: 'article:has-text("CS402")' }, { click: 'role=button[name=/^Lưu trữ khóa học An ninh mạng/]' }, { waitFor: "role=dialog" }] },
   { code: "02.4", name: "Chi tiết khóa học — Tài liệu", nodeId: "483:10342", route: "/lecturer/courses/{course:CS402}/materials", role: "LECTURER", height: 1123, needsData: true,
     // Figma draws the first uploaded file in its hover state (trash button instead of the status).
     steps: [{ hover: 'role=link[name="Xem đoạn trích của Runbook_ung_cuu_su_co_DDoS.pdf"]' }] },

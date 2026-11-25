@@ -1,4 +1,4 @@
---
+---
 description: Rules for the RAG pipeline in EduBranch-AI.
 trigger: model_decision
 ---
@@ -7,45 +7,27 @@ trigger: model_decision
 
 ## Scope
 FastAPI `ai-service/` — `ingestion/`, `retrieval/`, `generation/` packages.
-
-## Pipeline
-
-```
-TeachingMaterial (PDF/DOCX)
-    ↓ DocumentParser
-    ↓ DocumentChunker (LangChain text splitters)
-    ↓ EmbeddingGeneration (provider abstraction)
-    ↓ pgvector storage
-    ↓ Query embedding
-    ↓ Metadata-filtered top-K retrieval
-    ↓ Prompt construction
-    ↓ <sources> boundary wrapping
-    ↓ LLM generation
-    ↓ Pydantic structured output validation
-```
+Full Mermaid architecture & step specification: [`docs/ai/RAG-PIPELINE.md`](../../docs/ai/RAG-PIPELINE.md).
 
 ## Included
-- PDF parsing (PyPDF)
-- DOCX parsing (python-docx)
-- Text chunking with overlap (LangChain RecursiveCharacterTextSplitter)
-- Embedding generation (OpenAI or Gemini via provider abstraction)
-- pgvector storage with source metadata (document_id, chunk_index, page_number)
-- Top-K semantic retrieval with metadata filtering by material/course
-- Citation/provenance: track source_chunk_id → document_id
+- PDF parsing (`PyPDF`) and DOCX parsing (`python-docx`)
+- Recursive text chunking with overlap (`LangChain RecursiveCharacterTextSplitter`, default 512 / overlap 64)
+- Embedding generation (`gemini-embedding-001` @768 primary; OpenAI via `app/providers/factory.py`)
+- pgvector storage (`document_chunks.embedding vector(768)` per V4) with source metadata (`document_id`, `chunk_index`, `page_number`)
+- Top-K semantic retrieval filtered strictly by `course_id` and optional `material_ids`
+- Citation/provenance tracking (`source_chunk_id → document_id → material`)
 
 ## Excluded
 - BM25 or hybrid retrieval — not in MVP
 - Multi-step retrieval or query expansion — not in MVP
-- Reranking — not in MVP
-- Cross-encoder — not in MVP
+- Reranking or cross-encoders — not in MVP
 
 ## Security — CRITICAL
-- Retrieved chunks are UNTRUSTED DATA
-- ALL retrieved content MUST be placed inside `<sources>...</sources>` boundary in the prompt
-- Retrieved content MUST NOT be able to override system instructions
-- Prompt injection through uploaded documents must be mitigated
+- Retrieved chunks are UNTRUSTED DATA (`BR-RAG-01`)
+- ALL retrieved content MUST be placed inside `<sources>...</sources>` boundary in the prompt, with tag look-alikes neutralized (`app/retrieval/service.py`)
+- Retrieved content MUST NOT be concatenated raw into system instructions or allowed to override instructions
 
 ## Testing Expectations
-- Unit test for chunking (correct chunk size and overlap)
-- Unit test that `<sources>` boundary is always present in prompts
-- Integration test for embedding → retrieval roundtrip
+- Unit tests for chunking (chunk size and overlap)
+- Unit tests confirming `<sources>` boundary wrapping and tag neutralization in prompts
+- Integration test for embedding → pgvector course-isolated retrieval roundtrip (mocking provider in unit CI)

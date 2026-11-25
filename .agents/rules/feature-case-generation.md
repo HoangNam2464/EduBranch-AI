@@ -1,4 +1,4 @@
---
+---
 description: Rules for AI case generation in EduBranch-AI.
 trigger: model_decision
 ---

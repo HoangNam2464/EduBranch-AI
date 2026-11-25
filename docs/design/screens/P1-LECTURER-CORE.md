@@ -1,21 +1,34 @@
 # P1 — Core Lecturer Flow
 
-> **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
-> **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`.
-> **Covers**: `/lecturer/courses`, `/lecturer/courses/:courseId/materials`, `/lecturer/courses/:courseId/cases`, `/lecturer/cases/:caseId/review`.
+> - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
+> - **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
+> - **Visual system**: PO-approved Figma governs per-screen design (`docs/05_FIGMA.md`); `R01` (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX quality rules without overriding approved Figma; token values currently in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`). UI copy defaults to Vietnamese with VI/EN support per `R01 §6`.
+> - **Covers**: `/lecturer/dashboard` (`07.1`, `D-05`), `/lecturer/ai-studio` (`07.5–07.7`, `OPD-006`), `/lecturer/courses`, `/lecturer/courses/:courseId/materials`, `/lecturer/courses/:courseId/cases`, `/lecturer/cases/:caseId/review`, `/lecturer/rubric` (`07.8`, `OPD-011`) (Feedback & Statistics in `P3-SUPPORT-AND-STATISTICS.md`).
+
+---
+
+## 0. Lecturer Dashboard (`/lecturer/dashboard` — Figma `07.1`, `D-05`)
+
+### Purpose & Function
+Summary workspace added to MVP by PO decision **`D-05` (`2026-11-12`)** ([`MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`](../../mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md#L139)). *(Post-login landing route `ROLE_HOME.LECTURER` — `/lecturer/courses` currently in `frontend/src/routes/paths.ts` vs `/lecturer/dashboard` here — remains **`OPEN PO DECISION`**).*
+
+### Layout & Components
+- Greeting header + primary `"Tạo Case mới bằng AI"` CTA (links to `/lecturer/ai-studio`, rendered as a proper `Button` instance — fix Revision `01` regression `34:3183`).
+- 4 KPI `MetricCard`s (published cases, drafts, pending reviews/feedback, tabular numerals; display honest `"—"` with context until `BE-030` aggregation API lands from PR #80 — never fake numbers or grading wording like `"chấm"` per `R01 §7`).
+- Pending submissions queue snippet + Recent Case Studies + compact schedule/to-do panel (avoid an oversized empty calendar dominating the first viewport per `UI-AUDIT.md` §2).
 
 ---
 
 ## 1. Course Catalog (`/lecturer/courses`)
 
 ### Purpose & Function
-Entry point for the Lecturer role. Lists owned courses; allows creating a new course (`FEATURE-COURSE-AND-MATERIALS.md` FR-MAT-01).
+Course management catalog for the Lecturer role (`D-05` 2026-11-12 added Lecturer Dashboard `/lecturer/dashboard` `07.1` to MVP; `ROLE_HOME.LECTURER` post-login landing target — `/lecturer/courses` currently in `frontend/src/routes/paths.ts` vs `/lecturer/dashboard` here — remains **`OPEN PO DECISION`**). Lists owned active courses and links into materials/cases (`FEATURE-COURSE-AND-MATERIALS.md` FR-MAT-01).
 
 ### User & Context
-Lecturer only. Main entry for course work; since D-05 was decided (2026-11-12) the first screen after login is the lecturer dashboard (`/lecturer/dashboard`, Figma 07.1), which links here.
+Lecturer only. Reachable directly from the Lecturer sidebar or from the Lecturer Dashboard (`/lecturer/dashboard`, Figma `07.1`). Note: `D-05` (2026-11-12) governs Dashboard `07.1`, whereas `OPD-006` (2026-11-12) strictly governs the 3-step AI Studio wizard (`/lecturer/ai-studio`).
 
 ### Layout
-Page header ("Courses", `text-display`) + primary button "New Course" (top-right) + grid or table of course cards.
+Page header ("Khóa học của tôi" / "Courses", `text-display`) + primary button ("Tạo khóa học" / "New Course", top-right) + grid/split detail panel per Figma `02.1`.
 
 ### Data
 Per course: `name`, `courseCode`, `description` (truncated), material count, case count (if available cheaply — otherwise omit rather than invent an endpoint).
@@ -84,6 +97,19 @@ Generation is Lecturer-only (`FR-GEN-01`/§9 permissions) — never expose a "Ge
 
 ---
 
+## 3b. AI Studio Wizard (`/lecturer/ai-studio` — Figma `07.6 → 07.5 → 07.7`, `OPD-006`)
+
+### Purpose & Function
+Replaced the earlier modal (`DES-006`) per PO decision **`OPD-006` (`2026-11-12`)** (`OPD-006` strictly governs this wizard, not Dashboard routing).
+
+### Layout & Flow
+- **Step 1 (`07.6`)**: Select Course + Learning Mode (`BRANCHING_STUDY` / `REVIEW_STUDY`). *(Open item `D-07`: `"Tạo thủ công từ đầu"` button remains `OPEN PO DECISION`; restore active mode-card selection marker per `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER` line 195).*
+- **Step 2 (`07.5`)**: Topic prompt (`10–500` chars) + multi-select `COMPLETED` materials from the selected course + optional `targetNodeCount`.
+- **Step 3 (`07.7`)**: Configuration summary + confirm generation → routes to `/lecturer/cases/:caseId/review` on draft creation.
+- **Footer bar**: Left step context (`"Bước x trên 3: …"`), right paired secondary + primary buttons (`UX-SCREEN-NOTES.md §1.2`).
+
+---
+
 ## 4. Case Review — Decision Tree Editor (`/lecturer/cases/:caseId/review`)
 
 > This is the single most business-critical screen in the product (Proposal V1.2, Discovery Plan §C footnote) — it is the mandatory Human-in-the-Loop gate (`FEATURE-CASE-REVIEW-AND-PUBLISHING.md` BR-REV-01). Give it the deepest spec.
@@ -123,5 +149,11 @@ No collaborative multi-lecturer real-time editing (no presence cursors, no locki
 
 ---
 
+## 5. Case-Quality Evaluation Rubric (`/lecturer/cases/:caseId/rubric`, `/lecturer/rubric` — Figma `07.8`, `OPD-011`)
+
+Per PO decision **`OPD-011 → Option A` (`2026-11-12`)**, Lecturers rate case quality (NOT students) across 3 criteria (`Realism`, `Difficulty`, `Course Alignment`, 1–5 Likert scale) + optional notes, inspect saved rubric records alongside `"Điểm trung bình x / 5"`, and export anonymized evaluation data (`FEATURE-EVALUATION-AND-RESEARCH.md`, `BE-033` pending in PR #80).
+
+---
+
 ## Statistics & Feedback Note
-`/lecturer/statistics` and `/lecturer/cases/:caseId/feedback` are P3 (LATER) per the confirmed sequencing — see `docs/design/screens/P3-SUPPORT-AND-STATISTICS.md`. Do not build them as part of the P1 pass.
+`/lecturer/statistics` and Lecturer Feedback (`/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback` — route convention **`OPEN PO DECISION / UNRESOLVED`**) live in [`P3-SUPPORT-AND-STATISTICS.md`](P3-SUPPORT-AND-STATISTICS.md) (included in MVP scope per PO `2026-11-25`, removing the historical `(LATER)` label while keeping `D-04` and `OPD-010` open).

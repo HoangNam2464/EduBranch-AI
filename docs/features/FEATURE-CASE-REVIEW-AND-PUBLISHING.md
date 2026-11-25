@@ -1,7 +1,9 @@
 # Feature: Lecturer Case Review, Edit & Publishing Workflow
 
-> **Authoritative Traceability**: Items 17, 18, 19 (Proposal Section 2 p. 6, Section 4 p. 7, Section 7 p. 11, Section 10 p. 14)  
-> **Target Package / Module**: Backend `case/` · Frontend `pages/cases/CaseReviewPage.tsx`, `features/case-review/`
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
+> **Authoritative Traceability**: Items 17, 18, 19 (Proposal Section 2 p. 6, Section 4 p. 7, Section 7 p. 11, Section 10 p. 14)
+> **Target Package / Module**: Backend `case/` · Frontend `pages/cases/CaseReviewPage.tsx`, `pages/cases/CasesPage.tsx`, `components/cases/CaseGovernanceBar.tsx`
 
 ---
 
@@ -126,5 +128,5 @@ Enforces the mandatory **Human-in-the-Loop** governance gate in EduBranch AI. En
 ---
 
 ## 15. Implementation Status
-**Structurally Scaffolded**  
-*(Case lifecycle types in `backend/src/modules/case/`, database CHECK constraints, and frontend review page shell `CaseReviewPage.tsx` exist; form save handlers and publish state machine services remain unimplemented.)*
+**Implemented**
+*(Backend lifecycle transitions `DRAFT → REVIEWED → APPROVED → PUBLISHED`, repository-level `status = 'PUBLISHED'` student query guard `INV-01`, and interactive frontend `CaseReviewPage.tsx` + `CaseGovernanceBar.tsx` are implemented on `develop`.)*

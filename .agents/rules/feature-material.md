@@ -1,4 +1,4 @@
---
+---
 description: Rules for teaching material upload and management in EduBranch-AI.
 trigger: model_decision
 ---

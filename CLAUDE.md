@@ -1,11 +1,12 @@
 # CLAUDE.md
 
-How Claude Code works on EduBranch-AI. Stable rules only: no progress, task lists or dated status (those live in Jira and `docs/04_JIRA/JIRA-KEY-MAP.md`). When sources disagree: approved PO decisions → `AGENTS.md` → FND (`.agents/rules/00-project-foundation.md`) → R01 for UI (`.agents/rules/01-ui-design-standards.md`) → `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` → this file → other docs. Existing code shows what exists, not what is approved.
+How Claude Code works on EduBranch-AI. Stable rules only: no progress, task lists or dated status (those live in Jira and [`docs/04_JIRA/JIRA-KEY-MAP.md`](docs/04_JIRA/JIRA-KEY-MAP.md)). Master doc entry point: [`docs/README.md`](docs/README.md). When sources disagree, follow the strict precedence in `AGENTS.md`: approved PO decisions & Proposal V1.2 → `AGENTS.md` → `00-project-foundation.md` (`FND`) → `01-ui-design-standards.md` (`R01`) → `03-engineering-and-task-standards.md` → `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` → feature specs → other docs. Existing code shows what exists, not what is approved.
 
 @AGENTS.md
 @.agents/rules/02-agent-operating-policy.md
+@.agents/rules/03-engineering-and-task-standards.md
 
-Path-scoped detail loads by itself from `.claude/rules/` (`frontend.md`, `backend.md`, `ai-service.md`, `database.md`, `ui-design.md`; `git-and-pr.md` and `task-management.md` always). Antigravity reads `AGENTS.md` and `.agents/rules/`, not `.claude/`.
+Path-scoped Claude-specific tool/environment notes load from `.claude/rules/`. Universal engineering, DB, AI and UI rules live in `.agents/rules/` so Antigravity and Claude Code share one single rule source.
 
 ## 1. Project overview — what, for whom, why
 
@@ -36,14 +37,15 @@ Flow: browser → `/api/v1/*` on the backend (auth, ownership, all business stat
 
 ## 3. Design rules — colours, font, style
 
-Full rules: **R01** (`.agents/rules/01-ui-design-standards.md`), the single design source. Token values: `frontend/src/index.css` `@theme` only. Figma (`docs/05_FIGMA.md`) shows what each screen contains; code + R01 are the visual standard and Figma follows later (PO 2026-11-22).
+**Design Authority (PO 2026-11-25)**: **PO-approved Figma** (`docs/05_FIGMA.md`, file `6CtSgJPKo4jCIbB7WwCaWw`) is the **official design authority for each screen**. **R01** (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX standards and quality rules without overriding approved Figma. Frontend code (`frontend/src/index.css` `@theme` / target `frontend/src/styles/`) is the **implementation** of the design, never the authority: when code differs from PO-approved Figma, adjust code and implementation docs to match Figma, never edit Figma to justify legacy code, and escalate any R01-vs-Figma conflict as `OPEN PO DECISION / UNRESOLVED`.
 
 - **Style**: calm, minimal, professional university workspace; white shell, soft blue canvas, white cards with a thin edge and soft shadow; hierarchy from typography and spacing, not colour.
 - **Colours**: light theme only (no dark mode). Navy `#2A4E7F` for actions, active states and focal data; sky `#00A5F5` for data and highlights, never text; status/mode/feedback colours only through their tokens. No purple/indigo, gradients, glow or emoji.
-- **Font**: system font (Segoe UI on Windows); Be Vietnam Pro only for landing headings. Scale 22 / 20 / 16 / 14 / 12 px; nothing readable under 12px.
+- **Font**: `Plus Jakarta Sans` (primary) + `Inter` (secondary), fallback `system-ui` / `Segoe UI` (code update in `frontend/src/index.css` queued for the code-sync pass). Scale 22 / 20 / 16 / 14 / 12 px; nothing readable under 12px.
 - **Layout**: web app. App screens are fluid beside the sidebar with fixed gutters; landing and auth centred at `max-w-7xl`. Works from 1024 to 1920+ without horizontal scroll.
 - **Language**: Vietnamese default + English switch, both in the MVP; one language per screen.
-- **Goal now** (PO 2026-11-22): keep the identity and fix everything that looks broken or unprofessional; plan in `docs/design/DESIGN-DIRECTION.md`.
+- **Goal now** (PO 2026-11-22 & 2026-11-25): do **not** create new UI designs now — keep the existing Light Navy/Sky identity and approved Figma screens, fix broken/unprofessional UI execution (`docs/design/DESIGN-DIRECTION.md`), and consider a larger visual/inspiration UI upgrade **only after the project is completed, if time permits**.
+- **Architecture conventions & Modularity Policy (PO 2026-11-25)**: Keep the ratified stack unchanged (`React 19 + TS + Tailwind v4 + Zustand`; `NestJS 10 + TS + raw pg SQL`; `FastAPI`). Target structure adopts clean, native modular boundaries: Frontend `styles/`, `components/ui/`, `features/<domain>/components/`, `hooks/`, domain-scoped `utils/`, and root `ErrorBoundary` (single Zustand state, single `apiClient`, single Light theme — no untyped `.jsx` or duplicate UI libraries); Backend `common/exception/`, `common/security/`, `common/dto/`, removing duplicate `common/storage/`, and selective `<domain>.repository.ts` ONLY in SQL-dense/transactional modules. Full blueprint & naming standard: `docs/architecture/SERVICE-BOUNDARIES.md §5` and `.agents/rules/03-engineering-and-task-standards.md §8`. Execute refactors strictly within authorized PRs, never unprompted.
 
 ## 4. Mandatory rules
 
@@ -103,7 +105,7 @@ Backend `npm run lint`/`format` do not work (eslint/prettier not installed).
 
 ## Code map
 
-- Frontend: HTTP `src/services/apiClient.ts` (Axios + JWT), one service per domain in `src/services/` with mappers in `src/services/mappers/`; stores `src/stores/`; routes `src/routes/paths.ts`; shell `src/layouts/shell/` (`AppShell`, `Sidebar`, `HeaderActions`); pages `src/pages/<domain>/`; locales `src/locales/vi.json`, `en.json`.
-- Backend: `src/main.ts` (prefix, whitelist `ValidationPipe`, global `JwtAuthGuard` + `RolesGuard`, opt out with `@Public()`); domains `src/modules/*`; shared `src/common/` (`database` = `pg` Pool + raw SQL, `ai-client`, `minio`, `config`, `health`); migrations `backend/migrations/V<n>__*.sql` (the copy in `infrastructure/postgres/migrations/` is not read).
+- Frontend (full map & target blueprint: `SERVICE-BOUNDARIES.md §5.2`, `R01 §9`, `03-engineering-and-task-standards.md §8`): entry `src/main.tsx` + `src/App.tsx` (target: root `ErrorBoundary`) + `providers/AppProviders.tsx`; config `src/config/`; i18n `src/lib/i18n.ts` + `src/locales/vi.json`, `en.json`; HTTP `src/services/apiClient.ts` (Axios + JWT), one service per domain with mappers in `src/services/mappers/`; stores `src/stores/`; routes `src/routes/paths.ts`; shell `src/layouts/shell/`; shared UI `src/components/ds` (target: `ui/`) + `src/components/feedback`; pages `src/pages/<domain>/` (target: extract sub-components to `features/<domain>/components/`, hooks/helpers to `src/hooks/` & domain-scoped `src/utils/`, modular `src/styles/`, delete `App.css`, legacy shims, and vague `*Parts.tsx`/`*Helpers.ts` names).
+- Backend (blueprint: `SERVICE-BOUNDARIES.md §5.1`): `src/main.ts` (prefix `/api/v1`, whitelist `ValidationPipe`, global `JwtAuthGuard` + `RolesGuard`, opt out with `@Public()`); domains `src/modules/*` (`Controller -> Service -> DatabaseService`, with selective `<domain>.repository.ts` ONLY in SQL-dense/`INV-01` modules `case/`, `branching-attempt/`, `statistics/`, `evaluation/`); shared `src/common/` (`database` = `pg` Pool + raw SQL, `ai-client`, `minio` — with duplicate `storage/` queued for removal, `config`, `health`; `exception/`, `security/`, `dto/` planned in PR 2); migrations `backend/migrations/V<n>__*.sql` (the copy in `infrastructure/postgres/migrations/` is not read).
 - AI service: `app/{core,providers,ingestion,retrieval,generation,challenge_support,evaluation}`; key check `app/core/security.py`; tree validation `app/generation/schemas/decision_tree.py`; 2-round cap `app/challenge_support/assistant/service.py`; `<sources>` wrapping `app/retrieval/service.py`.
-- Docs: architecture `docs/architecture/`, features `docs/features/`, data model `docs/database/DATA-MODEL.md`, QA `docs/qa/`, specs `specs/NNN-*/`, team `docs/team/`.
+- Docs hub: [`docs/README.md`](docs/README.md) (authority index & task router); architecture `docs/architecture/`, features `docs/features/`, data model `docs/database/DATA-MODEL.md`, QA `docs/qa/`, specs `specs/NNN-*/`, PO scope ledger `docs/mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md`.

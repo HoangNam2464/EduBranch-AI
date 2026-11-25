@@ -174,7 +174,7 @@ export function StudentCoursesPage() {
                       {course.name}
                     </h3>
                     {course.description && (
-                      <p className="mt-1 line-clamp-2 text-[13px] leading-5 text-ink-secondary">
+                      <p className="mt-1 line-clamp-2 max-w-[68ch] text-[13px] leading-5 text-ink-secondary">
                         {course.description}
                       </p>
                     )}

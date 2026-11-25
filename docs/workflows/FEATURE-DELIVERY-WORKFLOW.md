@@ -24,7 +24,7 @@ One run covers **one bounded change**: a slice that can be reviewed on its own, 
 | Feature description | `docs/features/FEATURE-*.md`, `.agents/rules/feature-*.md` | Status Unknown until the PO approves it. |
 | Task and AC | Jira EBA issue, `docs/01_MASTER-TASKS.md`, `docs/03_TASK-DETAILS.md` | Parent task = Master Task ID + Group ID + Jira key. |
 | QA | `docs/06_QA.md` | — |
-| Design | R01 (single design source; values in `frontend/src/index.css`), `docs/05_FIGMA.md`, `docs/design/UX-SCREEN-NOTES.md`, `docs/design/screens/P0`–`P4`, Figma | Code + R01 are the visual standard; Figma shows screen content and follows later (PO 2026-11-22). Design values follow AGENTS.md rule 9. Read file key, page and frame IDs from Figma at Discover; never assume a page is current. |
+| Design | **PO-approved Figma** (`docs/05_FIGMA.md`, official per-screen design authority), `R01` (general UI/UX quality rules; does not override approved Figma; tokens implemented in `frontend/src/index.css` / target `src/styles/`), `docs/design/UX-SCREEN-NOTES.md`, `docs/design/screens/P0`–`P4` | Adjust code and implementation docs to match PO-approved Figma (never edit Figma to match legacy code); escalate R01-vs-Figma conflicts as `OPEN PO DECISION / UNRESOLVED`. Design values follow `AGENTS.md` rule 9. Read file key, page and frame IDs from Figma at Discover; never assume a page is current. |
 | Open decisions | OPD (`docs/OPEN_PRODUCT_DECISIONS.md`, branch `feature/design-system`), PSD (`docs/mvp-scope/`) | Read only; on another branch read with `git show <branch>:<path>`, never guess a path. |
 
 Verification levels (01_MASTER-TASKS §5): **T** acceptance criteria · **I** implementation · **V** verified evidence. One never implies another.

@@ -1,10 +1,11 @@
 # EduBranch-AI — Task Details Specification (84 Tasks / 336 Story Points)
 
-> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
-> **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
-> **Quy chuẩn định dạng Summary**: `[GROUP-###] Work name` (Không chèn mã `[EBA-###]` vào Summary)  
-> **Quy mô chuẩn hóa**: 4 Sprints | 84 Tasks | 336 Story Points  
-> **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)  
+> - **Document Class**: `[IMMUTABLE BASELINE]` (Đặc tả baseline 84 task ban đầu; xem [`docs/04_JIRA/JIRA-KEY-MAP.md`](04_JIRA/JIRA-KEY-MAP.md) cho 21 task bổ sung và trạng thái Jira sống, và [`docs/README.md`](README.md) cho quy chuẩn mã đường dẫn hiện hành).
+> - **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện
+> - **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`
+> - **Quy chuẩn định dạng Summary**: `[GROUP-###] Work name` (Không chèn mã `[EBA-###]` vào Summary)
+> - **Quy mô chuẩn hóa**: 4 Sprints | 84 Tasks | 336 Story Points
+> - **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)
 
 ---
 
@@ -2191,4 +2192,3 @@ Thực hiện công việc chuyên môn thuộc nhóm **QA** phục vụ phân h
 - [ ] **AC-4**: Xây dựng quy trình hướng dẫn sao lưu cơ sở dữ liệu dự phòng bằng pg_dump và thực hiện diễn tập khôi phục (restore rehearsal) trên môi trường thử nghiệm biệt lập (isolated environment), xác minh toàn vẹn dữ liệu sau phục hồi và lưu lại báo cáo bằng chứng; tuyệt đối không thực hiện thử nghiệm phá hủy trên cơ sở dữ liệu đang vận hành thật.
 
 ---
-

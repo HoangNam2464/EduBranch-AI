@@ -46,42 +46,51 @@ trigger: always_on
 
 ## 2. Repository Structure & Canonical Documentation Map
 
+> **Unified Documentation Entry Point**: [`docs/README.md`](../../docs/README.md) is the authoritative catalog classifying every document by authority (`Normative Rule`, `PO Scope`, `Living Spec`, `Immutable Baseline`, `Historical Snapshot`). See [`03-engineering-and-task-standards.md`](03-engineering-and-task-standards.md) for cross-tier engineering and Jira ID conventions.
+
 ```text
 EduBranch-AI/
-├── backend/                    ← Node.js (NestJS 10) API Gateway
-├── ai-service/                 ← FastAPI AI / RAG Service (INTERNAL ONLY)
-├── frontend/                   ← React 19 + Vite + TailwindCSS v4
-├── infrastructure/             ← Docker, Compose, Postgres migrations
-├── scripts/                    ← Development and verification scripts
-├── .agents/rules/              ← AI coding agent governance rules
-│   ├── 00-project-foundation.md
-│   ├── 01-ui-design-standards.md ← R01: single UI/UX design source
-│   ├── 02-agent-operating-policy.md
-│   └── feature-*.md            ← 15 domain-specific feature rule files
-└── docs/                       ← Authoritative Project Documentation
-    ├── 01_MASTER-TASKS.md      ← 84 Master Tasks (EBA-101 → EBA-435) across 4 Sprints
-    ├── 02_SPRINT-TASKS.md      ← Role breakdown: DES (15), FE (22), BE (25), OPS (3), QA (19)
-    ├── 03_TASK-DETAILS.md      ← Deliverables, Acceptance Criteria & Dependencies per task
-    ├── 04_JIRA/                ← Jira backlog reference & key map
-    ├── 05_FIGMA.md             ← Figma frame register (DES-001 → DES-015 → frames)
-    ├── 06_QA.md                ← 19 QA & Security test tasks (QA-001 → QA-019)
-    ├── 5.Sprint_Backlog/       ← Immutable Sprint Backlog baseline (SPRINT-BACKLOG.md)
-    ├── architecture/           ← System Architecture, Data Flow, Boundaries, ADRs
-    ├── database/               ← Relational + pgvector Data Model & Operational Guide
-    ├── ai/                     ← RAG Pipeline & Challenge Support AI specs
-    ├── design/                 ← UX screen notes, Site Architecture, Screens (P0–P4), improvement plan, audit
+├── AGENTS.md                   ← Shared Agent Rules (precedence, task router, rules 1–13)
+├── CLAUDE.md                   ← Claude Code workspace guide (imports AGENTS.md & .claude/rules/)
+├── backend/                    ← Node.js (NestJS 10 + TypeScript + raw SQL pg) API Gateway
+│   └── migrations/             ← Active sequential SQL migrations (V1..V5 via MigrationRunner)
+├── ai-service/                 ← FastAPI AI / RAG Service (INTERNAL ONLY, Python 3.12)
+├── frontend/                   ← React 19 + Vite + TypeScript + TailwindCSS v4 SPA
+├── infrastructure/             ← Docker, Compose, Postgres init, MinIO scripts
+├── scripts/                    ← Repo setup, verification & l10n-approval-check.mjs
+├── specs/                      ← Active Spec Kit v1.4.0 feature specs & records (001, 002, 006..010)
+├── .agents/rules/              ← Universal AI Agent Governance (loaded by Antigravity & imported via AGENTS.md)
+│   ├── 00-project-foundation.md        ← FND: domain, terminology, boundaries, lifecycle, Git rules
+│   ├── 01-ui-design-standards.md       ← R01: general UI/UX rules & quality standards
+│   ├── 02-agent-operating-policy.md    ← Ownership, escalation & evidence policy
+│   ├── 03-engineering-and-task-standards.md ← Tier, DB, AI, FE sync & Jira ID standards
+│   └── feature-*.md                    ← 15 domain-specific feature rules
+├── .claude/rules/              ← Claude-Code tool-specific checklists pointing to shared rules
+└── docs/                       ← Project Documentation (Entry Hub: docs/README.md)
+    ├── README.md               ← Unified index, document taxonomy & open-decision map
+    ├── PROJECT_OVERVIEW.md     ← Executive product & live develop status summary
+    ├── C1SE_65-EduBranch-AI-Proposal_V1.2.docx ← Proposal V1.2 (Product Baseline)
+    ├── workflows/              ← FEATURE-DELIVERY-WORKFLOW.md (Spec Kit stages & QG1–QG7)
+    ├── mvp-scope/              ← PO scope ledger & Figma scope register (PRODUCT_OWNER_SCOPE_DECISIONS.md)
+    ├── architecture/           ← ADRs, System Architecture (diagram SSOT), Data Flow, Tree Model
+    ├── database/               ← Schema specification (DATA-MODEL.md) & baseline ops guide
+    ├── ai/                     ← RAG Pipeline & Challenge Support specs
+    ├── design/                 ← Site Architecture, UX Screen Notes, P0–P4 screens, Design Direction, historical audits
     ├── features/               ← 15 canonical FEATURE-*.md specifications
-    ├── qa/                     ← Testing Strategy & Verification Reports
+    ├── l10n/                   ← shared-copy-review.md (i10n registry)
+    ├── qa/                     ← TESTING-STRATEGY.md + historical verification reports
+    ├── research/               ← EVALUATION-DESIGN.md (supporting research methodology)
     ├── requirements/           ← Proposal V1.2 Requirement Traceability Matrix
-    └── research/               ← Quantitative Evaluation & Research Boundary
+    ├── 01_MASTER-TASKS.md .. 06_QA.md, 04_JIRA/, 5.Sprint_Backlog/ ← Baselines & Jira map
+    └── audits/, team/          ← Point-in-time audit & team contribution evidence snapshots
 ```
 
 ### Documentation Hygiene Rules
-1. **No Scattered Duplicate Docs**: Do not create hidden top-level folders (such as `.stitch/`) for documentation. All UI/UX specifications belong strictly inside `docs/design/` and `.agents/rules/01-ui-design-standards.md`.
-2. **File Naming Convention**:
-   - Rules in `.agents/rules/`: `00-project-foundation.md`, `01-ui-design-standards.md`, and `feature-<domain-kebab-case>.md`.
-   - Technical & Design Docs in `docs/**/`: `UPPER-KEBAB-CASE.md` (e.g., `UX-SCREEN-NOTES.md`, `P0-FOUNDATION.md`, `FEATURE-BRANCHING-STUDY.md`).
-   - Sprint Governance Root Docs in `docs/`: `01_MASTER-TASKS.md` through `06_QA.md`, `PROJECT_OVERVIEW.md`.
+1. **Single Authoritative Entry Point**: Maintain [`docs/README.md`](../../docs/README.md) as the master index. Never scatter competing documentation indexes or create ad-hoc top-level UI generation folders. All UI/UX specs live strictly in `docs/design/` and `.agents/rules/01-ui-design-standards.md`.
+2. **Strict Separation of Authority**: Never present current code, open Figma frames, or historical snapshots (`audits/`, `team/`, `qa/*-REPORT.md`, baseline `01`–`03`) as approved requirements or current status without verified evidence.
+3. **File Naming Convention**:
+   - Rules in `.agents/rules/`: `00-project-foundation.md`, `01-ui-design-standards.md`, `02-agent-operating-policy.md`, `03-engineering-and-task-standards.md`, and `feature-<domain-kebab-case>.md`.
+   - Technical & Design Docs in `docs/**/`: `UPPER-KEBAB-CASE.md` (exceptions preserved for script/tool-bound `docs/README.md`, `docs/l10n/shared-copy-review.md`, `01_MASTER-TASKS.md`–`06_QA.md`, `PROJECT_OVERVIEW.md`).
 
 ---
 
@@ -195,6 +204,6 @@ docs/<topic>             →  develop
 
 ## 8. Coding Standards
 
-- **Backend Gateway (`backend/`)**: NestJS modular architecture (`auth/`, `user/`, `course/`, `material/`, `case/`, `branching-attempt/`, `reasoning/`, `challenge-support/`, `review-study/`, `lecturer-feedback/`, `statistics/`, `evaluation/`, `notification/`, `common/`). Mandatory `class-validator` DTOs; never return raw DB entities.
-- **AI Service (`ai-service/`)**: FastAPI domain packages (`core/`, `providers/`, `ingestion/`, `retrieval/`, `generation/`, `challenge_support/`, `evaluation/`). Always route LLM calls through `providers/factory.py`; strict Pydantic v2 schemas.
-- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI strictly governed by `.agents/rules/01-ui-design-standards.md` (single design source; token values in `frontend/src/index.css`).
+- **Backend Gateway (`backend/`)**: NestJS modular architecture (`auth/`, `user/`, `course/`, `material/`, `case/`, `branching-attempt/`, `reasoning/`, `challenge-support/`, `review-study/`, `lecturer-feedback/`, `statistics/`, `evaluation/`, `notification/`, `common/`). Raw parameterized SQL via `pg` Pool (`common/database/`), mandatory `class-validator` DTOs; never return raw DB entities. See `03-engineering-and-task-standards.md §2–§3`.
+- **AI Service (`ai-service/`)**: FastAPI domain packages (`core/`, `providers/`, `ingestion/`, `retrieval/`, `generation/`, `challenge_support/`, `evaluation/`). Always route LLM calls through `providers/factory.py`; strict Pydantic v2 schemas. See `03-engineering-and-task-standards.md §4`.
+- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI implements PO-approved Figma designs (`docs/05_FIGMA.md`) and general UI quality rules in `.agents/rules/01-ui-design-standards.md` (`R01`; token values currently in `frontend/src/index.css`, transitioning to modular `frontend/src/styles/` per Target Frontend Architecture) plus naming rules in `03-engineering-and-task-standards.md §5 & §8`.

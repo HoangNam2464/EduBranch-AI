@@ -1,11 +1,13 @@
 # EduBranch AI — Sprint Backlog & Kế Hoạch Quản Trị Thực Thi 4 Sprints (Jira Ready)
 
-> **Tài liệu quản trị thực thi chính thức**: EduBranch AI  
-> **Khung quản trị**: Agile / Scrum — 4 Sprints × 10 tuần tổng thể (07/10/2026 – 15/12/2026)  
-> **Đội ngũ dự án**: DES · FE · BE · QA (Nhóm Capstone C1SE.65 — Đại học Duy Tân)  
-> **Source of Truth**: [Proposal V1.2](file:///D:/CAPSTONE_2026/EduBranch-AI/docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx), [PROJECT_OVERVIEW.md](file:///D:/CAPSTONE_2026/EduBranch-AI/docs/PROJECT_OVERVIEW.md) và baseline `develop` commit `9dcef22`  
-> **Phiên bản tài liệu**: Final Jira Readiness Audit (2026-10-07)  
-> **Jira Project Key đề xuất**: `EBA`
+> - **Document Class**: `[IMMUTABLE BASELINE]` — Ảnh chụp phạm vi gốc 84 Tasks / 336 SP (ngày `2026-10-07`).
+> - **[SUPERSEDED GIT SECTION NOTE]**: Ví dụ đặt tên branch kiểu `feature/EBA-105-auth` tại §1.1 dòng 30 bên dưới **ĐÃ HẾT HIỆU LỰC (SUPERSEDED)** bởi [`.agents/rules/00-project-foundation.md §7.2`](../../.agents/rules/00-project-foundation.md) (cấm đưa mã task `EBA-*`/`FE-*`/`BE-*` vào tên nhánh Git). Trạng thái thực tế và 21 task bổ sung sau baseline xem [`docs/04_JIRA/JIRA-KEY-MAP.md`](../04_JIRA/JIRA-KEY-MAP.md).
+> - **Tài liệu quản trị thực thi chính thức**: EduBranch AI
+> - **Khung quản trị**: Agile / Scrum — 4 Sprints × 10 tuần tổng thể (07/10/2026 – 15/12/2026)
+> - **Đội ngũ dự án**: DES · FE · BE · QA (Nhóm Capstone C1SE.65 — Đại học Duy Tân)
+> - **Source of Truth**: [Proposal V1.2](../C1SE_65-EduBranch-AI-Proposal_V1.2.docx), [PROJECT_OVERVIEW.md](../PROJECT_OVERVIEW.md) và baseline `develop` commit `9dcef22`
+> - **Phiên bản tài liệu**: Final Jira Readiness Audit (2026-10-07)
+> - **Jira Project Key đề xuất**: `EBA`
 
 ---
 
@@ -84,8 +86,8 @@ Sprint:     [ SPRINT 1 ] [ SPRINT 2 ] [    SPRINT 3    ] [                 SPRIN
 
 ## 3. BẢNG TỔNG HỢP SỐ LƯỢNG TASK & STORY POINTS (84 TASKS / 336 SP)
 
-> **Ước lượng năng lực & Wording trung lập**:  
-> **336 SP is the current estimated backlog size after decomposition.**  
+> - **Ước lượng năng lực & Wording trung lập**:
+> - **336 SP is the current estimated backlog size after decomposition.**
 > Khối lượng 336 SP là quy mô ước tính hiện tại sau khi phân rã kỹ thuật chi tiết 84 tasks. Tốc độ hoàn thành thực tế (Velocity) của đội ngũ 5 thành viên sẽ được quan sát và chuẩn hóa qua dữ liệu thực nghiệm trong Sprint 1 và Sprint 2.
 
 ### 3.1. Phân bổ theo từng Sprint

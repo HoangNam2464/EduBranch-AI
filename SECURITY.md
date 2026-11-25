@@ -1,4 +1,6 @@
-﻿# Security Policy — EduBranch-AI
+# Security Policy — EduBranch-AI
+
+> - **Document Class**: `[SUPPORTING GUIDE]` (Security Policy & Responsible Disclosure)
 
 ## Reporting a Vulnerability
 
@@ -32,16 +34,16 @@ The following areas are in scope for security reporting:
 ### 1. Authentication
 
 - The **Backend Gateway (NestJS)** handles all authentication via JWT (JSON Web Token)
-- Passwords are hashed using BCrypt — plaintext passwords are never stored
-- JWT tokens are validated on every protected request
-- Refresh token rotation is implemented for extended sessions
-- Failed login attempts are logged
+- Passwords are hashed using BCrypt (`BCRYPT_ROUNDS = 12`) — plaintext passwords are never stored
+- Stateless JWT access tokens are validated on every protected request via global `JwtAuthGuard` + `RolesGuard`
+- Auth login/register endpoints enforce request rate limiting (`RateLimiterGuard`); failed login attempts are logged without leaking credentials or enumerating emails (`"Invalid email or password"`)
+- Extended session support (`rememberMe` JWT expiry TTL) and Forgot/Reset Password APIs are queued MVP scope items (`BE`/`FE` auth sync)
 
 ### 2. Authorization
 
-- Role-based access control: `LECTURER` and `STUDENT` roles
+- Role-based access control: `LECTURER`, `STUDENT`, and `ADMIN` roles
 - The **Backend Gateway (NestJS)** enforces ownership: lecturers can only access their own courses and materials
-- Students can only access published cases via the direct link provided by the lecturer
+- Students join courses by invite code (displayed on Student Desk / My Courses) or open published cases via a direct link from the lecturer (`OPD-001 -> A`)
 - **A student must never receive a case that is not in `PUBLISHED` status**
 - Authorization is enforced server-side — never trust client-provided owner IDs
 
@@ -58,27 +60,14 @@ The following areas are in scope for security reporting:
 - Communication between the **Backend Gateway (NestJS)** and the AI Service requires a shared internal API key (`X-Internal-API-Key` header)
 - The AI Service must only listen on an internal Docker network interface in production
 
-### 5. Prompt Injection Protection
+### 5. Prompt Injection & AI Safety Governance
 
-- Uploaded teaching materials and retrieved RAG chunks are treated as **untrusted data**
-- All retrieved content passed to the LLM MUST be enclosed in `<sources>...</sources>` boundary
-- Retrieved content must never be able to override system instructions or prompt templates
-- User-provided text (student reasoning, proposed solutions) must be validated and length-limited before being sent to the LLM
+Authoritative technical rules live in [`.agents/rules/00-project-foundation.md §6`](.agents/rules/00-project-foundation.md), [`.agents/rules/03-engineering-and-task-standards.md §4 & §7`](.agents/rules/03-engineering-and-task-standards.md), and [`docs/architecture/SERVICE-BOUNDARIES.md`](docs/architecture/SERVICE-BOUNDARIES.md):
+- Wrap retrieved teaching material chunks inside `<sources>...</sources>` with `sanitize_sources_boundary` escaping look-alike closing tags (`app/retrieval/retriever.py`, `build_rag_context`).
+- Validate and length-limit user text (`reasoning_text`, `proposed_solution`) via DTOs and Pydantic schemas before LLM calls.
+- AI Challenge Support generates Socratic counter-questions only (max 2 rounds, hard DB constraint) and must never grade, score, render pass/fail verdicts, or mutate lecturer-approved case content.
 
-### 6. AI Governance — Critical Rules
-
-> **The AI Reasoning / Challenge Support component MUST NOT:**
-> - Assign academic grades
-> - Make pass/fail academic decisions
-> - Perform academic integrity judgments
-> - Provide final evaluations of student performance
-> - Alter Lecturer-approved case content (branches, consequences, outcomes) at runtime
->
-> The AI Reasoning / Challenge Support is a **Socratic counter-question** tool only: it generates targeted, open-ended questions to prompt student reflection.
-> All academic decisions remain with the Lecturer.
-> Maximum 2 rounds of challenge support per session.
-
-### 7. Secret Management
+### 6. Secret Management
 
 - **Never** commit `.env` files or actual credentials to Git
 - **Never** hardcode API keys, passwords, or connection strings in source code
@@ -88,19 +77,19 @@ The following areas are in scope for security reporting:
 - Enable the repository pre-commit safeguard via `git config core.hooksPath .githooks` to prevent accidental commits of `.env` and credentials
 - Rotate credentials immediately if accidentally exposed
 
-### 8. Data Privacy
+### 7. Data Privacy
 
 - Student attempt data, reasoning, and challenge support history are private to the student and the relevant lecturer
 - No student data is shared across courses or lecturers without explicit authorization
 - Research/evaluation data exports must be anonymized (see `docs/research/EVALUATION-DESIGN.md`)
 
-### 9. CORS
+### 8. CORS
 
 - Allowed origins are explicitly configured via `CORS_ALLOWED_ORIGINS` environment variable
 - In production, only the frontend domain is allowed
 - FastAPI does not expose CORS to external origins
 
-### 10. Database Security
+### 9. Database Security
 
 - All database access goes through the Backend Gateway repository layer — no raw SQL string concatenation
 - pgvector queries use parameterized queries

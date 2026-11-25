@@ -1,7 +1,9 @@
 # Feature: AI Reasoning & Challenge Support
 
-> **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
-> **Target Package / Module**: AI Service `challenge_support/` · Backend `challenge-support/` · Frontend `pages/challenge/ChallengeSupportPage.tsx`
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+> - **Authoritative Traceability**: Proposal V1.2 (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`)
+> - **Target Package / Module**: AI Service `challenge_support/` · Backend `challenge-support/` (`BE-027`) · Frontend `pages/challenge/ChallengeSupportPage.tsx` (`FE-021`)
+> - **Open UI Decision**: Presentation format (Modal `05.5`/`05.6` HOLD vs standalone route `/student/cases/:caseId/challenge/:sessionId`) remains `OPEN PO DECISION` (`OPD-005`).
 
 ---
 
@@ -69,3 +71,9 @@ AI Reasoning/Challenge Support supports student reasoning across **both** learni
   - `round_number`: INTEGER NOT NULL CHECK (round_number >= 1 AND round_number <= 2)
   - `role`: VARCHAR(50) NOT NULL CHECK (role IN ('CHALLENGE_SUPPORT', 'STUDENT'))
   - `content`: TEXT NOT NULL
+
+---
+
+## 7. Implementation Status
+**Implemented**
+*(Backend `challenge-support/` `BE-027` merged in PR #65, AI Service `challenge_support/` 2-round non-grading service, and frontend `ChallengeSupportPage.tsx` `FE-021` merged in PR #64 on `develop`; schema/guardrails SSOT in [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](../ai/REASONING-CHALLENGE-SUPPORT.md).)*

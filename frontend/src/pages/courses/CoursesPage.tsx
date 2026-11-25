@@ -286,7 +286,7 @@ function InviteCodeSection({ courseId, active }: { courseId: string; active: boo
         <ToastRegion>
           <Toast
             type="error"
-            title={t("g2.common.error", "Lỗi")}
+            title={t("g2.common.error")}
             message={errorToast}
             onClose={() => setErrorToast(null)}
             closeLabel={t("g2.courses.archiveDialog.closeToast")}
@@ -332,7 +332,11 @@ function CourseDetails({
             iconClass="text-error-text"
             title={m.originalFilename}
             subtitle={t("g2.courses.details.failedFile")}
-            action={<ChevronLink to={materialsPath} label={t("g2.courses.details.openMaterials")} />}
+            action={
+              <Button variant="secondary" size="sm" to={materialsPath}>
+                {t("g2.courses.details.retry")}
+              </Button>
+            }
           />,
         );
       } else if (m.processingStatus === "PENDING" || m.processingStatus === "PROCESSING") {
@@ -372,7 +376,7 @@ function CourseDetails({
   }
 
   return (
-    <aside aria-labelledby="course-details-title" className="flex w-[424px] shrink-0 flex-col gap-4 rounded-eb-xl bg-surface p-5 shadow-eb-card">
+    <aside aria-labelledby="course-details-title" className="flex w-[360px] shrink-0 flex-col gap-4 rounded-eb-xl bg-surface p-5 shadow-eb-card 2xl:w-[424px]">
       <div className="flex h-8 items-center justify-between">
         <h2 id="course-details-title" className="text-[16px] leading-6 font-normal tracking-normal text-ink">
           {t("g2.courses.details.title")}
@@ -381,7 +385,7 @@ function CourseDetails({
           <Link
             to={materialsPath}
             className={cx(
-              "flex h-8 items-center justify-center rounded-eb-md border border-[#E5E7EB] bg-canvas px-3 text-[12px] leading-4 text-[#111827] transition-colors hover:bg-surface-hover",
+              "flex h-8 items-center justify-center rounded-eb-md border border-line bg-canvas px-3 text-[12px] leading-4 text-ink transition-colors hover:bg-surface-hover",
               FOCUS_RING,
             )}
           >
@@ -412,6 +416,7 @@ function CourseDetails({
         stats={
           summary
             ? [
+                { label: t("g2.courses.details.statAttempts"), value: "—" },
                 { label: t("g2.courses.details.statDocuments"), value: summary.documents },
                 { label: t("g2.courses.details.statCases"), value: summary.cases },
               ]
@@ -809,12 +814,13 @@ export function CoursesPage() {
   return (
     <div className="flex items-start gap-5">
       <section aria-labelledby="course-list-title" className="flex min-w-0 flex-1 flex-col gap-5">
-        <div className="flex h-[72px] items-center justify-between rounded-eb-xl bg-surface p-5 shadow-eb-card">
-          <h2 id="course-list-title" className="text-[16px] leading-6 font-normal tracking-normal text-ink">
+        <div className="flex min-h-[72px] flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-eb-xl bg-surface p-5 shadow-eb-card">
+          <h2 id="course-list-title" className="shrink-0 text-[16px] leading-6 font-normal tracking-normal whitespace-nowrap text-ink">
             {t("g2.courses.listTitle")}
           </h2>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <SearchField
+              className="max-w-[180px] 2xl:max-w-none"
               label={t("g2.courses.searchLabel")}
               placeholder={t("g2.courses.searchPlaceholder")}
               value={search}

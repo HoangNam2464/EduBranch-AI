@@ -1,17 +1,18 @@
 # EduBranch-AI — Figma Frame Register (15 DES Tasks / 50 Story Points)
 
-> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện bậc Đại học  
-> **Nguồn quản trị gốc**: [`docs/01_MASTER-TASKS.md`](01_MASTER-TASKS.md) · [`docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`](5.Sprint_Backlog/SPRINT-BACKLOG.md)  
-> **Quy tắc thiết kế (nguồn duy nhất)**: [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (R01); giá trị token chỉ ở `frontend/src/index.css` · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md)
-> **Đặc tả chi tiết từng cụm màn hình**: [`P0-FOUNDATION.md`](design/screens/P0-FOUNDATION.md) · [`P1-LECTURER-CORE.md`](design/screens/P1-LECTURER-CORE.md) · [`P2-STUDENT-CORE.md`](design/screens/P2-STUDENT-CORE.md) · [`P3-SUPPORT-AND-STATISTICS.md`](design/screens/P3-SUPPORT-AND-STATISTICS.md) · [`P4-REVIEW-STUDY.md`](design/screens/P4-REVIEW-STUDY.md)  
-> **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma — Làm chuẩn gốc trước khi đập đi xây lại giao diện Frontend)  
-> **Quy mô**: 15 Tasks (`DES-001` → `DES-015`) | 50 Story Points (14.88% toàn dự án)
+> - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]` (Official Figma Design Register)
+> - **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện bậc Đại học
+> - **Nguồn quản trị gốc**: [`docs/01_MASTER-TASKS.md`](01_MASTER-TASKS.md) · [`docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`](5.Sprint_Backlog/SPRINT-BACKLOG.md)
+> - **Quy tắc thiết kế & phân cấp thẩm quyền (PO 2026-11-25)**: Figma được PO phê duyệt (`EduBranch AI – Screens` & `EduBranch AI – Design System`) là **căn cứ thiết kế chính thức cho từng màn hình**; [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (`R01`) là quy chuẩn thiết kế & chất lượng chung (không ghi đè thiết kế Figma đã duyệt); code tại `frontend/src/index.css` (mục tiêu `frontend/src/styles/`) chỉ là bản triển khai của thiết kế · [`docs/design/SITE-ARCHITECTURE.md`](design/SITE-ARCHITECTURE.md)
+> - **Đặc tả chi tiết từng cụm màn hình**: [`P0-FOUNDATION.md`](design/screens/P0-FOUNDATION.md) · [`P1-LECTURER-CORE.md`](design/screens/P1-LECTURER-CORE.md) · [`P2-STUDENT-CORE.md`](design/screens/P2-STUDENT-CORE.md) · [`P3-SUPPORT-AND-STATISTICS.md`](design/screens/P3-SUPPORT-AND-STATISTICS.md) · [`P4-REVIEW-STUDY.md`](design/screens/P4-REVIEW-STUDY.md)
+> - **Phạm vi chuyên môn**: Nhóm DES (UI/UX Design & Prototyping trên Figma — Làm chuẩn gốc trước khi đập đi xây lại giao diện Frontend)
+> - **Quy mô**: 15 Tasks (`DES-001` → `DES-015`) | 50 Story Points (14.88% toàn dự án)
 
 ---
 
 ## 0. TRẠNG THÁI HIỆN TẠI (cập nhật 2026-11-13) — ĐỌC TRƯỚC
 
-- **Cả 15 task DES đã Done** (Jira `EBA`, 2026-11-13). Giao diện đã chốt nằm ở Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page **`EduBranch AI – Screens`**. Figma cho biết mỗi màn có nội dung gì; về hình thức, code + R01 là chuẩn (PO 2026-11-22, xem ghi chú cuối file).
+- **Cả 15 task DES đã Done** (Jira `EBA`, 2026-11-13). Thiết kế chính thức đã chốt nằm ở Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page **`EduBranch AI – Screens`** và **`EduBranch AI – Design System`** — **Figma được PO phê duyệt là căn cứ thiết kế chính thức cho từng màn hình** (PO xác lập 2026-11-25; xem ghi chú cuối file).
 - **Đổi tên page (PO, 2026-11-18):** file chỉ còn 2 page: `EduBranch AI – Design System` (`445:239`, trước đây "05 · EduBranch – Design System") và `EduBranch AI – Screens` (`483:9634`, trước đây "08 · EduBranch – Bản hoàn chỉnh"). ID page và frame không đổi. Hai page Eduva ("02 · Eduva – Design System", "03 · Eduva – Screens") đã chuyển sang một file Figma lưu trữ riêng; 72 component EduBranch đang dùng được chuyển trước sang page Design System (section `696:297`, giữ nguyên node ID). Các nhật ký quyết định cũ ghi "page 08" hoặc "page 02" nghĩa là hai page này; không sửa nhật ký.
 - Ghi chú từng màn: [`design/UX-SCREEN-NOTES.md`](design/UX-SCREEN-NOTES.md). Token, component và trạng thái: R01 (`.agents/rules/01-ui-design-standards.md`). Route: [`design/SITE-ARCHITECTURE.md §5`](design/SITE-ARCHITECTURE.md).
 
@@ -35,7 +36,7 @@
 | DES-014 Phản hồi giảng viên | 04.1, 04.2, 04.2b, 06.3 |
 | DES-015 AI Challenge Support | 05.5, 05.6 (OPD-005 còn HOLD) |
 
-Ngoài 15 task DES, page EduBranch AI – Screens còn các màn MVP đã chốt nhưng chưa có task: 04.3 thống kê, 07.1–07.8 (dashboard giảng viên, Bàn học, Khóa học của tôi, Tham gia lớp học, AI Studio, Rubric), 09.1–09.2 hồ sơ, 10.1–10.10 Admin.
+Ngoài 15 task DES, page `EduBranch AI – Screens` còn các màn thuộc MVP chưa có task riêng trong baseline 84 task: `04.3` thống kê *(đã xác nhận thuộc MVP, bỏ `(LATER)` theo PO `2026-11-25`)*, `07.1–07.8` (Dashboard giảng viên `D-05`, Bàn học / Khóa học của tôi / Tham gia lớp `OPD-001 → A`, AI Studio `OPD-006`, Rubric `OPD-011 → A`), `08` (quên & đặt lại mật khẩu UI MVP — PO 2026-11-25), `09.1–09.2` hồ sơ, và `10.1–10.10` Admin (`OPD-015 → B`). *(Riêng `D-04`, `OPD-010`, `D4-13` vẫn giữ `OPEN PO DECISION`.)*
 
 ### 0.2. Đặc tả ban đầu (đã gỡ) so với Figma page EduBranch AI – Screens
 
@@ -52,4 +53,4 @@ Ngoài 15 task DES, page EduBranch AI – Screens còn các màn MVP đã chốt
 | Card phẳng không viền, không bóng | Thêm viền 1px 80% và đổ bóng kép `shadow-eb-card` (PO 2026-11-17 "Sửa Figma rồi code") |
 | Khung giao diện toàn màn hình dàn phẳng | Trang công khai và Auth: bọc `max-w-7xl mx-auto`, form Auth tối đa 440px. Trong app shell: dùng hết chiều rộng cạnh sidebar, lề cố định (PO 2026-11-21, spec 006 / PR #79; thay quyết định 17/11 cho app shell) |
 
-> **Cập nhật 2026-11-22 (PO, "theo đề xuất")**: code + R01 là chuẩn giao diện; Figma là tham chiếu về **nội dung** của từng màn (trường dữ liệu, khối, hành động) và sẽ được cập nhật theo code sau. Bản đặc tả pixel ban đầu của 15 task DES (§1–§3 cũ: 6 page Figma, màu `#2563EB`/`#F9FAFB`/`#E5E7EB`, giao diện tiếng Anh) đã bị thay thế từ 2026-11-12 và được **gỡ khỏi file này** ngày 2026-11-22 để tránh nhầm lẫn; nội dung cũ vẫn còn trong lịch sử git (`git log -- docs/05_FIGMA.md`). Tiêu chí nghiệm thu của từng task DES nằm ở `docs/01_MASTER-TASKS.md` và `docs/03_TASK-DETAILS.md`.
+> **Cập nhật 2026-11-25 (PO — Quyền thẩm quyền thiết kế chính thức, thay thế ghi chú 2026-11-22)**: **Figma được PO phê duyệt là căn cứ thiết kế chính thức cho từng màn hình.** `R01` (`.agents/rules/01-ui-design-standards.md`) là quy chuẩn thiết kế và chất lượng chung (không tự ý ghi đè một thiết kế cụ thể đã được PO duyệt trên Figma). Code chỉ là bản triển khai của thiết kế: khi code không khớp Figma được duyệt, phải điều chỉnh code và tài liệu triển khai theo Figma; tuyệt đối không tự ý chỉnh sửa Figma để hợp thức hóa code cũ. Nếu có mâu thuẫn giữa thiết kế được duyệt trên Figma và quy chuẩn `R01`, báo cáo và giữ trạng thái `OPEN PO DECISION / UNRESOLVED` chờ PO quyết định. Bản đặc tả pixel ban đầu của 15 task DES (§1–§3 cũ) đã được gỡ khỏi file này ngày 2026-11-22 (lưu trong `git log -- docs/05_FIGMA.md`); tiêu chí nghiệm thu của từng task DES nằm ở `docs/01_MASTER-TASKS.md` và `docs/03_TASK-DETAILS.md`.

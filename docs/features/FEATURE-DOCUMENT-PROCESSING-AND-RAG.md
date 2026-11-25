@@ -1,6 +1,8 @@
 # Feature: Document Processing & RAG Retrieval
 
-> **Authoritative Traceability**: Items 7, 8 (Proposal Section 4 p. 7, Section 6 p. 10, Section 7 p. 11)  
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
+> **Authoritative Traceability**: Items 7, 8 (Proposal Section 4 p. 7, Section 6 p. 10, Section 7 p. 11)
 > **Target Package / Module**: AI Service `ingestion/`, `retrieval/` · Database `document_chunks` (pgvector)
 
 ---
@@ -22,7 +24,7 @@ Extracts, chunks, embeds, and indexes university teaching materials to power Ret
 - Parsing raw text from PDF and DOCX documents stored in MinIO.
 - Splitting extracted text into semantic chunks with configurable overlap.
 - Generating vector embeddings for each chunk via provider abstraction.
-- Storing chunks and vectors in PostgreSQL with `vector(1536)` / `vector(768)` type.
+- Storing chunks and vectors in PostgreSQL with `vector(768)` type (`V4__document_chunks.sql`).
 - Top-K cosine similarity semantic retrieval filtered by course and material IDs.
 - Enforcing the mandatory `<sources>...</sources>` untrusted data boundary.
 
@@ -104,7 +106,7 @@ Extracts, chunks, embeds, and indexes university teaching materials to power Ret
   - `course_id`: UUID NOT NULL REFERENCES courses(id)
   - `chunk_index`: INTEGER NOT NULL
   - `chunk_text`: TEXT NOT NULL
-  - `embedding`: vector(1536) / vector(768) NOT NULL
+  - `embedding`: vector(768) NOT NULL (`V4__document_chunks.sql`)
   - `page_number`: INTEGER
   - `created_at`: TIMESTAMPTZ
 
@@ -133,5 +135,5 @@ Extracts, chunks, embeds, and indexes university teaching materials to power Ret
 ---
 
 ## 15. Implementation Status
-**Structurally Scaffolded**  
-*(FastAPI parser and chunker stubs in `ai-service/app/ingestion/`, provider abstraction in `app/providers/`, and database pgvector extension config exist; active ingestion routes and retrieval endpoints remain unimplemented.)*
+**Implemented**
+*(FastAPI PDF/DOCX parser, chunker, `gemini-embedding-001` @768 embeddings via `app/providers/factory.py`, pgvector `vector(768)` storage, course-scoped cosine similarity retrieval with `<sources>` boundary wrapping & injection sanitization in `app/retrieval/service.py`, and internal routes `/internal/v1/ingestion/*` are implemented on `develop`.)*
