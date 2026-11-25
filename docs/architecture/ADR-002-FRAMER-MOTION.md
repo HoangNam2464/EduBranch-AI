@@ -1,7 +1,9 @@
 # ADR-002: Adoption of Framer Motion for Presentational UI Transitions
 
-> **Status**: `[B. Project-Owner Decision]` Approved  
-> **Date**: 2026-11-18  
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]`
+
+> **Status**: `[B. Project-Owner Decision]` Approved
+> **Date**: 2026-11-18
 > **Classification Standard**: Every decision item is tagged with:
 > - `[A. Proposal Requirement]`: Explicitly stated in the EduBranch AI Proposal (C1SE.65).
 > - `[B. Project-Owner Decision]`: Explicitly confirmed by the project owner.

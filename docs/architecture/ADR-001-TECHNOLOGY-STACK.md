@@ -1,7 +1,9 @@
 # ADR-001: Technology Stack Selection & Candidate Options
 
-> **Status**: Candidate Options Documented (Backend pending Project Owner confirmation)  
-> **Date**: 2026-09-11  
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]`
+
+> **Status**: Ratified Tech Stack (Updated 2026-11-25: modular cross-cutting gateway and TypeScript UI architecture conventions documented)
+> **Date**: 2026-09-11
 > **Classification Standard**: Every decision item is tagged with:
 > - `[A. Proposal Requirement]`: Explicitly stated in the EduBranch AI Proposal (C1SE.65).
 > - `[B. Project-Owner Decision]`: Explicitly confirmed by the project owner.
@@ -28,8 +30,8 @@ This ADR establishes the current baseline, clearly distinguishing confirmed deci
 - **Rationale**:
   1. Aligns directly with Proposal Section 7 & 11 (`Node.js (NestJS/Express)`).
   2. Shares the TypeScript ecosystem with the React frontend for shared DTOs and type safety.
-  3. Enterprise modular architecture (Modules, Controllers, Services, Guards) directly models EduBranch AI's 11 domain feature areas.
-  4. Inherited Spring Boot 3 (Java 17) scaffold from the initial generic template has been cleanly removed and replaced.
+  3. Enterprise modular architecture (Modules, Controllers, Services, Guards) directly models EduBranch AI's domain feature areas.
+  4. Backend runtime is strictly standardized on **Node.js (NestJS 10 + TypeScript)** from the earliest sprint setup, matching the Proposal baseline.
 
 ---
 
@@ -111,31 +113,14 @@ This ADR establishes the current baseline, clearly distinguishing confirmed deci
 
 ## 3. Service Boundary Architecture
 
-```
-Client (Browser — React 19 + TailwindCSS v4)
-    │
-    ▼ [REST API + JWT]
-Backend Gateway [Node.js (NestJS 10 + TypeScript)]
-    │
-    ├─────────► PostgreSQL 16 + pgvector (Business metadata)
-    ├─────────► MinIO (PDF / DOCX files)
-    ├─────────► Redis 7 (Cache / Sessions)
-    │
-    ▼ [Internal HTTP + X-Internal-API-Key]
-AI Service (Python FastAPI — Internal Only)
-    │
-    ├─────────► PostgreSQL 16 + pgvector (Vector search)
-    │
-    ▼ [HTTPS API]
-LLM Providers (Gemini 3.5 Flash / OpenAI GPT-4o-mini)
-```
+See [`SYSTEM-ARCHITECTURE.md`](SYSTEM-ARCHITECTURE.md) for the canonical 3-tier Mermaid architecture diagram (`React Frontend → NestJS Backend Gateway → Internal FastAPI AI Service + PostgreSQL 16/pgvector + MinIO + Redis 7`).
 
 ---
 
 ## 4. Consequences & Action Items
 
-1. Backend Gateway is formally established as **Node.js (NestJS 10 + TypeScript)**, fully compliant with Proposal Sections 7 & 11.
-2. Frontend baseline is formally established as **React 19 + TailwindCSS v4**.
-3. All inherited Spring Boot 3 / Java / Maven artifacts have been removed.
-4. All 14 `.agents/rules/` files have been harmonized with the ratified technology baseline.
-5. All business features remain **unimplemented** (structural skeleton only).
+1. Backend Gateway is formally established as **Node.js (NestJS 10 + TypeScript)**, compliant with Proposal Sections 7 & 11.
+2. Frontend baseline is formally established as **React 19 + Vite + TypeScript + TailwindCSS v4 + Zustand**.
+3. Architectural evolution stays strictly within EduBranch-AI's ratified stack (never introduce ORMs/external migration tools, `.jsx`, competing state/query wrappers, `.dark` modes, or K-12 features). Target modularity improvements (Backend `common/exception/`, `common/security/`, removing duplicate `common/storage/`, selective `<domain>.repository.ts`; Frontend `styles/`, `components/ui/`, `features/<domain>/components/`, `hooks/`, domain-scoped `utils/`, root `ErrorBoundary`) execute cleanly under [`SERVICE-BOUNDARIES.md §5`](SERVICE-BOUNDARIES.md) and [`.agents/rules/03-engineering-and-task-standards.md §8`](../../.agents/rules/03-engineering-and-task-standards.md).
+4. All `.agents/rules/` files track the ratified technology baseline and target module blueprint.
+5. Core platform flows are actively implemented on `develop` (see `docs/PROJECT_OVERVIEW.md` for per-feature status and open items).

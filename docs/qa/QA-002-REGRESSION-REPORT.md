@@ -1,13 +1,14 @@
 # QA-002 / EBA-110 Regression Report: Token Expiry, Role Denial & Ownership Leak
 
-**Master Task ID**: `EBA-110`  
-**Group Task ID**: `QA-002`  
-**Role**: `QA (Quality Assurance)`  
-**Sprint**: `Sprint 1 - Foundation`  
-**Status**: `Verified & Passing (100% Pass Rate)`  
-**Target Codebase**: Backend Gateway (`backend/`)  
-**Deliverables**: `backend/test/security-regression.spec.ts`  
-**Automated Runner**: `npm run test:regression`  
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (Point-in-time security regression report preserved verbatim as audit evidence).
+**Master Task ID**: `EBA-110`
+**Group Task ID**: `QA-002`
+**Role**: `QA (Quality Assurance)`
+**Sprint**: `Sprint 1 - Foundation`
+**Status**: `Verified & Passing (100% Pass Rate)`
+**Target Codebase**: Backend Gateway (`backend/`)
+**Deliverables**: `backend/test/security-regression.spec.ts`
+**Automated Runner**: `npm run test:regression`
 
 ---
 

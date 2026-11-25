@@ -1,6 +1,30 @@
 # EduBranch AI — Data Model
 
-**Status**: Schema aligned with Product Direction; runtime persistence APIs pending
+> **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]` — **SSOT for PostgreSQL Schema & Migrations** (`V1`–`V5` executed by Backend Gateway `MigrationRunner`)
+
+---
+
+## 0. Entity Relationship Overview
+
+```mermaid
+erDiagram
+    USERS ||--o{ COURSES : "lecturer_id"
+    USERS ||--o{ COURSE_ENROLLMENTS : "student_id"
+    COURSES ||--o{ COURSE_ENROLLMENTS : "course_id (V5)"
+    COURSES ||--o{ TEACHING_MATERIALS : "course_id"
+    TEACHING_MATERIALS ||--o{ DOCUMENT_CHUNKS : "material_id (V4 vector 768)"
+    COURSES ||--o{ CASES : "course_id"
+    CASES ||--o{ CASE_NODES : "case_id (Branching)"
+    CASE_NODES ||--o{ CASE_OPTIONS : "node_id / next_node_id"
+    CASES ||--o{ BRANCHING_ATTEMPTS : "case_id"
+    BRANCHING_ATTEMPTS ||--o{ STUDENT_REASONING : "attempt_id"
+    CASES ||--o{ REVIEW_STUDY_SUBMISSIONS : "case_id"
+    STUDENT_REASONING ||--o| CHALLENGE_SUPPORT_SESSIONS : "reasoning_id XOR"
+    REVIEW_STUDY_SUBMISSIONS ||--o| CHALLENGE_SUPPORT_SESSIONS : "review_submission_id XOR"
+    CHALLENGE_SUPPORT_SESSIONS ||--o{ CHALLENGE_MESSAGES : "session_id"
+    BRANCHING_ATTEMPTS ||--o{ LECTURER_FEEDBACK : "branching_attempt_id XOR"
+    REVIEW_STUDY_SUBMISSIONS ||--o{ LECTURER_FEEDBACK : "review_submission_id XOR"
+```
 
 ---
 
@@ -8,8 +32,9 @@
 
 | Table | Description | Learning Mode |
 |---|---|---|
-| `users` | All users: lecturers and students with role RBAC (`LECTURER`, `STUDENT`) | Shared |
-| `courses` | Lecturer courses scoped to `lecturer_id` | Shared |
+| `users` | All users with role RBAC (`LECTURER`, `STUDENT`, `ADMIN`) and lock state `is_active` | Shared |
+| `courses` | Lecturer courses scoped to `lecturer_id`, with `invite_code`, `invite_code_active`, soft-archive `is_active` | Shared |
+| `course_enrollments` | Student class enrollments (`course_id`, `student_id`, `UNIQUE(course_id, student_id)`) — V5 | Shared |
 | `teaching_materials` | Uploaded PDF/DOCX materials stored in MinIO, metadata in PostgreSQL | Shared |
 | `cases` | Case studies supporting both `BRANCHING_STUDY` and `REVIEW_STUDY` | Shared |
 | `case_nodes` | Situation nodes in a decision tree | Branching Study |
@@ -27,7 +52,7 @@
 
 | Table | Description |
 |---|---|
-| `document_chunks` | Parsed text chunks with pgvector embeddings (`vector(1536)` or `vector(768)`), linked to `material_id` and `course_id` |
+| `document_chunks` | Parsed text chunks with pgvector embeddings (`vector(768)` per V4 `gemini-embedding-001`), linked to `material_id` and `course_id` |
 
 ---
 

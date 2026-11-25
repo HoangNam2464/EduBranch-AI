@@ -1,8 +1,8 @@
 # EduBranch AI — Project Overview
 
-**Full Name**: EduBranch AI — AI Platform for Experiential Case-Based Learning in University Teaching
-**Version**: development (`develop`); live task status in Jira EBA and `docs/04_JIRA/JIRA-KEY-MAP.md`
-**Repository**: https://github.com/HoangNam2464/EduBranch-AI
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]` (Executive Summary & Live `develop` Snapshot)
+> - **Documentation Hub**: [`docs/README.md`](README.md) · **Live Task Status**: Jira `EBA` + [`docs/04_JIRA/JIRA-KEY-MAP.md`](04_JIRA/JIRA-KEY-MAP.md)
+> - **Full Name**: EduBranch AI — AI Platform for Experiential Case-Based Learning in University Teaching · **Repository**: `https://github.com/HoangNam2464/EduBranch-AI`
 
 ---
 
@@ -38,130 +38,64 @@ Students learn not by passively reading outcomes, but by making decisions, compl
 
 ---
 
-## Core Workflow
+## Core Workflow Summary
 
-### Lecturer → Case → Student Flow
-```
-1. Lecturer creates Course and uploads Teaching Materials (PDF / DOCX)
-2. Materials processed: parsed → chunked → embedded → pgvector
-3. Lecturer triggers AI Case Generation (Branching Study or Review Study)
-4. RAG retrieves relevant material → LLM generates structured case draft
-5. Lecturer inspects, edits nodes/options/consequences/questions, approves, and publishes
-6. Lecturer sends the published case link to students (e.g. via LMS, email, or in-class)
-7. Students open the link and begin the learning experience
-```
+Detailed sequence diagrams for all 7 flows live in [`docs/architecture/DATA-FLOW.md`](architecture/DATA-FLOW.md); full mode rules live in [`FEATURE-BRANCHING-STUDY.md`](features/FEATURE-BRANCHING-STUDY.md) and [`FEATURE-REVIEW-STUDY.md`](features/FEATURE-REVIEW-STUDY.md).
 
-### Branching Study Flow (Student)
-
-**Phase 1 — Experience (No interruptions mid-flow)**
-```
-Initial Situation + Context / Data presented
-            ↓
-Decision Point → Student selects an option
-            ↓
-Next Situation (seamless — no consequence card, no reasoning form between nodes)
-            ↓
-Decision Point → Student selects next option
-            ↓
-... (variable number of decision points depending on case structure)
-            ↓
-Terminal Node → Journey complete
-```
-
-**Phase 2 — REVIEW (Retrospective — after journey is complete)**
-```
-Full journey replay shown to student:
-  • Every decision point traversed, in order
-  • The option chosen at each point
-  • The path taken and what the alternatives were
-  • How each choice contributed to the outcome
-  • Which decisions were pivotal to the final result
-            ↓
-Student writes reasoning for key decisions (retrospective, not per-click)
-Student can see: "Why this choice? What would have changed if I chose differently?"
-```
-
-**Phase 3 — Reflection & Retry**
-```
-Student submits overall Reflection
-            ↓
-[Optional: AI Reasoning / Challenge Support — max 2 rounds, counter-questions only, no grading]
-            ↓
-[Optional: Retry → New Attempt → Student explores a different path from scratch]
-```
-
-### Review Study Flow (Student)
-```
-1. Student opens case: reads context_text (situation + background data)
-2. Student reads problem_text (the open question/problem to analyze)
-3. Student writes analysis and proposes a solution with reasoning (student_analysis, proposed_solution, reasoning_text)
-4. [Optional] AI Reasoning / Challenge Support: counter-questions to probe student's reasoning (max 2 rounds)
-5. Student submits work → Status: SUBMITTED
-6. Lecturer reviews submission, writes qualitative feedback → Status: REVIEWED
-7. Student reads feedback, writes reflection → Status: REFLECTED
+```mermaid
+flowchart TD
+    Mat["Lecturer Uploads Materials (PDF/DOCX)"] --> RAG["AI RAG Draft Case (DRAFT)"]
+    RAG --> Rev["Lecturer Review, Edit & Publish (PUBLISHED)"]
+    Rev -->|BRANCHING_STUDY| Exp["Phase 1: Experience (Consecutive Decisions, NO Consequences Mid-Flow)"]
+    Exp --> JRev["Phase 2: Journey Review (Reveal Consequences + Retrospective Reasoning)"]
+    JRev --> Ref["Phase 3: Reflection + Optional AI Challenge (<=2 rounds, No Grading) + Retry"]
+    Rev -->|REVIEW_STUDY| OpenSub["Student Analyzes Context/Problem & Submits (1 per Case)"]
+    OpenSub --> FB["Lecturer Qualitative Feedback -> Student Reflection"]
 ```
 
 ---
 
 ## Architecture Summary
 
+> Full 3-tier Mermaid architecture & service boundaries: [`SYSTEM-ARCHITECTURE.md`](architecture/SYSTEM-ARCHITECTURE.md) and [`SERVICE-BOUNDARIES.md`](architecture/SERVICE-BOUNDARIES.md).
+
 | Layer | Technology | Role |
 |---|---|---|
-| Frontend | React 19 + Vite + TypeScript + TailwindCSS v4 + ReactFlow | Lecturer and Student UI |
-| Backend Gateway | Node.js (NestJS 10 + TypeScript) | API Gateway, business state, persistence |
+| Frontend | React 19 + Vite + TypeScript + TailwindCSS v4 + ReactFlow | Lecturer, Student & Admin UI (`Plus Jakarta Sans` + `Inter` target, Light-only) |
+| Backend Gateway | Node.js (NestJS 10 + TypeScript, raw SQL `pg`) | API Gateway, business state, persistence (`V1`–`V5`) |
 | AI Service | FastAPI (Python 3.12) + Pydantic v2 | Document parsing, RAG, case generation, challenge support (Internal) |
-| Vector DB | PostgreSQL 16 + pgvector | Embeddings + relational business data |
+| Vector DB | PostgreSQL 16 + pgvector | Embeddings (`vector(768)`) + relational business data |
 | Cache & Session | Redis 7 | Caching, session store |
 | Object Storage | MinIO | PDF/DOCX teaching material storage |
-| LLM | Gemini 3.5 Flash (`gemini-3.5-flash`; embeddings `gemini-embedding-001` 768-dim) / OpenAI GPT-4o-mini | Provider abstraction for text & embeddings |
+| LLM | Gemini 3.5 Flash (`gemini-3.5-flash`; embeddings `gemini-embedding-001` 768-dim) / OpenAI GPT-4o-mini | Provider abstraction (`providers/factory.py`) |
 
 ---
 
-## Documentation Index
+## Documentation Navigation
 
-| Category | Document | Description |
-|---|---|---|
-| **Audit & Requirements** | [Architectural Governance](architecture/ARCHITECTURAL-GOVERNANCE.md) | Architectural governance & system boundaries |
-| | [Requirement Traceability](requirements/REQUIREMENT-TRACEABILITY.md) | 30 Proposal items mapped to documentation |
-| **Architecture** | [Technology Stack ADR](architecture/ADR-001-TECHNOLOGY-STACK.md) | Technology choices & candidate options |
-| | [System Architecture](architecture/SYSTEM-ARCHITECTURE.md) | Multi-tier overview & design principles |
-| | [Service Boundaries](architecture/SERVICE-BOUNDARIES.md) | Inter-service contracts, protocols & security |
-| | [System Data Flows](architecture/DATA-FLOW.md) | End-to-end sequence diagrams & lifecycle |
-| | [Decision Tree Model](architecture/DECISION-TREE-MODEL.md) | Invariants & JSON schema for branching cases |
-| **Features** | [Feature Specifications](features/) | Comprehensive per-feature specifications |
-| **UI / UX Design System** | [R01 UI/UX Design Rules](../.agents/rules/01-ui-design-standards.md) | Single design source: identity, tokens by name (values in `frontend/src/index.css`), layout, components, states, quality bar |
-| | [Site Architecture](design/SITE-ARCHITECTURE.md) | 14-route sitemap, role boundaries & 6 product workflows |
-| | [Screen Specifications (P0–P4)](design/screens/) | Detailed per-screen layout, state & component specs |
-| | [Design Direction](design/DESIGN-DIRECTION.md) | Proposed visual/UX evolution within the fixed identity (PROPOSED) |
-| **Task Catalogs** | [Master Task Backlog](01_MASTER-TASKS.md) | 84-task baseline (`01_MASTER-TASKS.md`–`06_QA.md`); Jira holds 105 issues — see [Jira Key Map](04_JIRA/JIRA-KEY-MAP.md) |
-| **Team** | [Team Capability Matrix](team/TEAM-CAPABILITY-MATRIX.md) | Members, assignments, role playbooks |
-| **Data & AI** | [Data Model](database/DATA-MODEL.md) | PostgreSQL schema & SQL migration guide |
-| | [RAG Pipeline](ai/RAG-PIPELINE.md) | Document parsing, chunking, retrieval & sources |
-| | [Reasoning & Challenge Support](ai/REASONING-CHALLENGE-SUPPORT.md) | Counter-question rules, 2-round cap, non-grading mandate |
-| **Research & QA** | [Testing Strategy](qa/TESTING-STRATEGY.md) | Test profiles, test boundaries & CI checks |
-| | [Evaluation Design](research/EVALUATION-DESIGN.md) | Research questions, rubrics & dataset export |
+Use [`docs/README.md`](README.md) as the unified Documentation Hub for the full classified index across Rules, PO Scope Decisions, Architecture, Design (`R01` / `P0`–`P4` / `UX-SCREEN-NOTES.md`), 15 Feature Specs, Baselines, Jira Mapping, and QA Reports.
 
 ---
 
-## Feature Status (as of 2026-11-21)
+## Feature Status (as of 2026-11-25)
 
-> The previous table ("Implemented: strictly ZERO in this snapshot", 2026-10) is SUPERSEDED: it described the scaffold, not the current code. Status words: **Implemented** = code on `develop` with automated tests; **Partial** = some flows or screens missing; **Not started**. Implemented never means PO-accepted or Done in Jira (AGENTS.md rule 10). Evidence: `develop` `6f903f2` — backend build 0, unit 300/300, e2e 148 pass/33 skipped; AI service 153 pass/1 fail/11 skipped; frontend lint 0, unit 169/169, build 0.
+> Updated from the 2026-11-21 snapshot (`6f903f2`) to `develop` `0e78075` (post PRs #68, #69, #70, #73, #74, #75, #77, #79, #83, #84, #85). Status words: **Implemented** = code on `develop` with automated tests; **Partial** = some flows or backend endpoints missing; **Documented / Skeleton** = boundary only. Implemented never means PO-accepted or Done in Jira (`AGENTS.md` rule 10). Latest local frontend checks at `0e78075`: lint 0 errors, unit specs 298/298, build 0; open PR #80 (`feature/mvp-completion-backend`, `[BE-030]..[BE-033]`) carries remaining backend admin/profile/dashboard/rubric APIs.
 
 | Feature Area | Status | Evidence / gap |
 |---|---|---|
-| Authentication & Roles | Implemented (email/password, JWT, RBAC, rate limit) | Google/Microsoft sign-in (BE-034) not started; password reset UI exists without API |
-| Course Context & Enrollment | Implemented | Soft archive (OPD-014), invite code + student desk (BE-029, V5) |
-| Teaching Materials & Upload | Implemented | MinIO storage, PDF/DOCX validation |
-| Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary |
-| AI Case Generation | Implemented | DAG validation, grounded prompting; one stale boundary test (QA-006 AC3) |
-| Decision Tree / Case Editor | Implemented | node save with topology checks (BE-017), editor (FE-009/010) |
-| Lecturer Review & Publishing | Implemented | lifecycle state machine, published-only student gate |
-| Branching Case Player & Attempts | Implemented | play → review → reflect → retry; reasoning access fix pending (PR #77) |
-| Review Study | Implemented (BE) / Partial (FE) | BE-025 Done; student feedback view in open PR #69 |
-| AI Challenge Support | Implemented | 2-round cap in gateway and AI service (BE-027, FE-021) |
-| Lecturer Feedback & Statistics | Implemented (BE) / Partial (FE) | BE-026/028 Done; FE-019/FE-022 in open PRs #68/#70 |
-| Lecturer Dashboard | Partial | FE-027 open PR #73; aggregation API BE-030 not started |
-| Profile | Partial | view implemented; update API BE-031 not started |
-| Admin Portal | Partial | shell/dashboard UI (shows placeholder data — defect), admin APIs BE-032 not started, screens in PR #75 |
-| Evaluation & Rubric | Partial | rubric UI in PR #74; storage/export BE-033 not started |
-| Notifications | Documented (Phase 2) | automated reminders are Phase 2 |
+| Authentication & Roles | Implemented (email/password, JWT, RBAC, rate limit) | Google/Microsoft sign-in (`BE-034`) not started; forgot/reset password UI is MVP (PO 2026-11-25), backend reset API pending |
+| Course Context & Enrollment | Implemented | Soft archive (`OPD-014`), invite code + student desk (`BE-029`, `V5`) |
+| Teaching Materials & Upload | Implemented | MinIO storage, PDF/DOCX validation, RAG source inspector UI |
+| Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary (`test_retrieval_boundary.py` F-07 still open) |
+| AI Case Generation | Implemented | 3-color DFS DAG validation, grounded prompting (`gemini-3.5-flash`) |
+| Decision Tree / Case Editor | Implemented | node save with topology checks (`BE-017`), editor (`FE-009/010`) |
+| Lecturer Review & Publishing | Implemented | lifecycle state machine, published-only student gate (`INV-01`) |
+| Branching Case Player & Attempts | Implemented | play → review → reflect → retry (`PR #77` merged for reasoning access) |
+| Review Study | Implemented (core) | BE-025 + FE `ReviewStudyPage` & `ReviewFeedbackPage` (`PR #69` merged); MVP scope confirmed (`P4` `(LATER)` removed per PO `2026-11-25`, distinct from full verification); `D4-13` remains `OPEN PO DECISION`, `06.2` badge/Visual E2E open |
+| AI Challenge Support | Implemented | 2-round cap in gateway and AI service (`BE-027`, `FE-021`) |
+| Lecturer Feedback & Statistics | Partial / Implemented (core) | Core `BE-026/028` + `FE-019`/`FE-022` merged (`PR #68`/`#70`/`#76`); MVP scope confirmed (`P3` `(LATER)` removed per PO `2026-11-25`, distinct from full completion); route convention `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`, `D-04`, `OPD-010` remain `OPEN PO DECISION`, CSV `BE-033` in PR #80 |
+| Lecturer Dashboard | Partial | FE (`PR #73` merged); aggregation API `BE-030` pending in open PR #80 |
+| Profile | Partial | view implemented; update API `BE-031` pending in open PR #80 |
+| Admin Portal | Partial | shell + admin screens (`PR #75` merged; dashboard still shows sample data), admin APIs `BE-032` pending in open PR #80 |
+| Evaluation & Rubric | Partial | rubric UI (`PR #74` merged); backend `evaluation/` skeleton & storage/export `BE-033` pending in open PR #80 |
+| Notifications | Documented / Skeleton | `backend/src/modules/notification/` remains structural boundary only (Phase 2) |

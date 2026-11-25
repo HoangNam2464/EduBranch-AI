@@ -1,8 +1,9 @@
 # Design Inspiration — Research Notes
 
-> **Status**: Research (2026-11-21) · **Author**: Claude · **Feeds**: `docs/design/DESIGN-DIRECTION.md` (PROPOSED).
-> **Method**: full-page screenshots at 1440px with Playwright (Chromium). The third-party screenshots are not kept in the repository (removed 2026-11-22); re-capture them locally, compressed to about 50%, when needed (R01 / `.claude/rules/ui-design.md`). Pages that rendered without CSS (Linear, Gradescope, Stripe: their asset CDNs were not reachable from the session) or behind a bot challenge (Khan Academy) were discarded, not described from memory. Third-party screenshots are kept for internal design study only; nothing is copied into the product.
-> **Limit**: only public pages were reachable; logged-in product UIs (Canvas course pages, Gradescope grading, Coursera learner dashboard) were not, so their in-app UX is inferred from the marketing screenshots they publish. Claims marked INFERENCE are not verified in the live product.
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (Internal design benchmark study, `2026-11-21`, kept as background input only — rules live solely in `R01`).
+> - **Status**: Research (2026-11-21) · **Author**: Claude · **Feeds**: `docs/design/DESIGN-DIRECTION.md`.
+> - **Method**: full-page screenshots at 1440px with Playwright (Chromium). The third-party screenshots are not kept in the repository (removed 2026-11-22); re-capture them locally, compressed to about 50%, when needed (R01 / `.claude/rules/ui-design.md`). Pages that rendered without CSS (Linear, Gradescope, Stripe: their asset CDNs were not reachable from the session) or behind a bot challenge (Khan Academy) were discarded, not described from memory. Third-party screenshots are kept for internal design study only; nothing is copied into the product.
+> - **Limit**: only public pages were reachable; logged-in product UIs (Canvas course pages, Gradescope grading, Coursera learner dashboard) were not, so their in-app UX is inferred from the marketing screenshots they publish. Claims marked INFERENCE are not verified in the live product.
 
 ## 1. Sources reviewed
 

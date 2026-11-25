@@ -1,8 +1,9 @@
 # Feature Hierarchy & Backlog Mapping
 
-> **Trạng thái**: `DRAFT — CHỜ PROJECT OWNER PHÊ DUYỆT` · Ngày: 2026-11-01
-> **Cập nhật 2026-11-12 (quyết định PO):** OPD-001 → A (mã mời + Bàn học, Khóa học của tôi, Tham gia lớp), OPD-006 → wizard 3 bước (AI Studio), OPD-011 → A (rubric trong nền tảng, gồm Admin 10.8), D-05 → có dashboard giảng viên; Hồ sơ tài khoản 09.1/09.2 thuộc MVP. Các frame này không còn HOLD (page EduBranch AI – Screens section 07, 09). Kết luận HOLD bên dưới cho các mục này là trạng thái trước quyết định; phân loại hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`. Backlog vẫn thiếu task cho các màn này.
-> **Nguyên tắc**: Không tạo task hay Story Points mới. Chỗ thiếu phân rã được ghi là **"Đề xuất task con — cần xác nhận"** và không gán SP. Endpoint chỉ ghi khi đã có trong tài liệu dự án. Endpoint chưa có ghi `UNKNOWN`.
+> - **Document Class**: `[HISTORICAL SNAPSHOT — 2026-11-01 Baseline Analysis]` (Bản đối soát trước đợt chốt PO ngày 2026-11-12/16/25).
+> - **Tra cứu hiện hành**: Dùng [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](PRODUCT_OWNER_SCOPE_DECISIONS.md), [`docs/README.md`](../README.md), và [`JIRA-KEY-MAP.md`](../04_JIRA/JIRA-KEY-MAP.md) cho phạm vi MVP, route và trạng thái thực thi hiện tại (`15 routes cũ` và bảng Mâu thuẫn §4 bên dưới là ảnh chụp thời điểm 2026-11-01).
+> - **Cập nhật 2026-11-12 (quyết định PO):** OPD-001 → A (mã mời + Bàn học, Khóa học của tôi, Tham gia lớp), OPD-006 → wizard 3 bước (AI Studio), OPD-011 → A (rubric trong nền tảng, gồm Admin 10.8), D-05 → có dashboard giảng viên; Hồ sơ tài khoản 09.1/09.2 thuộc MVP; Admin `OPD-015 → B` thuộc MVP. Các frame này không còn HOLD (`EduBranch AI – Screens` section 07, 09, 10). Phân loại hiện hành xem `MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`.
+> - **Nguyên tắc**: Không tạo task hay Story Points mới. Chỗ thiếu phân rã được ghi là **"Đề xuất task con — cần xác nhận"** và không gán SP. Endpoint chỉ ghi khi đã có trong tài liệu dự án. Endpoint chưa có ghi `UNKNOWN`.
 
 ---
 
@@ -80,17 +81,17 @@ Dùng **route của sitemap** làm khóa (vì D-01 chưa chốt). Mỗi dòng gh
 
 ---
 
-## 4. Mâu thuẫn trong tài liệu cần làm rõ (không phải quyết định scope)
+## 4. Mâu thuẫn trong tài liệu cần làm rõ (Ảnh chụp 2026-11-01 + Trạng thái đối soát sau 2026-11-12..25)
 
-| # | Mâu thuẫn | Nguồn A | Nguồn B |
-|:-:|---|---|---|
-| C-1 | Có role Admin không | `00-project-foundation.md §1`, migration V3 | `feature-authentication.md` "not in MVP"; SITE-ARCH "two roles"; FR-AUTH-01 |
-| C-2 | Refresh token | `feature-authentication.md` "refresh token rotation"; FE-001 AC-2 | BE-001 AC-2 chỉ nêu access token 8h |
-| C-3 | Sinh case: modal hay wizard | DES-006, P1 §3 (modal) | Figma Page 1 (wizard), OPD-006 |
-| C-4 | Challenge Support: trang riêng hay modal | SITE-ARCH §5.3 route riêng; Page 2 | OPD-005 đề xuất modal; Page 1 |
-| C-5 | Sau khi xuất bản: tạo phiên bản hay khóa cấu trúc | DES-009 (Unpublish → v2) | OPD-007 Option A |
-| C-6 | Endpoint đổi trạng thái case | `POST …/approve`, `POST …/publish` | `PATCH /cases/:id/status` |
-| C-7 | Endpoint nộp Review Study / Reflection | `…/review-study/submissions`, `POST …/reflection` | `…/review-study/submit`, `PATCH …/reflection` |
-| C-8 | Ngôn ngữ UI | `01-ui-design-standards §7` (Academic English) | Figma Page 1 (tiếng Việt) |
-| C-9 | Proposal có Evaluation module + vai trò FE "Quantitative Evaluation UI" | Proposal §4, §9 | Backlog không có task nào |
-| C-10 | Ngày bắt đầu sprint | Proposal Table 2: Sprint 1 từ 16/09/2026 | `01_MASTER-TASKS`: 07/10/2026 – 15/12/2026 (10 tuần) |
+| # | Mâu thuẫn | Nguồn A | Nguồn B | Trạng thái sau cập nhật 2026-11-25 |
+|:-:|---|---|---|---|
+| C-1 | Có role Admin không | `00-project-foundation.md §1`, migration V3 | `feature-authentication.md` "not in MVP"; SITE-ARCH "two roles"; FR-AUTH-01 | **Resolved (PO 2026-11-12)**: Admin (`OPD-015 → B`) thuộc MVP |
+| C-2 | Refresh token | `feature-authentication.md` "refresh token rotation"; FE-001 AC-2 | BE-001 AC-2 chỉ nêu access token 8h | **Resolved in Docs**: `develop` dùng access token 8h; `rememberMe` queued |
+| C-3 | Sinh case: modal hay wizard | DES-006, P1 §3 (modal) | Figma Page 1 (wizard), OPD-006 | **Resolved (PO 2026-11-12)**: Wizard 3 bước (`OPD-006`) |
+| C-4 | Challenge Support: trang riêng hay modal | SITE-ARCH §5.3 route riêng; Page 2 | OPD-005 đề xuất modal; Page 1 | **OPEN (`OPD-005`)** |
+| C-5 | Sau khi xuất bản: tạo phiên bản hay khóa cấu trúc | DES-009 (Unpublish → v2) | OPD-007 Option A | **OPEN (`OPD-007`)** |
+| C-6 | Endpoint đổi trạng thái case | `POST …/approve`, `POST …/publish` | `PATCH /cases/:id/status` | Cả hai xuất hiện trong tài liệu/contract — đối chiếu implementation tại `case.controller.ts` |
+| C-7 | Endpoint nộp Review Study / Reflection | `…/review-study/submissions`, `POST …/reflection` | `…/review-study/submit`, `PATCH …/reflection` | **Resolved**: `review-study/submissions` + `POST .../reflection` |
+| C-8 | Ngôn ngữ UI | `01-ui-design-standards §7` (Academic English) | Figma Page 1 (tiếng Việt) | **Resolved (PO 2026-11-16/22)**: Tiếng Việt mặc định + VI/EN |
+| C-9 | Proposal có Evaluation module + vai trò FE "Quantitative Evaluation UI" | Proposal §4, §9 | Backlog không có task nào | **Resolved (PO 2026-11-12)**: `OPD-011 → A` + `FE-029` / `BE-033` |
+| C-10 | Ngày bắt đầu sprint | Proposal Table 2: Sprint 1 từ 16/09/2026 | `01_MASTER-TASKS`: 07/10/2026 – 15/12/2026 (10 tuần) | Baseline quản trị cố định theo `01_MASTER-TASKS` |

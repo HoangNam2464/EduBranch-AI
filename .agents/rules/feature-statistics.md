@@ -1,4 +1,4 @@
---
+---
 description: Rules for lecturer statistics in EduBranch-AI.
 trigger: model_decision
 ---
@@ -7,10 +7,10 @@ trigger: model_decision
 
 ## Scope
 Backend Gateway (NestJS `backend/`) — `statistics/` module.
-Frontend — `pages/lecturer/StatisticsPage.tsx`.
+Frontend — `pages/statistics/StatisticsPage.tsx`.
 
 ## Included
-- Branch selection frequency per node per case (rendered as simple inline CSS width percentage bars `bg-blue-600 h-2 rounded-full`)
+- Branch selection frequency per node per case (rendered with R01 design-token series in `BranchStatsChart` — primary/accent/neutral, never green-vs-red)
 - Participation count per case (how many students started/completed)
 - Completion rate per case
 - Simple reasoning inspection (list of student reasoning for a case)

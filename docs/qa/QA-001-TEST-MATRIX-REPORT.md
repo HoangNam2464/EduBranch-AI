@@ -1,11 +1,12 @@
 # QA-001 / EBA-109 Test Matrix Report: Auth, Course & Permissions
 
-**Master Task ID**: `EBA-109`  
-**Group Task ID**: `QA-001`  
-**Role**: `QA (Quality Assurance)`  
-**Sprint**: `Sprint 1 - Foundation`  
-**Status**: `Verified & Passing (100% Pass Rate)`  
-**Target Codebase**: Backend Gateway (`backend/`) & Frontend Client (`frontend/`)  
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (Point-in-time test verification report preserved verbatim; live verification uses current `TESTING-STRATEGY.md` & CI runs).
+**Master Task ID**: `EBA-109`
+**Group Task ID**: `QA-001`
+**Role**: `QA (Quality Assurance)`
+**Sprint**: `Sprint 1 - Foundation`
+**Status**: `Verified & Passing (100% Pass Rate)`
+**Target Codebase**: Backend Gateway (`backend/`) & Frontend Client (`frontend/`)
 
 ---
 

@@ -1,6 +1,7 @@
 # EduBranch AI — AI Reasoning & Challenge Support
 
-**Status**: Scaffolded | **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]` — **SSOT for Challenge Support Mechanics & Guardrails**
+> - **Implementation Status**: Implemented (Backend `challenge-support/` + AI Service `challenge_support/`) | **Source of Truth**: Proposal V1.2 (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`)
 
 ---
 
@@ -17,31 +18,29 @@ It operates strictly under academic guardrails:
 
 ## Flow
 
-```
-Student submits written reasoning (Branching Study or Review Study)
-        ↓
-Backend Gateway creates challenge_support_sessions, calls FastAPI
-        ↓
-FastAPI receives:
-  - student_reasoning
-  - case_context (situation or problem statement)
-  - optional retrieved teaching material context
-        ↓
-FastAPI constructs prompt:
-  System: "You are an academic AI Reasoning & Challenge Support assistant..."
-          "Ask ONE targeted counter-question. Do NOT grade. Do NOT score."
-  <sources>
-  [retrieved teaching material context, if any]
-  </sources>
-  User: "Student reasoning: [reasoning_text]"
-        ↓
-FastAPI generates challenge question (Round 1)
-        ↓
-Student reads question, optionally submits response
-        ↓
-FastAPI generates Round 2 challenge question (if student responds)
-        ↓
-Session is COMPLETED — no further rounds
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Student
+    participant BE as Backend Gateway
+    participant AI as FastAPI AI Service
+    participant DB as PostgreSQL
+
+    Student->>BE: Invoke Challenge Support (reasoningId XOR reviewSubmissionId)
+    BE->>DB: Create challenge_support_sessions (current_round = 1)
+    BE->>AI: POST /internal/v1/challenge-support/question (round=1, sources)
+    AI-->>BE: Return Round 1 Socratic question (no grades/scores)
+    BE->>DB: Persist challenge_messages (CHALLENGE_SUPPORT, round=1)
+    BE-->>Student: Show Round 1 counter-question
+
+    opt Optional Student Response (Round 2)
+        Student->>BE: POST /challenge-support/{sessionId}/respond
+        BE->>DB: Persist STUDENT message (round=2)
+        BE->>AI: POST /internal/v1/challenge-support/question (round=2)
+        AI-->>BE: Return Round 2 final question
+        BE->>DB: Persist CHALLENGE_SUPPORT (round=2) & set is_completed = TRUE
+        BE-->>Student: Show Round 2 question (Hard Stop — Round 3+ HTTP 400)
+    end
 ```
 
 ---

@@ -1,4 +1,4 @@
---
+---
 description: Rules for AI Reasoning / Challenge Support in EduBranch-AI.
 trigger: model_decision
 ---
@@ -8,7 +8,7 @@ trigger: model_decision
 ## Scope
 FastAPI `ai-service/` — `challenge_support/` package.
 Backend Gateway (NestJS `backend/`) — `challenge-support/` module (session + message persistence).
-Frontend — `pages/student/ChallengeSupportPage.tsx`.
+Frontend — `pages/challenge/ChallengeSupportPage.tsx`.
 
 ## Included
 - Supports **both** learning modes: probes `student_reasoning` (Branching Study) or `proposed_solution`/`reasoning_text` in `review_study_submissions` (Review Study)

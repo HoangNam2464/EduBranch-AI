@@ -1,9 +1,10 @@
 # EduBranch-AI — Sprint Tasks Tree & Role Breakdown (84 Tasks / 336 Story Points)
 
-> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
-> **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
-> **Cơ cấu chuẩn hóa**: 5 Nhóm chuyên môn (DES, FE, BE, OPS, QA) | 84 Tasks | 336 Story Points  
-> **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)  
+> - **Document Class**: `[IMMUTABLE BASELINE]` (Ảnh chụp phân rã 84 task ban đầu; phần phạm vi bổ sung + trạng thái thực tế xem [`docs/04_JIRA/JIRA-KEY-MAP.md`](04_JIRA/JIRA-KEY-MAP.md)).
+> - **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện
+> - **Nguồn quản trị gốc**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`
+> - **Cơ cấu chuẩn hóa**: 5 Nhóm chuyên môn (DES, FE, BE, OPS, QA) | 84 Tasks | 336 Story Points
+> - **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)
 
 ---
 
@@ -33,7 +34,7 @@ EduBranch AI (84 Tasks / 336 Story Points)
 
 ## 2.1. NHÓM DES — UI/UX DESIGN & PROTOTYPING (FIGMA)
 
-> **Quy mô**: **15 tasks** | **50 Story Points**  
+> **Quy mô**: **15 tasks** | **50 Story Points**
 > **Mô tả trọng tâm**: Chịu trách nhiệm toàn bộ hệ thống nhận diện giao diện, Design System chuẩn học thuật đại học, Design Tokens, wireframes và clickable prototypes cho 2 cổng Lecturer Portal và Student Portal.
 
 ### Cây phân rã công việc theo Sprint
@@ -85,7 +86,7 @@ DES Module Tree (15 tasks / 50 SP)
 
 ## 2.2. NHÓM FE — FRONTEND WEB APPLICATION (REACT 19)
 
-> **Quy mô**: **22 tasks** | **86 Story Points**  
+> **Quy mô**: **22 tasks** | **86 Story Points**
 > **Mô tả trọng tâm**: Chịu trách nhiệm xây dựng giao diện ứng dụng React 19 + TypeScript + Vite + TailwindCSS v4, state management qua Zustand, tích hợp trực quan hóa cây quyết định bằng ReactFlow, và kết nối REST API Gateway.
 
 ### Cây phân rã công việc theo Sprint
@@ -151,7 +152,7 @@ FE Module Tree (22 tasks / 86 SP)
 
 ## 2.3. NHÓM BE — BACKEND GATEWAY & FASTAPI AI SERVICE
 
-> **Quy mô**: **25 tasks** | **110 Story Points**  
+> **Quy mô**: **25 tasks** | **110 Story Points**
 > **Mô tả trọng tâm**: Chịu trách nhiệm REST API Gateway (NestJS 10 + TypeScript), kiến trúc JWT Guards / RBAC / Ownership, và FastAPI AI Service (Python 3.12) xử lý RAG ingestion, LLM case generation, validation graph cycle.
 
 ### Cây phân rã công việc theo Sprint
@@ -223,7 +224,7 @@ BE Module Tree (25 tasks / 110 SP)
 
 ## 2.4. NHÓM OPS — DEVOPS, OBJECT STORAGE & VECTOR DATABASE
 
-> **Quy mô**: **3 tasks** | **11 Story Points**  
+> **Quy mô**: **3 tasks** | **11 Story Points**
 > **Mô tả trọng tâm**: Chịu trách nhiệm hạ tầng vận hành, hệ thống database migrations tự động với advisory lock, quản lý lưu trữ tài liệu bảo mật trên MinIO Object Storage, và thiết lập chỉ mục HNSW vector cosine trên pgvector.
 
 ### Cây phân rã công việc theo Sprint
@@ -249,7 +250,7 @@ OPS Module Tree (3 tasks / 11 SP)
 
 ## 2.5. NHÓM QA — TESTING, SECURITY & QUALITY ASSURANCE
 
-> **Quy mô**: **19 tasks** | **79 Story Points**  
+> **Quy mô**: **19 tasks** | **79 Story Points**
 > **Mô tả trọng tâm**: Chịu trách nhiệm chiến lược kiểm thử đa tầng: Unit test, Integration test, HTTP Security E2E (Supertest), Graph Theory Invariant validation, Retrieval grounding tests, UAT, Accessibility WCAG 2.1 AA.
 
 ### Cây phân rã công việc theo Sprint

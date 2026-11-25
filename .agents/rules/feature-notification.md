@@ -1,4 +1,4 @@
---
+---
 description: Rules for the notification extension point in EduBranch-AI.
 trigger: model_decision
 ---
@@ -6,9 +6,9 @@ trigger: model_decision
 # Feature Rules: Notification Extension Point
 
 ## Scope
-Backend Gateway (NestJS `backend/`) — `notification/` module.
+Backend Gateway (NestJS `backend/`) — `notification/` module (Phase 2 extension boundary; `PSD-03` open regarding whether deadline display requires a task in MVP).
 
-## Included (Scaffolded only)
+## Included (Phase 2 Structural Boundary)
 - Notification entity (recipient, type, message, read status)
 - Extension point for: assignment reminder, deadline reminder, in-app notification
 

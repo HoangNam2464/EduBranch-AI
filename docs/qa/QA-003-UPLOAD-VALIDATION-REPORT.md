@@ -1,12 +1,13 @@
 # QA-003 / EBA-217 Test Verification Report: Material Upload Validation, File Types & Size Bounds
 
-**Master Task ID**: `EBA-217`  
-**Group Task ID**: `QA-003`  
-**Role**: `QA (Quality Assurance)`  
-**Sprint**: `Sprint 2 - Material & RAG`  
-**Flow**: `Flow 1`  
-**Status**: `Verified & Passing (100% Pass Rate)`  
-**Target Codebase**: Backend Gateway (`backend/`) & Frontend Client (`frontend/`)  
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (Point-in-time verification report preserved verbatim as audit evidence).
+**Master Task ID**: `EBA-217`
+**Group Task ID**: `QA-003`
+**Role**: `QA (Quality Assurance)`
+**Sprint**: `Sprint 2 - Material & RAG`
+**Flow**: `Flow 1`
+**Status**: `Verified & Passing (100% Pass Rate)`
+**Target Codebase**: Backend Gateway (`backend/`) & Frontend Client (`frontend/`)
 **Associated Issues**: `EBA-204` (FE-003), `EBA-208` (BE-005)
 
 ---

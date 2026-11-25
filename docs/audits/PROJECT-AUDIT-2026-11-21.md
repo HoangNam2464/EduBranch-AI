@@ -1,5 +1,7 @@
 # Project Audit — 2026-11-21
 
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (Point-in-Time Repository Audit, `develop` `6f903f2`)
+
 > **Status**: Audit record (point in time). **Author**: Claude (PO order in chat 2026-11-20: project-wide upgrade; UI "preserve and elevate"). **Baseline**: `develop` `6f903f2`. Labels: FACT (verified), INFERENCE, PROPOSAL, UNKNOWN; statuses per policy §8.
 > Live task status: Jira and `docs/04_JIRA/JIRA-KEY-MAP.md`. Design: `docs/design/audit/UI-AUDIT.md`, `docs/design/DESIGN-DIRECTION.md`. Team: `docs/team/TEAM-CAPABILITY-MATRIX.md`.
 

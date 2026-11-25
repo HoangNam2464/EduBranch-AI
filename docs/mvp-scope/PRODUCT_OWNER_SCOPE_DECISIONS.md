@@ -1,9 +1,47 @@
-# Product Owner — Quyết định phạm vi MVP cần duyệt
+# Product Owner — Quyết định phạm vi MVP & Sổ theo dõi quyết định mở
 
-> **Status**: Draft — chờ Project Owner duyệt · **Ngày**: 2026-11-03.
-> Mỗi mục gồm: hướng PO đã nêu (2026-11-03), bằng chứng, xung đột phát hiện được, và đề xuất. **Không mục nào được coi là đã duyệt.** Không OPD nào được chuyển sang APPROVED.
+> - **Document Class**: `[PO SCOPE / DECISION]` — Living Decision Ledger (khởi tạo 2026-11-03, cập nhật theo các quyết định PO ngày **2026-11-12**, **2026-11-16**, **2026-11-22**, **2026-11-25**).
+> - **Quy tắc**: Mọi mục `OPEN PO DECISION` / `UNRESOLVED` không được tự ý chọn phương án thay mặt PO (`.agents/rules/02-agent-operating-policy.md §5`). Nội dung lịch sử bên dưới mỗi mục (đề xuất ngày 2026-11-03) được giữ nguyên để truy nguyên, **không phải hướng dẫn hiệu lực nếu đã có dòng `ĐÃ QUYẾT ĐỊNH`**.
 
-## 1. Điều kiện dừng đã gặp
+## 0. Bảng tổng hợp trạng thái Quyết định PO (Tra cứu nhanh)
+
+### A. Đã chốt bởi Project Owner (`[DECIDED]`)
+| Mã | Quyết định đã duyệt | Ngày chốt | Ghi chú phạm vi còn mở (nếu có) |
+|---|---|---|---|
+| **OPD-001 → A** | Mã mời, Tham gia lớp, Khóa học của tôi, Bàn học thuộc **MVP** (`07.2–07.4`, `09.2`) | 2026-11-12 | Link trực tiếp tới case `PUBLISHED` vẫn giữ |
+| **OPD-006** | Sinh case AI dùng **wizard 3 bước AI Studio** (`07.5–07.7`) trong MVP | 2026-11-12 | Nút "Tạo thủ công từ đầu" chờ `D-07` |
+| **OPD-011 → A** | **Rubric đánh giá chất lượng case trong nền tảng** (`07.8`, `10.8`) + CSV ẩn danh thuộc MVP | 2026-11-12 | Survey/thống kê so sánh thực nghiệm theo `EVALUATION-DESIGN.md` |
+| **OPD-013** | Màn Admin Dịch vụ AI (`10.7`) chỉ xem (provider cố định qua `.env`) | 2026-11-12 | — |
+| **OPD-014** | Khóa học dùng **lưu trữ mềm** (`PATCH /courses/:courseId/archive`), bỏ `DELETE` | 2026-11-16 | Không có luồng khôi phục khóa học; thao tác lưu trữ của Admin (`10.5`/`10.6`) chưa có task |
+| **OPD-015 → B** | Cổng **Admin** (đủ 10 màn `10.1–10.10`) thuộc MVP | 2026-11-12 | Xác minh tài khoản giảng viên chờ `OPD-008` |
+| **D-05** | **Có Dashboard giảng viên** (`07.1`) thuộc MVP | 2026-11-12 | Màn mặc định sau đăng nhập (`ROLE_HOME.LECTURER`: `/lecturer/dashboard` vs `/lecturer/courses` ở `paths.ts`) giữ ở mục B chờ PO chốt chính thức |
+| **PSD-09 (cốt lõi)** | Đăng nhập/đăng ký **Google & Microsoft** (`00.3–00.5`, trừ Admin) thuộc MVP | 2026-11-12 | Chi tiết liên kết email, gán role & domain trường vẫn `OPEN` |
+| **UX/UI & UI Auth** | Light theme Navy/Sky (`R01` + Figma làm chuẩn màn hình), font `Plus Jakarta Sans` + `Inter`, cấu trúc SPA module hóa (Target Frontend Architecture), VI mặc định + VI/EN, Quên/Đặt lại mật khẩu (MVP UI) + `rememberMe`; không thiết kế giao diện mới trong khi làm dự án (chỉ cân nhắc update giao diện mở rộng **sau khi hoàn thành dự án, nếu còn thời gian**) | 2026-11-16 / 22 / 25 | BE reset mật khẩu & `rememberMe` TTL chờ triển khai; `ROLE_HOME.LECTURER` & routing Feedback giữ ở mục B |
+| **Gỡ `(LATER)` P3/P4** | Xác nhận **Statistics, Lecturer Feedback (`P3`) và Review Study (`P4`) thuộc phạm vi MVP hiện tại**; gỡ nhãn `(LATER)` khỏi `P3`/`P4` | 2026-11-25 | **Phân biệt phạm vi MVP vs triển khai thực tế** (chưa coi là hoàn thành 100%); **`D-04`**, **`OPD-010`**, **`D4-13`** và route Feedback giữ **`OPEN`** ở mục B |
+
+### B. Đang chờ PO quyết định (`[OPEN PO DECISION]` / `[UNRESOLVED]`)
+| Mã | Vấn đề còn mở | Màn / Module chịu ảnh hưởng |
+|---|---|---|
+| **OPD-002 / D-06** | Quy tắc bắt buộc lập luận ở quyết định then chốt & cách xác định điểm then chốt | `05.4`, `03.4`, `FEATURE-BRANCHING-STUDY` |
+| **OPD-003** | Hành vi khi mở lại lượt làm Branching đang làm dở (tiếp tục hay hủy) | `05.1`, `branching-attempt/` |
+| **OPD-004** | Giới hạn số lượt làm lại tối đa (nếu có) | `05.9`, `05.10` |
+| **OPD-005** | AI Challenge Support mở dạng Modal hay trang riêng (**HOLD** frame `05.5`, `05.6`) | `05.4`, `05.5`, `05.6`, `SITE-ARCHITECTURE` |
+| **OPD-007** | Sửa/phiên bản hóa case sau khi đã `PUBLISHED` khi có bài làm | `03.6`, `FEATURE-CASE-REVIEW-AND-PUBLISHING` |
+| **OPD-008** | Cơ chế xác minh/kích hoạt tài khoản giảng viên (**HOLD** email kích hoạt `26:148`) | `00.5`, `10.3`, `auth/` |
+| **OPD-010** | Có nút gợi ý phản hồi bằng AI trên màn `04.2` hay không | `04.2`, `FEATURE-LECTURER-FEEDBACK` |
+| **D-04** | Lưu hay không trường Mã số sinh viên trên bảng `users` | `00.4`, `04.1`, `V1__init_schema.sql` |
+| **D-07** | Nút "Tạo thủ công từ đầu" trong AI Studio | `07.6` |
+| **D4-13** | Trường `student_analysis` trong Review Study bắt buộc hay tùy chọn (lưu ý: Schema `V2` / `FEATURE-REVIEW-STUDY` hiện là nullable theo R2 Option A; trạng thái chốt đồng bộ UI chờ xác nhận nếu khác) | `06.1`, `review-study/` |
+| **PSD-03** | Thông báo nhắc hạn (`FR-NOTIF-01`): để Phase 2 hay bổ sung task hiển thị hạn nộp trong MVP | `notification/` |
+| **PSD-07** | Bố cục màn quyết định sinh viên `05.2` (hai cột vs một cột `768px`) | `05.2`, `P2-STUDENT-CORE` |
+| **PSD-08** | Có bước xác nhận phương án (`05.2`) hay chọn xong chuyển ngay (`FND §6.2`) | `05.2`, `BranchingCasePlayerPage` |
+| **PSD-09 (chi tiết)** | Quy tắc chọn role khi login Google/MS lần đầu, liên kết trùng email, giới hạn domain trường | `00.3–00.5`, `BE-034` |
+| **ROLE_HOME.LECTURER** | Màn mặc định sau đăng nhập của Giảng viên: `/lecturer/dashboard` (frame `07.1` thuộc MVP theo `D-05` 2026-11-12; API `BE-030` còn ở PR #80) vs `/lecturer/courses` (`frontend/src/routes/paths.ts:78` hiện hành trên `develop`). *(`OPD-006` chỉ quyết định wizard AI Studio `07.5–07.7`, không phải căn cứ cho route dashboard)* | `07.1`, `00.3`, `SITE-ARCHITECTURE`, `P0`, `P1`, `paths.ts` |
+| **Lecturer Feedback Routes** | Giữ song song overview (`/lecturer/feedback`, `/lecturer/feedback/:submissionId`) và theo Case (`/lecturer/cases/:caseId/feedback`) hay chọn một tuyến chuẩn duy nhất | `04.1`, `04.2`, `SITE-ARCHITECTURE`, `P3-SUPPORT-AND-STATISTICS` |
+
+---
+
+## 1. Điều kiện dừng ban đầu (Hồ sơ lịch sử 2026-11-03)
 
 | Điều kiện (yêu cầu §11) | Gặp? | Mục |
 |---|---|---|

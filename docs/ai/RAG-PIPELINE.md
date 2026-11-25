@@ -1,45 +1,30 @@
-﻿# EduBranch AI — RAG Pipeline
+# EduBranch AI — RAG Pipeline
 
-**Status**: Scaffolded
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]` — **SSOT for Document Ingestion & Grounded Retrieval**
+> - **Implementation Status**: Implemented (Internal FastAPI AI Service — `ingestion/`, `retrieval/`, `generation/`)
 
 ---
 
 ## Pipeline Overview
 
-```
-TeachingMaterial (PDF / DOCX stored in MinIO)
-        ↓
-[1] DocumentParser        (PyPDF / python-docx)
-        ↓
-[2] DocumentChunker       (LangChain RecursiveCharacterTextSplitter)
-        Chunk size: configurable (default 512 tokens)
-        Chunk overlap: configurable (default 64 tokens)
-        ↓
-[3] EmbeddingGeneration   (OpenAI text-embedding-3-small | Gemini gemini-embedding-001 @768)
-        ↓
-[4] pgvector storage      (table: document_chunks, column: embedding vector(1536))
-        Store: chunk_text, chunk_index, document_id, course_id, page_number (if available)
-        ↓
-        [At case generation time:]
-        ↓
-[5] Query embedding       (same model as indexing)
-        ↓
-[6] Metadata filtering    (filter by material_ids or course_id)
-        ↓
-[7] Top-K retrieval       (pgvector cosine similarity, k=5 default)
-        ↓
-[8] Prompt construction
-        System: "You are an expert case study author for university education..."
-        <sources>
-        [retrieved chunk texts]
-        </sources>
-        User: "Generate a branching case study on topic X..."
-        ↓
-[9] LLM generation        (via provider abstraction)
-        ↓
-[10] Pydantic validation  (CaseGenerationOutput schema)
-        ↓
-[11] Return to Backend Gateway for persistence
+```mermaid
+flowchart TD
+    subgraph Ingestion ["Phase A: Material Ingestion (/internal/v1/ingestion/process)"]
+        TM["TeachingMaterial\n(PDF / DOCX in MinIO)"] --> Parse["1. DocumentParser\n(PyPDF / python-docx)"]
+        Parse --> Chunk["2. DocumentChunker\n(LangChain RecursiveCharacterTextSplitter\n512 tokens, 64 overlap)"]
+        Chunk --> Embed["3. EmbeddingGeneration\n(gemini-embedding-001 @768 via factory.py)"]
+        Embed --> Store[("4. PostgreSQL + pgvector\ndocument_chunks vector(768) HNSW")]
+    end
+
+    subgraph Retrieval ["Phase B: Grounded Case Generation (/internal/v1/generation/generate-case)"]
+        Topic["Lecturer Topic & materialIds"] --> QEmbed["5. Query Embedding\n(same 768-dim model)"]
+        QEmbed --> Filter["6. Course-Isolated Top-K Retrieval\nWHERE course_id = :course_id\nORDER BY embedding <=> query LIMIT 5"]
+        Store -.-> Filter
+        Filter --> Prompt["7. Prompt Assembly + Tag Neutralization\nSystem Instructions + sources XML + User Prompt"]
+        Prompt --> Gen["8. LLM Generation\n(gemini-3.5-flash via factory.py)"]
+        Gen --> Valid["9. Pydantic CaseGenerationOutput\n+ 3-Color DFS Cycle Validation"]
+        Valid --> Return["10. Return Draft JSON to Backend Gateway"]
+    end
 ```
 
 ## Security Rules

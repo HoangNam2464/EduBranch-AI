@@ -1,4 +1,6 @@
-﻿# Changelog — EduBranch-AI
+# Changelog — EduBranch-AI
+
+> - **Document Class**: `[PROJECT CHANGELOG]`
 
 All notable changes to EduBranch AI are documented in this file.
 
@@ -8,15 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
-### Changed
-- **Official Identity Alignment**: Standardized project and repository identity to **EduBranch AI** (Repo: EduBranch-AI, Acronym: EBA, Target: Higher Education).
-- **Docker Infrastructure Synchronization**: Synchronized active Docker compose project (edubranch-ai), containers (edubranch_postgres, edubranch_redis, edubranch_minio), network (edubranch_network), database (edubranch_ai), and MinIO bucket (edubranch-materials) while safely preserving persistent volumes and existing data.
-- **Learning-Flow Enforcement**: Verified and reinforced uninterrupted experience-first Branching Study (no mid-flow reasoning or consequence reveal), retrospective Journey Review consequence reveals, optional retrospective reasoning, independent Review Study, and 1-2 round non-grading AI Challenge Support per Proposal V1.2.
-- **GitHub Repository Synchronization**: Renamed remote repository to EduBranch-AI, verified remotes, package metadata, and CI/CD configurations.
-- **Product reorientation**: CaseTree-AI → EduBranch-AI. Product name, positioning, and all user-facing references updated across README, docs, UI, and source comments.
-- **Branching Study flow corrected**: Experience phase is now seamless (no reasoning form or consequence card between Decision Points). REVIEW phase (post-journey retrospective) introduced as the primary site for reasoning capture and path analysis. See `docs/features/FEATURE-BRANCHING-STUDY.md`.
-- **AI positioning corrected**: AI Reasoning / Challenge Support replaces "Debate Assistant / Devil's Advocate" in all documentation and source files.
-- **Product positioning corrected**: EduBranch-AI is positioned as a case-based learning platform, not a "Branching Decision Tree Simulator".
+### Added / Changed
+- **Documentation Governance & Reorganization**: Established unified Documentation Hub (`docs/README.md`), standardized rule precedence & agent parity (`.agents/rules/03-engineering-and-task-standards.md`, `AGENTS.md`, `.agents/rules/feature-*.md`, `.claude/rules/`), converted core architecture/AI/DB/feature diagrams to Mermaid, and separated live SSOT specs from immutable baselines and historical snapshots.
+- **PO Scope & UI/Architecture Alignment (Nov 2026)**: Added Admin role (`V3`), Course Invite-Code Enrollments (`V5`, `BE-029`, `OPD-001`), Soft Course Archiving (`OPD-014`), 3-step AI Studio (`OPD-006`), In-Platform Case-Quality Rubric (`OPD-011`), Lecturer Dashboard (`D-05`), Forgot/Reset Password MVP UI + `rememberMe`, confirmed `P3`/`P4` (`Statistics`, `Lecturer Feedback`, `Review Study`) in MVP scope (removing `(LATER)` labels while preserving `D-04`, `OPD-010`, `D4-13`, `ROLE_HOME.LECTURER`, and Feedback route convention as `OPEN PO DECISION` and separating MVP scope from implementation completeness), Light-only `R01` visual system (`#2A4E7F` / `#00A5F5`, `Plus Jakarta Sans` + `Inter` target, modular frontend architecture & canonical naming standard §8), and Spec Kit v1.4.0 delivery workflow (`FEATURE-DELIVERY-WORKFLOW.md`).
+- **Official Identity & Core Flows**: Standardized project identity to **EduBranch-AI**, synchronized Docker infrastructure, enforced Experience-First Branching Study (`step` -> Journey Review retrospective reasoning -> Reflection/Retry), Review Study submissions (`BE-025`), Lecturer Feedback (`BE-026`), Basic Statistics (`BE-028`), and 1–2 round non-grading AI Challenge Support (`BE-027`).
 
 ---
 

@@ -3,7 +3,7 @@ name: figma-screen-implementer
 description: Implements or fixes one EduBranch screen group in the running frontend so it meets R01 and shows the content of its Figma frames (page EduBranch AI – Screens). Give it the screens (frame code, node id, route, role), the problems to fix and the files it owns. Use for UI quality work, not for new business behaviour. Only when Antigravity cannot be used, one at a time.
 ---
 
-You make the assigned EduBranch screens meet R01 (`.agents/rules/01-ui-design-standards.md`) in the running frontend. R01 and the tokens in `frontend/src/index.css` are the visual standard; the Figma frame says which content, fields and actions the screen has (PO 2026-11-22).
+You make the assigned EduBranch screens in the running frontend match the **PO-approved Figma** design (`EduBranch AI – Screens`, official screen authority) while upholding the general quality standards in `R01` (`.agents/rules/01-ui-design-standards.md`) and design tokens in `frontend/src/index.css` (PO 2026-11-25). `R01` never overrides an approved Figma screen design; never edit Figma to conform to old code, and report any conflict between approved Figma and `R01` as `OPEN PO DECISION / UNRESOLVED`.
 
 ## Inputs you must receive
 The screen list (frame code, Figma node id, route, role), the problems to fix, and the files you own. If any is missing, stop with `STOPPED: <what is missing>`.

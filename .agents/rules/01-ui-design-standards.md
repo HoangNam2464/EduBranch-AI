@@ -1,31 +1,30 @@
 ---
 description: >-
-  The single UI/UX design source for EduBranch-AI: identity, tokens (by name),
-  layout, components, states, copy and the UI quality bar. Read before any
-  frontend or design work.
+  General UI/UX design rules and quality standards for EduBranch-AI (identity,
+  token names, layout, components, states, copy, and quality bar); PO-approved
+  Figma remains the official per-screen design authority.
 trigger: always_on
 ---
 
 # EduBranch-AI — UI/UX Design Rules (R01)
 
-> **Single design source** (PO 2026-11-22: "theo đề xuất"). This file and the code tokens are the only design rules. `CLAUDE.md` §3 summarises them; no other document restates design values.
-> - **Values** (colours, radii, shadows, fonts) live only in `frontend/src/index.css` `@theme`. This file names tokens; it never repeats a hex value except the two brand colours below.
-> - **Figma** (file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens`, frame register `docs/05_FIGMA.md`) is the reference for screen content: which fields, sections and actions a screen has. Code and this file are the visual standard; Figma is updated to follow them later (PO 2026-11-22).
+> - **Design authority & precedence (PO 2026-11-25)**: **PO-approved Figma** (`file 6CtSgJPKo4jCIbB7WwCaWw`, pages `EduBranch AI – Screens` & `EduBranch AI – Design System`, frame register `docs/05_FIGMA.md`) is the **official design authority for each screen**. **`R01`** (this file) defines general UI/UX design rules and quality standards — it must **NOT** be used to override a specific PO-approved Figma design.
+> - **Code vs Design**: Frontend code (`frontend/src/index.css` `@theme` / target `frontend/src/styles/variables.css`) is the **implementation** of the design, never the authority deciding the design. When code mismatches PO-approved Figma, update code and implementation docs to follow Figma. **Never edit Figma to legitimize or conform to old code.** If a conflict arises between PO-approved Figma and `R01` general rules, report it and keep it **`OPEN PO DECISION / UNRESOLVED`** until the PO decides.
 > - **Per-screen behaviour**: `docs/design/UX-SCREEN-NOTES.md`. Routes: `frontend/src/routes/paths.ts`.
-> - **Reference frontend** (PO 2026-11-16/17, confirmed 2026-11-22): the frontend's file organisation, code conventions, VI/EN setup and UX behaviour (§5, §9) were learned from a reference frontend the PO supplied (`D:\CAPSTONE_2026\EduBranch-AI-archive\reference\frontend.zip`, outside the repo). Learn from it only: never copy its files, assets, copy or brand into the repo, never extract it inside the repo, never name that project in EduBranch docs or code. Its font and colours are not used (§0).
+> - **Frontend architecture & typography standard** (updated 2026-11-25): UI uses `Plus Jakarta Sans` (primary) and `Inter` (secondary) on Light-only Navy `#2A4E7F` / Sky `#00A5F5` surfaces, Vietnamese default UI (`vi.json` / `en.json`), and a modular TypeScript architecture (`styles/`, `routes/`, `layouts/`, `pages/<domain>/`, `features/<domain>/components/`, `components/ui/`, `components/feedback/`, `hooks/`, `services/`, `stores/`, domain-scoped `utils/`, `config/`, `lib/`). Naming & structure must reflect EduBranch-AI's own higher-education domain exclusively—never import non-university concepts, dark mode, unapproved color palettes, or external brand names.
 > - **Improvement plan** for the current UI: `docs/design/DESIGN-DIRECTION.md`.
 
 ## 0. Fixed decisions (change only with a new PO decision; update this list in the same change)
 
 | Topic | Decision | Source |
 |---|---|---|
-| Identity | Light theme. Navy `#2A4E7F` = actions and focal data. Sky `#00A5F5` = data and highlights, never text | PO 2026-11-20, kept 2026-11-22 |
-| Dark mode | None. The theme toggle and `.dark` styles are removed; never add `dark:` classes | PO 2026-11-20, 2026-11-21 |
-| Font | System font (`--font-sans`: Segoe UI on Windows). `--font-display` (Be Vietnam Pro) only for landing headings | PO 2026-11-21 |
+| Identity | Light theme only (matches live Figma `6CtSgJPKo4jCIbB7WwCaWw`: `page`/`surface`, `canvas`, `surface-muted`, `selected`). Navy `#2A4E7F` = actions and focal data. Sky `#00A5F5` = data and highlights, never text | PO 2026-11-20, 2026-11-22 & 2026-11-25 |
+| Dark mode | None. The theme toggle and `.dark` styles are removed; never add `dark:` classes | PO 2026-11-20, 2026-11-21, 2026-11-25 |
+| Font | `Plus Jakarta Sans` (primary) and `Inter` (secondary), fallback `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` (code transition from `Segoe UI`/`Be Vietnam Pro` in `index.css` queued for code-sync pass) | PO 2026-11-25 |
 | Platform | Web app in the browser. App screens are fluid with the window; landing and auth pages are centred at `max-w-7xl` | PO 2026-11-21, 2026-11-22 |
 | Language | Vietnamese default, English through the VI/EN switch, both in the MVP; one language per screen | PO 2026-11-16, 2026-11-22 |
-| Style goal | Keep the identity; fix what looks broken or unprofessional first; a bigger visual upgrade comes later | PO 2026-11-22 |
-| Standard | Code + this file are the standard; Figma follows | PO 2026-11-22 |
+| Style goal | Keep existing approved Figma/Light Navy-Sky identity and fix broken UI/UX execution; no new design phase now — consider visual UI redesign **only after project completion, if time permits** | PO 2026-11-22 & 2026-11-25 |
+| Design Authority | **PO-approved Figma** governs per-screen design; **`R01`** governs general UI quality rules without overriding approved Figma; **code implements Figma** (never edit Figma to justify legacy code; escalate R01-vs-Figma conflicts as `UNRESOLVED`) | PO 2026-11-25 |
 
 ## 1. Character
 
@@ -124,7 +123,7 @@ A screen is ready only when, in the running app with real data:
 5. Keyboard and focus work; no console errors.
 6. Before/after screenshots exist for the change and a reviewer who did not build it has checked them.
 
-## 9. Frontend code organisation and VI/EN setup (as built; learned from the reference frontend)
+## 9. Frontend code organisation and VI/EN setup (`src/`)
 
 ### 9.1 Folders (`frontend/src`, TypeScript, import alias `@/` = `src/`)
 | Folder | Holds | Rule |
@@ -135,17 +134,26 @@ A screen is ready only when, in the running app with real data:
 | `lib/` | `i18n.ts` | library setup only |
 | `routes/` | `paths.ts` (`PATHS`, `buildPath`, `ROLE_HOME`), `AppRoutes.tsx`, `PrivateRoute.tsx`, `guards.ts` | every route string comes from `paths.ts` |
 | `layouts/` | `PublicLayout`, `LecturerLayout`, `StudentLayout`, `AdminLayout`; `shell/` = `AppShell`, `Sidebar`, `HeaderActions`, `AppFooter`, `shellRoutes`, `useSidebarCollapsed`, `ShellTitleContext` | role layouts wrap `AppShell`; pages render only their content area |
-| `pages/<domain>/` | one folder per domain (`auth`, `courses`, `materials`, `cases`, `branching`, `challenge`, `review-study`, `feedback`, `statistics`, `rubric`, `dashboard`, `student`, `profile`, `admin`, `landing`, `errors`) | page-only helpers stay beside the page (`*Logic.ts`, `*Helpers.ts`) with a `*.spec.ts` |
-| `components/ds/` | design-system primitives and page patterns (`Button`, `Field`, `SearchField`, `Dialog`, `Toast`/`ToastRegion`, `StatusTabs`, `FilterControl`, `Pagination`, `ResultCount`, `MetricCard`, badges, `CourseCard`, `Breadcrumb`, `PageContext`, `SectionHeading`, `PublicNav`, `PublicFooter`, `LanguageSwitcher`, `cx`, `FOCUS`) exported from `ds/index.ts` | the only place for shared UI; a pattern used by two pages moves here |
-| `components/feedback/` | states (`Skeleton`, `EmptyState`, `ErrorState`, `NoResultsState`, `StatusPage` + 403/404/500 pages, `SessionExpiredDialog`) and shared feedback views | every loading/empty/error state uses these |
+| `pages/<domain>/` | route page containers (`*Page.tsx`) per domain (`auth`, `courses`, `materials`, `cases`, `branching`, `challenge`, `review-study`, `feedback`, `statistics`, `rubric`, `dashboard`, `student`, `profile`, `admin`, `landing`, `errors`) | keep `pages/<domain>/` strictly to route orchestration (`develop` still holds nested components/helpers queued for `PR 4` extraction; all **new** domain helpers use explicit `<domain><Concern>.ts` names in `src/utils/`, never `*Helpers.ts` or `*Logic.ts`) |
+| `features/<domain>/components/` | `[PR 4 Target]` domain modals, cards, wizard panels & landing sections extracted from `pages/*` | route-specific multi-file feature UI lives here; cross-page primitives still belong in `components/ui/` |
+| `components/ds/` | design-system primitives and page patterns (`Button`, `Field`, `SearchField`, `Dialog`, `Toast`/`ToastRegion`, `StatusTabs`, `FilterControl`, `Pagination`, `ResultCount`, `MetricCard`, badges, `CourseCard`, `Breadcrumb`, `PageContext`, `SectionHeading`, `PublicNav`, `PublicFooter`, `LanguageSwitcher`, `cx`, `FOCUS`) exported from `ds/index.ts` `[PR 4 Target: rename to ui/]` | the sole place for shared primitives; a pattern used by two pages moves here |
+| `components/feedback/` | states (`Skeleton`, `EmptyState`, `ErrorState`, `NoResultsState`, `StatusPage` + 403/404/500 pages, `SessionExpiredDialog`, `[PR 4 Target: ErrorBoundary.tsx]`) and shared feedback views | every loading/empty/error/crash state uses these |
 | `components/<domain>/` | domain widgets shared by several pages (`brand/LogoMark`, `cases/CaseGovernanceBar`, `stats/BranchStatsChart`) | no HTTP calls |
 | `services/` | `apiClient.ts` (Axios + JWT interceptors) and one `<domain>Service.ts` per backend domain; `mappers/` turn API DTOs into view models | all HTTP goes through `apiClient`; mappers are unit-tested |
 | `stores/` | Zustand stores for cross-page state (`authStore`, `caseStudyStore`) | page UI state stays local; no server data cached in a store without an invalidation rule |
+| `hooks/` | `[PR 4 Target]` shared domain & UI hooks (`use<DomainNoun>.ts`, extracted from `pages/*`) | reusable stateful client logic with co-located `*.spec.ts` |
 | `types/` | shared TypeScript types | |
-| `utils/` | small pure helpers (`navigation.ts`) | pure and tested |
+| `utils/` | pure domain-scoped utilities (`navigation.ts`, plus PR 4 extractions: `statisticsFormatting.ts`, `caseTreeTopology.ts`, etc.) | pure, unit-tested, explicit `<domain><Concern>.ts` naming (no vague `utils.ts`/`*Helpers.ts`) |
 | `locales/` | `vi.json`, `en.json` | see §9.2 |
 | `qa/` | cross-cutting QA specs | |
-Tests: `*.spec.ts` beside the code, run by the Node test runner (`npm test`, files listed in `package.json`); Playwright e2e in `frontend/tests/e2e`, visual diff in `frontend/tests/visual`. Libraries in use: React 19, React Router, Zustand, Axios, i18next + react-i18next + i18next-browser-languagedetector, framer-motion, lucide-react, ReactFlow, TailwindCSS v4. A new library needs an ADR and PO approval.
+Tests: `*.spec.ts` beside the code, run by the Node test runner (`npm test`, files listed in `package.json`); Playwright e2e in `frontend/tests/e2e`, visual diff in `frontend/tests/visual`. Libraries in use: React 19, React Router, Zustand, Axios, i18next + react-i18next + i18next-browser-languagedetector, framer-motion, lucide-react, ReactFlow, TailwindCSS v4. (`@fontsource/roboto` in `package.json` is retired and queued for removal; fonts migrate to `Plus Jakarta Sans` + `Inter` in code-sync). A new library needs an ADR and PO approval.
+
+> **Approved Code-Sync Target (PO 2026-11-25 — Target Modular Frontend Architecture, detailed in [`SERVICE-BOUNDARIES.md §5.2`](../../docs/architecture/SERVICE-BOUNDARIES.md) & [`03-engineering-and-task-standards.md §8`](03-engineering-and-task-standards.md))**:
+> While `develop` currently holds monolithic `frontend/src/index.css` `@theme` (+ legacy `App.css`), primitives in `components/ds/`, sub-components/hooks/helpers inside `pages/<domain>/`, vague `*Parts.tsx`/`*Helpers.ts` names, and legacy re-export shims (`pages/StatisticsPage.tsx`, `pages/student/ReviewFeedbackPage.tsx`), the PO-approved refactor target (`PR 4 Frontend`, execute only in its authorized PR) completes EduBranch-AI's layered TypeScript SPA layout:
+> - **CSS modules (`src/styles/`)**: split Tailwind v4 `@theme` tokens and base/component/layout/landing/auth stylesheets (`main.css`, `variables.css`, `base.css`, `components.css`, `layout.css`, `landing.css`, `auth.css`) using Light-only Navy `#2A4E7F` / Sky `#00A5F5`, drop `App.css`, and migrate font dependencies from `@fontsource/roboto` to `Plus Jakarta Sans` + `Inter`.
+> - **Components, Features & Shims**: rename `components/ds/` → `components/ui/`, retain `components/feedback/` and cross-page domain widgets cleanly (zero parallel core primitive folder), extract page-embedded sub-components into `features/<domain>/components/`, and delete legacy `pages/StatisticsPage.tsx` and `pages/student/ReviewFeedbackPage.tsx` compatibility shims.
+> - **Hooks, Utils & Error Boundary**: move domain hooks/helpers out of `pages/*` (replacing vague `parts.tsx`, `CaseReviewParts.tsx`, `StudioParts.tsx`, `statisticsHelpers.ts`, `adminErrorHelper.ts`, `*Logic.ts` with clear, single-responsibility filenames) into `src/hooks/` (`use<DomainNoun>.ts`) and domain-scoped pure `src/utils/` modules (`navigation.ts`, `formatting.ts`, `caseTreeTopology.ts`, etc.), and wrap the app root (`App.tsx`) in `ErrorBoundary`.
+> - **Core Runtime Invariants**: keep React 19, TypeScript 6, Zustand (`stores/authStore.ts`), Axios + `services/mappers/`, `routes/paths.ts`, i18next VI/EN, and Light-only theme strictly unified (zero untyped `.jsx`, dual state/query libraries, `.dark` toggles, or non-university terminology).
 
 ### 9.2 VI/EN setup (`src/lib/i18n.ts`)
 - Resources: `locales/vi.json` and `locales/en.json`, one `translation` namespace, the same key set in both files. Keys are grouped by top-level key: `g1` public/auth, `g2` courses/materials, `g3` cases, `g4` lecturer dashboard/feedback/statistics/profile, `g5` student flows, `g6` admin, plus `common`, `nav`, `errors`, `shell`, `states`, `authRecovery`, `caseReview`, `ragInspector`, `rubric`. A new screen adds its keys under its group; never a new locale file.

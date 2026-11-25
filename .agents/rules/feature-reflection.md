@@ -1,4 +1,4 @@
---
+---
 description: Rules for Student Reflection in EduBranch-AI.
 trigger: model_decision
 ---
@@ -7,7 +7,7 @@ trigger: model_decision
 
 ## Scope
 Backend Gateway (NestJS `backend/`) — tracked on `branching-attempt/` and `review-study/` modules.
-Frontend — `pages/student/ReflectionPage.tsx` and `pages/student/ReviewFeedbackPage.tsx`.
+Frontend — `pages/branching/ReflectionPage.tsx` and `pages/feedback/ReviewFeedbackPage.tsx`.
 
 ## Included
 - Student writes reflective commentary after completing an activity:

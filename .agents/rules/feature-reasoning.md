@@ -1,4 +1,4 @@
---
+---
 description: Rules for retrospective student reasoning capture in the REVIEW phase of EduBranch-AI.
 trigger: model_decision
 ---
@@ -7,7 +7,7 @@ trigger: model_decision
 
 ## Scope
 Backend Gateway (NestJS `backend/`) — `reasoning/` module.
-Frontend — `pages/student/BranchingReviewPage.tsx` (Phase 2: REVIEW screen, per-decision-point retrospective reasoning input).
+Frontend — `pages/branching/BranchingReviewPage.tsx` (Phase 2: REVIEW screen, per-decision-point retrospective reasoning input).
 
 ## Included
 - During Phase 1 (Experience), selecting a `CaseOption` records `selected_option_id` for `(attempt_id, node_id)` with `reasoning_text = NULL`

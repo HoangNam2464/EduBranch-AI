@@ -1,12 +1,13 @@
 # EduBranch-AI — Master Tasks Catalog (84 Tasks / 336 Story Points)
 
-> **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện  
-> **Nguồn quản trị gốc (Single Source of Truth)**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`  
-> **Quy mô chuẩn hóa**: 4 Sprints cố định | 84 Master Tasks | 336 Story Points  
-> **Thời gian thực thi**: 07/10/2026 – 15/12/2026 (10 tuần)  
-> **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)  
+> - **Document Class**: `[IMMUTABLE BASELINE]` (84 Master Tasks gốc; trạng thái thực thi thực tế xem Jira `EBA` và [`docs/04_JIRA/JIRA-KEY-MAP.md`](04_JIRA/JIRA-KEY-MAP.md)).
+> - **Dự án**: EduBranch-AI — Nền tảng học tập trải nghiệm tình huống rẽ nhánh & phân tích phản biện
+> - **Nguồn quản trị gốc (Single Source of Truth)**: `docs/5.Sprint_Backlog/SPRINT-BACKLOG.md`
+> - **Quy mô chuẩn hóa**: 4 Sprints cố định | 84 Master Tasks | 336 Story Points
+> - **Thời gian thực thi**: 07/10/2026 – 15/12/2026 (10 tuần)
+> - **Phạm vi nghiệp vụ**: Quá trình học tập tình huống thực nghiệm & ra quyết định (EduBranch-AI)
 >
-> **Lưu ý (2026-11-21)**: file này là baseline 84 task ban đầu. Jira EBA hiện có **105 issue**: thêm 21 task sau baseline (FE-023…FE-032, BE-029…BE-034, QA-020…QA-024) chưa được mô tả ở đây. **Master Task ID (`EBA-101`…`EBA-435`) không phải Jira key** — Jira dùng `EBA-1`…`EBA-106`, và cùng một chuỗi chỉ hai task khác nhau (Master `EBA-105` = BE-001; Jira `EBA-105` = QA-023). Cột "Trạng thái nguồn" là ảnh chụp lúc lập baseline, không phải trạng thái hiện tại. Ánh xạ và trạng thái thật: `docs/04_JIRA/JIRA-KEY-MAP.md`. Thay đổi trạng thái trong file này chỉ đề xuất dạng diff (workflow §4).
+> - **Lưu ý (2026-11-21)**: file này là baseline 84 task ban đầu. Jira EBA hiện có **105 issue**: thêm 21 task sau baseline (FE-023…FE-032, BE-029…BE-034, QA-020…QA-024) chưa được mô tả ở đây. **Master Task ID (`EBA-101`…`EBA-435`) không phải Jira key** — Jira dùng `EBA-1`…`EBA-106`, và cùng một chuỗi chỉ hai task khác nhau (Master `EBA-105` = BE-001; Jira `EBA-105` = QA-023). Cột "Trạng thái nguồn" là ảnh chụp lúc lập baseline, không phải trạng thái hiện tại. Ánh xạ và trạng thái thật: `docs/04_JIRA/JIRA-KEY-MAP.md`. Thay đổi trạng thái trong file này chỉ đề xuất dạng diff (workflow §4).
 
 ---
 

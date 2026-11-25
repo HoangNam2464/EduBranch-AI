@@ -1,7 +1,9 @@
 # Feature: Deadline & Case Notification System
 
-> **Authoritative Traceability**: Item 27 (Proposal Section 4 p. 7)  
-> **Target Package / Module**: Backend `notification/` (Future Extension Boundary)  
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
+> **Authoritative Traceability**: Item 27 (Proposal Section 4 p. 7)
+> **Target Package / Module**: Backend `notification/` (Future Extension Boundary)
 > **Delivery Channel Options**: Kept strictly at Proposal-level options (**`In-App`**, **`Email`**, **`Hybrid`**). Implementation technologies (WebSocket, polling, SMTP, SendGrid) are unselected pending Project Owner decision.
 
 ---
@@ -113,5 +115,5 @@ Provides targeted educational reminders to university students to complete assig
 ---
 
 ## 15. Implementation Status
-**Documented**  
-*(Documented at Proposal specification level; no business notification dispatch logic or database tables exist in the current skeleton.)*
+**Documented / Skeleton**
+*(Documented at Proposal specification level; `backend/src/modules/notification/` remains a structural boundary placeholder in MVP.)*
