@@ -107,6 +107,19 @@ describe('BranchingAttemptController', () => {
         ),
       ).rejects.toThrow(ForbiddenException);
     });
+
+    it('passes the decision point and authenticated Student to the service', async () => {
+      mockService.saveRetrospectiveReasoning.mockResolvedValueOnce({ status: 'SAVED' });
+      const result = await controller.saveRetrospectiveReasoning(
+        'att-1',
+        { nodeId: 'node-1', reasoningText: 'My retrospective explanation' },
+        { id: 'student-1', role: 'STUDENT' },
+      );
+      expect(mockService.saveRetrospectiveReasoning).toHaveBeenCalledWith('att-1', 'student-1', {
+        nodeId: 'node-1', reasoningText: 'My retrospective explanation',
+      });
+      expect(result.data.status).toBe('SAVED');
+    });
   });
 
   describe('submitReflection', () => {
@@ -118,6 +131,32 @@ describe('BranchingAttemptController', () => {
           { id: 'lect-1', role: 'LECTURER' },
         ),
       ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('passes the reflection submission to the authenticated Student attempt', async () => {
+      mockService.submitReflection.mockResolvedValueOnce({ reflectionStatus: 'SUBMITTED' });
+      const result = await controller.submitReflection(
+        'att-1',
+        { reflectionText: 'My overall reflection' },
+        { id: 'student-1', role: 'STUDENT' },
+      );
+      expect(mockService.submitReflection).toHaveBeenCalledWith('att-1', 'student-1', {
+        reflectionText: 'My overall reflection',
+      });
+      expect(result.data.reflectionStatus).toBe('SUBMITTED');
+    });
+
+    it('keeps the previous POST handler as a compatibility alias', async () => {
+      mockService.submitReflection.mockResolvedValueOnce({ reflectionStatus: 'SUBMITTED' });
+      const result = await controller.submitReflectionLegacy(
+        'att-1',
+        { reflectionText: 'My overall reflection' },
+        { id: 'student-1', role: 'STUDENT' },
+      );
+      expect(result.data.reflectionStatus).toBe('SUBMITTED');
+      expect(mockService.submitReflection).toHaveBeenCalledWith('att-1', 'student-1', {
+        reflectionText: 'My overall reflection',
+      });
     });
   });
 });

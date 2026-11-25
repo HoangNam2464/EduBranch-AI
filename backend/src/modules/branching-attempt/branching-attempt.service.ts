@@ -3,6 +3,7 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
+  InternalServerErrorException,
   Logger,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
@@ -494,12 +495,21 @@ export class BranchingAttemptService {
    * - P0-DATA-04: Protected by FOR UPDATE transaction & ownership check.
    */
   async saveRetrospectiveReasoning(attemptId: string, studentId: string, dto: SaveReasoningDto) {
+    const reasoningText = dto?.reasoningText?.trim();
+    if (!reasoningText || reasoningText.length < 10 || reasoningText.length > 2000) {
+      throw new BadRequestException("Reasoning must be between 10 and 2000 characters");
+    }
+
     const client = await this.db.getClient();
     try {
       await client.query("BEGIN");
 
       const attemptRes = await client.query(
-        "SELECT student_id, is_completed FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        `SELECT a.student_id, a.is_completed, c.status AS case_status
+         FROM branching_attempts a
+         JOIN cases c ON c.id = a.case_id
+         WHERE a.id = $1
+         FOR UPDATE OF a`,
         [attemptId],
       );
       if (attemptRes.rows.length === 0) {
@@ -508,6 +518,12 @@ export class BranchingAttemptService {
 
       if (attemptRes.rows[0].student_id !== studentId) {
         throw new ForbiddenException("You do not have permission to modify this attempt");
+      }
+      if (attemptRes.rows[0].case_status !== "PUBLISHED") {
+        throw new ForbiddenException("Students can only update reasoning for PUBLISHED cases");
+      }
+      if (!attemptRes.rows[0].is_completed) {
+        throw new BadRequestException("Retrospective reasoning is available only after the attempt is completed");
       }
 
       const reasoningRes = await client.query(
@@ -518,21 +534,26 @@ export class BranchingAttemptService {
         throw new NotFoundException("Reasoning entry for this decision node does not exist in this attempt");
       }
 
-      await client.query(
-        "UPDATE student_reasoning SET reasoning_text = $1 WHERE attempt_id = $2 AND node_id = $3",
-        [dto.reasoningText, attemptId, dto.nodeId],
+      const updatedRes = await client.query(
+        `UPDATE student_reasoning SET reasoning_text = $1
+         WHERE attempt_id = $2 AND node_id = $3
+         RETURNING id`,
+        [reasoningText, attemptId, dto.nodeId],
       );
+      if (updatedRes.rows.length === 0) {
+        throw new InternalServerErrorException("Reasoning could not be persisted");
+      }
 
       await client.query("COMMIT");
 
       return {
         attemptId,
         nodeId: dto.nodeId,
-        reasoningText: dto.reasoningText,
+        reasoningText,
         status: "SAVED",
       };
     } catch (e) {
-      await client.query("ROLLBACK");
+      await Promise.resolve(client.query("ROLLBACK")).catch(() => undefined);
       this.logger.error(`Error saving retrospective reasoning: ${e.message}`, e.stack);
       throw e;
     } finally {
@@ -547,12 +568,21 @@ export class BranchingAttemptService {
    * - Prevents duplicate overwrite if already SUBMITTED.
    */
   async submitReflection(attemptId: string, studentId: string, dto: SubmitReflectionDto) {
+    const reflectionText = dto?.reflectionText?.trim();
+    if (!reflectionText || reflectionText.length > 2000) {
+      throw new BadRequestException("Reflection must contain between 1 and 2000 characters");
+    }
+
     const client = await this.db.getClient();
     try {
       await client.query("BEGIN");
 
       const attemptRes = await client.query(
-        "SELECT student_id, is_completed, reflection_status FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        `SELECT a.student_id, a.is_completed, a.reflection_status, c.status AS case_status
+         FROM branching_attempts a
+         JOIN cases c ON c.id = a.case_id
+         WHERE a.id = $1
+         FOR UPDATE OF a`,
         [attemptId],
       );
       if (attemptRes.rows.length === 0) {
@@ -564,6 +594,9 @@ export class BranchingAttemptService {
       if (attempt.student_id !== studentId) {
         throw new ForbiddenException("You do not have permission to modify this attempt");
       }
+      if (attempt.case_status !== "PUBLISHED") {
+        throw new ForbiddenException("Students can only submit reflections for PUBLISHED cases");
+      }
 
       if (!attempt.is_completed) {
         throw new BadRequestException("Cannot submit reflection before reaching a terminal outcome");
@@ -573,22 +606,27 @@ export class BranchingAttemptService {
         throw new BadRequestException("Reflection has already been submitted and cannot be overwritten");
       }
 
-      await client.query(
+      const updatedRes = await client.query(
         `UPDATE branching_attempts
          SET reflection_text = $1, reflection_status = 'SUBMITTED', reflection_submitted_at = NOW(), updated_at = NOW()
-         WHERE id = $2`,
-        [dto.reflectionText, attemptId],
+         WHERE id = $2
+         RETURNING reflection_submitted_at`,
+        [reflectionText, attemptId],
       );
+      if (updatedRes.rows.length === 0) {
+        throw new InternalServerErrorException("Reflection could not be persisted");
+      }
 
       await client.query("COMMIT");
 
       return {
         attemptId,
         reflectionStatus: "SUBMITTED",
-        reflectionText: dto.reflectionText,
+        reflectionText,
+        reflectionSubmittedAt: updatedRes.rows[0].reflection_submitted_at,
       };
     } catch (e) {
-      await client.query("ROLLBACK");
+      await Promise.resolve(client.query("ROLLBACK")).catch(() => undefined);
       this.logger.error(`Error submitting reflection: ${e.message}`, e.stack);
       throw e;
     } finally {

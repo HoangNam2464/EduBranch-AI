@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BranchingAttemptService } from './branching-attempt.service';
 import { DatabaseService } from '../../common/database/database.service';
-import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 
 describe('BranchingAttemptService', () => {
   let service: BranchingAttemptService;
@@ -591,7 +591,7 @@ describe('BranchingAttemptService', () => {
       mockDbClient.query
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
-          rows: [{ student_id: 'owner-student', is_completed: true }],
+          rows: [{ student_id: 'owner-student', is_completed: true, case_status: 'PUBLISHED' }],
         }); // FOR UPDATE
 
       await expect(
@@ -605,12 +605,12 @@ describe('BranchingAttemptService', () => {
       mockDbClient.query
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
-          rows: [{ student_id: 'student-1', is_completed: true }],
+          rows: [{ student_id: 'student-1', is_completed: true, case_status: 'PUBLISHED' }],
         }) // FOR UPDATE
         .mockResolvedValueOnce({
           rows: [{ id: 'reasoning-1' }],
         }) // check reasoning exists
-        .mockResolvedValueOnce({}) // UPDATE student_reasoning
+        .mockResolvedValueOnce({ rows: [{ id: 'reasoning-1' }] }) // UPDATE student_reasoning
         .mockResolvedValueOnce({}); // COMMIT
 
       const res = await service.saveRetrospectiveReasoning('att-1', 'student-1', {
@@ -619,7 +619,38 @@ describe('BranchingAttemptService', () => {
       });
 
       expect(res.status).toBe('SAVED');
+      expect(res.reasoningText).toBe('Because it was the most viable strategy');
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query.mock.calls.find(([sql]) => String(sql).includes('UPDATE student_reasoning'))?.[0])
+        .toContain('RETURNING id');
+    });
+
+    it('does not report success or persist another field when reasoning update fails', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', is_completed: true, case_status: 'PUBLISHED' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'reasoning-1' }] })
+        .mockRejectedValueOnce(new Error('reasoning write failed'))
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.saveRetrospectiveReasoning('att-1', 'student-1', {
+        nodeId: 'n-1', reasoningText: 'A sufficiently detailed explanation',
+      })).rejects.toThrow('reasoning write failed');
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+    });
+
+    it('requires a completed published attempt before saving retrospective reasoning', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', is_completed: false, case_status: 'PUBLISHED' }] })
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.saveRetrospectiveReasoning('att-1', 'student-1', {
+        nodeId: 'n-1', reasoningText: 'A sufficiently detailed explanation',
+      })).rejects.toThrow(BadRequestException);
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE student_reasoning'), expect.any(Array));
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
     });
   });
 
@@ -628,7 +659,7 @@ describe('BranchingAttemptService', () => {
       mockDbClient.query
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
-          rows: [{ student_id: 'student-1', is_completed: false, reflection_status: 'NOT_STARTED' }],
+          rows: [{ student_id: 'student-1', is_completed: false, reflection_status: 'NOT_STARTED', case_status: 'PUBLISHED' }],
         });
 
       await expect(
@@ -642,7 +673,7 @@ describe('BranchingAttemptService', () => {
       mockDbClient.query
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
-          rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'SUBMITTED' }],
+          rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'SUBMITTED', case_status: 'PUBLISHED' }],
         });
 
       await expect(
@@ -656,9 +687,9 @@ describe('BranchingAttemptService', () => {
       mockDbClient.query
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
-          rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'NOT_STARTED' }],
+          rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'NOT_STARTED', case_status: 'PUBLISHED' }],
         })
-        .mockResolvedValueOnce({}) // UPDATE reflection
+        .mockResolvedValueOnce({ rows: [{ reflection_submitted_at: '2026-11-21T00:00:00.000Z' }] }) // UPDATE reflection
         .mockResolvedValueOnce({}); // COMMIT
 
       const res = await service.submitReflection('att-1', 'student-1', {
@@ -666,7 +697,39 @@ describe('BranchingAttemptService', () => {
       });
 
       expect(res.reflectionStatus).toBe('SUBMITTED');
+      expect(res.reflectionText).toBe('Deep retrospective insights');
+      expect(res.reflectionSubmittedAt).toBe('2026-11-21T00:00:00.000Z');
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query.mock.calls.find(([sql]) => String(sql).includes('UPDATE branching_attempts'))?.[0])
+        .toContain('RETURNING reflection_submitted_at');
+    });
+
+    it('rolls back and returns an error when reflection persistence fails', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'NOT_STARTED', case_status: 'PUBLISHED' }] })
+        .mockRejectedValueOnce(new Error('reflection write failed'))
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.submitReflection('att-1', 'student-1', {
+        reflectionText: 'The experience changed how I evaluate the tradeoffs.',
+      })).rejects.toThrow('reflection write failed');
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+    });
+
+    it('does not commit if the reflection update returns no persisted row', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'NOT_STARTED', case_status: 'PUBLISHED' }] })
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.submitReflection('att-1', 'student-1', {
+        reflectionText: 'The experience changed how I evaluate the tradeoffs.',
+      })).rejects.toThrow(InternalServerErrorException);
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
     });
   });
 });

@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Put,
+  Patch,
   Param,
   Body,
   HttpCode,
@@ -23,7 +24,7 @@ import { Roles } from "../auth/decorators/roles.decorator";
  *   GET  /api/v1/branching-attempts/:id             (Get attempt details & steps - Owner only)
  *   POST /api/v1/branching-attempts/:id/step        (Experience phase: pick option - Owner only)
  *   PUT  /api/v1/branching-attempts/:id/reasoning   (Review phase: save retrospective reasoning)
- *   POST /api/v1/branching-attempts/:id/reflection  (Reflection submission - Owner only)
+ *   PATCH /api/v1/branching-attempts/:id/reflection (Reflection submission - Owner only)
  */
 @Controller()
 export class BranchingAttemptController {
@@ -122,8 +123,26 @@ export class BranchingAttemptController {
   }
 
   @Roles("STUDENT")
-  @Post("branching-attempts/:id/reflection")
+  @Patch("branching-attempts/:id/reflection")
   async submitReflection(
+    @Param("id") id: string,
+    @Body() body: SubmitReflectionDto,
+    @CurrentUser() user: { id: string; role: string },
+  ) {
+    if (user.role !== "STUDENT") {
+      throw new ForbiddenException("Only students can submit reflections");
+    }
+    const result = await this.attemptService.submitReflection(id, user.id, body);
+    return {
+      status: "SUCCESS",
+      data: result,
+    };
+  }
+
+  /** Backward-compatible alias for clients using the previous submission verb. */
+  @Roles("STUDENT")
+  @Post("branching-attempts/:id/reflection")
+  async submitReflectionLegacy(
     @Param("id") id: string,
     @Body() body: SubmitReflectionDto,
     @CurrentUser() user: { id: string; role: string },

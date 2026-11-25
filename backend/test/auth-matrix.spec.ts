@@ -466,6 +466,20 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
           .send({ reflectionText: "Self-reflection on the outcome" })
           .expect(403);
       });
+
+      it("[RBAC-08A] PATCH /branching-attempts/:id/reflection — STUDENT allowed (200), LECTURER forbidden (403)", async () => {
+        await request(app.getHttpServer())
+          .patch("/api/v1/branching-attempts/att-1/reflection")
+          .set("Authorization", `Bearer ${studentToken}`)
+          .send({ reflectionText: "Self-reflection on the outcome" })
+          .expect(200);
+
+        await request(app.getHttpServer())
+          .patch("/api/v1/branching-attempts/att-1/reflection")
+          .set("Authorization", `Bearer ${lecturerToken}`)
+          .send({ reflectionText: "Self-reflection on the outcome" })
+          .expect(403);
+      });
     });
 
     // 2.3 Role Spoofing Defense

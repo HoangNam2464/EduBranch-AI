@@ -7,7 +7,7 @@
  *   GET  /branching-attempts/:id             owner     attempt + steps (consequences only once completed)
  *   POST /branching-attempts/:id/step        STUDENT   body { nodeId, selectedOptionId } → updated attempt
  *   PUT  /branching-attempts/:id/reasoning   STUDENT   body { nodeId, reasoningText }   (REVIEW phase)
- *   POST /branching-attempts/:id/reflection  STUDENT   body { reflectionText }          (completed attempts)
+ *   PATCH /branching-attempts/:id/reflection STUDENT   body { reflectionText }          (completed attempts)
  */
 
 import apiClient from "@/services/apiClient";
@@ -58,6 +58,6 @@ export const branchingAttemptService = {
   },
 
   async submitReflection(attemptId: string, reflectionText: string): Promise<void> {
-    await apiClient.post(`/branching-attempts/${attemptId}/reflection`, { reflectionText });
+    await apiClient.patch(`/branching-attempts/${attemptId}/reflection`, { reflectionText });
   },
 };
