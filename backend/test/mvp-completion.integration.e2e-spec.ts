@@ -445,10 +445,16 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
         `${id.k1}|${code(id.stu1)}|1`,
         `${id.k1}|${code(id.stu1)}|2`,
       ]);
-      // A third student on K1 (created last, latest start) lands between the other two by code.
+      // A third student on K1 (created last) lands between the other two by code. Completed 90 min ago,
+      // between a1 (1 h) and a2 (2 h), so no started_at/completed_at order in either direction, with
+      // NULLs first or last, gives the expected sequence.
       const extraAttempt = randomUUID();
       await pool.query(`INSERT INTO users (id, email, password_hash, full_name, role) VALUES ($1,'stu3@student.edu.vn','x','Student Three','STUDENT')`, [id.stu3]);
-      await pool.query(`INSERT INTO branching_attempts (id, student_id, case_id, attempt_number) VALUES ($1,$2,$3,1)`, [extraAttempt, id.stu3, id.k1]);
+      await pool.query(
+        `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, is_completed, started_at, completed_at)
+         VALUES ($1,$2,$3,1,TRUE, NOW() - INTERVAL '90 minutes' - INTERVAL '125 seconds', NOW() - INTERVAL '90 minutes')`,
+        [extraAttempt, id.stu3, id.k1],
+      );
       const three = await evaluation.exportCsv(asUser(id.lect1, "LECTURER"), { dataset: "activity", caseId: id.k1 });
       await pool.query(`DELETE FROM branching_attempts WHERE id = $1`, [extraAttempt]);
       await pool.query(`DELETE FROM users WHERE id = $1`, [id.stu3]);

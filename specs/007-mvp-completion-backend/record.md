@@ -122,6 +122,7 @@ Bằng chứng cục bộ (Windows, Docker Postgres 16 + pgvector; suite tích h
 | Đột biến 3: activity sắp theo case rồi `student_id` thô giảm dần | 1 (mong đợi), 3/3 lần | test activity fail |
 | Đột biến 4: rubric `ORDER BY ca.id, r.created_at DESC`, bỏ sắp trong code | 1 (mong đợi), 3/3 lần | test rubric fail |
 | Đột biến 5: rubric `ORDER BY ca.id, r.evaluator_id DESC`, bỏ sắp trong code | 1 (mong đợi), 3/3 lần | test rubric fail |
+| Đột biến 6–8: activity chỉ sắp theo case trong code, SQL `ORDER BY ca.id, ba.completed_at DESC NULLS FIRST` / `DESC NULLS LAST` / `ba.started_at DESC` (bài nộp `s.submitted_at DESC`) | 1 (mong đợi), 3/3 lần mỗi đột biến | test activity fail |
 
 Test thêm:
 - unit `research-export.spec.ts`: không cột nào có dạng thời gian (`_at`, `date`, `time`); `compareRows` sắp đúng, số theo giá trị số;
@@ -129,13 +130,13 @@ Test thêm:
   - `duration_seconds` = 125 với attempt bắt đầu 125 giây trước khi hoàn thành; để trống khi chưa hoàn thành và với Review Study; fixture đặt `started_at` cụ thể (trước đây mặc định `NOW()`, sau `completed_at`);
   - cả hai CSV không chứa chuỗi ngày `YYYY-MM-DD`; header rubric không có `created_at`;
   - thứ tự dòng so với một dãy kỳ vọng cụ thể:
-    - test thêm tạm một sinh viên thứ ba vào case K1 và một phiếu rubric thứ ba, rồi xóa sau khi xuất;
+    - test thêm tạm một sinh viên thứ ba vào case K1 (attempt hoàn thành 90 phút trước, nằm giữa a1 và a2 theo thời gian) và một phiếu rubric thứ ba, rồi xóa sau khi xuất;
     - vai trò được gán theo thứ tự mã ẩn danh của ba UUID ngẫu nhiên; bộ ba chỉ được giữ khi thứ tự UUID thô phù hợp (xác suất cố định 1/3 và 2/3 mỗi lần thử, tối đa 1000 lần rồi báo lỗi);
-    - nhờ vậy thứ tự kỳ vọng khác thứ tự chèn, thứ tự bảng, thứ tự thời gian và thứ tự UUID thô, theo cả chiều tăng lẫn chiều giảm (đột biến 1–5).
+    - nhờ vậy thứ tự kỳ vọng khác thứ tự chèn, thứ tự bảng, thứ tự thời gian (cả NULL đứng đầu hay cuối) và thứ tự UUID thô, theo cả chiều tăng lẫn chiều giảm (đột biến 1–8). Ngoại lệ đã biết, không kiểm soát: đột biến sắp rubric chỉ theo `r.id` ngẫu nhiên lọt khoảng 1/6 số lần chạy (ID dòng không được chọn).
 
 ### 7.2 Review độc lập (QG2)
 
-Người review: một agent riêng, chỉ đọc, không viết phần sửa. Phạm vi: HEAD `768013c` cộng phần sửa ở §7.1, các commit sau lần QG2 2026-11-21, tài liệu §1/§5–§7. Agent tự chạy `npm run build` (0), `npm test` (0, 338/338), suite tích hợp (0, 18/18). Lần kiểm tra lại trên `ac3ebc0`: R2, R4 và cách ghi R-L3b đạt; R3 còn hai điểm Low (ghi trong dòng R3), đã sửa ở commit sau `ac3ebc0`.
+Người review: một agent riêng, chỉ đọc, không viết phần sửa. Phạm vi: HEAD `768013c` cộng phần sửa ở §7.1, các commit sau lần QG2 2026-11-21, tài liệu §1/§5–§7. Agent tự chạy `npm run build` (0), `npm test` (0, 338/338), suite tích hợp (0, 18/18). Lần kiểm tra lại trên `ac3ebc0`: R2, R4 và cách ghi R-L3b đạt; R3 còn hai điểm Low (ghi trong dòng R3), đã sửa ở `10ab852`. Lần kiểm tra lại trên `10ab852`: cách chọn ID (dừng chắc chắn, xác suất cố định), thứ tự rubric, việc dọn dữ liệu tạm và câu chữ đều đạt; còn một điểm Low: attempt tạm của sinh viên thứ ba chưa hoàn thành, nên đột biến `completed_at DESC` (NULL đứng đầu) có thể lọt. Đã sửa ở commit sau `10ab852` theo đề xuất của reviewer (đột biến 6–8). Phần sửa cuối chỉ được chính người sửa kiểm bằng đột biến, chưa được reviewer kiểm lại.
 
 Kết luận: phần sửa L3 đúng.
 - Không cột nào là mốc thời gian.
