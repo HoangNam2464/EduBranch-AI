@@ -12,7 +12,7 @@ All AI coding agents operating on EduBranch-AI MUST read and obey this core rule
 2. **Global Rules**:
    - [`AGENTS.md`](../AGENTS.md) — Shared Rules 1–13, Authority Precedence & Reading Router
    - [`.agents/rules/00-project-foundation.md`](../.agents/rules/00-project-foundation.md) — Domain Terminology, Architecture Boundaries, Lifecycle, DAG Invariants & Git Rules
-   - [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (`R01`) — Single UI/UX Design Source (Light-only Navy `#2A4E7F` / Sky `#00A5F5`, `Plus Jakarta Sans` + `Inter` target, VI/EN)
+   - [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (`R01`) — General UI/UX Rules & Quality Standards (Light-only Navy `#2A4E7F` / Sky `#00A5F5`, `Plus Jakarta Sans` + `Inter` target, VI/EN; does not override PO-approved Figma per-screen design)
    - [`.agents/rules/02-agent-operating-policy.md`](../.agents/rules/02-agent-operating-policy.md) — Task Ownership, Escalation & Evidence Policy
    - [`.agents/rules/03-engineering-and-task-standards.md`](../.agents/rules/03-engineering-and-task-standards.md) — Tier Standards (raw `pg` SQL, `V1`–`V5` migrations via built-in runner, pinned AI models, FE Target Architecture & Naming §8, Jira ID disambiguation)
    - Applicable `.agents/rules/feature-<domain>.md` + [`docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`](../docs/workflows/FEATURE-DELIVERY-WORKFLOW.md)

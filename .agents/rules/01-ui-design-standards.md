@@ -1,8 +1,8 @@
 ---
 description: >-
-  The single UI/UX design source for EduBranch-AI: identity, tokens (by name),
-  layout, components, states, copy and the UI quality bar. Read before any
-  frontend or design work.
+  General UI/UX design rules and quality standards for EduBranch-AI (identity,
+  token names, layout, components, states, copy, and quality bar); PO-approved
+  Figma remains the official per-screen design authority.
 trigger: always_on
 ---
 
