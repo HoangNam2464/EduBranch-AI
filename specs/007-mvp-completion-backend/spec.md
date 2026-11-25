@@ -176,7 +176,8 @@ Tất cả AC dưới đây là [ĐỀ-XUẤT] cho tới khi PO duyệt G7.
     - số từ phản tư;
     - số vòng Challenge Support (0–2);
     - thời lượng hoàn thành (giây) — chỉ có giá trị khi attempt đã hoàn thành, để bảo vệ riêng tư (L3 Option C, PO 2026-11-25).
-  - `rubrics`: mỗi phiếu một dòng, gồm ID case, mã khóa, chế độ học, mã người đánh giá ẩn danh, 3 điểm, ngày tạo.
+  - `rubrics`: mỗi phiếu một dòng, gồm ID case, mã khóa, chế độ học, mã người đánh giá ẩn danh, 3 điểm, điểm trung bình.
+  - L3 Option C (PO 2026-11-25): cả hai bộ dữ liệu không có mốc thời gian tuyệt đối nào (không `started_at`, `completed_at`, `submitted_at`, `created_at`). Thứ tự dòng chỉ theo ID case → mã ẩn danh → số thứ tự attempt (rubric: ID case → mã người đánh giá), không theo thời gian hay ID người dùng thật, để vị trí dòng không ghép được với dashboard.
 - **AC-R5** (FR-EVAL-05):
   - Tệp CSV không chứa họ tên, email, ID thật của sinh viên hay của người đánh giá, và không chứa văn bản tự do của sinh viên (chỉ số từ).
   - Mã ẩn danh ổn định giữa các lần xuất: `P-` + 12 ký tự hex đầu của HMAC-SHA256 với khóa dẫn xuất từ `JWT_SECRET`, nhãn `edubranch-research-export-v1` và ID người dùng.

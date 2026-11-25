@@ -120,4 +120,6 @@ CSV `activity`, các cột theo thứ tự:
 `challenge_rounds` là số vòng sâu nhất (0–2) trong các phiên Challenge Support của attempt hoặc bài nộp (FR-EVAL-04).
 
 CSV `rubrics`, các cột theo thứ tự:
-`case_id, course_code, learning_mode, evaluator_code, realism_score, difficulty_score, alignment_score, average_score, created_at`.
+`case_id, course_code, learning_mode, evaluator_code, realism_score, difficulty_score, alignment_score, average_score`.
+
+L3 Option C (PO 2026-11-25): không bộ dữ liệu nào có cột mốc thời gian. `duration_seconds` là số giây nguyên giữa bắt đầu và hoàn thành; để trống khi attempt chưa hoàn thành và với bài Review Study. Thứ tự dòng: `activity` theo `case_id`, `participant_code`, `attempt_number`; `rubrics` theo `case_id`, `evaluator_code`. Không sắp theo thời gian.

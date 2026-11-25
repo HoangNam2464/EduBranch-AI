@@ -64,8 +64,23 @@ export const RUBRIC_COLUMNS = [
   "difficulty_score",
   "alignment_score",
   "average_score",
-  "created_at",
 ] as const;
+
+/**
+ * L3 option C (PO 2026-11-25): rows are ordered by case and pseudonym only, never by
+ * time or by a raw user id, so row position cannot be joined with the dashboard.
+ */
+export function compareRows(keys: readonly number[]): (a: unknown[], b: unknown[]) => number {
+  return (a, b) => {
+    for (const k of keys) {
+      const x = a[k];
+      const y = b[k];
+      const c = typeof x === "number" && typeof y === "number" ? x - y : String(x).localeCompare(String(y), "en");
+      if (c !== 0) return c;
+    }
+    return 0;
+  };
+}
 
 export function averageScore(realism: number, difficulty: number, alignment: number): number {
   return Math.round(((realism + difficulty + alignment) / 3) * 10) / 10;

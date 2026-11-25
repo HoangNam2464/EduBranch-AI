@@ -6,6 +6,7 @@ import {
   ACTIVITY_COLUMNS,
   RUBRIC_COLUMNS,
   averageScore,
+  compareRows,
   pseudonymFactory,
   toCsv,
 } from "./research-export";
@@ -129,28 +130,25 @@ export class EvaluationService {
     if (q.dataset === "rubrics") {
       const res = await this.db.query(
         `SELECT r.case_id, co.course_code, ca.learning_mode, r.evaluator_id,
-                r.realism_score, r.difficulty_score, r.alignment_score, r.created_at
+                r.realism_score, r.difficulty_score, r.alignment_score
            FROM case_rubric_evaluations r
            JOIN cases ca   ON ca.id = r.case_id
            JOIN courses co ON co.id = ca.course_id
-          WHERE ${scope}
-          ORDER BY ca.id, r.created_at, r.id`,
+          WHERE ${scope}`,
         params,
       );
-      return toCsv(
-        RUBRIC_COLUMNS,
-        res.rows.map((r) => [
-          r.case_id,
-          r.course_code ?? "",
-          r.learning_mode,
-          pseudonym(r.evaluator_id),
-          r.realism_score,
-          r.difficulty_score,
-          r.alignment_score,
-          averageScore(r.realism_score, r.difficulty_score, r.alignment_score),
-          r.created_at,
-        ]),
-      );
+      // L3 option C: no timestamp column, no time order (case, evaluator code, scores).
+      const rubricRows: unknown[][] = res.rows.map((r) => [
+        r.case_id,
+        r.course_code ?? "",
+        r.learning_mode,
+        pseudonym(r.evaluator_id),
+        r.realism_score,
+        r.difficulty_score,
+        r.alignment_score,
+        averageScore(r.realism_score, r.difficulty_score, r.alignment_score),
+      ]);
+      return toCsv(RUBRIC_COLUMNS, rubricRows.sort(compareRows([0, 3, 4, 5, 6])));
     }
 
     // Only counts and ids of case content leave the database; no free text (FR-EVAL-05).
@@ -173,12 +171,11 @@ export class EvaluationService {
            FROM branching_attempts ba
            JOIN cases ca   ON ca.id = ba.case_id
            JOIN courses co ON co.id = ca.course_id
-          WHERE ${scope}
-          ORDER BY ca.id, ba.started_at, ba.id`,
+          WHERE ${scope}`,
         params,
       ),
       this.db.query(
-        `SELECT s.student_id, co.course_code, ca.id AS case_id, ca.learning_mode, s.submitted_at,
+        `SELECT s.student_id, co.course_code, ca.id AS case_id, ca.learning_mode,
                 (${WORDS("s.student_analysis")}) + (${WORDS("s.proposed_solution")}) + (${WORDS("s.reasoning_text")}) AS reasoning_words,
                 ${WORDS("s.reflection_text")} AS reflection_words,
                 (SELECT COALESCE(MAX(cs.current_round), 0)
@@ -186,8 +183,7 @@ export class EvaluationService {
            FROM review_study_submissions s
            JOIN cases ca   ON ca.id = s.case_id
            JOIN courses co ON co.id = ca.course_id
-          WHERE ${scope}
-          ORDER BY ca.id, s.submitted_at, s.id`,
+          WHERE ${scope}`,
         params,
       ),
     ]);
@@ -224,7 +220,8 @@ export class EvaluationService {
         "",
       ]),
     ];
-    return toCsv(ACTIVITY_COLUMNS, rows);
+    // L3 option C: order by case, participant code, attempt number; never by time or raw id.
+    return toCsv(ACTIVITY_COLUMNS, rows.sort(compareRows([2, 0, 4])));
   }
 
   // ---------------------------------------------------------------------------

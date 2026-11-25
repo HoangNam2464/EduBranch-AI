@@ -10,6 +10,7 @@ import { UserService } from "../src/modules/user/user.service";
 import { AdminService } from "../src/modules/admin/admin.service";
 import { LecturerDashboardService } from "../src/modules/course/lecturer-dashboard.service";
 import { EvaluationService } from "../src/modules/evaluation/evaluation.service";
+import { pseudonymFactory } from "../src/modules/evaluation/research-export";
 
 /**
  * Spec 007 on a real PostgreSQL 16 database (migrations V1-V8 applied to a fresh
@@ -49,6 +50,24 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
     r1: randomUUID(), r2: randomUUID(), r3: randomUUID(),
     s1: randomUUID(), s2: randomUUID(),
   };
+  // L3 option C: pick ids so the expected CSV order (case, pseudonym) is the reverse of raw-id order
+  // and of insertion order. A missing sort, a time sort or a raw-id sort then fail on every run.
+  const code = pseudonymFactory(JWT_SECRET);
+  const before = (a: string, b: string) => a.localeCompare(b, "en") < 0;
+  type Uuid = ReturnType<typeof randomUUID>;
+  const reversedPair = (): [Uuid, Uuid] => {
+    for (;;) {
+      const a = randomUUID();
+      const b = randomUUID();
+      if (before(a, b) && before(code(b), code(a))) return [a, b];
+    }
+  };
+  [id.stu1, id.stu2] = reversedPair(); // stu1 inserted first, raw id first, pseudonym last
+  [id.lect1, id.admin1] = reversedPair(); // lect1 rubric inserted first, raw id first, code last
+  // Third evaluator for the rubric export: raw id after admin1, code before it, so the expected order
+  // (admin2, admin1, lect1) differs from creation order, table order and raw-id order.
+  while (!(before(id.admin1, id.admin2) && before(code(id.admin2), code(id.admin1)))) id.admin2 = randomUUID();
+  if (before(id.k1, id.k2)) [id.k1, id.k2] = [id.k2, id.k1]; // K2 (submissions, queried last) sorts first
   // Distinctive personal data: none of it may appear in a research export.
   const PII = {
     stu1: { name: "Pham Thi Bich Ngoc", email: "bichngoc.pham@student.edu.vn" },
@@ -121,8 +140,9 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
     await insOpt(id.o3, id.n4, id.n5);
 
     const insAttempt = (aid: string, stu: string, cid: string, no: number, done: boolean, outcome: string | null, reflection: string | null) =>
-      q(`INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, is_completed, outcome_node_id, reflection_text, completed_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7, CASE WHEN $5 THEN NOW() - ($8::int * INTERVAL '1 hour') ELSE NULL END)`,
+      q(`INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, is_completed, outcome_node_id, reflection_text, started_at, completed_at)
+         VALUES ($1,$2,$3,$4,$5,$6,$7, NOW() - ($8::int * INTERVAL '1 hour') - INTERVAL '125 seconds',
+                 CASE WHEN $5 THEN NOW() - ($8::int * INTERVAL '1 hour') ELSE NULL END)`,
         [aid, stu, cid, no, done, outcome, reflection, no]);
     await insAttempt(id.a1, id.stu1, id.k1, 1, true, id.n2, "Toi da hoc duoc nhieu");
     await insAttempt(id.a2, id.stu1, id.k1, 2, true, id.n3, null);
@@ -406,6 +426,19 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       expect(a1[9]).toBe(String(3 + PII.stu1.name.split(" ").length));
       expect(a1[10]).toBe("5");
       expect(a1[11]).toBe("2");
+      // L3 option C (PO 2026-11-25): duration in whole seconds, no absolute time anywhere,
+      // rows ordered by case, participant code and attempt number (never by time).
+      expect(a1[12]).toBe("125");
+      expect(rows.filter((r) => r[5] === "false").every((r) => r[12] === "")).toBe(true);
+      expect(rows.filter((r) => r[3] === "REVIEW_STUDY").every((r) => r[12] === "")).toBe(true);
+      expect(csv).not.toMatch(/\d{4}-\d{2}-\d{2}/);
+      expect(rows.map((r) => `${r[2]}|${r[0]}|${r[4]}`)).toEqual([
+        `${id.k2}|${code(id.stu2)}|1`,
+        `${id.k2}|${code(id.stu1)}|1`,
+        `${id.k1}|${code(id.stu2)}|1`,
+        `${id.k1}|${code(id.stu1)}|1`,
+        `${id.k1}|${code(id.stu1)}|2`,
+      ]);
       // A second decision on the same attempt with its own 2-round session stays within 0-2 (QG2 M2).
       const extraNode = randomUUID();
       const extraReasoning = randomUUID();
@@ -439,10 +472,29 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
     });
 
     itDb("rubric export uses evaluator codes, never names or ids", async () => {
+      const extra = randomUUID();
+      await pool.query(
+        `INSERT INTO case_rubric_evaluations (id, case_id, evaluator_id, realism_score, difficulty_score, alignment_score)
+         VALUES ($1,$2,$3,3,3,3)`,
+        [extra, id.k1, id.admin2],
+      );
+      const withThird = await evaluation.exportCsv(asUser(id.admin1, "ADMIN"), { dataset: "rubrics" });
+      await pool.query(`DELETE FROM case_rubric_evaluations WHERE id = $1`, [extra]);
+      // L3 option C: case → evaluator code; not creation order, table order or raw id order.
+      expect(withThird.slice(1).trim().split("\r\n").slice(1).map((l) => l.split(",")[3])).toEqual([
+        code(id.admin2), code(id.admin1), code(id.lect1),
+      ]);
+
       const csv = await evaluation.exportCsv(asUser(id.admin1, "ADMIN"), { dataset: "rubrics" });
-      const rows = csv.slice(1).trim().split("\r\n").slice(1).map((l) => l.split(","));
+      const lines = csv.slice(1).trim().split("\r\n");
+      expect(lines[0]).toBe(
+        "case_id,course_code,learning_mode,evaluator_code,realism_score,difficulty_score,alignment_score,average_score",
+      );
+      const rows = lines.slice(1).map((l) => l.split(","));
       expect(rows).toHaveLength(2);
       expect(rows.every((r) => /^P-[0-9a-f]{12}$/.test(r[3]))).toBe(true);
+      expect(csv).not.toMatch(/\d{4}-\d{2}-\d{2}/); // L3 option C: no created_at
+      expect(rows.map((r) => `${r[0]}|${r[3]}`)).toEqual([`${id.k1}|${code(id.admin1)}`, `${id.k1}|${code(id.lect1)}`]);
       for (const value of [PII.lect1.name, "Admin One", id.lect1, id.admin1, "Thuc te"]) expect(csv).not.toContain(value);
     });
 

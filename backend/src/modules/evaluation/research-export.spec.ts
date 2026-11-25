@@ -1,4 +1,13 @@
-import { averageScore, csvCell, pseudonymFactory, toCsv, wordCount } from "./research-export";
+import {
+  ACTIVITY_COLUMNS,
+  RUBRIC_COLUMNS,
+  averageScore,
+  compareRows,
+  csvCell,
+  pseudonymFactory,
+  toCsv,
+  wordCount,
+} from "./research-export";
 
 describe("research-export (BE-033, spec 007 AC-R4/R5)", () => {
   const p = pseudonymFactory("unit-test-secret-at-least-32-characters-long");
@@ -43,5 +52,28 @@ describe("research-export (BE-033, spec 007 AC-R4/R5)", () => {
     expect(wordCount(null)).toBe(0);
     expect(averageScore(4, 3, 5)).toBe(4);
     expect(averageScore(4, 4, 5)).toBe(4.3);
+  });
+
+  it("exports no absolute time column in any dataset (L3 option C, PO 2026-11-25)", () => {
+    for (const col of [...ACTIVITY_COLUMNS, ...RUBRIC_COLUMNS]) {
+      expect(col).not.toMatch(/(_at|_date|time|timestamp|date)$/);
+    }
+    expect(ACTIVITY_COLUMNS).toContain("duration_seconds");
+    expect(RUBRIC_COLUMNS).not.toContain("created_at");
+  });
+
+  it("orders rows by the given keys only, numbers numerically", () => {
+    const rows: unknown[][] = [
+      ["k2", "P-b", 1],
+      ["k1", "P-b", 10],
+      ["k1", "P-b", 2],
+      ["k1", "P-a", 3],
+    ];
+    expect(rows.sort(compareRows([0, 1, 2]))).toEqual([
+      ["k1", "P-a", 3],
+      ["k1", "P-b", 2],
+      ["k1", "P-b", 10],
+      ["k2", "P-b", 1],
+    ]);
   });
 });
