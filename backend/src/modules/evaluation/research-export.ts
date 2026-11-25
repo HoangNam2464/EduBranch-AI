@@ -52,8 +52,7 @@ export const ACTIVITY_COLUMNS = [
   "reasoning_word_count",
   "reflection_word_count",
   "challenge_rounds",
-  "started_at",
-  "completed_at",
+  "duration_seconds",
 ] as const;
 
 export const RUBRIC_COLUMNS = [

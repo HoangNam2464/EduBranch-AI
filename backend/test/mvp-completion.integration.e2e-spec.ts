@@ -393,7 +393,7 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       expect(csv.charCodeAt(0)).toBe(0xfeff);
       const lines = csv.slice(1).trim().split("\r\n");
       expect(lines[0]).toBe(
-        "participant_code,course_code,case_id,learning_mode,attempt_number,completed,decision_count,choice_path,outcome_node_id,reasoning_word_count,reflection_word_count,challenge_rounds,started_at,completed_at",
+        "participant_code,course_code,case_id,learning_mode,attempt_number,completed,decision_count,choice_path,outcome_node_id,reasoning_word_count,reflection_word_count,challenge_rounds,duration_seconds",
       );
       const rows = lines.slice(1).map((l) => l.split(","));
       expect(rows).toHaveLength(5); // 3 attempts on K1 + 2 submissions on K2; nothing from lecturer 2

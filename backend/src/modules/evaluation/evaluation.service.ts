@@ -157,7 +157,8 @@ export class EvaluationService {
     const [attempts, submissions] = await Promise.all([
       this.db.query(
         `SELECT ba.student_id, co.course_code, ca.id AS case_id, ca.learning_mode, ba.attempt_number,
-                ba.is_completed, ba.outcome_node_id, ba.started_at, ba.completed_at,
+                ba.is_completed, ba.outcome_node_id,
+                EXTRACT(EPOCH FROM (ba.completed_at - ba.started_at))::integer AS duration_seconds,
                 ${WORDS("ba.reflection_text")} AS reflection_words,
                 (SELECT COUNT(*) FROM student_reasoning sr WHERE sr.attempt_id = ba.id) AS decision_count,
                 (SELECT string_agg(sr.selected_option_id::text, '>' ORDER BY sr.submitted_at, sr.id)
@@ -205,8 +206,7 @@ export class EvaluationService {
         Number(r.reasoning_words),
         Number(r.reflection_words),
         Number(r.challenge_rounds),
-        r.started_at,
-        r.completed_at,
+        r.duration_seconds !== null && r.duration_seconds !== undefined ? Number(r.duration_seconds) : "",
       ]),
       ...submissions.rows.map((r) => [
         pseudonym(r.student_id),
@@ -222,7 +222,6 @@ export class EvaluationService {
         Number(r.reflection_words),
         Number(r.challenge_rounds),
         "",
-        r.submitted_at,
       ]),
     ];
     return toCsv(ACTIVITY_COLUMNS, rows);

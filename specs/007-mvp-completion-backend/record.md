@@ -76,7 +76,7 @@ Không có lỗi Critical hoặc High. Không tìm thấy SQL injection, lỗ h�
 | M3 | Medium | `total` = 0 khi xem trang vượt quá trang cuối (courses/cases/logs) | Đã sửa: khi trang rỗng thì chạy truy vấn đếm riêng (`pageTotal`). Có test tích hợp |
 | L1 | Low | Hai admin khóa lẫn nhau cùng lúc gây deadlock, trả 500 | Đã sửa: khóa các dòng admin theo thứ tự `id` trước, rồi mới khóa dòng đích. Có unit test và test tích hợp chạy đồng thời |
 | L2 | Low | `PATCH /users/me` với `null` trả 200 mà không đổi gì | Đã sửa như M1; cũng áp dụng cho `PUT` rubric. Có test e2e |
-| L3 | Low | Giảng viên có thể ghép CSV (thời điểm tới mili-giây, case, số attempt) với dashboard để nối mã ẩn danh với tên. Người chỉ có CSV thì không làm được | **Chờ PO** (§6). AC-R5 vẫn đạt như đã viết |
+| L3 | Low | Giảng viên có thể ghép CSV (thời điểm tới mili-giây, case, số attempt) với dashboard để nối mã ẩn danh với tên. Người chỉ có CSV thì không làm được | **Đã sửa (Option C, PO 2026-11-25)**: Bỏ hoàn toàn `started_at` và `completed_at`; thay bằng `duration_seconds` (giây nguyên). Không còn mốc thời gian trong CSV. |
 | L4 | Low | Thân lỗi 409 thiếu `statusCode`/`error` | Đã sửa: thân lỗi có `{statusCode, error, message, code}`. Có unit test |
 
 Ghi nhận thêm, không sửa:
@@ -85,9 +85,6 @@ Ghi nhận thêm, không sửa:
 - `caseGrowthThisMonth` đếm case được tạo trong tháng và hiện đang PUBLISHED.
 - Login bỏ qua bcrypt với email không tồn tại, nên có thể đoán email qua thời gian phản hồi. Lỗi này có từ trước, ngoài phạm vi.
 
-## 6. Việc còn mở cho PO
-- **L3 — mức thời gian trong CSV nghiên cứu.**
-  - (A) Giữ nguyên như hiện tại.
-  - (B) Làm tròn mốc thời gian tới ngày, kèm cột thời lượng (giây).
-  - (C) Chỉ xuất thời lượng, không xuất mốc thời gian.
-  Chưa chọn phương án tạm.
+## 6. Các quyết định đã chốt
+
+Không còn việc mở cho PO trong spec này. L3 đã được PO chốt phương án C (2026-11-25): bỏ hoàn toàn `started_at` và `completed_at` khỏi CSV, thay bằng `duration_seconds`.

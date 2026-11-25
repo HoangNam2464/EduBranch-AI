@@ -175,7 +175,7 @@ Tất cả AC dưới đây là [ĐỀ-XUẤT] cho tới khi PO duyệt G7.
     - tổng số từ lập luận;
     - số từ phản tư;
     - số vòng Challenge Support (0–2);
-    - các mốc thời gian.
+    - thời lượng hoàn thành (giây) — chỉ có giá trị khi attempt đã hoàn thành, để bảo vệ riêng tư (L3 Option C, PO 2026-11-25).
   - `rubrics`: mỗi phiếu một dòng, gồm ID case, mã khóa, chế độ học, mã người đánh giá ẩn danh, 3 điểm, ngày tạo.
 - **AC-R5** (FR-EVAL-05):
   - Tệp CSV không chứa họ tên, email, ID thật của sinh viên hay của người đánh giá, và không chứa văn bản tự do của sinh viên (chỉ số từ).

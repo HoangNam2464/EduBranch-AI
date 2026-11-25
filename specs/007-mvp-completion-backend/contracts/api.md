@@ -115,7 +115,7 @@ Phiếu trả về:
 `evaluatorName` chỉ xuất hiện trong API. CSV dùng mã ẩn danh.
 
 CSV `activity`, các cột theo thứ tự:
-`participant_code, course_code, case_id, learning_mode, attempt_number, completed, decision_count, choice_path, outcome_node_id, reasoning_word_count, reflection_word_count, challenge_rounds, started_at, completed_at`.
+`participant_code, course_code, case_id, learning_mode, attempt_number, completed, decision_count, choice_path, outcome_node_id, reasoning_word_count, reflection_word_count, challenge_rounds, duration_seconds`.
 
 `challenge_rounds` là số vòng sâu nhất (0–2) trong các phiên Challenge Support của attempt hoặc bài nộp (FR-EVAL-04).
 
