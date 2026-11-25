@@ -41,7 +41,7 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
   const id = {
     admin1: randomUUID(), admin2: randomUUID(),
     lect1: randomUUID(), lect2: randomUUID(),
-    stu1: randomUUID(), stu2: randomUUID(),
+    stu1: randomUUID(), stu2: randomUUID(), stu3: randomUUID(),
     c1: randomUUID(), c2: randomUUID(), c3: randomUUID(),
     k1: randomUUID(), k2: randomUUID(), k3: randomUUID(), k4: randomUUID(),
     n1: randomUUID(), n2: randomUUID(), n3: randomUUID(), n4: randomUUID(), n5: randomUUID(),
@@ -55,18 +55,24 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
   const code = pseudonymFactory(JWT_SECRET);
   const before = (a: string, b: string) => a.localeCompare(b, "en") < 0;
   type Uuid = ReturnType<typeof randomUUID>;
-  const reversedPair = (): [Uuid, Uuid] => {
-    for (;;) {
-      const a = randomUUID();
-      const b = randomUUID();
-      if (before(a, b) && before(code(b), code(a))) return [a, b];
+  // Roles come from the code order of a random triple; the triple is kept only when its raw-id order
+  // fits. That holds with a fixed chance per try (1/3 students, 2/3 evaluators), so the loop ends fast.
+  const byCode = (fits: (low: Uuid, mid: Uuid, high: Uuid) => boolean): [Uuid, Uuid, Uuid] => {
+    for (let i = 0; i < 1000; i++) {
+      const [low, mid, high] = [randomUUID(), randomUUID(), randomUUID()].sort((a, b) => code(a).localeCompare(code(b), "en"));
+      if (fits(low, mid, high)) return [low, mid, high];
     }
+    throw new Error("spec 007 integration: could not pick test ids");
   };
-  [id.stu1, id.stu2] = reversedPair(); // stu1 inserted first, raw id first, pseudonym last
-  [id.lect1, id.admin1] = reversedPair(); // lect1 rubric inserted first, raw id first, code last
-  // Third evaluator for the rubric export: raw id after admin1, code before it, so the expected order
-  // (admin2, admin1, lect1) differs from creation order, table order and raw-id order.
-  while (!(before(id.admin1, id.admin2) && before(code(id.admin2), code(id.admin1)))) id.admin2 = randomUUID();
+  const between = (x: string, a: string, b: string) => (before(a, x) && before(x, b)) || (before(b, x) && before(x, a));
+  // Students, expected code order stu2 < stu3 < stu1. Raw ids: stu1 < stu2 and stu3 outside them, so
+  // raw-id order (either direction), insertion order and time order (either direction) all differ.
+  [id.stu2, id.stu3, id.stu1] = byCode((s2, s3, s1) => before(s1, s2) && !between(s3, s1, s2));
+  // Evaluators, expected code order admin1 < admin2 < lect1. Creation order is lect1, admin1, admin2;
+  // raw-id order is neither the expected order nor its reverse.
+  [id.admin1, id.admin2, id.lect1] = byCode(
+    (a1, a2, l1) => !(before(a1, a2) && before(a2, l1)) && !(before(l1, a2) && before(a2, a1)),
+  );
   if (before(id.k1, id.k2)) [id.k1, id.k2] = [id.k2, id.k1]; // K2 (submissions, queried last) sorts first
   // Distinctive personal data: none of it may appear in a research export.
   const PII = {
@@ -439,6 +445,16 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
         `${id.k1}|${code(id.stu1)}|1`,
         `${id.k1}|${code(id.stu1)}|2`,
       ]);
+      // A third student on K1 (created last, latest start) lands between the other two by code.
+      const extraAttempt = randomUUID();
+      await pool.query(`INSERT INTO users (id, email, password_hash, full_name, role) VALUES ($1,'stu3@student.edu.vn','x','Student Three','STUDENT')`, [id.stu3]);
+      await pool.query(`INSERT INTO branching_attempts (id, student_id, case_id, attempt_number) VALUES ($1,$2,$3,1)`, [extraAttempt, id.stu3, id.k1]);
+      const three = await evaluation.exportCsv(asUser(id.lect1, "LECTURER"), { dataset: "activity", caseId: id.k1 });
+      await pool.query(`DELETE FROM branching_attempts WHERE id = $1`, [extraAttempt]);
+      await pool.query(`DELETE FROM users WHERE id = $1`, [id.stu3]);
+      expect(three.slice(1).trim().split("\r\n").slice(1).map((l) => { const r = l.split(","); return `${r[0]}|${r[4]}`; })).toEqual([
+        `${code(id.stu2)}|1`, `${code(id.stu3)}|1`, `${code(id.stu1)}|1`, `${code(id.stu1)}|2`,
+      ]);
       // A second decision on the same attempt with its own 2-round session stays within 0-2 (QG2 M2).
       const extraNode = randomUUID();
       const extraReasoning = randomUUID();
@@ -482,7 +498,7 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       await pool.query(`DELETE FROM case_rubric_evaluations WHERE id = $1`, [extra]);
       // L3 option C: case → evaluator code; not creation order, table order or raw id order.
       expect(withThird.slice(1).trim().split("\r\n").slice(1).map((l) => l.split(",")[3])).toEqual([
-        code(id.admin2), code(id.admin1), code(id.lect1),
+        code(id.admin1), code(id.admin2), code(id.lect1),
       ]);
 
       const csv = await evaluation.exportCsv(asUser(id.admin1, "ADMIN"), { dataset: "rubrics" });

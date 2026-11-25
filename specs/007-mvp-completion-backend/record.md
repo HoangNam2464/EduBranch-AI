@@ -119,17 +119,23 @@ Bằng chứng cục bộ (Windows, Docker Postgres 16 + pgvector; suite tích h
 | `npm run test:regression` | 0 | 32/32 |
 | Đột biến 1: bỏ sắp xếp (giữ thứ tự bảng) | 1 (mong đợi), 3/3 lần | 2 test xuất CSV fail |
 | Đột biến 2: code của `768013c` (sắp theo thời gian, còn `created_at`) | 1 (mong đợi), 2/2 lần | 2 test xuất CSV fail |
+| Đột biến 3: activity sắp theo case rồi `student_id` thô giảm dần | 1 (mong đợi), 3/3 lần | test activity fail |
+| Đột biến 4: rubric `ORDER BY ca.id, r.created_at DESC`, bỏ sắp trong code | 1 (mong đợi), 3/3 lần | test rubric fail |
+| Đột biến 5: rubric `ORDER BY ca.id, r.evaluator_id DESC`, bỏ sắp trong code | 1 (mong đợi), 3/3 lần | test rubric fail |
 
 Test thêm:
 - unit `research-export.spec.ts`: không cột nào có dạng thời gian (`_at`, `date`, `time`); `compareRows` sắp đúng, số theo giá trị số;
 - tích hợp:
   - `duration_seconds` = 125 với attempt bắt đầu 125 giây trước khi hoàn thành; để trống khi chưa hoàn thành và với Review Study; fixture đặt `started_at` cụ thể (trước đây mặc định `NOW()`, sau `completed_at`);
   - cả hai CSV không chứa chuỗi ngày `YYYY-MM-DD`; header rubric không có `created_at`;
-  - thứ tự dòng so với một dãy kỳ vọng cụ thể. Test chọn ID sao cho thứ tự kỳ vọng (theo mã ẩn danh) ngược với thứ tự chèn, thứ tự thời gian và thứ tự UUID; CSV `rubrics` có thêm phiếu thứ ba để thứ tự kỳ vọng khác cả thứ tự tạo lẫn thứ tự bảng. Thứ tự theo UUID thô bị loại nhờ cách chọn ID này, không có đột biến riêng.
+  - thứ tự dòng so với một dãy kỳ vọng cụ thể:
+    - test thêm tạm một sinh viên thứ ba vào case K1 và một phiếu rubric thứ ba, rồi xóa sau khi xuất;
+    - vai trò được gán theo thứ tự mã ẩn danh của ba UUID ngẫu nhiên; bộ ba chỉ được giữ khi thứ tự UUID thô phù hợp (xác suất cố định 1/3 và 2/3 mỗi lần thử, tối đa 1000 lần rồi báo lỗi);
+    - nhờ vậy thứ tự kỳ vọng khác thứ tự chèn, thứ tự bảng, thứ tự thời gian và thứ tự UUID thô, theo cả chiều tăng lẫn chiều giảm (đột biến 1–5).
 
 ### 7.2 Review độc lập (QG2)
 
-Người review: một agent riêng, chỉ đọc, không viết phần sửa. Phạm vi: HEAD `768013c` cộng phần sửa ở §7.1, các commit sau lần QG2 2026-11-21, tài liệu §1/§5–§7. Agent tự chạy `npm run build` (0), `npm test` (0, 338/338), suite tích hợp (0, 18/18).
+Người review: một agent riêng, chỉ đọc, không viết phần sửa. Phạm vi: HEAD `768013c` cộng phần sửa ở §7.1, các commit sau lần QG2 2026-11-21, tài liệu §1/§5–§7. Agent tự chạy `npm run build` (0), `npm test` (0, 338/338), suite tích hợp (0, 18/18). Lần kiểm tra lại trên `ac3ebc0`: R2, R4 và cách ghi R-L3b đạt; R3 còn hai điểm Low (ghi trong dòng R3), đã sửa ở commit sau `ac3ebc0`.
 
 Kết luận: phần sửa L3 đúng.
 - Không cột nào là mốc thời gian.
@@ -143,6 +149,6 @@ Kết luận: phần sửa L3 đúng.
 |---|---|---|---|
 | R-L3b | Medium | Mục tiêu "không ghép được CSV với dashboard" chưa đạt hết. Hàng đợi nhận xét của giảng viên trả tên sinh viên, `attemptNumber`, toàn văn reflection và lập luận. Giảng viên có thể đếm số từ và ghép bộ (`case_id`, `attempt_number`, số từ lập luận, số từ phản tư, `outcome_node_id`/`choice_path`) với một dòng CSV. Mã ẩn danh ổn định, nên ghép được một dòng là lộ mọi dòng của sinh viên đó. Xuất hai lần rồi so sánh cũng lộ các dòng mới. Với CSV `rubrics`, API rubric đã trả `evaluatorName` cùng điểm | **Chờ PO.** Ngoài phần Option C đã chốt. Các hướng reviewer nêu: (a) chấp nhận và ghi nhận rủi ro còn lại; (b) gộp nhóm số từ và thời lượng, bỏ hoặc làm thô `attempt_number`, `choice_path`, `outcome_node_id` (giảm giá trị nghiên cứu); (c) chỉ ADMIN được xuất `activity`, hoặc dùng salt riêng cho mỗi lần xuất (trái AC-R5 "ổn định giữa các lần xuất"). Chưa chọn phương án tạm |
 | R2 | Medium | Bản ghi đánh QG2 PASS trước khi có review độc lập | Đã sửa: §1 ghi QG2 PASS WITH CONDITIONS, dẫn tới mục này |
-| R3 | Low | Test thứ tự dòng phụ thuộc UUID ngẫu nhiên: đột biến "không sắp xếp" lọt khoảng 25% số lần chạy; với rubric thì lọt nhờ kiểm tra header, không nhờ kiểm tra thứ tự | Đã sửa: chọn ID có chủ đích, so với dãy kỳ vọng cụ thể, thêm phiếu rubric thứ ba. Đột biến 1 và 2 ở §7.1 fail ở mọi lần chạy |
+| R3 | Low | Test thứ tự dòng phụ thuộc UUID ngẫu nhiên: đột biến "không sắp xếp" lọt khoảng 25% số lần chạy; với rubric, đột biến bị bắt nhờ kiểm tra header, không nhờ kiểm tra thứ tự. Lần kiểm tra lại trên `ac3ebc0`: đột biến sắp giảm dần (`created_at DESC`, `evaluator_id DESC`, `student_id` giảm dần) vẫn lọt; vòng chọn `admin2` có đuôi dài (mô phỏng 20.000 lần: trung bình 361 lần thử, tối đa khoảng 1,36 triệu) | Đã sửa trong hai lần: chọn ID có chủ đích, so với dãy kỳ vọng cụ thể; sau đó dùng bộ ba theo thứ tự mã, xác suất cố định, có giới hạn số lần thử, thêm sinh viên và phiếu thứ ba. Đột biến 1–5 ở §7.1 fail ở mọi lần chạy |
 | R4 | Low | Truy vấn bài nộp vẫn SELECT `s.submitted_at` (không xuất ra nhưng dễ bị thêm lại) | Đã sửa: bỏ khỏi SELECT |
 | R5 | Low, ngoài phạm vi | `completed_at` được ghi khi tới node kết thúc, trước phần phản tư, nên `duration_seconds` là "bắt đầu → node kết thúc". Giảng viên không đọc được `started_at` qua API (`GET /branching-attempts/:id` trả 403 cho người không sở hữu) | Ghi nhận, không sửa |
