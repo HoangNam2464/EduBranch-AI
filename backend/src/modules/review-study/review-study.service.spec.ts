@@ -34,28 +34,24 @@ describe("ReviewStudyService", () => {
     const studentId = "22222222-2222-2222-2222-222222222222";
 
     it("should successfully submit review study response with trimmed studentAnalysis", async () => {
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{ id: caseId, status: "PUBLISHED", learning_mode: "REVIEW_STUDY" }],
-        })
-        .mockResolvedValueOnce({
-          rows: [
-            {
-              id: "sub-1",
-              student_id: studentId,
-              case_id: caseId,
-              student_analysis: "Detailed analysis here",
-              proposed_solution: "My solution approach",
-              reasoning_text: "Rationale behind solution",
-              submission_status: "SUBMITTED",
-              reflection_text: null,
-              reflection_status: "NOT_STARTED",
-              reflection_submitted_at: null,
-              submitted_at: new Date("2026-11-20T10:00:00Z"),
-              updated_at: new Date("2026-11-20T10:00:00Z"),
-            },
-          ],
-        });
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [
+          {
+            id: "sub-1",
+            student_id: studentId,
+            case_id: caseId,
+            student_analysis: "Detailed analysis here",
+            proposed_solution: "My solution approach",
+            reasoning_text: "Rationale behind solution",
+            submission_status: "SUBMITTED",
+            reflection_text: null,
+            reflection_status: "NOT_STARTED",
+            reflection_submitted_at: null,
+            submitted_at: new Date("2026-11-20T10:00:00Z"),
+            updated_at: new Date("2026-11-20T10:00:00Z"),
+          },
+        ],
+      });
 
       const result = await service.submit(caseId, studentId, {
         studentAnalysis: "  Detailed analysis here  ",
@@ -72,33 +68,31 @@ describe("ReviewStudyService", () => {
       expect(result.submittedAt).toBe("2026-11-20T10:00:00.000Z");
 
       // Verify parameters sent to DB query (check studentAnalysis was trimmed)
-      const insertCallArgs = mockDbService.query.mock.calls[1][1];
+      const insertCallArgs = mockDbService.query.mock.calls[0][1];
       expect(insertCallArgs[3]).toBe("Detailed analysis here");
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.learning_mode = 'REVIEW_STUDY'");
     });
 
     it("should store studentAnalysis as NULL when empty or whitespace only", async () => {
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{ id: caseId, status: "PUBLISHED", learning_mode: "REVIEW_STUDY" }],
-        })
-        .mockResolvedValueOnce({
-          rows: [
-            {
-              id: "sub-2",
-              student_id: studentId,
-              case_id: caseId,
-              student_analysis: null,
-              proposed_solution: "My solution approach",
-              reasoning_text: "Rationale behind solution",
-              submission_status: "SUBMITTED",
-              reflection_text: null,
-              reflection_status: "NOT_STARTED",
-              reflection_submitted_at: null,
-              submitted_at: new Date(),
-              updated_at: new Date(),
-            },
-          ],
-        });
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [
+          {
+            id: "sub-2",
+            student_id: studentId,
+            case_id: caseId,
+            student_analysis: null,
+            proposed_solution: "My solution approach",
+            reasoning_text: "Rationale behind solution",
+            submission_status: "SUBMITTED",
+            reflection_text: null,
+            reflection_status: "NOT_STARTED",
+            reflection_submitted_at: null,
+            submitted_at: new Date(),
+            updated_at: new Date(),
+          },
+        ],
+      });
 
       await service.submit(caseId, studentId, {
         studentAnalysis: "    ",
@@ -106,12 +100,14 @@ describe("ReviewStudyService", () => {
         reasoningText: "Rationale behind solution",
       });
 
-      const insertCallArgs = mockDbService.query.mock.calls[1][1];
+      const insertCallArgs = mockDbService.query.mock.calls[0][1];
       expect(insertCallArgs[3]).toBeNull();
     });
 
     it("should throw NotFoundException if case does not exist or is not PUBLISHED (R-INV01)", async () => {
-      mockDbService.query.mockResolvedValueOnce({ rows: [] });
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ status: "DRAFT", learning_mode: "REVIEW_STUDY" }] });
 
       await expect(
         service.submit(caseId, studentId, {
@@ -122,9 +118,9 @@ describe("ReviewStudyService", () => {
     });
 
     it("should throw BadRequestException if case learning_mode is not REVIEW_STUDY", async () => {
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{ id: caseId, status: "PUBLISHED", learning_mode: "BRANCHING_STUDY" }],
-      });
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ status: "PUBLISHED", learning_mode: "BRANCHING_STUDY" }] });
 
       await expect(
         service.submit(caseId, studentId, {
@@ -135,11 +131,7 @@ describe("ReviewStudyService", () => {
     });
 
     it("should throw ConflictException on 23505 unique constraint violation (FR-02)", async () => {
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{ id: caseId, status: "PUBLISHED", learning_mode: "REVIEW_STUDY" }],
-        })
-        .mockRejectedValueOnce({ code: "23505" });
+      mockDbService.query.mockRejectedValueOnce({ code: "23505" });
 
       await expect(
         service.submit(caseId, studentId, {
@@ -150,11 +142,7 @@ describe("ReviewStudyService", () => {
     });
 
     it("should throw BadRequestException on 23514 check constraint error", async () => {
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{ id: caseId, status: "PUBLISHED", learning_mode: "REVIEW_STUDY" }],
-        })
-        .mockRejectedValueOnce({ code: "23514" });
+      mockDbService.query.mockRejectedValueOnce({ code: "23514" });
 
       await expect(
         service.submit(caseId, studentId, {
@@ -165,11 +153,7 @@ describe("ReviewStudyService", () => {
     });
 
     it("should rethrow unexpected DB errors", async () => {
-      mockDbService.query
-        .mockResolvedValueOnce({
-          rows: [{ id: caseId, status: "PUBLISHED", learning_mode: "REVIEW_STUDY" }],
-        })
-        .mockRejectedValueOnce(new Error("DB connection lost"));
+      mockDbService.query.mockRejectedValueOnce(new Error("DB connection lost"));
 
       await expect(
         service.submit(caseId, studentId, {

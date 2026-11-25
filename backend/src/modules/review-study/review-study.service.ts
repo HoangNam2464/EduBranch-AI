@@ -79,20 +79,6 @@ export class ReviewStudyService {
     studentId: string,
     dto: SubmitReviewStudyDto,
   ): Promise<ReviewStudySubmissionDto> {
-    const caseRes = await this.db.query(
-      `SELECT id, status, learning_mode FROM cases WHERE id = $1 AND status = 'PUBLISHED'`,
-      [caseId],
-    );
-
-    if (caseRes.rows.length === 0) {
-      throw new NotFoundException("Case not found");
-    }
-
-    const caseData = caseRes.rows[0];
-    if (caseData.learning_mode !== "REVIEW_STUDY") {
-      throw new BadRequestException("Case is not in REVIEW_STUDY mode");
-    }
-
     const submissionId = randomUUID();
     const studentAnalysis =
       dto.studentAnalysis && typeof dto.studentAnalysis === "string" && dto.studentAnalysis.trim().length > 0
@@ -100,10 +86,15 @@ export class ReviewStudyService {
         : null;
 
     try {
+      // Keep publication/mode gating in the INSERT statement. This prevents a
+      // status change between a separate preflight SELECT and the write.
       const res = await this.db.query<ReviewStudySubmissionRow>(
         `INSERT INTO review_study_submissions (
            id, student_id, case_id, student_analysis, proposed_solution, reasoning_text, submission_status
-         ) VALUES ($1, $2, $3, $4, $5, $6, 'SUBMITTED')
+         )
+         SELECT $1, $2, c.id, $4, $5, $6, 'SUBMITTED'
+         FROM cases c
+         WHERE c.id = $3 AND c.status = 'PUBLISHED' AND c.learning_mode = 'REVIEW_STUDY'
          RETURNING *`,
         [
           submissionId,
@@ -114,6 +105,17 @@ export class ReviewStudyService {
           dto.reasoningText,
         ],
       );
+
+      if (res.rows.length === 0) {
+        const caseRes = await this.db.query(
+          `SELECT status, learning_mode FROM cases WHERE id = $1`,
+          [caseId],
+        );
+        if (caseRes.rows.length === 0 || caseRes.rows[0].status !== "PUBLISHED") {
+          throw new NotFoundException("Case not found");
+        }
+        throw new BadRequestException("Case is not in REVIEW_STUDY mode");
+      }
 
       return mapReviewStudySubmission(res.rows[0]);
     } catch (err: any) {

@@ -200,7 +200,7 @@ describe("LecturerFeedbackService", () => {
         mockDbClient.query
           .mockResolvedValueOnce({ rows: [] }) // BEGIN
           .mockResolvedValueOnce({
-            rows: [{ id: submissionId, lecturer_id: lecturerId }],
+            rows: [{ id: submissionId, submission_status: "SUBMITTED", lecturer_id: lecturerId }],
           })
           .mockResolvedValueOnce({
             rows: [{ id: "existing-fb" }],
@@ -234,7 +234,7 @@ describe("LecturerFeedbackService", () => {
           }) // SELECT FOR UPDATE
           .mockResolvedValueOnce({ rows: [] }) // check existing feedback
           .mockResolvedValueOnce({ rows: [createdRow] }) // INSERT
-          .mockResolvedValueOnce({ rows: [] }) // UPDATE submission_status to REVIEWED
+          .mockResolvedValueOnce({ rows: [], rowCount: 1 }) // UPDATE submission_status to REVIEWED
           .mockResolvedValueOnce({ rows: [] }); // COMMIT
 
         const res = await service.create(lecturerId, {
@@ -251,11 +251,30 @@ describe("LecturerFeedbackService", () => {
         expect(mockDbClient.query).toHaveBeenCalledWith("COMMIT");
       });
 
+      it("rejects a submission outside SUBMITTED without creating feedback", async () => {
+        mockDbClient.query
+          .mockResolvedValueOnce({ rows: [] }) // BEGIN
+          .mockResolvedValueOnce({
+            rows: [{ id: submissionId, submission_status: "REFLECTED", lecturer_id: lecturerId }],
+          });
+
+        await expect(service.create(lecturerId, {
+          reviewSubmissionId: submissionId,
+          feedbackText: "Feedback text for reviewed work",
+        })).rejects.toThrow(ConflictException);
+
+        expect(mockDbClient.query).not.toHaveBeenCalledWith(
+          expect.stringContaining("INSERT INTO lecturer_feedback"),
+          expect.anything(),
+        );
+        expect(mockDbClient.query).toHaveBeenCalledWith("ROLLBACK");
+      });
+
       it("should rollback and map 23505 to ConflictException", async () => {
         mockDbClient.query
           .mockResolvedValueOnce({ rows: [] }) // BEGIN
           .mockResolvedValueOnce({
-            rows: [{ id: submissionId, lecturer_id: lecturerId }],
+            rows: [{ id: submissionId, submission_status: "SUBMITTED", lecturer_id: lecturerId }],
           })
           .mockResolvedValueOnce({ rows: [] })
           .mockRejectedValueOnce({ code: "23505" }); // INSERT fails with unique violation
@@ -274,7 +293,7 @@ describe("LecturerFeedbackService", () => {
         mockDbClient.query
           .mockResolvedValueOnce({ rows: [] }) // BEGIN
           .mockResolvedValueOnce({
-            rows: [{ id: submissionId, lecturer_id: lecturerId }],
+            rows: [{ id: submissionId, submission_status: "SUBMITTED", lecturer_id: lecturerId }],
           })
           .mockResolvedValueOnce({ rows: [] })
           .mockRejectedValueOnce({ code: "23514" }); // check constraint violation

@@ -174,6 +174,10 @@ export class LecturerFeedbackService {
           throw new ForbiddenException("You do not own the course for this review study submission");
         }
 
+        if (sub.submission_status !== "SUBMITTED") {
+          throw new ConflictException("Only SUBMITTED review study work can be reviewed");
+        }
+
         // C2-A: Check if feedback already exists for this submission
         const existingFeedback = await client.query(
           `SELECT id FROM lecturer_feedback WHERE review_submission_id = $1`,
@@ -195,12 +199,15 @@ export class LecturerFeedbackService {
         createdRow = insertRes.rows[0];
 
         // FR-11: Transition SUBMITTED -> REVIEWED
-        await client.query(
+        const transitionRes = await client.query(
           `UPDATE review_study_submissions
            SET submission_status = 'REVIEWED', updated_at = NOW()
            WHERE id = $1 AND submission_status = 'SUBMITTED'`,
           [dto.reviewSubmissionId],
         );
+        if (transitionRes.rowCount !== 1) {
+          throw new ConflictException("Review study submission is no longer SUBMITTED");
+        }
       }
 
       await client.query("COMMIT");
