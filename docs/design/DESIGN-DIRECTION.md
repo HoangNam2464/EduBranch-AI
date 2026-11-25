@@ -2,7 +2,7 @@
 
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 
-> **Status**: Direction chosen by the PO on 2026-11-22 (chat, option 1: "giữ nhận diện, nâng cấp … sửa lại các vấn đề về UI, UX để nó không bị xấu và không chuyên nghiệp, sau này sẽ nâng cấp") and updated on 2026-11-25 to adopt `Plus Jakarta Sans` + `Inter` typography and layered TypeScript SPA conventions cleanly on Light-only Navy/Sky surfaces. The rules themselves are in R01 (`.agents/rules/01-ui-design-standards.md`); this file is only the plan and its order. Each step still goes through a spec and PO review (workflow).
+> **Status**: Direction chosen by the PO on 2026-11-22 ("giữ nhận diện, nâng cấp … sửa lại các vấn đề về UI, UX để nó không bị xấu và không chuyên nghiệp, sau này sẽ nâng cấp") and confirmed on **2026-11-25**: PO will **not** produce new UI designs during MVP/project completion (`Plus Jakarta Sans` + `Inter` + modular TypeScript SPA refactor on Light-only Navy/Sky per existing approved Figma + `R01`); any broader visual/inspiration UI redesign is deferred to **after the project finishes, only if time permits**. Each UI fix step still goes through Spec Kit + PO review (workflow).
 > **Inputs**: UI audit `docs/design/audit/UI-AUDIT.md` (2026-11-21, findings X1–X8), research `docs/design/research/DESIGN-INSPIRATION.md`, PO-approved Figma (`EduBranch AI – Screens` — official per-screen authority, PO 2026-11-25), and `R01` general UI/UX quality rules.
 
 ## 1. Direction in one paragraph

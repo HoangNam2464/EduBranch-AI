@@ -23,7 +23,7 @@ trigger: always_on
 | Font | `Plus Jakarta Sans` (primary) and `Inter` (secondary), fallback `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` (code transition from `Segoe UI`/`Be Vietnam Pro` in `index.css` queued for code-sync pass) | PO 2026-11-25 |
 | Platform | Web app in the browser. App screens are fluid with the window; landing and auth pages are centred at `max-w-7xl` | PO 2026-11-21, 2026-11-22 |
 | Language | Vietnamese default, English through the VI/EN switch, both in the MVP; one language per screen | PO 2026-11-16, 2026-11-22 |
-| Style goal | Keep the identity; fix what looks broken or unprofessional first; a bigger visual upgrade comes later | PO 2026-11-22 |
+| Style goal | Keep existing approved Figma/Light Navy-Sky identity and fix broken UI/UX execution; no new design phase now — consider visual UI redesign **only after project completion, if time permits** | PO 2026-11-22 & 2026-11-25 |
 | Design Authority | **PO-approved Figma** governs per-screen design; **`R01`** governs general UI quality rules without overriding approved Figma; **code implements Figma** (never edit Figma to justify legacy code; escalate R01-vs-Figma conflicts as `UNRESOLVED`) | PO 2026-11-25 |
 
 ## 1. Character
