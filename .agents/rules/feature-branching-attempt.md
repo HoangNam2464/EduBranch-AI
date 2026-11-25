@@ -1,4 +1,4 @@
---
+---
 description: Rules for the Branching Case Player, 3-Phase Branching Study flow, and branching attempt/retry model in EduBranch-AI.
 trigger: model_decision
 ---
@@ -7,7 +7,7 @@ trigger: model_decision
 
 ## Scope
 Backend Gateway (NestJS `backend/`) — `branching-attempt/` module.
-Frontend — `pages/student/BranchingCasePlayerPage.tsx` (Phase 1: Experience) and `pages/student/BranchingReviewPage.tsx` (Phase 2: REVIEW).
+Frontend — `pages/branching/BranchingCasePlayerPage.tsx` (Phase 1: Experience) and `pages/branching/BranchingReviewPage.tsx` (Phase 2: REVIEW).
 
 ## Included (3-Phase Branching Study Flow)
 - **Phase 1: Experience (`/student/cases/:caseId/branching-play`)**:

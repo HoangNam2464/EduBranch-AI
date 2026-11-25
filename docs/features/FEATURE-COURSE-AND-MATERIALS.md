@@ -1,7 +1,9 @@
 # Feature: Course Context & Teaching Materials
 
-> **Authoritative Traceability**: Items 4, 5, 6 (Proposal Section 2 p. 6, Section 4 p. 7, Section 11 p. 16)  
-> **Target Package / Module**: Backend `course/`, `material/` · Frontend `features/courses/`, `features/materials/` · Storage MinIO
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
+> **Authoritative Traceability**: Items 4, 5, 6 (Proposal Section 2 p. 6, Section 4 p. 7, Section 11 p. 16)
+> **Target Package / Module**: Backend `course/`, `material/` · Frontend `pages/courses/`, `pages/materials/` · Storage MinIO (`edubranch-materials`)
 
 ---
 
@@ -129,5 +131,5 @@ Enables university lecturers to organize their teaching domains by establishing 
 ---
 
 ## 15. Implementation Status
-**Structurally Scaffolded**  
-*(Modules `backend/src/modules/course/` and `material/`, database tables `courses` and `teaching_materials`, MinIO Docker container configuration, and frontend page shells exist; upload controller logic and streaming service remain unimplemented.)*
+**Implemented**
+*(Course CRUD, soft archive `PATCH /courses/:courseId/archive` (`OPD-014`), invite-code student enrollment (`V5__course_enrollments.sql`, `BE-029`), material PDF/DOCX validation, MinIO object upload, RAG source inspector UI, and async AI ingestion trigger are implemented on `develop`.)*

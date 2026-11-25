@@ -1,9 +1,10 @@
- EduBranch-AI — Website & Application Architecture Reference
+# EduBranch-AI — Website & Application Architecture Reference
 
-> **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md` (formerly `docs/design/SITE-ARCHITECTURE.md`)  
-> **Companion Specs**: `.agents/rules/01-ui-design-standards.md` (R01, single design source) · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`
-> **Product Name**: EduBranch-AI  
-> **Full Title**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios
+> - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
+> - **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md`
+> - **Companion Specs**: `.agents/rules/01-ui-design-standards.md` (`R01`, single design source) · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`
+> - **Product Name**: EduBranch-AI
+> - **Full Title**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios
 
 ---
 
@@ -23,8 +24,8 @@ The system serves two academic user roles plus a system administrator (Admin, in
 
 | User Role | Responsibilities & Activities | Core Needs in UI |
 |---|---|---|
-| **Lecturer (`LECTURER`)** | Manages courses, uploads teaching materials (PDF/DOCX), triggers AI case generation, reviews and edits decision trees via interactive visual editor (ReactFlow) or Review Study form editor, approves/publishes cases, inspects student branch choices, reasoning, and statistics, provides qualitative academic feedback. | Uncluttered management workspace (`240px` left sidebar), split-screen ReactFlow editor, fast document ingestion, clear publication lifecycle controls. |
-| **Student (`STUDENT`)** | Participates in **Branching Study** (Phase 1: consecutive decision-point navigation → Phase 2: REVIEW screen revealing consequences + retrospective Student Reasoning + optional AI Challenge Support → Phase 3: Reflection & Retry) and **Review Study** (analyzes case context and problems, submits proposed solutions and reasoning, inspects lecturer feedback, writes reflection). | Distraction-free reading experience (`56px` compact top bar, `max-w-3xl` single-column prose layout), clear retrospective consequence analysis, structured Socratic counter-question threads. |
+| **Lecturer (`LECTURER`)** | Manages courses, uploads teaching materials (PDF/DOCX), triggers AI case generation, reviews and edits decision trees via interactive visual editor (ReactFlow) or Review Study form editor, approves/publishes cases, inspects student branch choices, reasoning, and statistics, provides qualitative academic feedback. | Uncluttered collapsible sidebar workspace (`AppShell`), split-screen ReactFlow editor, fast document ingestion, clear publication lifecycle controls. |
+| **Student (`STUDENT`)** | Participates in **Branching Study** (Phase 1: consecutive decision-point navigation → Phase 2: REVIEW screen revealing consequences + retrospective Student Reasoning + optional AI Challenge Support → Phase 3: Reflection & Retry) and **Review Study** (analyzes case context and problems, submits proposed solutions and reasoning, inspects lecturer feedback, writes reflection). | Distraction-free reading experience inside the shared `AppShell` (`HeaderActions` + collapsible `Sidebar`, `65–75ch` reading measure per R01 §3.1), clear retrospective consequence analysis, structured Socratic counter-question threads. |
 
 | **Admin (`ADMIN`)** | Manages accounts (lock/unlock), views system-wide courses, cases, AI service status (view only), logs, research rubric and platform settings. | One dashboard with admin-only charts; read-mostly tables; no editing of lecturer content. |
 
@@ -58,18 +59,19 @@ Because the Sprint Backlog tasks focus on core functional workflows, the Figma M
 - `/` — **Product Landing & Academic Introduction Page**: Introduces EduBranch-AI, compares `Branching Study` vs `Review Study`, illustrates the 5-step Human-in-the-Loop workflow, answers common questions, and provides direct entry (`Sign In` / `Create Account`). Single scrolling page: How it works (`#cach-hoat-dong`), learning modes (`#hai-che-do`) and FAQ (`#cau-hoi`) are anchor sections reached from the public nav, not separate routes.
 - `/login` — **Sign In Page**: University email & password authentication (`pages/auth/LoginPage.tsx`).
 - `/register` — **Account Registration Page**: University account creation with explicit `Lecturer` / `Student` role selection (`pages/auth/RegisterPage.tsx`).
+- `/forgot-password`, `/reset-password` — **Forgot & Reset Password Pages** [08]: Email recovery request and new-password form (included in MVP UI per PO 2026-11-25; `ForgotPasswordPage.tsx`, `ResetPasswordPage.tsx`; backend reset API pending).
 
-> Update 2026-11-13: Figma page `EduBranch AI – Screens` is the finalized UI. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md). The same list is mirrored in `.agents/rules/01-ui-design-standards.md §8`.
+> Update 2026-11-25: R01 and the adopted `Plus Jakarta Sans` + `Inter` typography standard govern code visual styling (PO 2026-11-22 & 2026-11-25); Figma page `EduBranch AI – Screens` is the content reference and will be synced later. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md).
 
 ### 5.2. Lecturer Portal (`LecturerLayout` — shared collapsible sidebar)
-- `/lecturer/dashboard` — Lecturer dashboard [07.1] (D-05 → in MVP).
+- `/lecturer/dashboard` — Lecturer dashboard [07.1] (`D-05` 2026-11-12 → in MVP; **`OPEN PO DECISION`**: post-login default landing route `ROLE_HOME.LECTURER` — `/lecturer/dashboard` vs `/lecturer/courses` currently in `frontend/src/routes/paths.ts`).
 - `/lecturer/courses` — Course catalog with detail panel, create and archive dialogs [02.1–02.3] (courses are archived, not deleted: OPD-014, PO 2026-11-16) (`CoursesPage.tsx`).
 - `/lecturer/courses/:courseId/materials` — Material upload and indexing status [02.4–02.6] (`MaterialsPage.tsx`).
 - `/lecturer/courses/:courseId/materials/:materialId/rag` — Indexed excerpts of a document [02.7] (`RagSourceInspectorPage.tsx`).
 - `/lecturer/cases`, `/lecturer/courses/:courseId/cases` — Case library, filter by status and learning mode [03.1–03.3] (`CasesPage.tsx`).
 - `/lecturer/ai-studio` — 3-step AI case generation wizard [07.6 → 07.5 → 07.7] (OPD-006 → wizard) (`AiStudioPage.tsx`).
 - `/lecturer/cases/:caseId/review` — Case editor (decision tree for `BRANCHING_STUDY`, context/problem form for `REVIEW_STUDY`), review bar and publish dialog [03.4–03.7] (`CaseReviewPage.tsx`).
-- `/lecturer/feedback`, `/lecturer/feedback/:submissionId` — Review queue and submission detail with qualitative feedback [04.1, 04.2, 04.2b].
+- `/lecturer/feedback`, `/lecturer/feedback/:submissionId` (vs `/lecturer/cases/:caseId/feedback` in `P3-SUPPORT-AND-STATISTICS.md` — **`OPEN PO DECISION / UNRESOLVED`**: confirm dual overview + case-scoped routing or standardize one canonical path) — Review queue and submission detail with qualitative feedback [04.1, 04.2, 04.2b].
 - `/lecturer/statistics` — Learning-flow statistics [04.3] (`StatisticsPage.tsx`).
 - `/lecturer/cases/:caseId/rubric` — Research rubric for case quality [07.8] (OPD-011 → A).
 - `/lecturer/profile` — Account profile [09.1].
@@ -90,41 +92,28 @@ Because the Sprint Backlog tasks focus on core functional workflows, the Figma M
 - `/admin/login` [10.1] · `/admin/dashboard` [10.2] · `/admin/users` [10.3, 10.4] · `/admin/courses` [10.5] · `/admin/cases` [10.6] · `/admin/ai-service` (view only, OPD-013) [10.7] · `/admin/rubric` [10.8] · `/admin/logs` [10.9] · `/admin/settings` [10.10].
 
 ### 5.5. Shared states
-- Loading, empty, load error, no search results inside the page [01.1–01.3, 01.8]; full-page 403 / 404 / 500 without shell [01.4, 01.5, 01.7]; session-expired dialog [01.6]. Forgot / reset password screens exist in Figma section 08 but are **Phase 2**.
+- Loading, empty, load error, no search results inside the page [01.1–01.3, 01.8]; full-page 403 / 404 / 500 without shell [01.4, 01.5, 01.7]; session-expired dialog [01.6]. Forgot / reset password screens [section 08] are included in MVP UI (§5.1, PO 2026-11-25; backend API pending).
 
 ---
 
 ## 6. Major Application Workflows
 
-```
-Workflow 1: Material Ingestion
-Lecturer uploads PDF/DOCX → MinIO Storage → FastAPI parses & chunks → pgvector embeddings stored.
+> End-to-end technical sequence diagrams live in [`docs/architecture/DATA-FLOW.md`](../architecture/DATA-FLOW.md).
 
-Workflow 2: AI Case Generation & Specification
-Teaching material / lecturer-provided case context → RAG retrieves course chunks (<sources>...</sources>) → LLM drafts Case JSON (Branching Study or Review Study) → Case created as DRAFT.
-
-Workflow 3: Human-in-the-Loop Review
-Lecturer verifies and edits case draft → Validates Branching Study tree structure (DFS 3-color cycle detection, reachable nodes, valid terminal nodes) or Review Study content → Moves through REVIEWED → APPROVED → PUBLISHED.
-
-Workflow 4: Branching Study (3-Phase Experience-First Model)
-  • Phase 1 (Experience): Context/Data → Decision Point → Select Option (records selected_option_id immediately; NO mid-flow reasoning, NO mid-flow consequence) → Next Node → Terminal Outcome Node.
-  • Phase 2 (REVIEW): Full Decision Path Revealed → Lecturer-authored Consequence per step → Retrospective Student Reasoning per Decision Point (10–2000 chars) → Optional AI Challenge Support (max 2 rounds per node).
-  • Phase 3 (Reflection & Retry): Post-Outcome Student Reflection → Optional New Attempt / Retry (attempt_number + 1).
-
-Workflow 5: Review Study
-Context/Data → Problem → Student Analysis (optional) → Proposed Solution → Student Reasoning → Optional AI Challenge Support (max 2 rounds) → Lecturer Review / Feedback → Student Reflection.
-
-Workflow 6: AI Reasoning / Challenge Support
-Student submits reasoning (in Branching Study REVIEW phase or Review Study) → Optional Challenge Support invoked → AI poses targeted challenge/counter-question (Round 1) → Student may clarify/respond (Round 2 max) → Challenge concluded (is_completed = TRUE).
-(Strict guardrails: cross-mode support for both Branching and Review Study, maximum 2 rounds, challenge/counter-questions only, no grading, no scoring, no academic right/wrong decision).
-```
+| Workflow | Summary | Authoritative Spec |
+|---|---|---|
+| **1. Material Ingestion** | Upload PDF/DOCX → MinIO → FastAPI parse & chunk → pgvector `vector(768)` | [`FEATURE-COURSE-AND-MATERIALS`](../features/FEATURE-COURSE-AND-MATERIALS.md), [`RAG-PIPELINE`](../ai/RAG-PIPELINE.md) |
+| **2. AI Case Generation** | RAG `<sources>` retrieval → LLM structured JSON (`DRAFT`) | [`FEATURE-CASE-GENERATION`](../features/FEATURE-CASE-GENERATION.md) |
+| **3. Human Review & Publish** | Edit Branching DAG / Review form → `REVIEWED → APPROVED → PUBLISHED` (`INV-01`) | [`FEATURE-CASE-REVIEW-AND-PUBLISHING`](../features/FEATURE-CASE-REVIEW-AND-PUBLISHING.md) |
+| **4. Branching Study (3-Phase)** | Phase 1 Experience (no consequences mid-flow) → Phase 2 Journey Review (consequences + reasoning) → Phase 3 Reflection & Retry | [`FEATURE-BRANCHING-STUDY`](../features/FEATURE-BRANCHING-STUDY.md) |
+| **5. Review Study** | Context/Problem → single submission (`student_analysis` optional `D4-13`) → Lecturer Feedback → Reflection | [`FEATURE-REVIEW-STUDY`](../features/FEATURE-REVIEW-STUDY.md) |
+| **6. AI Challenge Support** | Cross-mode Socratic counter-questions (`<=2` rounds, zero grading; modal vs page `OPD-005` open) | [`FEATURE-AI-REASONING-CHALLENGE-SUPPORT`](../features/FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md) |
 
 ---
 
-## 7. Internal Design Tooling ("Bắt đầu với thiết kế của bạn")
+## 7. Retired UI Drafts & Design Authority
 
-> **Classification: INTERNAL DESIGN TOOLING**  
-> This tooling is strictly used for Stitch/UI-authoring workflows during development. It is **NOT** an EduBranch-AI user-facing product feature, is **NOT** part of the Lecturer or Student product sitemap, and must **NOT** be treated as a product requirement.
+> **RETIRED SOURCE (`AGENTS.md` rule 3)**: Ad-hoc UI generation prompts/scripts and retired initial flat-gray templates are **never used** in EduBranch-AI. Design standards live solely in `.agents/rules/01-ui-design-standards.md` (`R01`) and `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`), plus Figma `EduBranch AI – Screens` for screen content.
 
 ---
 
@@ -132,8 +121,8 @@ Student submits reasoning (in Branching Study REVIEW phase or Review Study) → 
 
 All screen-level specifications are maintained in `docs/design/screens/`:
 
-- **P0 — Global Foundation** ([`P0-FOUNDATION.md`](screens/P0-FOUNDATION.md)): App shells (`LecturerLayout`, `StudentLayout`, `PublicLayout`), authentication screens (`/login`, `/register`), status/mode badges, and shared primitive components.
-- **P1 — Core Lecturer Flow** ([`P1-LECTURER-CORE.md`](screens/P1-LECTURER-CORE.md)): Course catalog (`/lecturer/courses`), materials ingestion management (`/lecturer/courses/:courseId/materials`), case list (`/lecturer/courses/:courseId/cases`), and interactive Case Review with ReactFlow Decision Tree Editor (`/lecturer/cases/:caseId/review`).
-- **P2 — Core Student Flow** ([`P2-STUDENT-CORE.md`](screens/P2-STUDENT-CORE.md)): 3-Phase Branching Study screens (`/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/review`, `/student/cases/:caseId/attempt/:attemptId/reflect`) and cross-mode AI Reasoning / Challenge Support (`/student/cases/:caseId/challenge/:sessionId`).
-- **P3 — Support & Statistics** ([`P3-SUPPORT-AND-STATISTICS.md`](screens/P3-SUPPORT-AND-STATISTICS.md)): Basic Learning-Flow Statistics (`/lecturer/statistics`) and Lecturer Feedback workspace (`/lecturer/cases/:caseId/feedback`).
-- **P4 — Secondary Review Study** ([`P4-REVIEW-STUDY.md`](screens/P4-REVIEW-STUDY.md)): Review Study reading & solution formulation (`/student/cases/:caseId/review-study`) and student inspection of lecturer feedback (`/student/cases/:caseId/review-study/:submissionId/feedback`).
+- **P0 — Global Foundation** ([`P0-FOUNDATION.md`](screens/P0-FOUNDATION.md)): App shells (`LecturerLayout`, `StudentLayout`, `AdminLayout`, `PublicLayout`), authentication screens (`/login`, `/register`), status/mode badges, and shared primitive components.
+- **P1 — Core Lecturer Flow** ([`P1-LECTURER-CORE.md`](screens/P1-LECTURER-CORE.md)): Lecturer Dashboard (`/lecturer/dashboard`, `D-05` in MVP; `ROLE_HOME.LECTURER` default `OPEN PO DECISION`), 3-step AI Studio (`/lecturer/ai-studio`, `OPD-006`), Course catalog (`/lecturer/courses`), materials ingestion (`/lecturer/courses/:courseId/materials`), case library (`/lecturer/cases`, `/lecturer/courses/:courseId/cases`), and interactive Case Review (`/lecturer/cases/:caseId/review`).
+- **P2 — Core Student Flow** ([`P2-STUDENT-CORE.md`](screens/P2-STUDENT-CORE.md)): Student Entry (`/student/desk`, `/student/courses`, `/student/history`), 3-Phase Branching Study screens (`/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/review`, `/student/cases/:caseId/attempt/:attemptId/reflect`), and cross-mode AI Reasoning / Challenge Support (`/student/cases/:caseId/challenge/:sessionId`).
+- **P3 — Support & Statistics** ([`P3-SUPPORT-AND-STATISTICS.md`](screens/P3-SUPPORT-AND-STATISTICS.md)): Basic Learning-Flow Statistics (`/lecturer/statistics`) and Lecturer Feedback workspace (MVP scope per PO `2026-11-25`; route convention `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`, `D-04`, and `OPD-010` remain **`OPEN PO DECISION / UNRESOLVED`**).
+- **P4 — Review Study** ([`P4-REVIEW-STUDY.md`](screens/P4-REVIEW-STUDY.md)): Review Study reading & solution formulation (`/student/cases/:caseId/review-study`) and student inspection of lecturer feedback (`/student/cases/:caseId/review-study/:submissionId/feedback`) — MVP scope per PO `2026-11-25`; `D4-13` remains **`OPEN PO DECISION / UNRESOLVED`**.

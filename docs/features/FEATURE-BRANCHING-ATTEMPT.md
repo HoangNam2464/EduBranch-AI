@@ -1,5 +1,9 @@
 # Feature: Branching Study Attempt & Retry Model
 
+> - **Document Class**: `[LIVING FEATURE SPEC]` · **Authoritative Traceability**: Proposal V1.2 (lines 35, 59, 76)
+> - **Target Package / Module**: Backend `branching-attempt/`, `reasoning/` · Frontend `pages/branching/`
+> - **Related Spec**: [`FEATURE-BRANCHING-STUDY.md`](FEATURE-BRANCHING-STUDY.md) (3-phase end-to-end UX)
+
 ## 1. Overview & Source of Truth
 
 - **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx).
@@ -52,3 +56,9 @@ CONSTRAINT uq_branching_attempt_number
 1. **No Comparison Engine**: The platform does NOT run automated semantic diffs, ranking algorithms, or auto-comparison across attempts.
 2. **No Attempt Scoring**: There are no scoring columns on `branching_attempts`.
 3. **Immutability**: Completed attempts cannot have their historical node choices or reasoning modified.
+
+---
+
+## 5. Implementation Status
+**Implemented**
+*(`branching_attempts` `V2` table, attempt initialization/step/terminal/retry APIs, `UNIQUE (student_id, case_id, attempt_number)`, and `UNIQUE (attempt_id, node_id)` are implemented on `develop`; `OPD-003` resume & `OPD-004` retry limit remain `OPEN PO DECISION`.)*

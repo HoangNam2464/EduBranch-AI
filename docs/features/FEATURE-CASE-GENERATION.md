@@ -1,6 +1,8 @@
 # Feature: AI Case Generator & Structured Output
 
-> **Authoritative Traceability**: Items 9, 10, 11 (Proposal Section 2 p. 6, Section 4 p. 7, Section 6 p. 10, Section 10 p. 14)  
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
+> **Authoritative Traceability**: Items 9, 10, 11 (Proposal Section 2 p. 6, Section 4 p. 7, Section 6 p. 10, Section 10 p. 14)
 > **Target Package / Module**: AI Service `generation/case_generator/`, `generation/schemas/` · Backend `case/`
 
 ---
@@ -39,7 +41,7 @@ Empowers university lecturers to automatically transform static teaching materia
 - **FR-GEN-04**: The system shall validate the generated decision tree for structural integrity:
   - Root node must exist at index 0.
   - Every non-terminal option must reference a valid node index within the case.
-  - Cycle detection (BFS/DFS) must verify that the tree is an acyclic directed graph (DAG).
+  - Cycle detection (3-color DFS) must verify that the tree is an acyclic directed graph (DAG).
   - All non-root nodes must be reachable from the root node (no orphan nodes).
   - At least one terminal path must exist.
 - **FR-GEN-05**: If validation fails, the AI Service shall re-prompt the LLM with the error detail up to 2 times before failing.
@@ -48,7 +50,7 @@ Empowers university lecturers to automatically transform static teaching materia
 ---
 
 ## 5. Main Flow
-1. Lecturer navigates to `/lecturer/courses/:courseId/cases` and clicks "Generate Case".
+1. Lecturer opens the 3-step **AI Studio** wizard at `/lecturer/ai-studio` (reachable from `/lecturer/dashboard`, `/lecturer/cases`, or `/lecturer/courses/:courseId/cases`; `OPD-006`).
 2. Lecturer enters a topic prompt (e.g., "Ethical dilemmas in international supply chains") and selects source materials.
 3. Frontend sends `POST /api/v1/cases/generate` to Backend Gateway.
 4. Backend verifies ownership and forwards request to FastAPI AI Service: `POST /internal/v1/generation/generate-case`.
@@ -155,5 +157,5 @@ Empowers university lecturers to automatically transform static teaching materia
 ---
 
 ## 15. Implementation Status
-**Structurally Scaffolded**  
-*(Pydantic schema `CaseGenerationOutput`, `CaseNodeSchema`, `CaseOptionSchema`, and BFS cycle detection method in `ai-service/app/generation/schemas/decision_tree.py` exist; active LLM prompt chain and generation route remain unimplemented.)*
+**Implemented**
+*(Pydantic schema `CaseGenerationOutput`, `CaseNode`, `CaseOption`, 3-color DFS DAG validator in `ai-service/app/generation/`, LLM generation route, and `POST /api/v1/cases/generate` + 3-step AI Studio wizard `AiStudioPage.tsx` are implemented on `develop`.)*

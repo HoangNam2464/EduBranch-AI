@@ -1,8 +1,22 @@
 # P2 — Core Student Flow
 
+> - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
+
 > **Priority**: NOW. The other half of the MVP-critical loop.
 > **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`.
-> **Covers**: `/student/cases/:caseId/branching-play`, `/student/cases/:caseId/attempt/:attemptId/reflect`, `/student/cases/:caseId/challenge/:sessionId`.
+> **Covers**: `/student/desk` (`07.2`), `/student/courses` (`07.3`, `07.4`), `/student/history`, `/student/cases/:caseId/branching-play` (`05.1–05.3`), `/student/cases/:caseId/attempt/:attemptId/review` (`05.4`), `/student/cases/:caseId/attempt/:attemptId/reflect` (`05.7–05.10`), `/student/cases/:caseId/challenge/:sessionId` (`05.5–05.6`, `OPD-005`).
+
+---
+
+## 0. Student Entry: Desk, My Courses & Join Class (`/student/desk`, `/student/courses` — Figma `07.2–07.4`, `OPD-001 → A`)
+
+### Purpose & Function
+Implemented per PO decision **`OPD-001 → Option A` (`2026-11-12`)**: students join courses via lecturer-shared invite codes (`courses.invite_code`, `course_enrollments` in `V5`, `BE-029`) and access `PUBLISHED` cases from Student Desk (`07.2`) or My Courses (`07.3`), while direct links to any `PUBLISHED` case continue to work without requiring prior enrollment (`INV-01`, `FND §1`).
+
+### Layout & Actions
+- **Student Desk (`07.2`)**: assigned/enrolled `PUBLISHED` cases, learning-mode tags, attempt continuation links, and empty state prompting class join.
+- **My Courses (`07.3`) & Join Class Dialog (`07.4`)**: enrolled courses list + `"Tham gia lớp học"` modal accepting an invite code (`POST /api/v1/courses/join`).
+- **Attempt History (`05.9`, `05.10`)**: `/student/history` and `/student/cases/:caseId/history` preserving completed attempts read-only (`OPD-004` retry limit remains `OPEN PO DECISION`).
 
 ---
 
@@ -27,7 +41,7 @@ Full-width immersive reading layout (distraction-free decision interface). Top: 
 1. **Reading**: situation text + option selector shown.
 2. **Option selected**: the selected option is briefly highlighted, then the player transitions seamlessly to the next situation (next node). No reasoning form. No consequence reveal.
 3. **Advance**: `current_node_id` moves to `option.next_node_id`. Steps 1–2 repeat at each Decision Point.
-4. **Terminal reached** (`is_terminal = TRUE`): a distinct Outcome state renders — clearly marks this as the end of the journey, records `outcome_node_id = TRUE`, marks `is_completed = TRUE`. The student is then automatically transitioned to the REVIEW phase (`§1b` below).
+4. **Terminal reached** (`is_terminal = TRUE`): a distinct Outcome state renders — clearly marks this as the end of the journey, records `outcome_node_id`, marks `is_completed = TRUE`. The student can then proceed to the REVIEW phase (`§1b` below).
 
 ### Retry
 After Reflection (§2), a "Try Another Path" action creates a new attempt (`attempt_number + 1`, `FR-BS-10`). Retrying must be visually framed as exploring an alternative path, not as "fixing a wrong answer" — there is no wrong answer (Proposal V1.2 guardrail).
@@ -56,7 +70,7 @@ Full attempt journey: all `student_reasoning` records for the attempt (with `sel
 ### Flow
 1. Student sees full journey replay, top to bottom.
 2. Student writes reasoning for key decision points (optional per node, encouraged for pivotal ones).
-3. Frontend sends `PATCH /api/v1/branching-attempts/{attemptId}/reasoning/{nodeId}` for each filled-in reasoning.
+3. Frontend sends `PUT /api/v1/branching-attempts/{attemptId}/reasoning` (`{ nodeId, reasoningText }`) for each filled-in reasoning.
 4. Student clicks "Complete Review" → navigates to Reflection (§2).
 5. Optional: Challenge Support may be accessed from here if student wants to probe their reasoning further (§3).
 
@@ -91,7 +105,7 @@ No AI grading or scoring of the reflection text (`FEATURE-REFLECTION.md §4` —
 ## 3. AI Reasoning / Challenge Support (`/student/cases/:caseId/challenge/:sessionId`)
 
 ### Purpose & Function
-Optional, cross-mode Socratic challenge on a piece of submitted reasoning — probes assumptions/trade-offs via targeted counter-questions, capped at 2 rounds, never grades (`FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md`). In P2 this is entered from the Branching Case Player (§1); the same screen also serves Review Study (`FEATURE-REVIEW-STUDY.md`), but that entry path is documented in `P4-review-study.md`.
+Optional, cross-mode Socratic challenge on a piece of submitted reasoning — probes assumptions/trade-offs via targeted counter-questions, capped at 2 rounds, never grades (`FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md`). In P2 this is entered from the Branching Case Player / Journey Review (§1b); the same screen also serves Review Study (`FEATURE-REVIEW-STUDY.md`), documented in `P4-REVIEW-STUDY.md`.
 
 ### Layout
 Challenge Support Panel (R01): round indicator at top ("Round 1 of 2"), the AI's counter-question rendered as a neutral card with the `ai-support` tag, an optional student response textarea below it for Round 2.

@@ -1,8 +1,9 @@
 # Feature: Quantitative Evaluation & Research Methodology
 
-> **Authoritative Traceability**: Items 28, 29, 30 (Proposal Section 2 p. 6, Section 4 p. 7, Section 6 p. 10, Section 10 p. 14)  
-> **Target Package / Module**: Backend `evaluation/` · AI Service `evaluation/` · Research Boundary  
-> **Implementation Method Status**: **`Open / To Be Decided`** (both manual in-platform rubric scoring and structured offline data export are documented as future implementation options pending Project Owner confirmation).
+> - **Document Class**: `[LIVING FEATURE SPEC]` — **SSOT for Case-Quality Rubric & Research Export**
+> - **Authoritative Traceability**: Items 28, 29, 30 (Proposal Section 2 p. 6, Section 4 p. 7, Section 6 p. 10, Section 10 p. 14) · **`OPD-011 → Option A`** (PO 2026-11-12)
+> - **Target Package / Module**: Backend `evaluation/` (`BE-033` pending in PR #80) · AI Service `evaluation/` · Frontend `pages/rubric/CaseRubricPage.tsx` (`07.8`), `pages/admin/AdminRubricPage.tsx` (`10.8`)
+> - **MVP Scope Status**: **In-Platform Case-Quality Rubric + Anonymized CSV Export = Confirmed MVP** (`OPD-011 → Option A`); external post-case classroom surveys & statistical hypothesis tests = **Classroom Trial / Post-MVP** (`docs/research/EVALUATION-DESIGN.md`).
 
 ---
 
@@ -114,5 +115,5 @@ Supports the core empirical research contribution of the Capstone project. Provi
 ---
 
 ## 15. Implementation Status
-**Documented**  
-*(Detailed evaluation specification established; entities and export services remain unimplemented pending Project Owner confirmation of the evaluation method.)*
+**Partial (FE Rubric UI on `develop`; BE `evaluation/` Skeleton / `BE-033` in PR #80)**
+*(Detailed evaluation specification established; frontend `CaseRubricPage.tsx` and `AdminRubricPage.tsx` exist on `develop`, while backend persistence and anonymized export APIs remain pending in PR #80 / PO confirmation.)*

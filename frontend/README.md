@@ -1,114 +1,69 @@
 # EduBranch AI — Frontend
 
-React 19 + Vite + TypeScript + TailwindCSS v4 UI for the EduBranch AI platform.
+> **Document Class**: `[SUPPORTING GUIDE]` · **Visual & UI Governance SSOT**: [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (`R01`) & [`.agents/rules/03-engineering-and-task-standards.md §5`](../.agents/rules/03-engineering-and-task-standards.md)
 
-The current student learning screens are an interactive prototype: they use
-sample case data and a local Zustand store. Persistent attempts, lecturer
-feedback, and published-case access will be connected through the NestJS
-Backend Gateway as the domain APIs are implemented.
+React 19 + Vite + TypeScript + TailwindCSS v4 SPA for the **EduBranch AI** platform. Connects to the NestJS Backend Gateway (`/api/v1/*`) across Lecturer, Student, Admin, and Public flows (with Forgot/Reset Password UI, Lecturer Dashboard, Rubric, and Admin UI implemented in frontend; pending backend endpoints in PR #80 / backlog).
+
+---
 
 ## Responsibilities
 
-- Lecturer UI: courses, material upload, case generation, review/edit/publish, statistics
-- Student UI: Branching Case Player (experience-first), Journey Review (retrospective reasoning), Reflection, Review Study, Challenge Support
-- Authentication: login, registration
-- Decision tree visualization via ReactFlow
+- **Public & Auth (`PublicLayout`)**: Scrolling landing page (`/`), Login (`/login` with `rememberMe` UI + Google/Microsoft placeholder buttons), Register (`/register`), Forgot & Reset Password MVP UI (`/forgot-password`, `/reset-password` — backend API pending).
+- **Lecturer (`LecturerLayout`)**: Dashboard, Courses (create/edit/soft-archive + invite code), Materials (PDF/DOCX upload + RAG source inspector), 3-step AI Studio, Case Library, interactive ReactFlow / Review Study Case Review & Publishing, Feedback (overview & case-scoped), Statistics, Case Quality Rubric, and Profile.
+- **Student (`StudentLayout`)**: Student Desk, My Courses & Join Class by Invite Code, Branching Study (Experience-first Player → Journey Review + retrospective reasoning → Reflection & Retry), Review Study (Context/Problem → Submission → Feedback/Reflection), AI Challenge Support (1–2 Socratic rounds, zero grading), Attempt History, Profile.
+- **Admin (`AdminLayout`)**: Admin Login, Dashboard, Users, Courses, Cases, AI Service (view-only), Research & Rubric, Logs, Settings (`BE-032` APIs pending in PR #80).
+
+---
 
 ## Technology
 
-- **Framework**: React 19 + Vite
-- **Language**: TypeScript (strict mode)
-- **Styling**: TailwindCSS v4
-- **State**: Zustand
-- **HTTP**: Axios (centralized client with JWT interceptors)
-- **Routing**: React Router v7
-- **i18n**: i18next + react-i18next (Vietnamese default, English available)
-- **Decision Tree Visualization**: ReactFlow
+- **Framework**: React 19 + Vite 8 + TypeScript 6 (strict mode)
+- **Styling & Typography**: TailwindCSS v4 (`@theme` tokens); Light-only theme (`#2A4E7F` Navy / `#00A5F5` Sky); typography target `Plus Jakarta Sans` + `Inter` (PO 2026-11-25; `@fontsource/roboto` legacy dependency queued for removal)
+- **State & Routing**: Zustand (`stores/authStore.ts`) · React Router v7 (`routes/paths.ts`)
+- **HTTP & i18n**: Axios (`services/apiClient.ts` + domain services/mappers) · `i18next` + `react-i18next` (`vi.json` Vietnamese default, `en.json` English)
+- **Visualization & Motion**: ReactFlow 11 · Framer Motion (`ADR-002`, respects `prefers-reduced-motion`) · `lucide-react`
 
-## Architecture Rules
+---
 
-- **Frontend → Backend Gateway only** — Never call internal FastAPI AI Service directly
-- **API calls via apiClient** — Never call axios directly in components
-- **Business logic in services** — Keep UI components presentation-only
-- **Centralized state** — Zustand stores in `src/stores/`
-- **Never store secrets** — No API keys in frontend environment variables
+## Architecture & Directory Map (`develop` Current vs Target Modular Layout)
 
-## Source Structure
+> Full Current vs Target Architecture matrix and naming conventions: [`SERVICE-BOUNDARIES.md §5.2`](../docs/architecture/SERVICE-BOUNDARIES.md), [`R01 §9.1`](../.agents/rules/01-ui-design-standards.md), and [`.agents/rules/03-engineering-and-task-standards.md §8`](../.agents/rules/03-engineering-and-task-standards.md).
 
-```
-src/
-├── main.tsx              ← Entry: providers + <App/>
-├── App.tsx               ← Renders the route tree
-├── routes/
-│   ├── paths.ts          ← SINGLE source of every URL (PATHS, ROLE_HOME, buildPath, withQuery)
-│   ├── AppRoutes.tsx     ← Route tree (createBrowserRouter), one area per role
-│   ├── PrivateRoute.tsx  ← Shared role guard for Lecturer / Student / Admin
-│   └── guards.ts         ← Pure guard rules (unit-tested)
-├── layouts/              ← PublicLayout, LecturerLayout, StudentLayout, AdminLayout
-├── pages/<feature>/      ← Screens grouped by feature, aligned with backend modules:
-│   ├── landing/ auth/ profile/ dashboard/
-│   ├── courses/ materials/ cases/ rubric/ feedback/ statistics/
-│   ├── branching/ review-study/ challenge/
-│   ├── admin/            ← Admin management screens
-│   └── errors/           ← 404 and route error pages
+```text
+frontend/src/
+├── main.tsx / App.tsx      ← Entry & root route mount [PR 4: add root ErrorBoundary]
+├── routes/                 ← paths.ts (route SSOT), AppRoutes.tsx, PrivateRoute.tsx, guards.ts
+├── layouts/                ← Public, Lecturer, Student, Admin + shared layouts/shell/ (AppShell, Sidebar, HeaderActions)
+├── pages/<domain>/         ← Route containers by domain [PR 4: delete legacy shims & extract nested UI]
+├── features/<domain>/      ← [PR 4 Target] Domain sub-components & modals extracted from pages/*
 ├── components/
-│   ├── ui/               ← Shared primitives (Button, Alert, ForbiddenPage, logo…)
-│   └── <feature>/        ← Feature components (e.g. cases/CaseGovernanceBar)
-├── services/             ← apiClient.ts (the only Axios instance) + one service per feature
-├── stores/               ← Zustand stores
-├── config/api.ts         ← API base URL and timeout
-├── providers/            ← AppProviders (i18n; add query/theme providers here)
-├── lib/i18n.ts           ← i18next setup (Vietnamese default, choice kept in localStorage)
-├── locales/              ← vi.json / en.json (same keys in both)
-├── types/                ← Shared domain types
-└── utils/                ← Pure helpers (e.g. safe returnUrl resolution)
+│   ├── ds/                 ← Shared UI primitives (39 files) [PR 4 Target: rename to ui/]
+│   ├── feedback/           ← Shared UI states (Skeleton, Empty, Error, NoResults, 403/404/500, 401 dialog)
+│   └── <domain>/           ← Cross-page domain widgets (brand/, cases/, stats/)
+├── services/               ← apiClient.ts (sole Axios instance) + domain services & mappers/
+├── stores/                 ← Zustand stores (authStore, caseStudyStore)
+├── hooks/ · utils/         ← Shared hooks (`use<Domain>.ts`) & domain-scoped pure modules [PR 4 Target: extract page-trapped helpers]
+├── locales/                ← vi.json / en.json (parity + scripts/l10n-approval-check.mjs)
+├── config/ · providers/    ← api.ts, devTools.ts · AppProviders.tsx
+├── lib/ · types/           ← i18n.ts · shared types
+└── index.css               ← Tailwind v4 @theme tokens [PR 4 Target: modular src/styles/, drop App.css]
 ```
 
-### Conventions
+### Mandatory Conventions
+- Import via `@/` alias (`@/routes/paths`); never hardcode URL strings (`PATHS` / `buildPath`).
+- All UI text MUST reside in both `locales/vi.json` and `locales/en.json`; register English strings as `PROPOSED` in `docs/l10n/shared-copy-review.md` (`node scripts/l10n-approval-check.mjs`).
+- Light-only theme: dark mode and `ThemeToggle` were removed (`R01 §0`); never add `dark:` classes.
+- Never call `ai-service` directly from the browser; all requests route through `apiClient.ts` → Backend Gateway.
 
-- Import with the `@/` alias (`@/routes/paths`), not long relative paths.
-- Never hardcode a URL: use `PATHS.X`, or `buildPath(PATHS.X, { id })` for routes with params.
-- New UI text goes into `locales/vi.json` and `locales/en.json` with the same key, read with `t("key")`.
-  Screens move their remaining hardcoded text into the locale files when they are reworked to Figma page EduBranch AI – Screens.
-- Route guards only steer the UI; the backend is still the authorization boundary.
+---
 
-## App shell (FE-025, Figma page EduBranch AI – Screens)
-
-- `layouts/shell/AppShell.tsx` is the one layout for Lecturer, Student and Admin: sidebar 224px
-  (collapsed 72px, remembered for the browser session), header with search / VI|EN / theme /
-  notifications / settings / account, and the shared footer. Menus, the active item and the
-  header title come from `layouts/shell/shellRoutes.ts` (pure, unit-tested).
-- Student menu follows the context: main area (Bàn học, Khóa học của tôi, Tham gia lớp học),
-  inside a Branching case (Tình huống, Lịch sử lần làm, Journey Review) and inside a Review Study
-  case (Bài làm, Phản hồi). Items whose target does not exist yet are disabled, not faked.
-- Screens that show a record name call `useShellTitle(name)` to replace the default title.
-- Header search writes the keyword to `?q=` on the current screen; screens filter by it.
-- The notification dot shows only when there are unread notifications (no data source yet).
-  The theme button is a placeholder: the dark theme is not designed.
-- Shared states live in `components/feedback/` (01.1–01.8): skeletons, empty, load error,
-  no results, full-page 403/404/500 and the 401 dialog. Opening another role's page shows the
-  403 page; a 401 while signed in opens the "Phiên đăng nhập đã hết hạn" dialog.
-- Design tokens (`index.css` `@theme`): `bg-canvas`, `text-ink`, `border-line`, `bg-primary`,
-  `text-accent`, `rounded-eb-xl`… Font: Roboto (self-hosted). Icons: `lucide-react`.
-
-## Tests
-
-```bash
-npm run build   # type-check + production build (same as CI)
-npm test        # node:test specs run with tsx
-```
-
-## Local Setup
+## Local Setup & Verification
 
 ```bash
 npm install
 cp .env.example .env.local
-npm run dev
-# Frontend at http://localhost:5173
-```
-
-## Build
-
-```bash
-npm run build
+npm run dev      # Frontend at http://localhost:5173
+npm run lint     # oxlint
+npm test         # Node test runner (npx tsx --test)
+npm run build    # TypeScript check + Vite production build
 ```

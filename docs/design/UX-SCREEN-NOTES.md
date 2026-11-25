@@ -1,8 +1,10 @@
 # Ghi chú UX theo màn hình — EduBranch AI
 
-> **Cập nhật**: 2026-11-16 · **Nguồn thiết kế**: Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens` (canonical).
+> - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
+
+> **Cập nhật**: 2026-11-25 · **Nguồn thiết kế**: Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens` (tham chiếu nội dung; chuẩn hình ảnh và kiểu chữ `Plus Jakarta Sans` + `Inter` theo R01, Figma cập nhật sau — PO 2026-11-22 & 2026-11-25).
 > **Mục đích**: thay cho các lớp ghi chú `_note / …` đã xóa khỏi canvas. Người làm UX/FE đọc file này để biết mỗi màn dùng để làm gì, có những hành động và trạng thái nào, và các quy tắc chung phải giữ.
-> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; token, component và trạng thái theo R01 (`.agents/rules/01-ui-design-standards.md`, nguồn thiết kế duy nhất); trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn, register quyết định phạm vi, Figma page EduBranch AI – Screens quyết định giao diện.
+> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; token, kiểu chữ (`Plus Jakarta Sans` + `Inter`), component và trạng thái theo R01 (`.agents/rules/01-ui-design-standards.md`, nguồn thiết kế duy nhất); trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn, register quyết định phạm vi; khi còn lệch giữa Figma và code về tính năng chưa chốt, đánh dấu `UNRESOLVED` để hỏi PO.
 > **Ghi chú hành vi trong Figma**: một số hành vi được gắn thẳng vào node dưới dạng *annotation* (xem ở Dev Mode). File này chép lại toàn bộ các annotation đó ở mục tương ứng.
 
 ---
@@ -10,11 +12,11 @@
 ## 1. Quy tắc chung (áp dụng cho mọi màn)
 
 ### 1.1 Khung ứng dụng
-- Desktop 1440px. Sidebar trái dùng component `Navigation/Sidebar` (biến thể Lecturer / Admin × Collapsed False/True). Sinh viên dùng cùng sidebar với mục Bàn học, Khóa học của tôi, Tham gia lớp học.
+- Web app responsive ở độ rộng 1024–1920px+ (màn kiểm duyệt 1440px, không khóa khung cố định — R01 §3.1). Sidebar trái dùng component `Navigation/Sidebar` (biến thể Lecturer / Admin × Collapsed False/True). Sinh viên dùng cùng sidebar với mục Bàn học, Khóa học của tôi, Tham gia lớp học.
 - **Sidebar thu gọn**: nút "Thu gọn" nằm trên khu tài khoản. Bản thu gọn rộng 72px, chỉ hiện icon, ẩn nhãn; avatar và nút đăng xuất căn giữa. Mục đang chọn tô nền navy, không có vạch trắng bên cạnh. Mỗi sidebar luôn có đúng một mục đang chọn. Ví dụ: 03.4b, 05.2b, 10.2b.
-- **Header dùng chung** `EB/Header Actions` cho cả 3 vai trò: ô tìm kiếm có phím tắt Ctrl K, chuyển ngôn ngữ VI | EN (nút chuyển VI/EN là thành phần thuộc shared header đã duyệt trên Figma page EduBranch AI – Screens, mặc định tiếng Việt, hỗ trợ tiếng Anh), nút sáng/tối, thông báo (chấm đỏ khi có tin chưa đọc), cài đặt, tài khoản. Không tạo bản riêng theo vai trò. Giao diện tối **chưa thiết kế**, nút chỉ là chỗ đặt.
-- **Footer dùng chung** `EB/App Footer` luôn nằm ở đáy nội dung. Màn có ít nội dung (trạng thái trống, lỗi) dùng khung 900px để khối nội dung kéo dài và footer chạm đáy, không để khoảng trống lớn bên dưới.
-- Ngôn ngữ giao diện: mặc định tiếng Việt; tiếng Anh qua nút VI/EN đã duyệt trên Figma; mỗi màn một ngôn ngữ, không trộn (PO 2026-11-16). Màu chính navy `#2A4E7F`, nhấn sky `#00A5F5`. Không dùng xanh lá làm màu thương hiệu; xanh lá chỉ dành cho trạng thái thành công.
+- **Header dùng chung** `EB/Header Actions` cho cả 3 vai trò: ô tìm kiếm có phím tắt Ctrl K, chuyển ngôn ngữ VI | EN (nút chuyển VI/EN là thành phần thuộc shared header, mặc định tiếng Việt, hỗ trợ tiếng Anh), thông báo, cài đặt, tài khoản. **Chỉ có chế độ sáng (Light mode)** — nút sáng/tối và `.dark` đã bị loại bỏ (PO 2026-11-20, 2026-11-21, 2026-11-25; trên Figma cần Claude gỡ node `Theme` khỏi `540:347` và `455:307`).
+- **Footer dùng chung** `EB/App Footer` luôn nằm ở đáy nội dung trong `AppShell` linh hoạt (không đặt chiều cao cố định `900px`).
+- Ngôn ngữ & nhận diện: mặc định tiếng Việt; tiếng Anh qua nút VI/EN; mỗi màn một ngôn ngữ, không trộn (PO 2026-11-16, 2026-11-22). Bảng màu Light mode khớp Figma (`6CtSgJPKo4jCIbB7WwCaWw`): nền trang `#FFFFFF` (`bg/page`), nền khung nội dung `#F3F6FC` (`bg/canvas`), thẻ `#FFFFFF` (`bg/surface`), nền phụ `#EEF2F9` (`bg/surface-muted`), màu chính navy `#2A4E7F` (`action/primary`), màu nhấn sky `#00A5F5` (`action/accent`). Font chữ chuẩn: `Plus Jakarta Sans` (chính) + `Inter` (phụ), fallback system font (PO 2026-11-25). Không dùng xanh lá làm màu thương hiệu; xanh lá chỉ dành cho trạng thái thành công.
 
 ### 1.2 Quy tắc chỉn chu (đã rút ra khi PO duyệt)
 - Nút quay lại chỉ là mũi tên, không bọc ô vuông.
@@ -48,11 +50,11 @@
 - Thứ tự khối: Hero → Cách hoạt động `#cach-hoat-dong` → Hai chế độ học `#hai-che-do` → vòng đời bản nháp (dải navy) → theo vai trò → Câu hỏi thường gặp `#cau-hoi` → kêu gọi → footer. Nền toàn trang `bg/canvas`, các thẻ nền trắng.
 - *Annotation (thanh điều hướng)*: bấm "Cách hoạt động", "Hai chế độ học", "Câu hỏi thường gặp" thì cuộn mượt tới khối tương ứng (`scroll-margin-top` bằng chiều cao thanh điều hướng). Thanh điều hướng dính trên cùng khi cuộn; mục ứng với khối đang xem được tô đậm (scroll-spy). Từ trang Đăng nhập/Đăng ký, các mục này dẫn về `/#anchor`.
 - *Annotation (nút "Xem cách hoạt động" ở hero)*: cuộn mượt tới `#cach-hoat-dong`.
-- *Annotation (luồng 5 bước)*: tự chạy, mỗi bước 2.500 ms; hết bước 5 dừng 1.500 ms rồi lặp. Thẻ đang chạy nổi lên (y −4, viền accent, bóng); bước xong đổi số thành dấu ✓, đường nối chuyển nét liền; bước sau mờ 55%. Ô mô phỏng trong thẻ chạy theo thời gian của bước (tệp hiện lần lượt, thanh tiến độ 0→100%, trạng thái chuyển dần). Pill tiến độ và dòng trạng thái bên dưới đổi theo bước. Bấm thẻ hoặc pill để nhảy tới bước đó. `prefers-reduced-motion`: tắt tự chạy, hiện tất cả bước ở trạng thái hoàn thành. Tham chiếu mẫu: `HowItWorksSection.jsx` (framer-motion) trong source frontend cũ. Bước xong dùng màu navy, không dùng xanh lá.
+- *Annotation (luồng 5 bước)*: tự chạy, mỗi bước 2.500 ms; hết bước 5 dừng 1.500 ms rồi lặp. Thẻ đang chạy nổi lên (y −4, viền accent, bóng); bước xong đổi số thành dấu ✓, đường nối chuyển nét liền; bước sau mờ 55%. Ô mô phỏng trong thẻ chạy theo thời gian của bước (tệp hiện lần lượt, thanh tiến độ 0→100%, trạng thái chuyển dần). Pill tiến độ và dòng trạng thái bên dưới đổi theo bước. Bấm thẻ hoặc pill để nhảy tới bước đó. `prefers-reduced-motion`: tắt tự chạy, hiện tất cả bước ở trạng thái hoàn thành (cấu trúc component `HowItWorksSection` viết bằng React/TypeScript + `framer-motion`). Bước xong dùng màu navy, không dùng xanh lá.
 - Dải vòng đời: Bản nháp → Đã rà soát → Đã phê duyệt → (ổ khóa "Mở cho lớp") → Đã xuất bản. Thẻ cuối nền trắng, nhãn "Sinh viên thấy từ đây".
 - FAQ: tìm kiếm, chủ đề phổ biến, 4 nhóm câu hỏi dạng lưới 2 cột rộng bằng nhau (hai thẻ cùng hàng cao bằng nhau), khối liên hệ email hỗ trợ rộng bằng lưới.
 
-**00.3 Đăng nhập** — bố cục 50/50 bọc trong `max-w-7xl mx-auto`: bên trái thẻ minh họa sản phẩm (Product preview theo Figma page EduBranch AI – Screens), bên phải form email + mật khẩu giới hạn `max-w-[440px]`. Có "Tiếp tục với Google" và "Tiếp tục với Microsoft" (component `EB/Social Sign-in`, MVP theo PSD-09). Có liên kết "Quên mật khẩu?" dẫn đến `/forgot-password`. Đã dọn sạch các nút demo giả lập. Liên kết "Đăng ký ngay" được nhấn mạnh.
+**00.3 Đăng nhập** — bố cục 50/50 bọc trong `max-w-7xl mx-auto`: bên trái thẻ minh họa sản phẩm (Product preview theo Figma page EduBranch AI – Screens), bên phải form email + mật khẩu giới hạn `max-w-[440px]`. Có checkbox `"Ghi nhớ đăng nhập"` (`rememberMe` — triển khai ở cả FE chọn `localStorage`/`sessionStorage` và BE thời hạn JWT, PO 2026-11-25) và liên kết `"Quên mật khẩu?"` ở cùng hàng bên phải dẫn đến `/forgot-password` (cần bổ sung link này lên khung Figma `00.3` `483:17474` khi đồng bộ Figma). Có "Tiếp tục với Google" và "Tiếp tục với Microsoft" (component `EB/Social Sign-in`, MVP theo PSD-09). Đã dọn sạch các nút demo giả lập. Liên kết "Đăng ký ngay" được nhấn mạnh. *(Ghi chú Figma: layer `483:18279` đang đặt tên nội bộ `"I agree to the Terms & Conditi"` nhưng chữ hiển thị đúng là `"Ghi nhớ đăng nhập"`).*
 
 **00.4 Đăng ký · Sinh viên / 00.5 Đăng ký · Giảng viên** — một form bọc trong `max-w-7xl mx-auto`, form giới hạn `max-w-[480px]`, chọn vai trò bằng hai nút "Sinh viên" / "Giảng viên" (nhãn "Vai trò"). Sinh viên có ô Mã số sinh viên; giảng viên có ô dropdown tùy chọn "Khoa / Đơn vị công tác" với khoảng đệm chuẩn `px-4` (16px), tích hợp thanh tìm kiếm thông minh và 29 khoa chuẩn chia theo 7 khối ngành đào tạo đại học kèm tùy chọn "Đơn vị / Khoa khác...". Có đăng ký bằng Google/Microsoft. 00.5 có khối lưu ý kích hoạt tài khoản giảng viên — còn chờ **OPD-008**.
 
@@ -132,8 +134,8 @@ Xem mục 1.3. Các màn 01.1–01.3 và 01.8 dựng trên màn Quản lý khóa
 
 ### 07 · Màn bổ sung (đã chốt, không còn HOLD — PO 12/11/2026)
 
-- **07.1 Bảng điều khiển giảng viên** (D-05 → có): lịch hạn nộp, bài nộp chờ phản hồi, việc cần làm. Chưa có task.
-- **07.2 Bàn học / 07.3 Khóa học của tôi / 07.4 Tham gia lớp học** (OPD-001 → A): sinh viên tham gia lớp bằng mã mời; cần bảng `course_enrollments` và API ghi danh (chưa có).
+- **07.1 Bảng điều khiển giảng viên** (D-05 → có): lịch hạn nộp, bài nộp chờ phản hồi, việc cần làm (`LecturerDashboardPage.tsx` đã có ở FE; API tổng hợp `BE-030` đang ở PR #80).
+- **07.2 Bàn học / 07.3 Khóa học của tôi / 07.4 Tham gia lớp học** (OPD-001 → A): sinh viên tham gia lớp bằng mã mời; bảng `course_enrollments` (`V5`) và API ghi danh (`BE-029`) + UI đã triển khai trên `develop`.
 - **07.5–07.7 AI Studio** (OPD-006 → wizard 3 bước): 07.6 Bước 1 Khóa học và chế độ → 07.5 Bước 2 Chủ đề và tài liệu → 07.7 Bước 3 Xác nhận cấu hình. Thanh nút cuối: trái "Bước x trên 3: …", phải nút phụ (Hủy / Quay lại) cạnh nút chính (Tiếp tục / Sinh bản nháp). Nút "Tạo thủ công từ đầu" còn chờ **D-07**.
 - **07.8 Rubric nghiên cứu chất lượng tình huống** (OPD-011 → A):
   - Dải thông tin case trên cùng: icon, tên case, chế độ học, học phần, bên phải "Điểm trung bình x / 5" (từ 3 tiêu chí).
@@ -141,8 +143,8 @@ Xem mục 1.3. Các màn 01.1–01.3 và 01.8 dựng trên màn Quản lý khóa
   - Bên phải các phiếu đã lưu xếp dọc.
   - Không dùng đồng hồ dạng vạch hay thanh vạch.
 
-### 08 · Phase 2 · Quên & đặt lại mật khẩu
-Nhập email → Đã gửi hướng dẫn → Mật khẩu mới → Thành công. Phase 2 theo `01_MASTER-TASKS §4.6`; liên kết "Quên mật khẩu?" chưa hiện trên 00.3.
+### 08 · Quên & đặt lại mật khẩu (MVP — PO chốt 2026-11-25)
+Nhập email → Đã gửi hướng dẫn → Mật khẩu mới → Thành công (khung Figma `483:20016`, `483:20819`, `483:21621`, `483:22430`). Đã có giao diện trên FE (`ForgotPasswordPage.tsx`, `ResetPasswordPage.tsx`, và liên kết từ `LoginPage.tsx`); **backend API đặt lại mật khẩu còn chờ triển khai**. Khi cập nhật Figma sau, bổ sung liên kết `"Quên mật khẩu?"` vào khung `00.3` (`483:17474`) và cập nhật tiêu đề section `08` (bỏ nhãn `Phase 2`).
 
 ### 09 · Hồ sơ tài khoản (MVP, PO 12/11/2026)
 

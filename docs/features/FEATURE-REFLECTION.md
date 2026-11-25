@@ -1,8 +1,11 @@
 # Feature: Student Reflection
 
+> - **Document Class**: `[LIVING FEATURE SPEC]` · **Authoritative Traceability**: Proposal V1.2 (lines 35, 37, 60–61, 76–77)
+> - **Target Package / Module**: Backend `branching-attempt/`, `review-study/` · Frontend `pages/branching/ReflectionPage.tsx`, `pages/feedback/ReviewFeedbackPage.tsx`
+
 ## 1. Overview & Source of Truth
 
-- **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx).
+- **Source of Truth**: Proposal V1.2 (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`).
 - **Core Purpose**: Reflection is a core pedagogical artifact in EduBranch AI. It encourages meta-cognitive learning, allowing students to evaluate their decision path or solution justification in hindsight.
 - **Support Across Both Modes**:
   1. **Branching Study**: Triggered after reaching a terminal outcome node (`outcome_node_id`). Students reflect on the chain of decisions, trade-offs, and resulting outcome before deciding whether to attempt the case again.
@@ -12,11 +15,11 @@
 
 ## 2. Lifecycle & State Machine
 
-```
-NOT_STARTED (Default)
-       │
-       ▼ (Student submits reflection text)
-   SUBMITTED
+```mermaid
+stateDiagram-v2
+    [*] --> NOT_STARTED
+    NOT_STARTED --> SUBMITTED: Student submits reflection text (immutable once submitted)
+    SUBMITTED --> [*]
 ```
 
 - In Branching Study, `reflection_status` is tracked on `branching_attempts`.
@@ -42,3 +45,9 @@ NOT_STARTED (Default)
 
 1. **No AI Grading of Reflection**: AI models are NEVER used to score, judge, or grade student reflections.
 2. **Pedagogical Ownership**: Reflections are accessible to the lecturer for qualitative review and to the student for self-assessment across attempts.
+
+---
+
+## 5. Implementation Status
+**Implemented**
+*(Reflection submission endpoints and read-only post-submission screens `ReflectionPage.tsx` and `ReviewFeedbackPage.tsx` are implemented on `develop`.)*

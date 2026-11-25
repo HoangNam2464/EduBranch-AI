@@ -1,5 +1,9 @@
 # Feature: Lecturer Review & Feedback
 
+> - **Document Class**: `[LIVING FEATURE SPEC]` · **Authoritative Traceability**: Proposal V1.2 (lines 37, 61, 77)
+> - **Target Package / Module**: Backend `lecturer-feedback/` (`BE-026`) · Frontend `pages/feedback/` (`/lecturer/feedback`, `/lecturer/feedback/:submissionId`, `/lecturer/cases/:caseId/feedback` — route convention `OPEN PO DECISION`; plus student `ReviewFeedbackPage.tsx`)
+> - **MVP Scope Status**: **MVP Scope** (`(LATER)` label removed per PO `2026-11-25`, Figma `04.1`, `04.2`, `04.2b`, `06.3` synchronized in [`P3-SUPPORT-AND-STATISTICS.md`](../design/screens/P3-SUPPORT-AND-STATISTICS.md)). *(Scope inclusion does not equal full completion: open UI decisions **`D-04`** and **`OPD-010`**, plus route convention `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`, remain **`OPEN PO DECISION / UNRESOLVED`**).*
+
 ## 1. Overview & Source of Truth
 
 - **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx).
@@ -41,3 +45,11 @@ CONSTRAINT chk_feedback_one_target CHECK (
 1. **Lecturer Authority**: All evaluation and feedback are authored by human lecturers.
 2. **No AI Grading**: AI is strictly prohibited from generating grade values, pass/fail marks, or automatic feedback evaluations.
 3. **Trigger for Reflection**: In Review Study, submitting lecturer feedback transitions the submission status from `SUBMITTED` to `REVIEWED`, enabling the student to write their reflection.
+
+> **Open PO Decision (`OPD-010`)**: Optional AI-assisted feedback suggestion button shown in Figma `04.2` awaits PO decision in [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md) (no AI suggestion generation implemented).
+
+---
+
+## 4. Implementation Status
+**Implemented**
+*(Backend `lecturer-feedback/` `BE-026` merged in PR #76 and frontend feedback queue/detail screens merged in PR #68 / #69 on `develop`; MVP scope does not imply complete sign-off — route convention between `/lecturer/feedback` overview and `/lecturer/cases/:caseId/feedback` plus open elements `D-04` and `OPD-010` remain `OPEN PO DECISION / UNRESOLVED`.)*

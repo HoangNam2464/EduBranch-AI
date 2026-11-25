@@ -1,7 +1,9 @@
 # Feature: Branching Decision Tree Domain Model
 
-> **Authoritative Traceability**: Items 12, 13, 14, 15, 16 (Proposal Section 2 p. 6, Section 4 p. 7, Section 9 p. 13)  
-> **Target Package / Module**: Backend `case/` · AI Service `generation/schemas/` · Frontend `components/tree/`
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
+> **Authoritative Traceability**: Items 12, 13, 14, 15, 16 (Proposal Section 2 p. 6, Section 4 p. 7, Section 9 p. 13)
+> **Target Package / Module**: Backend `case/` · AI Service `generation/schemas/` · Frontend `pages/cases/` (ReactFlow canvas & node editor)
 
 ---
 
@@ -38,7 +40,7 @@ Defines the mathematical and relational domain structure of the **Branching Deci
 - **FR-TREE-03**: A non-terminal `CaseNode` shall have between 2 and 4 `CaseOption` choices.
 - **FR-TREE-04**: Each `CaseOption` shall contain:
   - Decision text (`option_text: TEXT`) describing the action taken.
-  - Consequence (`consequence: TEXT`) describing the immediate outcome of that decision.
+  - Consequence (`consequence: TEXT`) describing the pre-authored outcome of choosing that option (withheld during Phase 1 Experience; revealed ONLY in Phase 2 Journey Review per `INV-03`).
   - Next node pointer (`next_node_id: UUID?`) pointing to the resulting situation (or NULL if terminal).
 - **FR-TREE-05**: A terminal `CaseNode` (`is_terminal = TRUE`) shall have zero outgoing options and represents the conclusion of the case study path.
 - **FR-TREE-06**: The system shall validate graph integrity whenever a tree is generated or modified:
@@ -51,7 +53,7 @@ Defines the mathematical and relational domain structure of the **Branching Deci
 
 ## 5. Main Flow
 1. **Creation**: The AI Service or Lecturer defines nodes and options with relative indexing.
-2. **Validation**: Graph integrity validation runs (DFS 3-color cycle detection & BFS reachability check).
+2. **Validation**: Graph integrity validation runs (3-color DFS cycle detection, reachability from `root_node_id`, and terminal path validation in `validate_decision_tree_graph` and `CaseTreeValidator`).
 3. **Persistence**:
    - Save `Case` record.
    - Batch-save `CaseNode` records.
@@ -95,11 +97,14 @@ Defines the mathematical and relational domain structure of the **Branching Deci
 ---
 
 ## 11. Data Involved
-```sql
--- Core structural relationship
-Case (1) ────< CaseNode (N)
-                 │ (1)
-                 └───< CaseOption (N) ────> CaseNode (next_node_id)
+
+> Canonical schema & AI JSON contract: [`docs/architecture/DECISION-TREE-MODEL.md`](../architecture/DECISION-TREE-MODEL.md).
+
+```mermaid
+erDiagram
+    CASE ||--o{ CASE_NODE : "contains (Branching only)"
+    CASE_NODE ||--o{ CASE_OPTION : "has options"
+    CASE_OPTION }o--o| CASE_NODE : "next_node_id"
 ```
 - Foreign key `case_options.next_node_id REFERENCES case_nodes(id)` enforces relational consistency.
 
@@ -127,5 +132,5 @@ Case (1) ────< CaseNode (N)
 ---
 
 ## 15. Implementation Status
-**Structurally Scaffolded**  
-*(Module `backend/src/modules/case/`, database tables `cases`, `case_nodes`, `case_options`, and Pydantic validation models exist; graph edit services remain unimplemented.)*
+**Implemented**
+*(Backend `backend/src/modules/case/` with `CaseTreeValidator`, schema tables `cases`, `case_nodes`, `case_options`, AI Service 3-color DFS validator `decision_tree.py` / `tree_validator.py`, and frontend ReactFlow editor are implemented on `develop`.)*

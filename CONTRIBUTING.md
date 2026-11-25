@@ -1,7 +1,7 @@
 # Contributing to EduBranch-AI
 
-> Applies to all development on **EduBranch-AI — AI Platform for Experiential Case-Based Learning in University Teaching**.
-> All code changes must comply with these standards before being integrated into `develop` or `main`.
+> - **Document Class**: `[SUPPORTING GUIDE]` · **Authoritative Process & Rules**: [`AGENTS.md`](AGENTS.md) · [`.agents/rules/00-project-foundation.md`](.agents/rules/00-project-foundation.md) (`FND`) · [`.agents/rules/03-engineering-and-task-standards.md`](.agents/rules/03-engineering-and-task-standards.md) · [`docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`](docs/workflows/FEATURE-DELIVERY-WORKFLOW.md).
+> All code changes must follow the Feature Delivery Workflow Quality Gates (`QG1`–`QG7`) and PR checklist before integrating into `develop` or `main`.
 
 ---
 
@@ -44,153 +44,22 @@ docker compose down
 
 ---
 
-## 🌿 1. Git Branching Strategy
+## 🧭 1. Git Workflow, Code Standards & Boundaries (SSOT Pointers)
 
-EduBranch-AI uses **Git Feature Branch Workflow**. **Never** push code directly to `main` or `develop`.
-
-```
-feature/<name>  →  develop  →  main
-```
-
-| Branch | Description |
-| :--- | :--- |
-| `main` | Stable / release branch. Must remain clean and release-ready at all times. |
-| `develop` | Integration branch. Receives merges from `feature/*` after CI passes. |
-| `feature/*` | Feature development. Created from `develop`, merged back via PR. |
-| `fix/*` | Bug fixes during development. |
-| `hotfix/*` | Emergency fixes applied directly from `main`. |
-| `refactor/*` | Code restructuring without adding features. |
-| `docs/*` | Documentation updates. |
-
-### Branch Naming (Strict Rules)
-
-> [!IMPORTANT]
-> **Quy tắc đặt tên nhánh nghiêm ngặt:**
-> - **TUYỆT ĐỐI KHÔNG dùng mã task** (như `TASK-123`, `BE-001`, `FE-010`, `EBA-105`) để đặt tên nhánh Git.
-> - **Tên nhánh Frontend (hoặc chung)**: Đặt theo domain feature chung: format `feature/<feature-name>` (ví dụ: `feature/material`, `feature/course`, `feature/auth`).
-> - **Tên nhánh Backend (khi phát triển độc lập)**: Bắt buộc thêm đuôi `-backend` (hoặc `-be`), format `feature/<feature-name>-backend` (ví dụ: `feature/material-backend`, `feature/course-backend`). Tuyệt đối không dùng tiền tố `BE-...`.
-> - **Code AI service (`ai-service/`)**: Dùng chung nhánh `-backend` của tính năng, không tạo hậu tố riêng (ví dụ: `feature/rag-backend`). Code AI tiếp nối trên nhánh `-backend` đã có.
-> - **Quy trình chuẩn**: Luôn tách nhánh từ `develop` mới nhất (`git checkout develop && git pull`), bật Docker test độc lập (`docker compose up -d`), và mở Pull Request trực tiếp về `develop`.
-
-| Type | Pattern | Example |
-| :--- | :--- | :--- |
-| Feature (Frontend / Chung) | `feature/<feature-name>` | `feature/material`, `feature/course`, `feature/auth` |
-| Feature (Backend riêng, gồm cả `ai-service/`) | `feature/<feature-name>-backend` | `feature/material-backend`, `feature/course-backend`, `feature/rag-backend` |
-| Bug fix | `fix/<feature-name>-<description>` | `fix/auth-token-refresh` |
-| Hotfix | `hotfix/<description>` | `hotfix/jwt-expiry` |
-| Refactor | `refactor/<feature-name>` | `refactor/challenge-support` |
-| Docs | `docs/<topic>` | `docs/branching-study-review-phase` |
+Do not maintain separate copies of engineering rules here—follow the canonical sources directly:
+- **Branching & Commits**: [`.agents/rules/00-project-foundation.md §7`](.agents/rules/00-project-foundation.md) (`feature/<domain>` for frontend/shared, `feature/<domain>-backend` for backend & AI; **never** include task IDs in branch names; commit `<type>(<scope>): <summary> [<GROUP-ID>]`; never push directly to `develop` or `main`).
+- **Tier Architecture, DB, AI, Frontend & Naming Rules**: [`.agents/rules/03-engineering-and-task-standards.md`](.agents/rules/03-engineering-and-task-standards.md) (NestJS raw parameterized `pg` SQL without ORMs, migrations solely in `backend/migrations/V1..V5`, internal AI routing via `providers/factory.py` + `<sources>` escaping, Target Modular Frontend + `R01`, canonical Naming Standard `§8`, Jira key vs Master ID rules).
+- **UI & Design**: [`.agents/rules/01-ui-design-standards.md`](.agents/rules/01-ui-design-standards.md) (`R01`), [UX Screen Notes](docs/design/UX-SCREEN-NOTES.md), and `node scripts/l10n-approval-check.mjs`.
+- **Service Isolation & Security**: [`docs/architecture/SERVICE-BOUNDARIES.md`](docs/architecture/SERVICE-BOUNDARIES.md) and [`SECURITY.md`](SECURITY.md).
+- **Local Scratch Hygiene**: Never force-add gitignored scratch/reference artifacts (`.agent-handoff/`, `scratch/`, `*.zip`, ad-hoc `scripts/*.py`).
 
 ---
 
-## 📝 2. Commit Convention (Conventional Commits)
+## 🔄 2. Pull Request Checklist (`QG1`–`QG7`)
 
-Mã task **CHỈ ĐƯỢC XUẤT HIỆN trong Commit Message**, format:
-
-```
-<type>(<scope>): <short description> [<TASK-ID>]
-```
-
-*Ví dụ:* `feat(auth): implement rate limiter guard [BE-012]` hoặc `feat(course): implement course management [BE-003]`
-
-**Scopes:** `backend` · `ai-service` · `frontend` · `infra` · `docs` hoặc tên feature domain (`auth`, `course`, `material`, `case`)
-
-| Type | Purpose | Example |
-| :--- | :--- | :--- |
-| `feat` | Add new feature | `feat(ai-service): add structured case generation with JSON schema` |
-| `fix` | Fix a bug | `fix(backend): fix DRAFT→APPROVED status transition validation` |
-| `docs` | Documentation update | `docs: update RAG pipeline architecture diagram` |
-| `style` | Code formatting (no logic change) | `style(frontend): align sidebar footer spacing` |
-| `refactor` | Code restructuring | `refactor(ai-service): optimize pgvector retrieval query` |
-| `test` | Add or fix tests | `test(backend): add branching attempt integration test` |
-| `chore` | Library updates, config | `chore: upgrade nestjs to 10.x` |
-| `ci` | CI/CD workflow changes | `ci: add ai-service pytest job to github actions` |
-
----
-
-## 🎨 3. Code Formatting Standards
-
-### A. Frontend — React 19 + TypeScript + Vite
-
-**Naming conventions:**
-- Components & Component files: `PascalCase` → `BranchingCasePlayerPage.tsx`, `BranchingReviewPage.tsx`
-- Custom hooks: `camelCase` starting with `use` → `useBranchingAttempt.ts`, `useReviewJourney.ts`
-- Utils / Services / Stores: `camelCase` → `apiClient.ts`, `authStore.ts`
-
-**Component architecture:**
-- Use **Functional Components** with clear TypeScript Interfaces/Types
-- Never write API call logic directly in UI components — consolidate in `src/services/`
-- Global state management via **Zustand** (`src/stores/`)
-- Centralized Axios client with JWT interceptors at `src/services/apiClient.ts`
-- **Never** store secrets or API keys in frontend environment variables
-
-### B. Backend Gateway — Node.js 20 + NestJS 10 + TypeScript
-
-**Module architecture:**
-```
-Controller → Service (Interface + Impl) → Repository → Entity / DTO
-```
-
-**Rules:**
-- Mandatory use of **DTO** (Data Transfer Objects) with `class-validator` when receiving and returning API data
-- **Never** expose raw database entities directly in REST responses
-- Module by feature/domain: `auth/`, `user/`, `course/`, `material/`, `case/`, `branching-attempt/`, `reasoning/`, `challenge-support/`, `review-study/`, `lecturer-feedback/`, `statistics/`, `evaluation/`, `notification/`, `common/`
-- Use NestJS Guards for authentication/authorization enforcement
-- Use NestJS Interceptors for response transformation and logging
-
-### C. AI Service — Python 3.12 + FastAPI
-
-**Rules:**
-- Package by domain: `core/`, `providers/`, `ingestion/`, `retrieval/`, `generation/`, `challenge_support/`, `evaluation/`
-- **Always** use provider abstraction (`providers/factory.py`) — never hardcode vendor-specific SDK logic in route handlers
-- Pydantic v2 models for all: request schemas, response schemas, structured AI outputs
-- Retrieved document content is **untrusted data** — always wrap in `<sources>...</sources>` boundary before passing to LLM
-
----
-
-## 🔄 4. Pull Request Process
-
-### Before Opening a PR
-
-- [ ] Branch is created from `develop` (not `main`)
-- [ ] Branch name follows naming convention
-- [ ] All commits follow the commit convention
-- [ ] Code is formatted and linted
-- [ ] Tests pass locally
-- [ ] No secrets, API keys, or `.env` files committed
-- [ ] Documentation updated if required
-
-### PR Requirements
-
-- **Title**: `<type>(<scope>): <description> [<TASK-ID>]` — same as commit convention; body follows `.github/pull_request_template.md`
-- **Description**: Use the PR template (`.github/pull_request_template.md`)
-- **CI must pass**: All GitHub Actions checks must be green before merging
-- **Review**: At least one approval required before merging to `develop`
-- **Merge**: Squash merge or merge commit — no direct push to `develop` or `main`
-
----
-
-## 🏗️ 5. Architecture Boundaries — DO NOT VIOLATE
-
-| Rule | Details |
-| :--- | :--- |
-| Frontend → Backend Gateway only | React never calls the AI Service directly |
-| AI Service is internal | The AI Service is not exposed to the public internet |
-| Untrusted document content | Retrieved chunks MUST be wrapped in `<sources>...</sources>` |
-| Human-in-the-loop mandatory | Cases start as DRAFT; lecturer must APPROVE before publication |
-| AI does not grade | The AI Reasoning / Challenge Support generates Socratic counter-questions only; never grades, scores, or decides pass/fail |
-| AI does not alter approved cases | AI must never change branch structures, consequences, or outcomes after Lecturer approval |
-| Experience-first in Branching Study | No reasoning form, no consequence card, no blocking step between consecutive Decision Points during the Experience phase |
-| Own your domain | Never leak Backend Gateway business logic into the AI Service, and vice versa |
-
----
-
-## 🔒 6. Security Rules
-
-- **Never** commit `.env` files or actual secrets
-- **Never** hardcode API keys, passwords, or connection strings in source code
-- **Never** expose internal service URLs or secret keys in API responses
-- **Always** validate file uploads (type, size, content)
-- **Always** enforce authorization checks at the Backend Gateway (NestJS) layer
-- **Always** enable the pre-commit safeguard hook locally: `git config core.hooksPath .githooks`
-- See [SECURITY.md](SECURITY.md) for the full security policy
+Full Quality Gate criteria and Spec Kit stage requirements live in [`docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`](docs/workflows/FEATURE-DELIVERY-WORKFLOW.md). Before opening a PR against `develop` using `.github/pull_request_template.md`:
+- [ ] Branched from latest `develop` with clean `feature/<domain>` / `feature/<domain>-backend` / `fix/<desc>` / `docs/<topic>` name (no task IDs in branch name)
+- [ ] Explicit file staging (`git add -- <path>`), hooks active (`core.hooksPath .githooks`), zero secrets or `.env` files
+- [ ] Tier build, lint, unit, and integration/e2e suites pass locally (plus `l10n-approval-check` if touching EN strings)
+- [ ] All PR head-SHA CI checks (`QG5`) pass before approval and merge (`QG6`)
+- [ ] Canonical docs in [`docs/README.md`](docs/README.md) updated if contracts, routes, or migrations changed

@@ -1,7 +1,9 @@
 # Feature: Basic Learning-Flow Statistics
 
-> **Authoritative Traceability**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
-> **Target Package / Module**: Backend `statistics/` · Frontend `pages/statistics/StatisticsPage.tsx`
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+> - **Authoritative Traceability**: Proposal V1.2 (lines 65, 87)
+> - **Target Package / Module**: Backend `statistics/` (`BE-028`) · Frontend `pages/statistics/StatisticsPage.tsx`, `components/stats/BranchStatsChart.tsx`
+> - **MVP Scope Status**: **MVP Scope** (`(LATER)` label removed per PO `2026-11-25`, Figma `04.3` synchronized in [`P3-SUPPORT-AND-STATISTICS.md`](../design/screens/P3-SUPPORT-AND-STATISTICS.md)). *(Scope inclusion is distinct from full implementation completion: core `statistics/` `BE-028` / `StatisticsPage.tsx` are implemented on `develop`, whereas anonymized CSV export `BE-033` `OPD-011` and final UI/Visual acceptance remain in progress).*
 
 ---
 
@@ -46,3 +48,9 @@ Provides university lecturers with clear, foundational **Learning-Flow Statistic
    - `review_study_submissions` (`submission_status`, `reflection_status` if Review Study)
 4. Backend returns clean statistics DTO.
 5. Frontend renders summary cards and branch choice breakdowns.
+
+---
+
+## 6. Implementation Status
+**Implemented**
+*(Backend `statistics/` `BE-028` merged in PR #76 and frontend `StatisticsPage.tsx` + `BranchStatsChart.tsx` merged in PR #70 on `develop`.)*

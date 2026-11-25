@@ -1,6 +1,8 @@
 # EduBranch-AI — UI Improvement Plan "Preserve and Elevate"
 
-> **Status**: Direction chosen by the PO on 2026-11-22 (chat, option 1: "giữ nhận diện, nâng cấp … sửa lại các vấn đề về UI, UX để nó không bị xấu và không chuyên nghiệp, sau này sẽ nâng cấp"). The rules themselves are in R01 (`.agents/rules/01-ui-design-standards.md`); this file is only the plan and its order. Each step still goes through a spec and PO review (workflow).
+> - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
+
+> **Status**: Direction chosen by the PO on 2026-11-22 (chat, option 1: "giữ nhận diện, nâng cấp … sửa lại các vấn đề về UI, UX để nó không bị xấu và không chuyên nghiệp, sau này sẽ nâng cấp") and updated on 2026-11-25 to adopt `Plus Jakarta Sans` + `Inter` typography and layered TypeScript SPA conventions cleanly on Light-only Navy/Sky surfaces. The rules themselves are in R01 (`.agents/rules/01-ui-design-standards.md`); this file is only the plan and its order. Each step still goes through a spec and PO review (workflow).
 > **Inputs**: UI audit `docs/design/audit/UI-AUDIT.md` (2026-11-21, findings X1–X8), research `docs/design/research/DESIGN-INSPIRATION.md`, R01, Figma page `EduBranch AI – Screens` (content reference).
 
 ## 1. Direction in one paragraph
@@ -17,8 +19,8 @@ EduBranch-AI should read like a calm university workspace. The identity is alrea
 8. **Feedback on every interaction**: hover, focus, pressed, disabled, pending, toast (R01 §5.2–§5.3).
 
 ## 3. Steps (each: audit on current `develop` → spec → change → before/after screenshots → 3–4 review rounds → PO review)
-1. **Foundations**: remove the theme toggle and `.dark` styles; finish the fluid app shell (spec 006, PR #79) and re-measure shell inset and header (X1, X2); `whitespace-nowrap` convention for status/count slots (X3); toast placement and timing.
-2. **Shared components**: `MetricCard` (label above value, tabular numerals, honest "—" with reason), tables (numeric alignment, sticky header, row hover), inputs (fixed-height error slot), button pressed/disabled states, page-level empty state pattern.
+1. **Foundations** *(merged: Specs 006/008/009, PRs #79/#83/#84; typography transition to `Plus Jakarta Sans` + `Inter` queued per PO 2026-11-25)*: remove theme toggle and `.dark` styles; fluid app shell and responsive widths (1024–1920+); `whitespace-nowrap` convention for status/count slots; bottom-right toast placement.
+2. **Shared components** *(merged: Spec 010, PR #85)*: `MetricCard` (label above value, tabular numerals, honest "—" with reason), tables (numeric alignment, sticky header, row hover), inputs (fixed-height error slot), button pressed/disabled states, contrast fixes.
 3. **Honest data**: remove placeholder data from the Admin dashboard (X4, EBA-95); one empty state on Statistics (X5).
 4. **Screen groups**, in order of user value: Courses & Materials → Case library, AI Studio & Case editor → Lecturer feedback queue & detail → Student desk, Branching player, Journey Review, Review Study → Lecturer dashboard & Statistics → Profile → Admin. Never edit files another member is changing in an open PR.
 5. **Public and auth**: landing and auth pages against their frames (X6), measured on Windows/Chrome.

@@ -1,70 +1,44 @@
-# EduBranch AI - AI Coding Agent Instructions
+# EduBranch AI — AI Coding Agent Instructions
 
-> **Note (2026-11-21)**: partly outdated (rule counts, examples). Current agent rules: `AGENTS.md`, `CLAUDE.md`, `.agents/rules/00-project-foundation.md`, `.agents/rules/02-agent-operating-policy.md`, `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`. Where this file disagrees with them, they win.
-
-> **Document Status**: Authoritative Agent Governance Instructions  
-> **Target Audience**: GitHub Copilot, Antigravity, Claude, and all AI coding assistants operating on this repository.
+> - **Document Class**: Copilot Entry Point · **Authority**: Subordinate to `AGENTS.md`, `.agents/rules/`, and `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`.
+> - **Documentation Hub**: [`docs/README.md`](../docs/README.md) · Read first before making changes.
 
 ---
 
-## 1. The 12 Cardinal Rules for AI Coding Agents
+## 1. Authoritative Governance & Precedence
 
-Every AI agent working on EduBranch AI MUST strictly adhere to the following 12 rules:
-
-1. **Read Project Foundation Rules First**: Always read `.agents/rules/00-project-foundation.md` before analyzing, planning, or modifying any code.
-2. **Read Applicable Feature Rules Before Changing a Feature**: Consult the corresponding rule in `.agents/rules/feature-*.md` and specification in `docs/features/FEATURE-*.md` before proposing or touching code in that feature area.
-3. **Follow the Proposal**: The authoritative product definition is the EduBranch AI Proposal (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`). Never invent features not grounded in this document.
-4. **Follow Applicable Markdown Rules**: Project governance is defined in Markdown rules. They are mandatory constraints, not optional suggestions.
-5. **Never Invent Scope**: Keep strictly to university branching case studies, Review Study, and AI Challenge Support. Exclude lesson planners, quiz generators, LMS integrations and unrelated features. Google and Microsoft sign-in on the public login/register pages are in MVP (PSD-09, 2026-11-12); campus SSO is not.
-6. **Never Copy Business Logic From Other Projects**: External repositories may only inform the architecture (service boundaries, folder organization, test workflow). Do NOT copy their source code, domain models or features, and do not name them in EduBranch documents.
-7. **Respect Service Boundaries**: The client tier communicates exclusively with the Backend Gateway. The FastAPI AI Service is **internal only** and must never be exposed to the public internet or called directly from the frontend.
-8. **Protect Secrets**: Never hardcode, commit, or expose API keys, JWT secrets, database credentials, or internal tokens. Always use environment variables loaded from `.env` (which is excluded from Git).
-9. **Validate Changes**: Validate syntax, types, and constraints before completing tasks. Never create dummy code or fake implementations to bypass tests.
-10. **Document Architectural Decisions**: Document all significant design choices in `docs/architecture/` using Architecture Decision Records (ADRs).
-11. **Keep Changes Scoped**: Keep branches and pull requests tightly focused on a single feature or fix (`type(scope): description`). Do not perform sweeping unsolicited refactors.
-12. **Ask Before Acting on Ambiguity**: If any requirement, architectural choice, Markdown rule, or existing code remains ambiguous, **STOP and ask the Project Owner**. Never guess or assume.
+All AI coding agents operating on EduBranch-AI MUST read and obey this core rule hierarchy (in priority order):
+1. **Product Baseline**: [`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`](../docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx) and approved PO decisions in [`docs/mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md`](../docs/mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md).
+2. **Global Rules**:
+   - [`AGENTS.md`](../AGENTS.md) — Shared Rules 1–13, Authority Precedence & Reading Router
+   - [`.agents/rules/00-project-foundation.md`](../.agents/rules/00-project-foundation.md) — Domain Terminology, Architecture Boundaries, Lifecycle, DAG Invariants & Git Rules
+   - [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (`R01`) — Single UI/UX Design Source (Light-only Navy `#2A4E7F` / Sky `#00A5F5`, `Plus Jakarta Sans` + `Inter` target, VI/EN)
+   - [`.agents/rules/02-agent-operating-policy.md`](../.agents/rules/02-agent-operating-policy.md) — Task Ownership, Escalation & Evidence Policy
+   - [`.agents/rules/03-engineering-and-task-standards.md`](../.agents/rules/03-engineering-and-task-standards.md) — Tier Standards (raw `pg` SQL, `V1`–`V5` migrations via built-in runner, pinned AI models, FE Target Architecture & Naming §8, Jira ID disambiguation)
+   - Applicable `.agents/rules/feature-<domain>.md` + [`docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`](../docs/workflows/FEATURE-DELIVERY-WORKFLOW.md)
 
 ---
 
-## 2. Project Identity & Purpose
+## 2. Project Identity & Scope Boundaries
 
-- **Name**: EduBranch AI.
-- **Full Title**: EduBranch AI — AI Platform for Interactive Branching Case Studies and Open Review in University Teaching.
-- **Target Audience**: University lecturers and undergraduate/graduate students (NOT K-12).
-- **Core Loop**: Teaching Material → RAG Processing → AI-Generated Case → Lecturer Review/Edit → Lecturer Approval & Publication → published-only Student access → uninterrupted Branching Study Experience → Journey Review with consequences and retrospective reasoning → independent Review Study → AI Challenge Support (1–2 counter-question rounds maximum, never grading or approving) → Lecturer feedback/statistics.
-
----
-
-## 3. Confirmed Architecture & Service Ownership
-
-```
-Frontend (Browser) ──[HTTPS + JWT]──► Backend Gateway ──[Internal HTTP + Token]──► FastAPI AI Service ──► LLM
-```
-
-| Concern / Responsibility | Backend Gateway | FastAPI AI Service (Internal) |
-| :--- | :---: | :---: |
-| Authentication & JWT Issuance | ✅ | ❌ |
-| User & Role Management (Lecturer / Student) | ✅ | ❌ |
-| Course & Material Metadata | ✅ | ❌ |
-| Case Lifecycle State Machine | ✅ | ❌ |
-| Branching Attempt Persistence | ✅ | ❌ |
-| Student Reasoning Persistence | ✅ | ❌ |
-| Challenge Support History Persistence | ✅ | ❌ |
-| Lecturer Statistics Aggregations | ✅ | ❌ |
-| Document Parsing (PDF/DOCX) | ❌ | ✅ |
-| Token Chunking & Embeddings | ❌ | ✅ |
-| pgvector Semantic Retrieval | ❌ | ✅ |
-| RAG Prompt Assembly & Sources Boundary | ❌ | ✅ |
-| Structured Decision Tree Generation (LLM) | ❌ | ✅ |
-| AI Challenge Support Counter-Question Prompting | ❌ | ✅ |
+- **Identity**: **EduBranch-AI** — university-level experiential case-based learning platform (roles: `LECTURER`, `STUDENT`, `ADMIN`; strictly higher-education case-based learning, never pre-university/K-12 or quiz/homework tools).
+- **Dual Learning Modes**:
+  1. **Branching Study** (`BRANCHING_STUDY`): Experience-first uninterrupted decision path → post-journey **REVIEW** revealing consequences + retrospective reasoning → Reflection & immutable Retry (`branching_attempts`).
+  2. **Review Study** (`REVIEW_STUDY`): Context/Data → Problem → Analysis (optional) → Proposed Solution & Reasoning (single submission per student/case) → Lecturer Qualitative Feedback → Reflection (`review_study_submissions`).
+- **MVP Auth Scope Updates**: Email/password + JWT; Google & Microsoft OAuth (`BE-034`, `PSD-09`, public login/register only, no campus LDAP/SAML); Forgot & Reset Password UI + `rememberMe` (PO 2026-11-25, backend reset/rememberMe TTL pending).
+- **Independent Design & Stack Policy**: Never introduce pre-university/K-12 assets, dark themes, unapproved palettes, external ORMs/migration CLIs, untyped `.jsx`, or non-EduBranch brand names.
 
 ---
 
-## 4. Decision-Tree Integrity & AI Governance Rules
+## 3. Non-Negotiable Architecture & Safety Invariants
 
-- **Untrusted Document Content**: All retrieved chunks from teaching materials MUST be encapsulated in `<sources>...</sources>` tags to prevent indirect prompt injection.
-- **Human-in-the-Loop**: AI-generated cases are ALWAYS born in `DRAFT` status. Students must NEVER receive or access cases that are not in `PUBLISHED` status.
-- **AI Never Grades or Approves**: AI Challenge Support asks contextual counter-questions only. It must never assign grades, letter scores, numerical ratings, pass/fail decisions, approve cases, or make academic integrity judgments.
-- **Challenge Support Round Cap**: AI Challenge Support is hard-capped at **1–2 rounds maximum**. Enforced at both backend and AI service layers.
-- **Branching Experience Invariant**: Decisions are uninterrupted; consequences are hidden until Journey Review, and reasoning is retrospective rather than mandatory after each decision.
-- **Graph Invariants**: Every decision tree must be a directed acyclic graph (no loops, no cycles, no orphan nodes, reachable from root, at least one terminal node).
+| Concern / Invariant | Enforced Rule |
+|---|---|
+| **Tier Isolation** | Frontend (`React 19`) calls **only** Backend Gateway (`/api/v1/*`). FastAPI AI Service (`/internal/v1/*`, `X-Internal-API-Key`) is strictly internal (`docs/architecture/SYSTEM-ARCHITECTURE.md`). |
+| **Database Ownership** | Backend Gateway owns raw parameterized SQL (`pg` Pool) and `backend/migrations/V1..V5`. AI Service reads/writes `document_chunks` (`vector(768)`). |
+| **Untrusted RAG Boundary (`BR-RAG-01`)** | Wrap all retrieved teaching chunks in `<sources>...</sources>` tags with look-alike neutralization (`app/retrieval/service.py`). |
+| **Mandatory Human-in-the-Loop (`INV-01`)** | AI cases initialize in `DRAFT` (`DRAFT → REVIEWED → APPROVED → PUBLISHED`). Students only ever query `PUBLISHED` cases (enforced in SQL). |
+| **Experience-First Rule (`INV-02`, `INV-03`)** | Never show consequences or reasoning prompts between consecutive Branching Study Decision Points during Phase 1 Experience. |
+| **DAG Tree Integrity** | Directed acyclic graph (no cycles via 3-color DFS, all nodes reachable from `root_node_id`, 2–4 options per non-terminal node, ≥1 terminal node). |
+| **AI Non-Grading & 2-Round Cap (`INV-10`)** | AI Challenge Support asks Socratic counter-questions only, hard-capped at `1–2` rounds (`CHECK current_round BETWEEN 0 AND 2`). Never grades, scores, or renders pass/fail verdicts. |
+| **Git & Secret Protection** | Never commit `.env` or secrets. Branch from `develop` using `feature/<domain>` (`-backend` for backend/AI), never put task IDs in branch names (`feat(scope): summary [GROUP-ID]`). |

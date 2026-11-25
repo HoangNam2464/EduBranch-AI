@@ -1,10 +1,12 @@
 # Hướng dẫn Vận hành: Quy trình Baseline Cơ sở Dữ liệu Cũ (Operational Baseline Guide)
 
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]` (Database Migration & Operational Baseline Runbook)
+
 ## 1. Mục đích & Nguyên tắc Bắt buộc
 Tài liệu này quy định quy trình chuẩn hóa cho Quản trị viên Hệ thống (DevOps / Database Administrator) khi kết nối EduBranch-AI Backend Gateway vào một cơ sở dữ liệu PostgreSQL đã tồn tại bảng từ các phiên bản triển khai trước đó hoặc tạo thủ công.
 
 ### NGUYÊN TẮC CỐT LÕI (IMMUTABLE RULES)
-1. **Tuyệt đối không suy đoán**: Việc bảng `users` hoặc bất kỳ bảng nào khác tồn tại **KHÔNG PHẢI** là bằng chứng chứng minh database đã áp dụng đầy đủ các migration `V1 → V4`.
+1. **Tuyệt đối không suy đoán**: Việc bảng `users` hoặc bất kỳ bảng nào khác tồn tại **KHÔNG PHẢI** là bằng chứng chứng minh database đã áp dụng đầy đủ các migration `V1 → V5`.
 2. **Không tự động dán nhãn (No Auto-Stamping)**: `MigrationRunner` được thiết kế để `SAFE-FAIL` (dừng ngay lập tức và ROLLBACK) nếu phát hiện xung đột bảng mà không tự động chèn bản ghi giả mạo vào `schema_migrations`.
 3. **Phê duyệt có kiểm soát**: Mọi thao tác baseline dữ liệu lịch sử phải được thực hiện thủ công bởi người vận hành sau khi đối soát đầy đủ 5 bước dưới đây.
 
@@ -14,10 +16,10 @@ Tài liệu này quy định quy trình chuẩn hóa cho Quản trị viên Hệ
 
 ```mermaid
 flowchart TD
-    Step1["Bước 1: Kiểm tra Schema Thực tế<br>(pg_dump / information_schema)"] --> Step2["Bước 2: Xác định Chính xác Phiên bản Đã áp dụng<br>(Đối chiếu DDL với V1, V2, V3, V4)"]
-    Step2 --> Step3["Bước 3: Xác minh Checksum & Phân loại Lịch sử<br>(Tính SHA-256 đối chiếu hoặc đánh dấu unverified)"]
-    Step3 --> Step4["Bước 4: Thực thi Lệnh Baseline có Phê duyệt<br>(INSERT schema_migrations với thông tin chuẩn xác)"]
-    Step4 --> Step5["Bước 5: Kiểm tra Sau Baseline & Khởi động Backend<br>(MigrationRunner nhận diện và tiếp tục an toàn)"]
+    Step1["Bước 1: Kiểm tra Schema Thực tế\n(pg_dump / information_schema)"] --> Step2["Bước 2: Xác định Chính xác Phiên bản Đã áp dụng\n(Đối chiếu DDL với V1..V5)"]
+    Step2 --> Step3["Bước 3: Xác minh Checksum & Phân loại Lịch sử\n(Tính SHA-256 đối chiếu hoặc đánh dấu unverified)"]
+    Step3 --> Step4["Bước 4: Thực thi Lệnh Baseline có Phê duyệt\n(INSERT schema_migrations với thông tin chuẩn xác)"]
+    Step4 --> Step5["Bước 5: Kiểm tra Sau Baseline & Khởi động Backend\n(MigrationRunner nhận diện và tiếp tục an toàn)"]
 ```
 
 ### Bước 1: Kiểm tra Schema Thực tế (Schema Inspection)
@@ -40,8 +42,9 @@ psql -U <db_user> -d <db_name> -c "SELECT extname, extversion FROM pg_extension;
 | `V2__new_flow_schema.sql` | `branching_attempts`, `student_reasoning`, `review_study_submissions`, `challenge_support_sessions`, `lecturer_feedback` | `SELECT table_name FROM information_schema.tables WHERE table_name = 'branching_attempts';` |
 | `V3__add_admin_role.sql` | Enum `user_role` có giá trị `'ADMIN'` | `SELECT enumlabel FROM pg_enum WHERE enumtypid = 'user_role'::regtype;` |
 | `V4__document_chunks.sql` | `document_chunks` với vector embedding | `SELECT table_name FROM information_schema.tables WHERE table_name = 'document_chunks';` |
+| `V5__course_enrollments.sql` | `course_enrollments` & cột `courses.invite_code`, `invite_code_active` | `SELECT table_name FROM information_schema.tables WHERE table_name = 'course_enrollments';` |
 
-> **Cảnh báo**: Nếu database mới chỉ có bảng của `V1` mà chưa có bảng của `V2`, **tuyệt đối không** đánh dấu `V2` đã hoàn thành!
+> **Cảnh báo**: Nếu database mới chỉ có bảng của `V1` mà chưa có bảng của `V2`..`V5`, **tuyệt đối không** đánh dấu các phiên bản sau đã hoàn thành!
 
 ### Bước 3: Xác minh Checksum hoặc Ghi nhận Lịch sử Chưa thể Xác minh
 Tính toán SHA-256 checksum của file SQL trên đĩa:
@@ -52,6 +55,7 @@ Get-FileHash backend/migrations/V1__init_schema.sql -Algorithm SHA256
 Get-FileHash backend/migrations/V2__new_flow_schema.sql -Algorithm SHA256
 Get-FileHash backend/migrations/V3__add_admin_role.sql -Algorithm SHA256
 Get-FileHash backend/migrations/V4__document_chunks.sql -Algorithm SHA256
+Get-FileHash backend/migrations/V5__course_enrollments.sql -Algorithm SHA256
 ```
 
 - **Trường hợp A (Xác nhận khớp 100%)**: Nếu người vận hành có log triển khai trước đây chứng minh các file SQL trên được chạy nguyên vẹn, sử dụng giá trị SHA-256 tương ứng để lưu vào cột `checksum`.
@@ -74,7 +78,7 @@ ALTER TABLE schema_migrations ADD COLUMN IF NOT EXISTS checksum VARCHAR(64);
 
 -- 3. Nạp bản ghi baseline (Ví dụ đã xác minh có đầy đủ V1 đến V4 khớp file gốc)
 INSERT INTO schema_migrations (version, name, checksum, applied_at)
-VALUES 
+VALUES
     ('V1', 'init_schema', 'cf42c99b6cefdf3b2c6d0900ae73b1122164835192ddca5bf8ca314544c5cb30', NOW()),
     ('V2', 'new_flow_schema', 'ae92835c4cd5e52da3f94a1120f269a6fc460f994e4c29bc962f905fbcf9698c', NOW()),
     ('V3', 'add_admin_role', '1f0fd89c3168b5a03e680aee80c2f7b11d871d34c679093b16327b8782a9a4b1', NOW()),
@@ -114,5 +118,4 @@ ON CONFLICT (version) DO NOTHING;
   - ❌ `VACUUM`
   - ❌ `REINDEX CONCURRENTLY`
 - **Hệ quả**: Nếu một file migration chứa các câu lệnh trên, PostgreSQL sẽ báo lỗi `ERROR: CREATE INDEX CONCURRENTLY cannot run inside a transaction block`. Quá trình migration sẽ rollback, ném exception và dừng toàn bộ tiến trình khởi động của Backend Gateway.
-- **Quy chuẩn**: Toàn bộ index trong hệ thống (bao gồm B-Tree và HNSW index cho `pgvector`) phải được tạo dưới dạng index thông thường (`CREATE INDEX idx_name ON table_name USING ...`). Toàn bộ migration hiện tại (`V1 → V4`) đã tuân thủ nghiêm ngặt quy chuẩn này.
-
+- **Quy chuẩn**: Toàn bộ index trong hệ thống (bao gồm B-Tree và HNSW index cho `pgvector`) phải được tạo dưới dạng index thông thường (`CREATE INDEX idx_name ON table_name USING ...`). Toàn bộ migration hiện tại (`V1 → V5`) đã tuân thủ nghiêm ngặt quy chuẩn này.

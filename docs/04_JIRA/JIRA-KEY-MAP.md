@@ -1,5 +1,7 @@
 # Jira EBA — Key Map & Audit Snapshot
 
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (Regenerated Jira Snapshot; live status lives on Jira `EBA`)
+
 > **Status**: Snapshot · **Source**: Jira project EBA (`hoangnam2005.atlassian.net`, board 67), read 2026-11-21, rows for EBA-63/64/66/89/91/96 and EBA-98/99/100/102 updated 2026-11-22; `docs/01_MASTER-TASKS.md`; GitHub PRs; test runs on `develop` `6f903f2` (2026-11-21). Jira is the live source; this file goes stale and is regenerated, never edited by hand.
 > **Why it exists**: Jira keys (`EBA-1`…`EBA-106`) are not the Master Task IDs of `01_MASTER-TASKS.md` (`EBA-101`…`EBA-435`), and the same strings name different tasks (Jira `EBA-105` = QA-023; Master `EBA-105` = BE-001). Always cite the Group ID plus the Jira key.
 

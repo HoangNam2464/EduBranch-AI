@@ -1,3 +1,6 @@
+> - **Document Class**: `[SUPPORTING GUIDE]` (Repository Overview & Quickstart)
+> - **Master Documentation Hub**: [`docs/README.md`](docs/README.md)
+
 <p align="center">
   <h1 align="center">🌿 EduBranch-AI</h1>
   <p align="center">
@@ -10,7 +13,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT License">
-  <img src="https://img.shields.io/badge/status-Structural%20Skeleton%20Only-orange" alt="Status">
+  <img src="https://img.shields.io/badge/status-Active%20Development%20(MVP)-2A4E7F" alt="Status">
   <img src="https://img.shields.io/badge/Node.js-20%20LTS-339933?logo=node.js&logoColor=white" alt="Node.js 20">
   <img src="https://img.shields.io/badge/NestJS-10-E0234E?logo=nestjs&logoColor=white" alt="NestJS 10">
   <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white" alt="Python 3.12">
@@ -51,91 +54,44 @@ The platform includes embedded **AI Reasoning & Challenge Support** (1–2 round
 
 ---
 
-## ⚠️ Current Status
+## 📌 Current Status
 
-> **IMPORTANT NOTICE FOR CONTRIBUTORS AND AUDITORS:**
+> **Active MVP Build on `develop`** — Core flows are connected end-to-end across Frontend (React 19), Backend Gateway (NestJS 10), and Internal AI Service (FastAPI + PostgreSQL/pgvector):
+> - ✅ **Frontend (`frontend/`)**: Connected to Backend REST API (`/api/v1/*`), Vietnamese-default UI with VI/EN `i18next` switch, Light-only theme, Zustand auth store, and ReactFlow tree editor.
+> - ✅ **Backend Gateway (`backend/`)**: Database migrations `V1`–`V5` active (`V5__course_enrollments.sql`), JWT + RBAC (`LECTURER`, `STUDENT`, `ADMIN`), 11/13 modules implemented (`auth`, `course`, `material`, `case`, `branching-attempt`, `reasoning`, `challenge-support`, `review-study`, `lecturer-feedback`, `statistics`, plus `user` `/users/me`).
+> - ✅ **AI Service (`ai-service/`)**: FastAPI internal service implementing PDF/DOCX parsing, chunking, `gemini-embedding-001` (`vector(768)`), pgvector cosine retrieval with `<sources>` boundary, structured case generation (`gemini-3.5-flash`), and 2-round Socratic challenge support.
+> - ⏳ **Remaining gaps / pending PRs**: `notification` and `evaluation` modules remain structural skeletons in `backend/`; admin/profile/rubric endpoints (`BE-030`..`BE-033`) are in PR #80; social OAuth (`BE-034`) and password reset APIs remain pending.
 >
-> The repository currently contains an **interactive frontend prototype** plus backend and AI-service scaffolding.
-> - ✅ The frontend demonstrates both approved learning-mode flows with sample data in a local Zustand store.
-> - ✅ Database schemas, indexes, vector extensions, and flow invariants are defined.
-> - ✅ Backend and AI-service health/configuration boundaries build successfully.
-> - ⚠️ Backend domain controllers do not yet expose persistent case, attempt, Review Study, reasoning, feedback, or challenge APIs.
-> - ⚠️ The frontend prototype is not yet connected to the backend and its in-memory state is lost on refresh.
->
-> See [Project Overview](docs/PROJECT_OVERVIEW.md)
-> for the source-versus-documentation audit and correction plan.
+> See [`docs/PROJECT_OVERVIEW.md`](docs/PROJECT_OVERVIEW.md) for full implementation details, and [`docs/README.md`](docs/README.md) as the single master entry point for all rules, architecture, design specs, and open PO decisions.
 
 ---
 
 ## 🎓 Core Workflows
 
-### Common Flow (Case Creation to Publication)
-```
-Teaching Material (PDF / DOCX)
-            ↓
-AI Service + RAG generates Case Draft (learning_mode = BRANCHING_STUDY or REVIEW_STUDY)
-            ↓
-Lecturer inspects, edits, and refines case (DRAFT → REVIEWED)
-            ↓
-Lecturer approves the case (APPROVED)
-            ↓
-Lecturer publishes the case and shares the link (PUBLISHED — accessible to students)
+```mermaid
+flowchart LR
+    subgraph Authoring ["Lecturer & AI Authoring (Human-in-the-Loop)"]
+        M["Upload PDF / DOCX Material"] --> RAG["AI Parse, Chunk & pgvector Index"]
+        RAG --> Draft["AI Draft Case (DRAFT)"]
+        Draft --> Edit["Lecturer Review & Edit (REVIEWED)"]
+        Edit --> Pub["Approve & Publish (PUBLISHED)"]
+    end
+
+    subgraph Branching ["Mode 1: Branching Study (Experience-First)"]
+        BP1["Phase 1: Experience\nConsecutive choices, NO consequences mid-flow"] --> BP2["Phase 2: Journey Review\nReplay path, reveal consequences, retrospective reasoning"]
+        BP2 --> BP3["Phase 3: Reflection & Retry\nOptional 1-2 round AI Challenge + New Attempt"]
+    end
+
+    subgraph Review ["Mode 2: Review Study (Open Analysis)"]
+        RS1["Read Context & Problem"] --> RS2["Submit Solution & Reasoning\n(1 submission per case)"]
+        RS2 --> RS3["Lecturer Feedback & Student Reflection"]
+    end
+
+    Pub -->|BRANCHING_STUDY| BP1
+    Pub -->|REVIEW_STUDY| RS1
 ```
 
-### Branching Study Flow
-
-#### Phase 1 — Experience (No interruptions)
-```
-Lecturer shares link → Student opens case
-            ↓
-Initial Situation + Context / Data
-            ↓
-Decision Point → Student selects an option
-            ↓
-Next Situation (seamless transition — no consequence card mid-flow)
-            ↓
-Decision Point → Student selects next option
-            ↓
-... (as many decision points as the case requires — no fixed count)
-            ↓
-Terminal Node reached → Journey complete
-```
-
-#### Phase 2 — REVIEW (After journey is complete)
-```
-Student sees full journey replay:
-  - Every decision point traversed
-  - The option chosen at each point
-  - The path taken and branches not taken
-  - How each choice shaped the outcome
-  - Which decisions were pivotal
-            ↓
-Student writes reasoning for key decisions (retrospective, not per-click)
-```
-
-#### Phase 3 — Reflection & Retry
-```
-Student submits overall Reflection
-            ↓
-[Optional: AI Reasoning / Challenge Support — max 2 rounds, counter-questions only]
-            ↓
-[Optional: Retry → New Attempt → Explore a different path]
-```
-
-### Review Study Flow
-```
-Context & Data → Problem / Question Statement
-            ↓
-Student Analysis → Proposed Solution & Reasoning submitted
-            ↓
-[Optional: AI Reasoning / Challenge Support, max 2 rounds, counter-questions only]
-            ↓
-Submission Status: SUBMITTED
-            ↓
-Lecturer Reviews submission & provides Feedback → Status: REVIEWED
-            ↓
-Student Reflection on Feedback submitted → Status: REFLECTED
-```
+> Detailed end-to-end sequence diagrams for all 7 flows live in [`docs/architecture/DATA-FLOW.md`](docs/architecture/DATA-FLOW.md).
 
 ---
 
@@ -146,40 +102,7 @@ The system strictly enforces a three-tier architecture:
 - **Backend Gateway**: Node.js 20 LTS + NestJS 10 acting as the single public REST API entry point.
 - **AI Service**: Python 3.12 + FastAPI operating strictly as an **internal** microservice on the private container network.
 
-### System Architecture Diagram
-
-```mermaid
-flowchart TD
-    subgraph Client ["🖥️ Client Tier (Browser)"]
-        FE["Frontend (React 19 + TypeScript)\n• TailwindCSS v4\n• ReactFlow (Decision Tree Visualization in Case Review)\n• Lecturer Case Authoring Canvas & Student Learning Players"]
-    end
-
-    subgraph Gateway ["🛡️ Backend Gateway (Node.js 20 LTS)"]
-        BG["NestJS 10 API Gateway\n• Auth & JWT (RBAC: Lecturer / Student)\n• Courses & Teaching Material Metadata\n• Case Lifecycle Management (Two Learning Modes)\n• Branching Attempts & Post-Journey Reasoning\n• Review Submissions, Reflection & Lecturer Feedback\n• Challenge Support Sessions (Max 2 Rounds)\n• Basic Statistics & REST API Gateway"]
-    end
-
-    subgraph Storage ["💾 Persistence, Cache & Storage"]
-        PG[("PostgreSQL 16 + pgvector\n(Relational Schema & Semantic Embeddings)")]
-        REDIS[("Redis 7\n(Token Blacklist & Cache / Sessions)")]
-        MINIO[("MinIO Object Storage\n(Teaching Materials: PDF / DOCX)")]
-    end
-
-    subgraph InternalAI ["🧠 AI Service (Python 3.12 — Internal Only)"]
-        AI["FastAPI AI Service\n• Document Parsing & Chunking\n• Embedding Generation\n• pgvector Retrieval & LangChain\n• Case Draft Generation (Structured Output)\n• AI Reasoning/Challenge Support (Max 2 Rounds)"]
-    end
-
-    subgraph Providers ["☁️ External LLM Providers"]
-        LLM["Google Gemini 3.5 Flash / OpenAI GPT-4o-mini\n(Provider Abstraction)"]
-    end
-
-    FE -->|REST API + JWT| BG
-    BG -->|Relational Queries| PG
-    BG -->|Cache & Session Lookup| REDIS
-    BG -->|Upload / Download Materials| MINIO
-    BG -->|Internal HTTP + X-Internal-API-Key| AI
-    AI -->|pgvector Similarity Retrieval| PG
-    AI -->|LLM Prompts with sources boundary| LLM
-```
+> Canonical component topology diagram & service contracts: [`docs/architecture/SYSTEM-ARCHITECTURE.md`](docs/architecture/SYSTEM-ARCHITECTURE.md) and [`docs/architecture/SERVICE-BOUNDARIES.md`](docs/architecture/SERVICE-BOUNDARIES.md).
 
 ### Architectural Principles
 
@@ -196,19 +119,19 @@ flowchart TD
 
 | Layer | Technology | Details / Purpose |
 | :--- | :--- | :--- |
-| **Frontend** | React 19, TypeScript 5.x, Vite | Client SPA |
-| **Styling** | TailwindCSS v4 | Utility-first clean typography & layout |
+| **Frontend** | React 19, TypeScript 6.x, Vite 8 | Client SPA |
+| **Styling & Typography**| TailwindCSS v4 (`@theme`), `Plus Jakarta Sans` + `Inter` target | Light-only theme (`#2A4E7F` Navy / `#00A5F5` Sky); PO 2026-11-25 font alignment |
 | **Tree Visualizer** | ReactFlow 11.x | Decision tree canvas in Lecturer's Case Review editor |
 | **State Management**| Zustand | Lightweight client stores (Auth, UI state) |
 | **HTTP Client** | Axios | Centralized client with JWT auth interceptors |
-| **Backend Gateway** | Node.js 20 LTS, NestJS 10, TypeScript | REST API Gateway, Auth, RBAC, Business State |
+| **Backend Gateway** | Node.js 20 LTS, NestJS 10, TypeScript, raw SQL (`pg`) | REST API Gateway, Auth, RBAC (`LECTURER`, `STUDENT`, `ADMIN`), Business State |
 | **AI / RAG Service** | Python 3.12, FastAPI, LangChain | Internal AI microservice, document chunking, RAG |
 | **LLM Providers** | Gemini 3.5 Flash (`gemini-3.5-flash`) / OpenAI GPT-4o-mini | Unified via Provider Abstraction (`providers/factory.py`) |
-| **Relational & Vector**| PostgreSQL 16 + pgvector | Relational entities & 1536/768-dim embeddings |
+| **Relational & Vector**| PostgreSQL 16 + pgvector | Relational entities & `vector(768)` embeddings (`gemini-embedding-001`) |
 | **Cache & Sessions** | Redis 7 | Revocation blacklist, transient session cache |
 | **Object Storage** | MinIO (S3 Compatible) | PDF / DOCX teaching syllabus uploads |
 | **Infrastructure** | Docker, Docker Compose | Multi-container local development stack |
-| **Database Migrations**| Plain SQL + built-in runner (no Flyway) | `backend/migrations/V<n>__*.sql`, applied on backend start under an advisory lock (`common/database/migration-runner.ts`) |
+| **Database Migrations**| Plain SQL + built-in runner (`MigrationRunner`) | `backend/migrations/V<n>__*.sql`, applied on backend start under an advisory lock (`common/database/migration-runner.ts`) |
 
 ---
 
@@ -216,16 +139,17 @@ flowchart TD
 
 ```
 EduBranch-AI/
-├── backend/                         ← NestJS 10 Backend Gateway (Node.js 20)
+├── backend/                         ← NestJS 10 Backend Gateway (Node.js 20, raw SQL pg)
+│   ├── migrations/                  ← Active SQL migrations (V1__init_schema.sql .. V5__course_enrollments.sql)
 │   ├── src/
 │   │   ├── app.module.ts            ← Main application module
 │   │   ├── main.ts                  ← Bootstrap entry point (Port 8080, /api/v1)
-│   │   ├── common/                  ← Health checks, guards, interceptors
-│   │   └── modules/                 ← Domain feature modules (Skeleton)
-│   │       ├── auth/                ← JWT authentication & login/register
-│   │       ├── user/                ← User entities & role management
-│   │       ├── course/              ← Course metadata & ownership
-│   │       ├── material/            ← Teaching material files
+│   │   ├── common/                  ← ai-client, config, database, health, minio/storage
+│   │   └── modules/                 ← Domain modules
+│   │       ├── auth/                ← JWT authentication, login/register, rate limiter
+│   │       ├── user/                ← User profile & role management
+│   │       ├── course/              ← Course metadata, invite code, enrollment, archive
+│   │       ├── material/            ← Teaching material files & ingestion dispatch
 │   │       ├── case/                ← Case lifecycle & decision tree graphs
 │   │       ├── branching-attempt/   ← Branching Study student attempts & navigation
 │   │       ├── reasoning/           ← Student reasoning (captured in REVIEW phase)
@@ -233,32 +157,35 @@ EduBranch-AI/
 │   │       ├── review-study/        ← Review Study submissions & workflow
 │   │       ├── lecturer-feedback/   ← Lecturer Review/Feedback on student work
 │   │       ├── statistics/          ← Basic learning-flow statistics
-│   │       ├── notification/        ← Notification extension point
-│   │       └── evaluation/          ← Research rubric & export boundary
+│   │       ├── notification/        ← Notification extension boundary (Skeleton)
+│   │       └── evaluation/          ← Research rubric & export boundary (Skeleton)
 │   └── package.json
 │
 ├── ai-service/                      ← FastAPI AI Service (Python 3.12 — Internal)
 │   ├── app/
-│   │   ├── main.py                  ← FastAPI entry point (/health endpoint)
+│   │   ├── main.py                  ← FastAPI entry point (/health, /internal/v1/*)
 │   │   ├── core/                    ← Settings, security, logging, exceptions
 │   │   ├── providers/               ← Provider abstraction (Gemini / OpenAI)
 │   │   ├── ingestion/               ← Document parser (PDF/DOCX) & chunker
-│   │   ├── retrieval/               ← pgvector similarity search & LangChain
-│   │   ├── generation/              ← Structured case generation schemas
-│   │   ├── challenge_support/       ← AI challenge support schemas & 2-round cap
-│   │   └── evaluation/              ← Research evaluation helper stubs
+│   │   ├── retrieval/               ← pgvector similarity search & <sources> wrapping
+│   │   ├── generation/              ← Structured case generation & 3-color DFS tree validation
+│   │   ├── challenge_support/       ← AI challenge support prompts & 2-round cap
+│   │   └── evaluation/              ← Research evaluation helper boundary
 │   ├── requirements.txt
 │   └── .env.example
 │
 ├── frontend/                        ← React 19 + TypeScript + Vite Client
 │   ├── src/
 │   │   ├── routes/                  ← paths.ts (route SSOT), AppRoutes.tsx, PrivateRoute.tsx
-│   │   ├── layouts/                 ← Public, Lecturer, Student, Admin layouts
-│   │   ├── pages/<feature>/         ← Screens grouped by feature (auth, courses, cases, branching…)
-│   │   ├── components/              ← ui/ primitives + feature components
-│   │   ├── services/                ← apiClient.ts (single Axios client) + one service per feature
-│   │   ├── stores/                  ← Zustand state (auth, case study)
-│   │   ├── config/ · providers/     ← API config · app-wide providers
+│   │   ├── layouts/                 ← Public, Lecturer, Student, Admin layouts + shell/
+│   │   ├── pages/<domain>/          ← Screens by domain (auth, courses, materials, cases, branching, review-study, feedback, challenge, statistics, rubric, dashboard, profile, admin, landing, errors)
+│   │   ├── features/<domain>/       ← Domain UI sub-components (target 1A; currently under pages/<domain>/components/)
+│   │   ├── components/              ← ui/ (currently ds/) + feedback/ states + brand/, cases/, stats/
+│   │   ├── styles/                  ← Layered Tailwind v4 CSS modules (target 1A; currently index.css)
+│   │   ├── hooks/ · utils/          ← Reusable React hooks · pure formatting & validation helpers
+│   │   ├── services/                ← apiClient.ts + domain services & mappers/
+│   │   ├── stores/                  ← Zustand state (authStore)
+│   │   ├── config/ · providers/     ← API/devTools config · AppProviders
 │   │   ├── lib/i18n.ts · locales/   ← i18n setup · vi.json / en.json (Vietnamese default)
 │   │   └── types/index.ts           ← Shared domain TypeScript declarations
 │   └── package.json
@@ -268,13 +195,15 @@ EduBranch-AI/
 │   ├── minio/                       ← MinIO bucket initialization scripts
 │   └── postgres/
 │       ├── init/                    ← Initial pgvector & database setup
-│       └── migrations/              ← V1__init_schema.sql, V2__new_flow_schema.sql
+│       └── migrations/              ← Deprecated V1–V4 copy (unexecuted; active source is backend/migrations/)
 │
-├── docs/                            ← Authoritative Project Documentation
-│   ├── architecture/                ← ADRs, system architecture, data flow
-│   ├── requirements/                ← Proposal traceability matrix
-│   ├── features/                    ← Feature specifications (both learning modes)
-│   └── ai/                          ← RAG & Challenge Support specifications
+├── docs/                            ← Project Documentation (start at docs/README.md)
+│   ├── README.md                    ← Unified Documentation Hub & Classified Catalog
+│   ├── architecture/                ← System architecture, service contracts, ADRs, data flows
+│   ├── database/                    ← Schema SSOT (DATA-MODEL.md) & baseline ops guide
+│   ├── features/                    ← 15 per-feature specifications (FEATURE-*.md)
+│   ├── design/                      ← UI/UX site map, UX screen notes & P0–P4 specs
+│   └── mvp-scope/ · qa/ · ai/       ← PO decisions, QA strategy/reports & AI specs
 │
 ├── .githooks/                       ← Zero-dependency pre-commit safety hooks
 ├── scripts/                         ← Infrastructure startup automation scripts
@@ -396,14 +325,16 @@ cd frontend && npm run lint && npm test && npm run build
 
 ## 🌳 Git Workflow & Branch Conventions
 
-Development follows a strict **Feature Branch Workflow**:
+Development follows a strict **Feature Branch Workflow** (governed by [`.agents/rules/00-project-foundation.md`](.agents/rules/00-project-foundation.md) §7 and [`docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`](docs/workflows/FEATURE-DELIVERY-WORKFLOW.md)):
 
+```mermaid
+flowchart LR
+   Dev["develop"] -->|branch| Feat["feature/domain\n(or feature/domain-backend)"]
+   Feat -->|conventional commit| Commit["feat(scope): summary [GROUP-ID]"]
+   Commit -->|PR after QG1-QG5| Dev
 ```
-feature/<feature>          →  develop  →  main   (backend-only work: feature/<feature>-backend)
-fix/<description>          →  develop
-hotfix/<description>       →  main
-```
-Authoritative rules: FND §7 (`.agents/rules/00-project-foundation.md`) and `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` §5. Never put a task ID in a branch name; put it in the commit: `feat(course): enrollment by invite code [BE-029]`.
+
+Never put a task ID in a branch name; put `[GROUP-ID]` in commit messages (`feat(course): enrollment by invite code [BE-029]`).
 
 ### Branch Naming Standard
 
@@ -412,7 +343,7 @@ Authoritative rules: FND §7 (`.agents/rules/00-project-foundation.md`) and `doc
 | **Feature** | `feature/<feature>` (`-backend` for backend-only) | `feature/material`, `feature/material-backend` |
 | **Bug Fix** | `fix/<description>` | `fix/reasoning-access` |
 | **Hotfix** | `hotfix/<description>` | `hotfix/cors-origin-fix` |
-| **Refactor** | `refactor/<module>` | `refactor/tree-bfs-validation` |
+| **Refactor** | `refactor/<module>` | `refactor/tree-dfs-validation` |
 | **Docs** | `docs/<topic>` | `docs/system-architecture` |
 
 ### Commit Format (Conventional Commits)

@@ -1,5 +1,7 @@
 # Member contribution evidence (GitHub vs Jira)
 
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (GitHub vs Jira Contribution Snapshot, `2026-11-22`)
+
 > **Status**: snapshot 2026-11-22, `develop` at `bc6bf3a` (first written 2026-11-21 at `6f903f2`). Sources:
 > - `git log` of every remote branch;
 > - the GitHub PR list (state, author);

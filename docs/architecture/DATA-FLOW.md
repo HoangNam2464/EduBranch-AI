@@ -1,7 +1,9 @@
 # EduBranch AI — System Data Flows & Sequences
 
-> **Document Status**: Authoritative Architecture Specification  
-> **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)  
+> - **Document Class**: `[LIVING ARCHITECTURE / OPS SPEC]`
+
+> **Document Status**: Authoritative Architecture Specification
+> **Source of Truth**: Proposal V1.2 (C1SE_65-EduBranch-AI-Proposal_V1.2.docx)
 > **Purpose**: Traces end-to-end data flows and lifecycle sequences across system components for both learning modes (Branching Study & Review Study).
 
 ---
@@ -27,7 +29,7 @@ sequenceDiagram
     AI->>S3: GetObject(key=file_uuid)
     AI->>AI: Parse text (PyPDF / python-docx)
     AI->>AI: Split into chunks (RecursiveCharacterTextSplitter)
-    AI->>AI: Generate embeddings (gemini-embedding-001 @768 / text-embedding-3-small)
+    AI->>AI: Generate embeddings (gemini-embedding-001 @768 primary)
     AI->>DB: INSERT INTO document_chunks (chunk_text, embedding, metadata)
     AI-->>BE: 200 OK (chunk_count=N, status='COMPLETED')
     BE->>DB: UPDATE teaching_materials SET processing_status='COMPLETED', chunk_count=N
@@ -57,7 +59,7 @@ sequenceDiagram
     AI->>AI: Format prompt: System Persona + <sources>[chunks]</sources> + User Prompt
     AI->>LLM: generate_content(prompt, response_schema=DecisionTreeOutput)
     LLM-->>AI: Structured JSON decision tree
-    AI->>AI: Validate JSON schema & BFS cycle detection (no loops, no orphans, terminal exists)
+    AI->>AI: Validate JSON schema & 3-color DFS cycle detection (no loops, no orphans, terminal exists)
     AI-->>BE: 200 OK (Validated DecisionTree JSON)
     BE->>DB: INSERT INTO cases (learning_mode='BRANCHING_STUDY', status='DRAFT', title, ...)
     BE->>DB: INSERT INTO case_nodes & case_options
@@ -112,10 +114,10 @@ sequenceDiagram
     BE->>DB: Verify case status is PUBLISHED
     BE->>DB: INSERT INTO branching_attempts (student_id, case_id, attempt_number=1, current_node_id=root_node_id)
     BE-->>FE: 200 OK (root CaseNode: situation, options)
-    
+
     loop At each Decision Point (Consecutive choices — NO mid-flow reasoning or consequence reveal)
         Student->>FE: Selects Option & clicks "Confirm & Continue"
-        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, selectedOptionId, reasoningText=null)
+        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/step (nodeId, selectedOptionId)
         BE->>DB: INSERT INTO student_reasoning (attempt_id, node_id, selected_option_id, reasoning_text=NULL)
         BE->>DB: UPDATE branching_attempts SET current_node_id=option.next_node_id
         BE-->>FE: 200 OK (Advances immediately to next CaseNode)
@@ -131,8 +133,8 @@ sequenceDiagram
     BE-->>FE: 200 OK (Full decision path + lecturer-authored consequence for each chosen option)
     loop Per Decision Point in REVIEW Timeline
         Student->>FE: Enters retrospective written reasoning (10–2000 chars)
-        FE->>BE: POST /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, selectedOptionId, reasoningText)
-        BE->>DB: UPSERT student_reasoning SET reasoning_text=... WHERE attempt_id=... AND node_id=...
+        FE->>BE: PUT /api/v1/branching-attempts/{attemptId}/reasoning (nodeId, reasoningText)
+        BE->>DB: UPDATE student_reasoning SET reasoning_text=... WHERE attempt_id=... AND node_id=...
         BE-->>FE: 200 OK
         opt Optional Challenge Support (max 2 rounds per node)
             FE->>BE: Initiate Challenge Support (see Flow 6)
@@ -174,7 +176,7 @@ sequenceDiagram
     BE->>DB: INSERT INTO review_study_submissions (student_id, case_id, student_analysis, proposed_solution, reasoning_text, submission_status='SUBMITTED')
     BE-->>FE: 201 Created (Submission recorded)
 
-    Lecturer->>FE: Inspects submissions (/lecturer/cases/:caseId/feedback)
+    Lecturer->>FE: Inspects submissions (/lecturer/feedback or /lecturer/cases/:caseId/feedback)
     Lecturer->>FE: Enters feedback text
     FE->>BE: POST /api/v1/lecturer-feedback (reviewSubmissionId, feedbackText)
     BE->>DB: INSERT INTO lecturer_feedback (lecturer_id, review_submission_id, feedback_text)
@@ -211,7 +213,7 @@ sequenceDiagram
     AI-->>BE: 200 OK (counter_question)
     BE->>DB: INSERT INTO challenge_messages (role='CHALLENGE_SUPPORT', round_number=1, content=counter_question)
     BE-->>FE: 200 OK (Displays Round 1 question)
-    
+
     opt Student Responds (Round 2)
         Student->>FE: Enters response
         FE->>BE: POST /api/v1/challenge-support/{sessionId}/respond (response_text)

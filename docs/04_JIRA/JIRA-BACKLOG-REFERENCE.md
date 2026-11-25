@@ -1,5 +1,7 @@
 # EduBranch AI — Jira-Ready Backlog (Corrected)
 
+> - **Document Class**: `[IMMUTABLE BASELINE]` (84-task Jira import reference snapshot; live status & 21 added tasks in `JIRA-KEY-MAP.md`)
+
 **Source:** `SPRINT-BACKLOG.md`
 
 **Description rule:** Source has no separate Description field. For every task: `Description: Không có trường Description riêng trong source.` Acceptance Criteria remains a separate field.

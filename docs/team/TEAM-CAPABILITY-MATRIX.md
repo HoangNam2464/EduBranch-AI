@@ -1,5 +1,7 @@
 # EduBranch-AI — Team Capability Matrix
 
+> - **Document Class**: `[HISTORICAL SNAPSHOT]` (Assignments & Evidence Snapshot, `2026-11-21/22`)
+
 > **Status**: Reference (evidence-based snapshot) · **Read on**: 2026-11-21 (Hướng's row updated 2026-11-22 after PRs #68–#75 merged) · **Owner**: PO · **Used by**: `CLAUDE.md` §19.
 > **Sources**: Jira EBA assignees (105 issues, `docs/04_JIRA/JIRA-KEY-MAP.md`), `git log` on `develop` and remote branches, GitHub PRs #1–#78, `docs/02_SPRINT-TASKS.md` role groups (DES/FE/BE/OPS/QA).
 > **Rules**: assignments are facts from Jira; who wrote the code is a fact from git; everything else is labelled. Never change an assignee, reporter or attribution from this file; Jira is the source of the current assignment. This file is not a performance review.

@@ -1,79 +1,70 @@
-﻿# EduBranch AI — Backend Gateway
+# EduBranch AI — Backend Gateway
 
-Node.js (NestJS + TypeScript) REST API Gateway for the EduBranch AI platform.
+> **Document Class**: `[SUPPORTING GUIDE]` · **Authoritative Backend/DB Rules**: [`.agents/rules/03-engineering-and-task-standards.md §2–§3`](../.agents/rules/03-engineering-and-task-standards.md), [`docs/architecture/SERVICE-BOUNDARIES.md`](../docs/architecture/SERVICE-BOUNDARIES.md), [`docs/database/DATA-MODEL.md`](../docs/database/DATA-MODEL.md)
+
+Node.js 20 LTS (NestJS 10 + TypeScript) REST API Gateway for **EduBranch AI**. Serves as the sole public HTTP interface (`/api/v1/*`) and owns all authentication, RBAC, course/enrollment ownership, case lifecycle state machines, and relational persistence.
+
+---
 
 ## Responsibilities
 
-- Authentication & JWT issuance (Lecturer / Student roles)
-- User and role management
-- Course and teaching material metadata
-- Case lifecycle state machine (`DRAFT → REVIEWED → APPROVED → PUBLISHED`)
-- Branching Study attempt persistence and navigation
-- Retrospective student reasoning capture in Journey Review
-- AI Challenge Support history persistence with a 1–2 round cap
-- Lecturer statistics aggregations
-- Research evaluation boundary
-- REST API gateway for the React frontend
-- Internal HTTP client to call internal FastAPI AI Service
+- Authentication & stateless JWT issuance (`LECTURER`, `STUDENT`, `ADMIN` roles; auth rate limiting)
+- Course management, soft archiving (`PATCH /courses/:courseId/archive`), and invite-code student enrollments (`V5`)
+- Teaching material uploads to MinIO (`common/minio/`) and async ingestion dispatch to internal AI Service
+- Case lifecycle state machine (`DRAFT → REVIEWED → APPROVED → PUBLISHED`) & SQL-level `status = 'PUBLISHED'` student access gate (`INV-01`)
+- Branching Study attempt traversal, retrospective reasoning capture, and immutable retry tracking (`attempt_number + 1`)
+- Review Study single-submission lifecycle (`SUBMITTED → REVIEWED → REFLECTED`) and Lecturer qualitative feedback
+- AI Challenge Support orchestration (`1–2` round hard cap, non-grading) & basic Learning-Flow statistics
+- Internal HTTP integration to FastAPI AI Service (`common/ai-client/`, `X-Internal-API-Key`)
+
+---
 
 ## Technology
 
-- **Runtime**: Node.js 20+
-- **Language**: TypeScript (strict mode)
-- **Framework**: NestJS 10
-- **Database**: PostgreSQL 16 + pgvector (`pg` / TypeORM)
-- **Migrations**: SQL Schema (`backend/migrations/V1__init_schema.sql`)
-- **Cache**: Redis 7
-- **Object Storage**: MinIO S3 SDK
-- **Validation**: `class-validator`, `class-transformer`
-- **Internal HTTP Client**: Axios / `@nestjs/axios` for FastAPI AI Service calls
+- **Runtime & Framework**: Node.js 20+ · NestJS 10 · TypeScript (strict)
+- **Database**: PostgreSQL 16 + pgvector using **raw parameterized SQL via `pg` Pool** (`src/common/database/database.service.ts`) — no ORM, no TypeORM
+- **Migrations**: Sequential SQL (`backend/migrations/V1`–`V5`) applied by `MigrationRunner` under a PostgreSQL advisory lock (`infrastructure/postgres/migrations/` is an unexecuted stale copy)
+- **Cache & Storage**: Redis 7 · MinIO S3 SDK · `@nestjs/axios` · `class-validator` / `class-transformer`
 
-## Module Structure (by domain/feature)
+---
 
-```
-backend/src/
-├── app.module.ts            ← Root application module
-├── main.ts                  ← Application entry point (Port 8080, /api/v1)
-├── common/
-│   ├── health/              ← Health check controller (/api/v1/health)
-│   ├── filters/             ← Global exception filters
-│   └── interceptors/        ← Response transformation interceptors
-├── migrations/
-│   └── V1__init_schema.sql  ← Initial PostgreSQL + pgvector schema
-└── modules/
-    ├── auth/                ← Authentication, JWT, login, registration
-    ├── user/                ← User entity, role management
-    ├── course/              ← Course ownership and management
-    ├── material/            ← Teaching material upload and metadata
-    ├── case/                ← Case lifecycle, decision tree domain model
-    ├── branching-attempt/   ← Branching Study attempts and choices
-    ├── reasoning/           ← Retrospective Journey Review reasoning
-    ├── challenge-support/   ← AI counter-question history
-    ├── statistics/          ← Lecturer statistics queries
-    ├── notification/        ← Notification extension point
-    └── evaluation/          ← Research/evaluation data boundary
+## Module Structure
+
+> Target layered structure & naming standards (`common/exception/`, `common/security/`, `common/dto/`, removing unused duplicate `common/storage/`, and selective `<domain>.repository.ts` extraction in SQL-dense/`INV-01` modules `case/`, `branching-attempt/`, `statistics/`, `evaluation/`): [`SERVICE-BOUNDARIES.md §5.1`](../docs/architecture/SERVICE-BOUNDARIES.md) and [`.agents/rules/03-engineering-and-task-standards.md §2, §7–§8`](../.agents/rules/03-engineering-and-task-standards.md).
+
+```text
+backend/
+├── migrations/                  ← Active sequential SQL (V1__init_schema.sql .. V5__course_enrollments.sql)
+└── src/
+    ├── app.module.ts            ← Root NestJS module
+    ├── main.ts                  ← Bootstrap (Port 8080, prefix /api/v1, ValidationPipe, JwtAuthGuard, RolesGuard)
+    ├── common/
+    │   ├── ai-client/           ← Internal FastAPI AI Service client
+    │   ├── config/              ← Startup environment validation
+    │   ├── database/            ← pg Pool DatabaseService & advisory-locked MigrationRunner
+    │   ├── health/              ← Health probe (/api/v1/health)
+    │   ├── minio/               ← Canonical MinIO client (duplicate storage/ queued for removal in PR 2)
+    │   └── [PR 2 Target]        ← exception/ (HttpExceptionFilter), security/ (sanitizer + audit), dto/
+    └── modules/                 ← auth, user, course, material, case, branching-attempt, reasoning,
+                                    challenge-support, review-study, lecturer-feedback, statistics, evaluation, notification
 ```
 
-## Local Setup
+---
+
+## Local Setup & Verification
 
 ```bash
-# 1. Start infrastructure (from project root)
+# 1. Start PostgreSQL + pgvector, Redis, MinIO (from repo root)
 docker compose up -d
 
-# 2. Configure environment
+# 2. Configure and run Backend Gateway
+cd backend
 cp .env.example .env
-
-# 3. Install dependencies
 npm install
+npm run start:dev     # http://localhost:8080/api/v1
 
-# 4. Start in development mode
-npm run start:dev
-# Backend Gateway runs at http://localhost:8080/api/v1
-```
-
-## Build & Test
-
-```bash
+# 3. Build & Test
 npm run build
-npm run test
+npm test              # Jest unit suites (src/**/*.spec.ts)
+npm run test:e2e      # E2E suites (requires PostgreSQL & Redis; live MinIO/AI suites skip without services)
 ```

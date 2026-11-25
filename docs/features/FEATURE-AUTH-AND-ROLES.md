@@ -1,7 +1,9 @@
 # Feature: Account, Authentication & Roles
 
-> **Authoritative Traceability**: Items 1, 2, 3 (Proposal Section 2 p. 6, Section 4 p. 7, Section 6 p. 10)  
-> **Target Package / Module**: Backend `auth/`, `user/` · Frontend `features/auth/`
+> - **Document Class**: `[LIVING FEATURE SPEC]`
+
+> **Authoritative Traceability**: Items 1, 2, 3 (Proposal Section 2 p. 6, Section 4 p. 7, Section 6 p. 10)
+> **Target Package / Module**: Backend `auth/`, `user/` · Frontend `pages/auth/`, `stores/authStore.ts`
 
 ---
 
@@ -21,7 +23,8 @@ Provides secure identity management, authentication, and role-based access contr
 - User registration and login via email and password.
 - Secure password hashing using BCrypt.
 - Stateless session management using JSON Web Tokens (JWT).
-- Role segregation (`LECTURER`, `STUDENT`).
+- Role segregation (`LECTURER`, `STUDENT`, `ADMIN`).
+- Forgot / reset password UI flow (`/forgot-password`, `/reset-password` — included in MVP UI per PO 2026-11-25; backend password-reset endpoints pending).
 - Protected API routes and client-side route guarding.
 
 ---
@@ -43,21 +46,22 @@ Provides secure identity management, authentication, and role-based access contr
 4. Backend verifies credentials against `users` table via BCrypt hash comparison.
 5. Backend issues a JWT access token containing `userId`, `email`, and `role`.
 6. Frontend stores the token in memory / Zustand store and configures the Axios Bearer interceptor.
-7. User is routed to `/lecturer/courses` (if Lecturer) or `/student` dashboard (if Student).
+7. User is routed to `/student/desk` (if Student), `/admin/dashboard` (if Admin), or the Lecturer landing page (**`OPEN PO DECISION`**: `frontend/src/routes/paths.ts` currently routes to `/lecturer/courses`, whereas `P1-LECTURER-CORE.md` [per `D-05`] references `/lecturer/dashboard`).
 
 ---
 
 ## 6. Inputs
 - `email`: Valid university/standard email string (required, unique).
 - `password`: String with minimum security constraints (required).
+- `rememberMe`: Optional boolean checkbox in `LoginPage.tsx` (`false` default: standard 8h JWT + `sessionStorage` in FE; `true`: extended JWT TTL + `localStorage` persistence in FE, queued for PR 2 Backend / PR 3–4 Frontend per Figma `00.3` & PO 2026-11-25 — backend TTL logic is not yet implemented on `develop`).
 - `fullName`: Human-readable name string (required for registration).
 - `role`: Enum string (`LECTURER` or `STUDENT`).
 
 ---
 
 ## 7. Outputs
-- Success: HTTP 200/201 with `{ success: true, data: { token, user: { id, email, fullName, role } } }`.
-- Failure: HTTP 401 Unauthorized or 400 Bad Request with standardized error message.
+- Success: HTTP 200/201 with `{ status: "SUCCESS", data: { accessToken, user: { id, email, fullName, role } } }`.
+- Failure: HTTP 401 Unauthorized or 400 Bad Request — target architecture standardizes errors through a global `HttpExceptionFilter` (`common/exception/`, queued for PR 2 Backend — not yet present on `develop`).
 
 ---
 
@@ -90,7 +94,7 @@ Provides secure identity management, authentication, and role-based access contr
   - `email`: VARCHAR(255) UNIQUE NOT NULL
   - `password_hash`: VARCHAR(255) NOT NULL
   - `full_name`: VARCHAR(255) NOT NULL
-  - `role`: VARCHAR(50) NOT NULL (`LECTURER` | `STUDENT`)
+  - `role`: VARCHAR(50) NOT NULL (`LECTURER` | `STUDENT` | `ADMIN` per `V3__add_admin_role.sql`)
   - `is_active`: BOOLEAN DEFAULT TRUE
   - `created_at`, `updated_at`: TIMESTAMPTZ
 
@@ -120,5 +124,5 @@ Provides secure identity management, authentication, and role-based access contr
 ---
 
 ## 15. Implementation Status
-**Structurally Scaffolded**  
-*(Domain entities/types `User`, `Role` in `backend/src/modules/user/`, database table `users`, and frontend layout shells exist; production authentication workflows and controllers remain unimplemented.)*
+**Implemented (Core Email/Password + JWT + RBAC + Rate Limit)**
+*(Implemented across `backend/src/modules/auth/` and `frontend/src/pages/auth/` with role guards and rate limiting. Remaining gaps: Google/Microsoft OAuth `BE-034`, admin user lock/unlock API `BE-032` in PR #80, backend password-reset endpoints for MVP forgot/reset UI (PO 2026-11-25), `rememberMe` TTL + FE persistence, and `ROLE_HOME.LECTURER` open PO decision.)*
