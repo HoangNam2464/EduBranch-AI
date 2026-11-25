@@ -9,8 +9,9 @@ import { AuthService } from "../src/modules/auth/auth.service";
 import { UserService } from "../src/modules/user/user.service";
 import { AdminService } from "../src/modules/admin/admin.service";
 import { LecturerDashboardService } from "../src/modules/course/lecturer-dashboard.service";
+import { LecturerFeedbackService } from "../src/modules/lecturer-feedback/lecturer-feedback.service";
 import { EvaluationService } from "../src/modules/evaluation/evaluation.service";
-import { pseudonymFactory } from "../src/modules/evaluation/research-export";
+import { attemptBand, decisionCountBand, pseudonymFactory, wordCount, wordCountBand } from "../src/modules/evaluation/research-export";
 
 /**
  * Spec 007 on a real PostgreSQL 16 database (migrations V1-V8 applied to a fresh
@@ -36,6 +37,7 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
   let users: UserService;
   let admin: AdminService;
   let dashboard: LecturerDashboardService;
+  let feedback: LecturerFeedbackService;
   let evaluation: EvaluationService;
 
   const id = {
@@ -106,6 +108,7 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
     users = new UserService(db);
     admin = new AdminService(db, audit, { check: async () => ({ status: "DOWN", provider: null, model: null, version: null }) } as any);
     dashboard = new LecturerDashboardService(db);
+    feedback = new LecturerFeedbackService(db);
     evaluation = new EvaluationService(db, config);
 
     const hash = await bcrypt.hash(PASSWORD, 4);
@@ -414,36 +417,39 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       ).rejects.toThrow();
     });
 
-    itDb("activity export: only the lecturer's own courses, counts only, no PII (AC-R4, AC-R5)", async () => {
+    itDb("activity export: only the lecturer's own courses, coarsened bands only, no PII or tree paths (AC-R4, AC-R5, R-L3b B)", async () => {
       const csv = await evaluation.exportCsv(asUser(id.lect1, "LECTURER"), { dataset: "activity" });
       expect(csv.charCodeAt(0)).toBe(0xfeff);
       const lines = csv.slice(1).trim().split("\r\n");
       expect(lines[0]).toBe(
-        "participant_code,course_code,case_id,learning_mode,attempt_number,completed,decision_count,choice_path,outcome_node_id,reasoning_word_count,reflection_word_count,challenge_rounds,duration_seconds",
+        "participant_code,course_code,case_id,learning_mode,attempt_band,completed,decision_count_band,reasoning_word_band,reflection_word_band,challenge_rounds,duration_band",
       );
       const rows = lines.slice(1).map((l) => l.split(","));
       expect(rows).toHaveLength(5); // 3 attempts on K1 + 2 submissions on K2; nothing from lecturer 2
       expect(rows.every((r) => r[1] === "MKT301")).toBe(true);
 
-      const a1 = rows.find((r) => r[7] === id.o1)!;
+      const a1 = rows.find((r) => r[2] === id.k1 && r[0] === code(id.stu1) && r[4] === "1")!;
       expect(a1).toBeDefined();
       expect(a1[4]).toBe("1");
-      expect(a1[6]).toBe("1");
-      expect(a1[9]).toBe(String(3 + PII.stu1.name.split(" ").length));
-      expect(a1[10]).toBe("5");
-      expect(a1[11]).toBe("2");
-      // L3 option C (PO 2026-11-25): duration in whole seconds, no absolute time anywhere,
-      // rows ordered by case, participant code and attempt number (never by time).
-      expect(a1[12]).toBe("125");
-      expect(rows.filter((r) => r[5] === "false").every((r) => r[12] === "")).toBe(true);
-      expect(rows.filter((r) => r[3] === "REVIEW_STUDY").every((r) => r[12] === "")).toBe(true);
+      expect(a1[6]).toBe("1-2");
+      expect(a1[7]).toBe("1-25"); // 3 + 3 = 6 words -> 1-25 band
+      expect(a1[8]).toBe("1-25"); // 5 words -> 1-25 band
+      expect(a1[9]).toBe("2");
+      // L3 option C + R-L3b option B: coarse duration band, no absolute time anywhere,
+      // no option/outcome node UUIDs, rows ordered solely by exported columns.
+      expect(a1[10]).toBe("1-5m");
+      expect(rows.filter((r) => r[5] === "false").every((r) => r[10] === "")).toBe(true);
+      expect(rows.filter((r) => r[3] === "REVIEW_STUDY").every((r) => r[10] === "" && r[6] === "0")).toBe(true);
       expect(csv).not.toMatch(/\d{4}-\d{2}-\d{2}/);
+      for (const treeUuid of [id.o1, id.o2, id.o3, id.n2, id.n3, id.n5]) {
+        expect(csv).not.toContain(treeUuid);
+      }
       expect(rows.map((r) => `${r[2]}|${r[0]}|${r[4]}`)).toEqual([
         `${id.k2}|${code(id.stu2)}|1`,
         `${id.k2}|${code(id.stu1)}|1`,
         `${id.k1}|${code(id.stu2)}|1`,
         `${id.k1}|${code(id.stu1)}|1`,
-        `${id.k1}|${code(id.stu1)}|2`,
+        `${id.k1}|${code(id.stu1)}|2+`,
       ]);
       // A third student on K1 (created last) lands between the other two by code. Completed 90 min ago,
       // between a1 (1 h) and a2 (2 h), so no started_at/completed_at order in either direction, with
@@ -459,9 +465,9 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       await pool.query(`DELETE FROM branching_attempts WHERE id = $1`, [extraAttempt]);
       await pool.query(`DELETE FROM users WHERE id = $1`, [id.stu3]);
       expect(three.slice(1).trim().split("\r\n").slice(1).map((l) => { const r = l.split(","); return `${r[0]}|${r[4]}`; })).toEqual([
-        `${code(id.stu2)}|1`, `${code(id.stu3)}|1`, `${code(id.stu1)}|1`, `${code(id.stu1)}|2`,
+        `${code(id.stu2)}|1`, `${code(id.stu3)}|1`, `${code(id.stu1)}|1`, `${code(id.stu1)}|2+`,
       ]);
-      // A second decision on the same attempt with its own 2-round session stays within 0-2 (QG2 M2).
+      // A second decision on the same attempt with its own 2-round session stays within 0-2 (QG2 M2) and remains in 1-2 band.
       const extraNode = randomUUID();
       const extraReasoning = randomUUID();
       await pool.query(`INSERT INTO case_nodes (id, case_id, situation, is_terminal, node_index) VALUES ($1,$2,'s',FALSE,3)`, [extraNode, id.k1]);
@@ -469,8 +475,8 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       await pool.query(`INSERT INTO challenge_support_sessions (reasoning_id, current_round) VALUES ($1, 2)`, [extraReasoning]);
       const again = await evaluation.exportCsv(asUser(id.lect1, "LECTURER"), { dataset: "activity", caseId: id.k1 });
       const a1Again = again.slice(1).trim().split("\r\n").slice(1).map((l) => l.split(",")).find((r) => r[4] === "1" && r[0] === a1[0])!;
-      expect(a1Again[6]).toBe("2");
-      expect(a1Again[11]).toBe("2");
+      expect(a1Again[6]).toBe("1-2");
+      expect(a1Again[9]).toBe("2");
       await pool.query(`DELETE FROM challenge_support_sessions WHERE reasoning_id = $1`, [extraReasoning]);
       await pool.query(`DELETE FROM student_reasoning WHERE id = $1`, [extraReasoning]);
       await pool.query(`DELETE FROM case_nodes WHERE id = $1`, [extraNode]);
@@ -491,6 +497,260 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       expect(all.slice(1).trim().split("\r\n")).toHaveLength(7);
       const one = await evaluation.exportCsv(asUser(id.admin1, "ADMIN"), { dataset: "activity", caseId: id.k4 });
       expect(one.slice(1).trim().split("\r\n")).toHaveLength(2);
+    });
+
+    itDb("R-L3b option B: realistic cohort resists feedback-queue multi-field linkage while documenting outliers and cross-export stability", async () => {
+      const kCohort = randomUUID();
+      const kReviewCohort = randomUUID();
+      const nodes = [randomUUID(), randomUUID(), randomUUID(), randomUUID(), randomUUID()]; // 0=root, 1=mid1, 2=termA, 3=termB, 4=mid2
+      const opts = [randomUUID(), randomUUID(), randomUUID(), randomUUID(), randomUUID()];
+      const cohortStudents = Array.from({ length: 10 }, (_, idx) => ({
+        uid: randomUUID(),
+        email: `cohort-${idx}@student.edu.vn`,
+        name: `Cohort Student ${idx}`,
+      }));
+      const wordsOfLen = (n: number) => Array.from({ length: n }, (_, i) => `w${i}`).join(" ");
+
+      try {
+        await pool.query(
+          `INSERT INTO cases (id, title, course_id, created_by, status, learning_mode, context_text, problem_text)
+           VALUES ($1,'Cohort Case',$2,$3,'PUBLISHED','BRANCHING_STUDY','ctx','prob'),
+                  ($4,'Cohort Review Case',$2,$3,'PUBLISHED','REVIEW_STUDY','ctx','prob')`,
+          [kCohort, id.c1, id.lect1, kReviewCohort],
+        );
+        await pool.query(
+          `INSERT INTO case_nodes (id, case_id, situation, is_terminal, node_index) VALUES
+             ($1,$6,'Root',FALSE,0), ($2,$6,'Mid',FALSE,1), ($3,$6,'TermA',TRUE,2), ($4,$6,'TermB',TRUE,3), ($5,$6,'Mid2',FALSE,4)`,
+          [nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], kCohort],
+        );
+        await pool.query(
+          `INSERT INTO case_options (id, node_id, option_text, consequence, next_node_id) VALUES
+             ($1,$6,'Opt0A','c',$7), ($2,$6,'Opt0B','c',$8), ($3,$7,'Opt1A','c',$8), ($4,$7,'Opt1B','c',$9), ($5,$10,'Opt2A','c',$9)`,
+          [opts[0], opts[1], opts[2], opts[3], opts[4], nodes[0], nodes[1], nodes[2], nodes[3], nodes[4]],
+        );
+
+        for (const s of cohortStudents) {
+          await pool.query(
+            `INSERT INTO users (id, email, password_hash, full_name, role) VALUES ($1,$2,'x',$3,'STUDENT')`,
+            [s.uid, s.email, s.name],
+          );
+          await pool.query(`INSERT INTO course_enrollments (course_id, student_id) VALUES ($1,$2)`, [id.c1, s.uid]);
+        }
+
+        // 8 normal-band students (4 in 1-25/1-25, 4 in 26-75/26-75), every student having a UNIQUE exact
+        // (path, outcome, reasoningWords, reflectionWords) tuple in the feedback queue.
+        const normalConfigs = [
+          { idx: 0, rw: 8, fw: 5, dur: 90, path: [0, 2], term: 2, rounds: 0 },
+          { idx: 1, rw: 12, fw: 9, dur: 140, path: [0, 3], term: 3, rounds: 1 },
+          { idx: 2, rw: 17, fw: 14, dur: 200, path: [1], term: 2, rounds: 2 },
+          { idx: 3, rw: 22, fw: 20, dur: 250, path: [0, 2], term: 2, rounds: 1 },
+          { idx: 4, rw: 30, fw: 28, dur: 350, path: [0, 3], term: 3, rounds: 0 },
+          { idx: 5, rw: 41, fw: 39, dur: 480, path: [1], term: 2, rounds: 1 },
+          { idx: 6, rw: 55, fw: 51, dur: 610, path: [0, 2], term: 2, rounds: 2 },
+          { idx: 7, rw: 69, fw: 64, dur: 790, path: [0, 3], term: 3, rounds: 0 },
+        ];
+
+        for (const cfg of normalConfigs) {
+          const aid = randomUUID();
+          await pool.query(
+            `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, is_completed, outcome_node_id, reflection_text, started_at, completed_at)
+             VALUES ($1,$2,$3,1,TRUE,$4,$5, NOW() - INTERVAL '2 hours' - ($6::int * INTERVAL '1 second'), NOW() - INTERVAL '2 hours')`,
+            [aid, cohortStudents[cfg.idx].uid, kCohort, nodes[cfg.term], wordsOfLen(cfg.fw), cfg.dur],
+          );
+          for (let stepIdx = 0; stepIdx < cfg.path.length; stepIdx++) {
+            const rid = randomUUID();
+            const nodeId = stepIdx === 0 ? nodes[0] : nodes[1];
+            const text = stepIdx === 0 ? wordsOfLen(cfg.rw) : null;
+            await pool.query(
+              `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, reasoning_text) VALUES ($1,$2,$3,$4,$5)`,
+              [rid, aid, nodeId, opts[cfg.path[stepIdx]], text],
+            );
+            if (stepIdx === 0 && cfg.rounds > 0) {
+              await pool.query(`INSERT INTO challenge_support_sessions (reasoning_id, current_round) VALUES ($1,$2)`, [rid, cfg.rounds]);
+            }
+          }
+        }
+
+        // Realistic retries: student 4 does attempt 2; student 5 does sequential attempts 2 and 3.
+        for (const retry of [
+          { uid: cohortStudents[4].uid, attNo: 2, rw: 33, fw: 31, dur: 410 },
+          { uid: cohortStudents[5].uid, attNo: 2, rw: 38, fw: 36, dur: 460 },
+          { uid: cohortStudents[5].uid, attNo: 3, rw: 48, fw: 44, dur: 520 },
+        ]) {
+          const aid = randomUUID();
+          await pool.query(
+            `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, is_completed, outcome_node_id, reflection_text, started_at, completed_at)
+             VALUES ($1,$2,$3,$4,TRUE,$5,$6, NOW() - INTERVAL '3 hours' - ($7::int * INTERVAL '1 second'), NOW() - INTERVAL '3 hours')`,
+            [aid, retry.uid, kCohort, retry.attNo, nodes[2], wordsOfLen(retry.fw), retry.dur],
+          );
+          await pool.query(
+            `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, reasoning_text) VALUES ($1,$2,$3,$4,$5)`,
+            [randomUUID(), aid, nodes[0], opts[1], wordsOfLen(retry.rw)],
+          );
+        }
+
+        // Deliberate extreme outlier (idx 8): sole 3+ steps & 151+ word counts & 30m+ duration.
+        const outAttempt = randomUUID();
+        await pool.query(
+          `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, is_completed, outcome_node_id, reflection_text, started_at, completed_at)
+           VALUES ($1,$2,$3,1,TRUE,$4,$5, NOW() - INTERVAL '4 hours' - INTERVAL '2000 seconds', NOW() - INTERVAL '4 hours')`,
+          [outAttempt, cohortStudents[8].uid, kCohort, nodes[3], wordsOfLen(160)],
+        );
+        await pool.query(
+          `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, reasoning_text) VALUES
+             ($1,$2,$3,$4,$5), ($6,$2,$7,$8,NULL), ($9,$2,$10,$11,NULL)`,
+          [randomUUID(), outAttempt, nodes[0], opts[0], wordsOfLen(160), randomUUID(), nodes[1], opts[2], randomUUID(), nodes[4], opts[4]],
+        );
+
+        // REVIEW_STUDY cohort (students 0..5): exercises multiline/tabbed/whitespace-only SQL WORDS parity + 2-band collisions.
+        const reviewSubs = [
+          { uid: cohortStudents[0].uid, ana: "\n  alpha\tbeta \r\n", sol: "gamma\ndelta", rsn: "epsilon", ref: "\t zeta \n" }, // 5 + 1 words -> 1-25, 1-25
+          { uid: cohortStudents[1].uid, ana: null, sol: wordsOfLen(6), rsn: wordsOfLen(8), ref: wordsOfLen(4) }, // 14 + 4 words -> 1-25, 1-25
+          { uid: cohortStudents[2].uid, ana: "  \n\t  ", sol: wordsOfLen(10), rsn: wordsOfLen(10), ref: wordsOfLen(12) }, // whitespace-only ana=0 -> 20 + 12 -> 1-25, 1-25
+          { uid: cohortStudents[3].uid, ana: wordsOfLen(2), sol: wordsOfLen(11), rsn: wordsOfLen(11), ref: wordsOfLen(24) }, // 24 + 24 -> 1-25, 1-25
+          { uid: cohortStudents[4].uid, ana: wordsOfLen(10), sol: wordsOfLen(10), rsn: wordsOfLen(10), ref: "  \n\t\r  " }, // 30 + 0 (whitespace-only ref -> "0"!) -> 26-75, 0
+          { uid: cohortStudents[5].uid, ana: wordsOfLen(15), sol: wordsOfLen(15), rsn: wordsOfLen(15), ref: null }, // 45 + 0 -> 26-75, 0
+        ];
+        for (const sub of reviewSubs) {
+          await pool.query(
+            `INSERT INTO review_study_submissions (id, student_id, case_id, student_analysis, proposed_solution, reasoning_text, submission_status, reflection_status, reflection_text)
+             VALUES ($1,$2,$3,$4,$5,$6,'SUBMITTED',$7,$8)`,
+            [randomUUID(), sub.uid, kReviewCohort, sub.ana, sub.sol, sub.rsn, sub.ref && sub.ref.trim() ? "SUBMITTED" : "NOT_STARTED", sub.ref],
+          );
+        }
+
+        const queue = await feedback.getQueue(id.lect1, { caseId: kCohort });
+        const csv1 = await evaluation.exportCsv(asUser(id.lect1, "LECTURER"), { dataset: "activity", caseId: kCohort });
+        expect(csv1).not.toMatch(/\d{4}-\d{2}-\d{2}/);
+        const csvRows1 = csv1.slice(1).trim().split("\r\n").slice(1).map((l) => l.split(","));
+        expect(csvRows1).toHaveLength(12); // 8 normal + 3 retry rows + 1 outlier
+
+        // Verify all 12 queue entries had unique exact fingerprints, yet normal/retry per-row bands share pools >= 3.
+        const exactQueueSigs = queue.items.map((item) => {
+          const rWords = (item.steps ?? []).reduce((acc, st) => acc + wordCount(st.reasoningText), 0);
+          const fWords = wordCount(item.reflectionText);
+          const optPath = (item.steps ?? []).map((st) => st.selectedOptionText).join(">");
+          return `${item.attemptNumber}|${item.stepsCount}|${optPath}|${item.outcomeSituation}|${rWords}|${fWords}`;
+        });
+        expect(new Set(exactQueueSigs).size).toBe(queue.items.length);
+
+        const normalAttemptQueueItems = queue.items.filter(
+          (i) => i.attemptNumber === 1 && !i.studentName.endsWith(" 8"),
+        );
+        expect(normalAttemptQueueItems).toHaveLength(8);
+        for (const item of normalAttemptQueueItems) {
+          const rWords = (item.steps ?? []).reduce((acc, st) => acc + wordCount(st.reasoningText), 0);
+          const fWords = wordCount(item.reflectionText);
+          const sig = [
+            attemptBand(item.attemptNumber ?? 1),
+            decisionCountBand(item.stepsCount ?? 0),
+            wordCountBand(rWords),
+            wordCountBand(fWords),
+          ].join("|");
+          const matchingRows = csvRows1.filter((r) => [r[4], r[6], r[7], r[8]].join("|") === sig);
+          expect(matchingRows.length).toBe(4);
+        }
+
+        // Retries (student 4 attempt 2; student 5 attempt 2 & 3) all share the same per-row 2+ band pool (3 rows).
+        const retryQueueItems = queue.items.filter((i) => (i.attemptNumber ?? 1) >= 2);
+        expect(retryQueueItems).toHaveLength(3);
+        for (const item of retryQueueItems) {
+          const rWords = (item.steps ?? []).reduce((acc, st) => acc + wordCount(st.reasoningText), 0);
+          const fWords = wordCount(item.reflectionText);
+          const sig = [
+            attemptBand(item.attemptNumber ?? 1),
+            decisionCountBand(item.stepsCount ?? 0),
+            wordCountBand(rWords),
+            wordCountBand(fWords),
+          ].join("|");
+          const matchingRows = csvRows1.filter((r) => [r[4], r[6], r[7], r[8]].join("|") === sig);
+          expect(matchingRows.length).toBe(3);
+        }
+        // Documented residual boundary: per-student row multiplicity still distinguishes 3 attempts (stu 5) from 2 (stu 4).
+        const rowCountsByCode = new Map<string, number>();
+        for (const r of csvRows1) rowCountsByCode.set(r[0], (rowCountsByCode.get(r[0]) ?? 0) + 1);
+        expect(rowCountsByCode.get(code(cohortStudents[5].uid))).toBe(3);
+        expect(rowCountsByCode.get(code(cohortStudents[4].uid))).toBe(2);
+
+        // Documented residual boundary: a unique extreme outlier (3+ decisions, 151+ words) still matches 1-to-1.
+        const outlierItem = queue.items.find((i) => i.studentName.endsWith(" 8"))!;
+        const outlierMatches = csvRows1.filter(
+          (r) =>
+            r[4] === attemptBand(outlierItem.attemptNumber ?? 1) &&
+            r[6] === decisionCountBand(outlierItem.stepsCount ?? 0) &&
+            r[7] === "151+" &&
+            r[8] === "151+",
+        );
+        expect(outlierMatches).toHaveLength(1);
+        expect(outlierMatches[0][10]).toBe("30m+");
+
+        // REVIEW_STUDY export + queue parity check: SQL WORDS matches JS wordCount on multiline/whitespace-only text,
+        // and each band bucket holds >= 2 rows while demonstrating low-entropy 2-band & cross-case intersection limits.
+        const reviewQueue = await feedback.getQueue(id.lect1, { caseId: kReviewCohort });
+        const reviewCsv = await evaluation.exportCsv(asUser(id.lect1, "LECTURER"), { dataset: "activity", caseId: kReviewCohort });
+        expect(reviewCsv).not.toMatch(/\d{4}-\d{2}-\d{2}/);
+        const reviewRows = reviewCsv.slice(1).trim().split("\r\n").slice(1).map((l) => l.split(","));
+        expect(reviewRows).toHaveLength(6);
+        expect(reviewRows.every((r) => r[4] === "1" && r[5] === "true" && r[6] === "0" && r[10] === "")).toBe(true);
+        const stu0Review = reviewRows.find((r) => r[0] === code(cohortStudents[0].uid))!;
+        const stu4Review = reviewRows.find((r) => r[0] === code(cohortStudents[4].uid))!;
+        expect([stu0Review[7], stu0Review[8]]).toEqual(["1-25", "1-25"]); // multiline/tabbed SQL WORDS === JS wordCount
+        expect([stu4Review[7], stu4Review[8]]).toEqual(["26-75", "0"]); // whitespace-only "\n\t\r" reflection === "0", not "1-25"
+        for (const item of reviewQueue.items) {
+          const rBand = wordCountBand(wordCount(item.studentAnalysis) + wordCount(item.proposedSolution) + wordCount(item.reasoningText));
+          const fBand = wordCountBand(wordCount(item.reflectionText));
+          const matches = reviewRows.filter((r) => r[7] === rBand && r[8] === fBand);
+          expect(matches.length).toBeGreaterThanOrEqual(2);
+        }
+        // Cross-case intersection example: students 0..3 are in the 1-25|1-25 REVIEW_STUDY pool AND in 1-25|1-25
+        // BRANCHING_STUDY pool (students 0..3), whereas intersection narrows students 4..5 vs 6..7 (6..7 absent from review case).
+        const reviewPoolCodes = new Set(reviewRows.map((r) => r[0]));
+        const b2675Codes = csvRows1.filter((r) => r[4] === "1" && r[7] === "26-75" && r[8] === "26-75").map((r) => r[0]);
+        expect(b2675Codes).toHaveLength(4);
+        expect(b2675Codes.filter((c) => reviewPoolCodes.has(c))).toHaveLength(2); // cross-case presence cuts pool in half
+
+        // Analytical utility: challenge_rounds (0,1,2), attempt bands (1, 2+), word bands, and duration bands remain analyzable.
+        expect(new Set(csvRows1.map((r) => r[9]))).toEqual(new Set(["0", "1", "2"]));
+        expect(new Set(csvRows1.map((r) => r[4]))).toEqual(new Set(["1", "2+"]));
+        expect(new Set(csvRows1.map((r) => r[10]))).toEqual(new Set(["1-5m", "5-15m", "30m+"]));
+
+        // Cross-export stability (AC-R5) + known differencing trade-off:
+        // Add 1 late student (idx 9), re-export -> prior codes stay identical; delta isolates new row.
+        const lateAttempt = randomUUID();
+        await pool.query(
+          `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, is_completed, outcome_node_id, reflection_text, started_at, completed_at)
+           VALUES ($1,$2,$3,1,TRUE,$4,$5, NOW() - INTERVAL '10 minutes', NOW() - INTERVAL '9 minutes')`,
+          [lateAttempt, cohortStudents[9].uid, kCohort, nodes[2], wordsOfLen(10)],
+        );
+        const csv2 = await evaluation.exportCsv(asUser(id.lect1, "LECTURER"), { dataset: "activity", caseId: kCohort });
+        const csvRows2 = csv2.slice(1).trim().split("\r\n").slice(1).map((l) => l.split(","));
+        expect(csvRows2).toHaveLength(13);
+        const priorCodes = new Set(csvRows1.map((r) => r[0]));
+        const nextCodes = new Set(csvRows2.map((r) => r[0]));
+        for (const c of priorCodes) expect(nextCodes.has(c)).toBe(true);
+        const deltaCodes = [...nextCodes].filter((c) => !priorCodes.has(c));
+        expect(deltaCodes).toEqual([code(cohortStudents[9].uid)]);
+      } finally {
+        await pool.query(
+          `DELETE FROM challenge_support_sessions WHERE reasoning_id IN (SELECT sr.id FROM student_reasoning sr JOIN branching_attempts ba ON ba.id = sr.attempt_id WHERE ba.case_id = $1)`,
+          [kCohort],
+        );
+        await pool.query(
+          `DELETE FROM student_reasoning WHERE attempt_id IN (SELECT id FROM branching_attempts WHERE case_id = $1)`,
+          [kCohort],
+        );
+        await pool.query(`DELETE FROM branching_attempts WHERE case_id = $1`, [kCohort]);
+        await pool.query(`DELETE FROM review_study_submissions WHERE case_id = $1`, [kReviewCohort]);
+        await pool.query(
+          `DELETE FROM case_options WHERE node_id IN (SELECT id FROM case_nodes WHERE case_id = $1)`,
+          [kCohort],
+        );
+        await pool.query(`DELETE FROM cases WHERE id IN ($1, $2)`, [kCohort, kReviewCohort]);
+        for (const s of cohortStudents) {
+          await pool.query(`DELETE FROM course_enrollments WHERE student_id = $1`, [s.uid]);
+          await pool.query(`DELETE FROM users WHERE id = $1`, [s.uid]);
+        }
+      }
     });
 
     itDb("rubric export uses evaluator codes, never names or ids", async () => {

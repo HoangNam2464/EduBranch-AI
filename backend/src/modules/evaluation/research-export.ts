@@ -44,15 +44,13 @@ export const ACTIVITY_COLUMNS = [
   "course_code",
   "case_id",
   "learning_mode",
-  "attempt_number",
+  "attempt_band",
   "completed",
-  "decision_count",
-  "choice_path",
-  "outcome_node_id",
-  "reasoning_word_count",
-  "reflection_word_count",
+  "decision_count_band",
+  "reasoning_word_band",
+  "reflection_word_band",
   "challenge_rounds",
-  "duration_seconds",
+  "duration_band",
 ] as const;
 
 export const RUBRIC_COLUMNS = [
@@ -65,6 +63,39 @@ export const RUBRIC_COLUMNS = [
   "alignment_score",
   "average_score",
 ] as const;
+
+/**
+ * R-L3b option B (PO 2026-11-26): generalise quasi-identifiers that appear verbatim
+ * in the lecturer feedback queue / dashboard to reduce 1-to-1 linkage while keeping
+ * ordinal research signal (FR-EVAL-04).
+ */
+export function attemptBand(attemptNumber: number): "1" | "2+" {
+  if (!Number.isFinite(attemptNumber) || attemptNumber <= 1) return "1";
+  return "2+";
+}
+
+export function decisionCountBand(count: number): "0" | "1-2" | "3+" {
+  if (!Number.isFinite(count) || count <= 0) return "0";
+  if (count <= 2) return "1-2";
+  return "3+";
+}
+
+export function wordCountBand(words: number): "0" | "1-25" | "26-75" | "76-150" | "151+" {
+  if (!Number.isFinite(words) || words <= 0) return "0";
+  if (words <= 25) return "1-25";
+  if (words <= 75) return "26-75";
+  if (words <= 150) return "76-150";
+  return "151+";
+}
+
+export function durationBand(seconds: number | null | undefined): "" | "0-59s" | "1-5m" | "5-15m" | "15-30m" | "30m+" {
+  if (seconds === null || seconds === undefined || !Number.isFinite(seconds) || seconds < 0) return "";
+  if (seconds < 60) return "0-59s";
+  if (seconds < 300) return "1-5m";
+  if (seconds < 900) return "5-15m";
+  if (seconds < 1800) return "15-30m";
+  return "30m+";
+}
 
 /**
  * L3 option C (PO 2026-11-25): rows are ordered by case and pseudonym only, never by

@@ -6,7 +6,7 @@
 | G0 | PASS | PO chat 2026-11-21 (§2) |
 | G1–G7 | PASS | PO duyệt gộp 2026-11-21 (§2) |
 | QG1 | PASS (cục bộ) | §4 |
-| QG2 | PASS WITH CONDITIONS | §5, §7.2; L3 đã sửa theo Option C (PO 2026-11-25) và được review độc lập; điều kiện: R-L3b chờ PO (chủ: PO) |
+| QG2 | PASS WITH CONDITIONS | §5, §7.2, §7.3; PO đã chốt chính thức R-L3b phương án B (2026-11-26, §6) và reviewer độc lập (`040ec391`) xác nhận `PASS WITH CONDITIONS`; điều kiện: các giới hạn ghép còn lại thuộc AC-R4/AC-R5 (§7.3) đã được ghi nhận minh bạch và cần chạy lại QG5 CI sau commit |
 | QG3 | Không áp dụng | Không đổi UI |
 | QG4 | PASS | Không đổi chuỗi i18n; không có secret trong diff (§4) |
 | QG5 | Xem PR #80 | Bằng chứng CI gắn với head SHA, ghi trong comment của PR #80; mỗi commit mới phải chạy lại |
@@ -88,13 +88,14 @@ Ghi nhận thêm, không sửa:
 
 ## 6. Các quyết định đã chốt
 
-Việc còn mở cho PO: **R-L3b** (§7.2), rủi ro ghép dữ liệu còn lại sau khi bỏ mốc thời gian. Chưa chọn phương án tạm.
+Không còn việc mở cho PO trong spec này.
 
 - **L3 — PO chốt phương án C, 2026-11-25** (PO trong chat: "Tôi xác nhận chính thức chọn phương án C cho quyết định L3 của PR #80, ngày 25/11/2026"):
-  - chỉ xuất thời lượng (`duration_seconds`);
+  - chỉ xuất thời lượng (`duration_seconds` trước khi khái quát hóa thành `duration_band` ở R-L3b B);
   - không xuất mốc thời gian tuyệt đối trong CSV nghiên cứu;
   - mục tiêu: không ghép được CSV với dashboard để suy ra danh tính sinh viên từ mã ẩn danh;
   - không bỏ timestamp trong database hay API response ngoài phạm vi L3.
+- **R-L3b — PO chốt phương án B, 2026-11-26** (PO trong chat: `"PO decision — 2026-11-26: PO chính thức chọn phương án B cho R-L3b, bao gồm việc khái quát hóa decision_count thành decision_count_band và các trường dữ liệu khác theo phương án đã được rà soát. Tiếp tục duy trì quyền xuất dữ liệu theo AC-R4 và pseudonym ổn định giữa các lần xuất theo AC-R5. Không khôi phục timestamp tuyệt đối đã loại bỏ theo L3 Option C. Các rủi ro liên kết dữ liệu còn lại phải được ghi nhận minh bạch; không tuyên bố CSV đã ẩn danh tuyệt đối."`): giảm độ chi tiết của dữ liệu xuất CSV để hạn chế ghép ngược với hàng đợi nhận xét của giảng viên, không tuyên bố ẩn danh tuyệt đối; chi tiết thiết kế, bằng chứng kiểm thử và rủi ro còn lại ở §7.3.
 
 ## 7. Kiểm tra L3 Option C (2026-11-25)
 
@@ -148,8 +149,54 @@ Kết luận: phần sửa L3 đúng.
 
 | ID | Mức | Phát hiện | Xử lý |
 |---|---|---|---|
-| R-L3b | Medium | Mục tiêu "không ghép được CSV với dashboard" chưa đạt hết. Hàng đợi nhận xét của giảng viên trả tên sinh viên, `attemptNumber`, toàn văn reflection và lập luận. Giảng viên có thể đếm số từ và ghép bộ (`case_id`, `attempt_number`, số từ lập luận, số từ phản tư, `outcome_node_id`/`choice_path`) với một dòng CSV. Mã ẩn danh ổn định, nên ghép được một dòng là lộ mọi dòng của sinh viên đó. Xuất hai lần rồi so sánh cũng lộ các dòng mới. Với CSV `rubrics`, API rubric đã trả `evaluatorName` cùng điểm | **Chờ PO.** Ngoài phần Option C đã chốt. Các hướng reviewer nêu: (a) chấp nhận và ghi nhận rủi ro còn lại; (b) gộp nhóm số từ và thời lượng, bỏ hoặc làm thô `attempt_number`, `choice_path`, `outcome_node_id` (giảm giá trị nghiên cứu); (c) chỉ ADMIN được xuất `activity`, hoặc dùng salt riêng cho mỗi lần xuất (trái AC-R5 "ổn định giữa các lần xuất"). Chưa chọn phương án tạm |
+| R-L3b | Medium | Mục tiêu "không ghép được CSV với dashboard" chưa đạt hết. Hàng đợi nhận xét của giảng viên trả tên sinh viên, `attemptNumber`, toàn văn reflection và lập luận. Giảng viên có thể đếm số từ và ghép bộ (`case_id`, `attempt_number`, số từ lập luận, số từ phản tư, `outcome_node_id`/`choice_path`) với một dòng CSV. Mã ẩn danh ổn định, nên ghép được một dòng là lộ mọi dòng của sinh viên đó. Xuất hai lần rồi so sánh cũng lộ các dòng mới. Với CSV `rubrics`, API rubric đã trả `evaluatorName` cùng điểm | **Đã xử lý theo phương án B (PO 2026-11-26)**: bỏ `choice_path`, `outcome_node_id`; khái quát hóa `attempt_number` → `attempt_band`, `decision_count` → `decision_count_band`, số từ → `reasoning_word_band` / `reflection_word_band`, `duration_seconds` → `duration_band` (§7.3). Giảm ghép 1-1 trên tập thông thường, nhưng vẫn là pseudonymization (còn rủi ro ngoại lệ/nhóm nhỏ và sai phân giữa nhiều lần xuất do AC-R4 + AC-R5). |
 | R2 | Medium | Bản ghi đánh QG2 PASS trước khi có review độc lập | Đã sửa: §1 ghi QG2 PASS WITH CONDITIONS, dẫn tới mục này |
 | R3 | Low | Test thứ tự dòng phụ thuộc UUID ngẫu nhiên: đột biến "không sắp xếp" lọt khoảng 25% số lần chạy; với rubric, đột biến bị bắt nhờ kiểm tra header, không nhờ kiểm tra thứ tự. Lần kiểm tra lại trên `ac3ebc0`: đột biến sắp giảm dần (`created_at DESC`, `evaluator_id DESC`, `student_id` giảm dần) vẫn lọt; vòng chọn `admin2` có đuôi dài (mô phỏng 20.000 lần: trung bình 361 lần thử, tối đa khoảng 1,36 triệu) | Đã sửa trong hai lần: chọn ID có chủ đích, so với dãy kỳ vọng cụ thể; sau đó dùng bộ ba theo thứ tự mã, xác suất cố định, có giới hạn số lần thử, thêm sinh viên và phiếu thứ ba. Đột biến 1–5 ở §7.1 fail ở mọi lần chạy |
 | R4 | Low | Truy vấn bài nộp vẫn SELECT `s.submitted_at` (không xuất ra nhưng dễ bị thêm lại) | Đã sửa: bỏ khỏi SELECT |
 | R5 | Low, ngoài phạm vi | `completed_at` được ghi khi tới node kết thúc, trước phần phản tư, nên `duration_seconds` là "bắt đầu → node kết thúc". Giảng viên không đọc được `started_at` qua API (`GET /branching-attempts/:id` trả 403 cho người không sở hữu) | Ghi nhận, không sửa |
+
+### 7.3 Triển khai R-L3b phương án B (2026-11-26)
+
+#### Thiết kế khái quát hóa CSV (`activity`)
+Giữ nguyên AC-R4 (quyền export cho giảng viên theo khóa/case sở hữu và ADMIN toàn hệ thống), AC-R5 (pseudonym `P-` + 12 hex HMAC ổn định giữa các lần xuất) và L3 Option C (không mốc thời gian tuyệt đối, `rubrics` giữ nguyên không chứa dữ liệu sinh viên). Các cột trong `ACTIVITY_COLUMNS` được điều chỉnh như sau:
+
+| Cột cũ | Cột mới | Xử lý & lý do |
+|---|---|---|
+| `choice_path`, `outcome_node_id` | *(bỏ)* | Khớp 1-1 trực tiếp với `steps[].selectedOptionText` và `outcomeSituation` trên hàng đợi nhận xét (`LecturerFeedbackService.getQueue`). Phân phối lựa chọn và kết quả tổng hợp đã có sẵn tại `GET /cases/:caseId/statistics`. |
+| `attempt_number` | `attempt_band` (`"1"` \| `"2+"`) | Xóa dấu vân tay ở các số attempt hiếm (`3, 4, ...`) hiển thị trên hàng đợi và dashboard, vẫn giữ phân biệt lượt đầu vs thử lại. |
+| `decision_count` | `decision_count_band` (`"0"` \| `"1-2"` \| `"3+"`) | Làm mờ độ sâu cây quyết định (`stepsCount` trên hàng đợi), tách rõ Review Study (`0`), nhánh ngắn (`1-2`) và nhánh sâu (`3+`). |
+| `reasoning_word_count`, `reflection_word_count` | `reasoning_word_band`, `reflection_word_band` (`"0"`, `"1-25"`, `"26-75"`, `"76-150"`, `"151+"`) | Hàng đợi trả toàn văn để đếm chính xác; dải 5 bậc gộp nhiều sinh viên vào cùng nhóm nhưng vẫn giữ thứ bậc độ dài cho phân tích nghiên cứu. |
+| `duration_seconds` | `duration_band` (`""`, `"0-59s"`, `"1-5m"`, `"5-15m"`, `"15-30m"`, `"30m+"`) | Giữ nguyên quy tắc trống khi chưa hoàn thành và với Review Study; làm thô thời lượng theo `FLOOR(EXTRACT(EPOCH ...))`. |
+| `challenge_rounds` | `challenge_rounds` (`0` \| `1` \| `2`, giữ nguyên) | Giảng viên không xem được số vòng Challenge Support trên hàng đợi, dashboard hay statistics (`ChallengeSupportController` chỉ mở cho `STUDENT`), nên không làm tăng rủi ro ghép hàng đợi và giữ nguyên mục tiêu FR-EVAL-04. |
+| `participant_code`, `course_code`, `case_id`, `learning_mode`, `completed` | *(giữ nguyên)* | Cần cho phân tích so sánh case AI vs giảng viên và ổn định pseudonym theo AC-R4/AC-R5. |
+
+Thứ tự sắp xếp `activity` dùng `compareRows([2, 0, 4, 5, 6, 7, 8, 9, 10])` (toàn bộ các cột đã xuất), không dùng thời gian hay ID thật kể cả khi một sinh viên có nhiều dòng `"2+"`.
+
+#### Khắc phục theo review độc lập & Bằng chứng kiểm thử cục bộ
+Sau vòng review độc lập đầu tiên (chỉ-đọc, conversation `040ec391`), đã sửa thêm:
+1. `evaluation.service.ts` (`WORDS`): đổi `btrim(${col})` sang `regexp_replace(COALESCE(${col}, ''), '^\s+|\s+$', '', 'g')` để cắt đồng nhất `\n`, `\r`, `\t` và chuỗi chỉ có khoảng trắng như `wordCount` phía JS; dùng `FLOOR(EXTRACT(EPOCH ...))::integer`.
+2. `research-export.ts`: bảo vệ `!Number.isFinite(...)` cho `attemptBand`, `decisionCountBand`, `wordCountBand`.
+3. `research-export.spec.ts` & `mvp-completion.integration.e2e-spec.ts`: bổ sung test `\t`/`\r`/`NaN`; sửa fixture học sinh retry 3 lần (`attNo` `2` và `3` đầy đủ); bổ sung bộ test `REVIEW_STUDY` 6 sinh viên (gồm text nhiều dòng / chỉ khoảng trắng) và kiểm tra giao nhiều case trong cùng khóa học.
+
+Môi trường chạy lại sau lần sửa code cuối: Windows, Docker `edubranch_postgres` (PostgreSQL 16 + pgvector, DB test `edubranch_spec007_it`), tắt Postgres sau khi chạy xong:
+
+| Lệnh (thư mục `backend/`) | Exit | Kết quả |
+|---|---|---|
+| `npm run build` | `0` | Biên dịch sạch |
+| `npm test -- --runInBand` | `0` | 37 suite, `339/339` PASS (bao gồm các test mới của `research-export.spec.ts`) |
+| `npx jest --config test/jest-e2e.json test/mvp-completion.integration.e2e-spec.ts --runInBand` (chạy 2 lần liên tiếp) | `0`, `0` | `19/19` PASS mỗi lần (có `R-L3b option B` trên `LecturerFeedbackService.getQueue` + `EvaluationService.exportCsv`) |
+| `npx jest --config test/jest-e2e.json test/mvp-completion.e2e-spec.ts --runInBand` | `0` | `124/124` PASS |
+| `npm run test:matrix` | `0` | `24/24` PASS |
+| `npm run test:regression` | `0` | `32/32` PASS |
+
+*Kết quả re-review độc lập (`040ec391`, 2026-11-26)*: `PASS WITH CONDITIONS` — xác nhận cả 4 hạng mục khắc phục đều đạt (không còn lỗi code, test hoặc tài liệu); điều kiện còn lại gồm 5 giới hạn ghép ngược cố hữu dưới AC-R4 + AC-R5 (chủ: PO) và việc chạy lại QG5 trên CI sau khi PO cho phép commit/push (chứng cứ test cục bộ do phiên chính thực thi và đối soát log).
+
+*Lưu ý*: Các thay đổi hiện nằm trong working tree cục bộ của nhánh `feature/mvp-completion-backend` (chưa commit/push theo giới hạn PO), nên QG5 (CI GitHub) sẽ cần chạy lại sau khi PO duyệt và cho phép commit/push.
+
+#### Giới hạn và rủi ro còn lại (pseudonymization + giảm liên kết, không phải ẩn danh tuyệt đối)
+1. **Đa dòng trên sinh viên có nhiều lượt thử**: vì AC-R4 xuất mỗi attempt một dòng, đếm số dòng theo `(case_id, participant_code)` vẫn suy ra được tổng số lần thử (`1` + số dòng `"2+"`), có thể phân biệt sinh viên thử lại `3` lần với sinh viên thử `2` lần.
+2. **Độ phân giải thấp ở `REVIEW_STUDY` và ngoại lệ (`k = 1`)**: mỗi dòng `REVIEW_STUDY` chỉ có 2 dải phân biệt (`reasoning_word_band`, `reflection_word_band`), và hàng đợi cho thấy `reflectionStatus = NOT_STARTED` tương ứng `"0"`. Sinh viên có bài rất dài (`151+`) hoặc cây dài đơn lẻ (`3+`) vẫn khớp `1-1`.
+3. **Giao nhiều case cùng khóa**: vì `participant_code` ổn định theo AC-R5, đối chiếu sự có mặt của sinh viên giữa nhiều case (`kCohort` ∩ `kReviewCohort`) thu hẹp tập ứng viên.
+4. **Sai phân qua nhiều lần xuất (`T₁` vs `T₂`)**: xuất CSV trước và sau khi có sinh viên mới hoàn thành trên dashboard/hàng đợi vẫn cô lập được dòng mới phát sinh; đây là hệ quả cố hữu khi đồng thời giữ AC-R4 (giảng viên tự xuất) và AC-R5 (pseudonym ổn định).
+5. **Độ trễ / lộ thêm trường sau khi ghép được 1 dòng**: nếu một dòng bị ghép đúng danh tính, `participant_code` sẽ liên kết được cả các attempt chưa hoàn thành (`completed = "false"`) và `challenge_rounds` vốn giảng viên không thấy trên hàng đợi. Với `rubrics` CSV, `GET /evaluation/rubrics` đã trả `evaluatorName` kèm 3 điểm cho giảng viên sở hữu khóa và ADMIN.
+6. **Ghi nhận ngoài phạm vi thay đổi**: nếu về sau muốn triệt tiêu rủi ro giảng viên ghép với hàng đợi mà vẫn giữ AC-R5, hướng phù hợp là giới hạn quyền xuất `activity` về `ADMIN` (vốn không xem được hàng đợi nhận xét/lập luận theo B-6) hoặc áp dụng ngưỡng ẩn nhóm nhỏ (`k`-anonymity suppression) — hiện chưa thực hiện để giữ nguyên quyền AC-R4 đã duyệt.

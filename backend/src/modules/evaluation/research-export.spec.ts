@@ -1,12 +1,16 @@
 import {
   ACTIVITY_COLUMNS,
   RUBRIC_COLUMNS,
+  attemptBand,
   averageScore,
   compareRows,
   csvCell,
+  decisionCountBand,
+  durationBand,
   pseudonymFactory,
   toCsv,
   wordCount,
+  wordCountBand,
 } from "./research-export";
 
 describe("research-export (BE-033, spec 007 AC-R4/R5)", () => {
@@ -35,6 +39,8 @@ describe("research-export (BE-033, spec 007 AC-R4/R5)", () => {
     expect(csvCell("+1")).toBe("'+1");
     expect(csvCell("-2")).toBe("'-2");
     expect(csvCell("@x")).toBe("'@x");
+    expect(csvCell("\tlead")).toBe("'\tlead");
+    expect(csvCell("\rlead")).toBe('"\'\rlead"');
     expect(csvCell('a,"b"')).toBe('"a,""b"""');
     expect(csvCell("line\nbreak")).toBe('"line\nbreak"');
     expect(csvCell(null)).toBe("");
@@ -54,12 +60,56 @@ describe("research-export (BE-033, spec 007 AC-R4/R5)", () => {
     expect(averageScore(4, 4, 5)).toBe(4.3);
   });
 
-  it("exports no absolute time column in any dataset (L3 option C, PO 2026-11-25)", () => {
+  it("exports no absolute time column and drops high-linkability fields (L3 option C + R-L3b option B)", () => {
     for (const col of [...ACTIVITY_COLUMNS, ...RUBRIC_COLUMNS]) {
       expect(col).not.toMatch(/(_at|_date|time|timestamp|date)$/);
     }
-    expect(ACTIVITY_COLUMNS).toContain("duration_seconds");
+    expect(ACTIVITY_COLUMNS).toContain("duration_band");
+    expect(ACTIVITY_COLUMNS).not.toContain("duration_seconds");
+    expect(ACTIVITY_COLUMNS).not.toContain("choice_path");
+    expect(ACTIVITY_COLUMNS).not.toContain("outcome_node_id");
+    expect(ACTIVITY_COLUMNS).not.toContain("attempt_number");
+    expect(ACTIVITY_COLUMNS).not.toContain("decision_count");
+    expect(ACTIVITY_COLUMNS).not.toContain("reasoning_word_count");
+    expect(ACTIVITY_COLUMNS).not.toContain("reflection_word_count");
     expect(RUBRIC_COLUMNS).not.toContain("created_at");
+  });
+
+  it("generalises attempt, decision count, word count and duration into coarse bands (R-L3b option B)", () => {
+    expect(attemptBand(Number.NaN)).toBe("1");
+    expect(attemptBand(1)).toBe("1");
+    expect(attemptBand(2)).toBe("2+");
+    expect(attemptBand(5)).toBe("2+");
+
+    expect(decisionCountBand(Number.NaN)).toBe("0");
+    expect(decisionCountBand(0)).toBe("0");
+    expect(decisionCountBand(1)).toBe("1-2");
+    expect(decisionCountBand(2)).toBe("1-2");
+    expect(decisionCountBand(3)).toBe("3+");
+
+    expect(wordCountBand(Number.NaN)).toBe("0");
+    expect(wordCountBand(0)).toBe("0");
+    expect(wordCountBand(1)).toBe("1-25");
+    expect(wordCountBand(25)).toBe("1-25");
+    expect(wordCountBand(26)).toBe("26-75");
+    expect(wordCountBand(75)).toBe("26-75");
+    expect(wordCountBand(76)).toBe("76-150");
+    expect(wordCountBand(150)).toBe("76-150");
+    expect(wordCountBand(151)).toBe("151+");
+
+    expect(durationBand(null)).toBe("");
+    expect(durationBand(undefined)).toBe("");
+    expect(durationBand(-1)).toBe("");
+    expect(durationBand(0)).toBe("0-59s");
+    expect(durationBand(59)).toBe("0-59s");
+    expect(durationBand(60)).toBe("1-5m");
+    expect(durationBand(125)).toBe("1-5m");
+    expect(durationBand(299)).toBe("1-5m");
+    expect(durationBand(300)).toBe("5-15m");
+    expect(durationBand(899)).toBe("5-15m");
+    expect(durationBand(900)).toBe("15-30m");
+    expect(durationBand(1799)).toBe("15-30m");
+    expect(durationBand(1800)).toBe("30m+");
   });
 
   it("orders rows by the given keys only, numbers numerically", () => {

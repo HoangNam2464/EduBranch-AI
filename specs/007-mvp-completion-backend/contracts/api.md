@@ -114,12 +114,16 @@ Phiếu trả về:
 
 `evaluatorName` chỉ xuất hiện trong API. CSV dùng mã ẩn danh.
 
-CSV `activity`, các cột theo thứ tự:
-`participant_code, course_code, case_id, learning_mode, attempt_number, completed, decision_count, choice_path, outcome_node_id, reasoning_word_count, reflection_word_count, challenge_rounds, duration_seconds`.
+CSV `activity`, các cột theo thứ tự (đã khái quát hóa theo R-L3b phương án B, PO 2026-11-26):
+`participant_code, course_code, case_id, learning_mode, attempt_band, completed, decision_count_band, reasoning_word_band, reflection_word_band, challenge_rounds, duration_band`.
 
-`challenge_rounds` là số vòng sâu nhất (0–2) trong các phiên Challenge Support của attempt hoặc bài nộp (FR-EVAL-04).
+- `attempt_band`: `"1"` | `"2+"` (bỏ số attempt chính xác).
+- `decision_count_band`: `"0"` | `"1-2"` | `"3+"` (bỏ `choice_path` và `outcome_node_id`).
+- `reasoning_word_band`, `reflection_word_band`: `"0"` | `"1-25"` | `"26-75"` | `"76-150"` | `"151+"`.
+- `challenge_rounds`: số vòng sâu nhất (`0`–`2`) trong các phiên Challenge Support của attempt hoặc bài nộp (FR-EVAL-04).
+- `duration_band`: `"0-59s"` | `"1-5m"` | `"5-15m"` | `"15-30m"` | `"30m+"`; để trống khi attempt chưa hoàn thành và với bài Review Study.
 
 CSV `rubrics`, các cột theo thứ tự:
 `case_id, course_code, learning_mode, evaluator_code, realism_score, difficulty_score, alignment_score, average_score`.
 
-L3 Option C (PO 2026-11-25): không bộ dữ liệu nào có cột mốc thời gian. `duration_seconds` là số giây nguyên giữa bắt đầu và hoàn thành; để trống khi attempt chưa hoàn thành và với bài Review Study. Thứ tự dòng: `activity` theo `case_id`, `participant_code`, `attempt_number`; `rubrics` theo `case_id`, `evaluator_code`. Không sắp theo thời gian.
+L3 Option C (PO 2026-11-25) + R-L3b phương án B (PO 2026-11-26): không bộ dữ liệu nào có cột mốc thời gian tuyệt đối. Thứ tự dòng: `activity` theo `case_id`, `participant_code`, `attempt_band` và các cột đã xuất còn lại; `rubrics` theo `case_id`, `evaluator_code`. Không sắp theo thời gian hay ID người dùng/attempt thật.

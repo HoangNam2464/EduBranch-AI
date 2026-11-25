@@ -5,17 +5,23 @@ import type { CreateRubricDto, ExportQueryDto, UpdateRubricDto } from "./dto/rub
 import {
   ACTIVITY_COLUMNS,
   RUBRIC_COLUMNS,
+  attemptBand,
   averageScore,
   compareRows,
+  decisionCountBand,
+  durationBand,
   pseudonymFactory,
   toCsv,
+  wordCountBand,
 } from "./research-export";
 
 type Actor = { id: string; role: string };
 
+const TRIMMED = (col: string) => `regexp_replace(COALESCE(${col}, ''), '^\\s+|\\s+$', '', 'g')`;
+
 const WORDS = (col: string) =>
-  `CASE WHEN ${col} IS NULL OR btrim(${col}) = '' THEN 0
-        ELSE array_length(regexp_split_to_array(btrim(${col}), '\\s+'), 1) END`;
+  `CASE WHEN ${TRIMMED(col)} = '' THEN 0
+        ELSE array_length(regexp_split_to_array(${TRIMMED(col)}, '\\s+'), 1) END`;
 
 const RUBRIC_SELECT = `
   SELECT r.id, r.case_id, r.evaluator_id, r.realism_score, r.difficulty_score, r.alignment_score,
@@ -151,16 +157,15 @@ export class EvaluationService {
       return toCsv(RUBRIC_COLUMNS, rubricRows.sort(compareRows([0, 3, 4, 5, 6])));
     }
 
-    // Only counts and ids of case content leave the database; no free text (FR-EVAL-05).
+    // Only coarsened bands, counts and case ids leave the database; no free text,
+    // choice paths, or outcome node ids (FR-EVAL-05, R-L3b option B).
     const [attempts, submissions] = await Promise.all([
       this.db.query(
         `SELECT ba.student_id, co.course_code, ca.id AS case_id, ca.learning_mode, ba.attempt_number,
-                ba.is_completed, ba.outcome_node_id,
-                EXTRACT(EPOCH FROM (ba.completed_at - ba.started_at))::integer AS duration_seconds,
+                ba.is_completed,
+                FLOOR(EXTRACT(EPOCH FROM (ba.completed_at - ba.started_at)))::integer AS duration_seconds,
                 ${WORDS("ba.reflection_text")} AS reflection_words,
                 (SELECT COUNT(*) FROM student_reasoning sr WHERE sr.attempt_id = ba.id) AS decision_count,
-                (SELECT string_agg(sr.selected_option_id::text, '>' ORDER BY sr.submitted_at, sr.id)
-                   FROM student_reasoning sr WHERE sr.attempt_id = ba.id) AS choice_path,
                 (SELECT COALESCE(SUM(${WORDS("sr.reasoning_text")}), 0)
                    FROM student_reasoning sr WHERE sr.attempt_id = ba.id) AS reasoning_words,
                 -- FR-EVAL-04 "rounds engaged (0, 1 or 2)": deepest session of the attempt (QG2 M2)
@@ -194,34 +199,33 @@ export class EvaluationService {
         r.course_code ?? "",
         r.case_id,
         r.learning_mode,
-        r.attempt_number,
+        attemptBand(Number(r.attempt_number)),
         r.is_completed ? "true" : "false",
-        Number(r.decision_count),
-        r.choice_path ?? "",
-        r.outcome_node_id ?? "",
-        Number(r.reasoning_words),
-        Number(r.reflection_words),
+        decisionCountBand(Number(r.decision_count)),
+        wordCountBand(Number(r.reasoning_words)),
+        wordCountBand(Number(r.reflection_words)),
         Number(r.challenge_rounds),
-        r.duration_seconds !== null && r.duration_seconds !== undefined ? Number(r.duration_seconds) : "",
+        durationBand(
+          r.duration_seconds !== null && r.duration_seconds !== undefined ? Number(r.duration_seconds) : null,
+        ),
       ]),
       ...submissions.rows.map((r) => [
         pseudonym(r.student_id),
         r.course_code ?? "",
         r.case_id,
         r.learning_mode,
-        1,
+        "1",
         "true",
-        0,
-        "",
-        "",
-        Number(r.reasoning_words),
-        Number(r.reflection_words),
+        "0",
+        wordCountBand(Number(r.reasoning_words)),
+        wordCountBand(Number(r.reflection_words)),
         Number(r.challenge_rounds),
         "",
       ]),
     ];
-    // L3 option C: order by case, participant code, attempt number; never by time or raw id.
-    return toCsv(ACTIVITY_COLUMNS, rows.sort(compareRows([2, 0, 4])));
+    // L3 option C + R-L3b option B: order solely by exported columns (case, participant code,
+    // attempt band, and remaining bands); never by time or raw user/attempt id.
+    return toCsv(ACTIVITY_COLUMNS, rows.sort(compareRows([2, 0, 4, 5, 6, 7, 8, 9, 10])));
   }
 
   // ---------------------------------------------------------------------------

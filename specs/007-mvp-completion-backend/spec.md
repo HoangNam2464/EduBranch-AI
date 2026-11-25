@@ -164,22 +164,21 @@ Tất cả AC dưới đây là [ĐỀ-XUẤT] cho tới khi PO duyệt G7.
 - **AC-R4** (FR-EVAL-04): `GET /evaluation/export?dataset=activity|rubrics` trả `text/csv; charset=utf-8` (có BOM để Excel đọc tiếng Việt) và `Content-Disposition: attachment`.
   - Lọc tùy chọn theo `courseId`, `caseId`.
   - LECTURER chỉ xuất được khóa/case mình sở hữu; ngoài quyền → 403. ADMIN xuất được toàn hệ thống.
-  - `activity`: mỗi dòng là một attempt Branching hoặc một bài Review Study, với các cột:
-    - mã người tham gia ẩn danh;
+  - `activity`: mỗi dòng là một attempt Branching hoặc một bài Review Study, với các cột đã khái quát hóa để giảm ghép ngược với hàng đợi nhận xét (R-L3b phương án B, PO 2026-11-26):
+    - mã người tham gia ẩn danh ổn định (`participant_code`, AC-R5);
     - mã khóa, ID case, chế độ học;
-    - số thứ tự attempt;
-    - đã hoàn thành;
-    - số quyết định;
-    - chuỗi lựa chọn (ID option nối bằng `>`);
-    - ID node kết quả;
-    - tổng số từ lập luận;
-    - số từ phản tư;
-    - số vòng Challenge Support (0–2);
-    - thời lượng hoàn thành (giây) — chỉ có giá trị khi attempt đã hoàn thành, để bảo vệ riêng tư (L3 Option C, PO 2026-11-25).
+    - dải số lần thử (`attempt_band`: `1` | `2+`);
+    - đã hoàn thành (`completed`);
+    - dải số quyết định (`decision_count_band`: `0` | `1-2` | `3+`);
+    - dải số từ lập luận (`reasoning_word_band`: `0` | `1-25` | `26-75` | `76-150` | `151+`);
+    - dải số từ phản tư (`reflection_word_band`: `0` | `1-25` | `26-75` | `76-150` | `151+`);
+    - số vòng Challenge Support (`0`–`2`, giảng viên không thấy trên hàng đợi nhận xét);
+    - dải thời lượng hoàn thành (`duration_band`: `0-59s` | `1-5m` | `5-15m` | `15-30m` | `30m+`) — để trống khi attempt chưa hoàn thành và với Review Study (L3 Option C, PO 2026-11-25).
+    - Không xuất `choice_path` và `outcome_node_id` trong CSV từng dòng (phân phối nhánh và kết quả tổng hợp đã có ở thống kê case).
   - `rubrics`: mỗi phiếu một dòng, gồm ID case, mã khóa, chế độ học, mã người đánh giá ẩn danh, 3 điểm, điểm trung bình.
-  - L3 Option C (PO 2026-11-25): cả hai bộ dữ liệu không có mốc thời gian tuyệt đối nào (không `started_at`, `completed_at`, `submitted_at`, `created_at`). Thứ tự dòng chỉ theo ID case → mã ẩn danh → số thứ tự attempt (rubric: ID case → mã người đánh giá), không theo thời gian hay ID người dùng thật, để vị trí dòng không ghép được với dashboard.
+  - L3 Option C (PO 2026-11-25) + R-L3b phương án B (PO 2026-11-26): cả hai bộ dữ liệu không có mốc thời gian tuyệt đối nào (không `started_at`, `completed_at`, `submitted_at`, `created_at`). Thứ tự dòng `activity` sắp hoàn toàn theo các cột đã xuất (`case_id`, `participant_code`, `attempt_band`, và các cột dải còn lại); `rubrics` theo `case_id`, `evaluator_code`. Không sắp theo thời gian hay ID người dùng/attempt thật. Lưu ý: đây là pseudonymization kết hợp giảm khả năng liên kết, không phải ẩn danh tuyệt đối (chi tiết rủi ro còn lại ở `record.md` §7.3).
 - **AC-R5** (FR-EVAL-05):
-  - Tệp CSV không chứa họ tên, email, ID thật của sinh viên hay của người đánh giá, và không chứa văn bản tự do của sinh viên (chỉ số từ).
+  - Tệp CSV không chứa họ tên, email, ID thật của sinh viên hay của người đánh giá, và không chứa văn bản tự do của sinh viên (chỉ dải số từ).
   - Mã ẩn danh ổn định giữa các lần xuất: `P-` + 12 ký tự hex đầu của HMAC-SHA256 với khóa dẫn xuất từ `JWT_SECRET`, nhãn `edubranch-research-export-v1` và ID người dùng.
   - Ô bắt đầu bằng `= + - @` được thêm tiền tố `'`, chống chèn công thức (CSV injection).
   - E2e kiểm tra tệp xuất không chứa bất kỳ tên, email hay UUID người dùng nào của bộ dữ liệu test.
