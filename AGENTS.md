@@ -6,7 +6,7 @@ Read by every agent (Claude Code imports it from `CLAUDE.md`; Antigravity loads 
 
 When sources disagree, follow this strict order:
 1. **Product Baseline & PO Decisions**: Proposal V1.2 (`docs/C1SE_65-EduBranch-AI-Proposal_V1.2.docx`) + approved items in `docs/mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md` and `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`.
-2. **Normative Governance & Domain Rules**: `AGENTS.md`, `00-project-foundation.md` (`FND`), `01-ui-design-standards.md` (`R01` — single design source), `02-agent-operating-policy.md`, `03-engineering-and-task-standards.md`, `.agents/rules/feature-*.md`, and `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`.
+2. **Normative Governance & Domain Rules**: `AGENTS.md`, `00-project-foundation.md` (`FND`), `01-ui-design-standards.md` (`R01` — general UI/UX quality standards; PO-approved Figma governs screen designs), `02-agent-operating-policy.md`, `03-engineering-and-task-standards.md`, `.agents/rules/feature-*.md`, and `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md`.
 3. **Feature Specs & Contracts**: `specs/NNN-*/` and `docs/features/FEATURE-*.md`.
 4. **Technical Architecture, Data, AI & UI Design Specs**: `docs/architecture/`, `docs/database/`, `docs/ai/`, `docs/design/` (`UX-SCREEN-NOTES.md`, `P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`), `docs/05_FIGMA.md`.
 5. **Historical Baselines & Audit Reports**: `docs/01`–`03`, `06`, `docs/5.Sprint_Backlog/`, `docs/04_JIRA/`, `docs/audits/`, `docs/team/`, `docs/qa/*-REPORT.md` — **historical records only, never normative over levels 1–4**.
@@ -31,7 +31,7 @@ When sources disagree, follow this strict order:
 6. Never mark a PO decision `APPROVED` or close an `UNRESOLVED` item without explicit PO confirmation.
 7. No route, field, value, or business rule without an authoritative source; internal routes (`/internal/v1/*`) are never public API; without verified evidence, report `UNKNOWN` and name the missing source.
 8. Existing implementation (`code` or Figma draft) is not an approved product requirement.
-9. Visual design values are the tokens in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`) as governed by `R01` (PO 2026-11-22: code + `R01` are the visual standard; Figma follows). Never invent values or duplicate hex codes across docs.
+9. **Design Authority & Tokens (PO 2026-11-25)**: PO-approved Figma (`docs/05_FIGMA.md`) is the official screen design authority; `R01` sets general UI rules without overriding approved Figma; code (`frontend/src/index.css` / target `frontend/src/styles/`) implements Figma (adjust code to match Figma, never edit Figma to justify old code, and mark R01-vs-Figma conflicts `UNRESOLVED` for PO decision). Never invent token values or duplicate hex codes across docs.
 10. `DONE` needs verified test evidence (`docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` QG7 & `02-agent-operating-policy.md §8`); PO approval or ticked checklists alone are insufficient.
 11. Features, behavior changes, security/ownership fixes, and UI changes follow `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` (PO approved 2026-11-17) using installed Spec Kit skills (`/speckit-*` v1.4.0; bugs: `/speckit-bug-*`). Its Quality Gates govern commit, push, PR, merge, and Jira Done. Never re-run `specify init` or rewrite `.specify/memory/constitution.md`.
 12. UI language (PO 2026-11-16, confirmed MVP 2026-11-22): Vietnamese default; English via the VI/EN switch; each screen strictly single-language; preserve established domain terms. English copy remains `PROPOSED` until PO approval.

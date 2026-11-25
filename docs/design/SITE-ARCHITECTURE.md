@@ -2,7 +2,7 @@
 
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 > - **Canonical Path**: `docs/design/SITE-ARCHITECTURE.md`
-> - **Companion Specs**: `.agents/rules/01-ui-design-standards.md` (`R01`, single design source) · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`
+> - **Companion Specs**: PO-approved Figma (`docs/05_FIGMA.md`, per-screen design authority) · `.agents/rules/01-ui-design-standards.md` (`R01`, general UI quality standards) · `docs/design/screens/P0-FOUNDATION.md`–`P4-REVIEW-STUDY.md`
 > - **Product Name**: EduBranch-AI
 > - **Full Title**: EduBranch-AI — AI Platform for Experiential Case-Based Learning & Decision-Making Scenarios
 
@@ -61,7 +61,7 @@ Because the Sprint Backlog tasks focus on core functional workflows, the Figma M
 - `/register` — **Account Registration Page**: University account creation with explicit `Lecturer` / `Student` role selection (`pages/auth/RegisterPage.tsx`).
 - `/forgot-password`, `/reset-password` — **Forgot & Reset Password Pages** [08]: Email recovery request and new-password form (included in MVP UI per PO 2026-11-25; `ForgotPasswordPage.tsx`, `ResetPasswordPage.tsx`; backend reset API pending).
 
-> Update 2026-11-25: R01 and the adopted `Plus Jakarta Sans` + `Inter` typography standard govern code visual styling (PO 2026-11-22 & 2026-11-25); Figma page `EduBranch AI – Screens` is the content reference and will be synced later. Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md).
+> Update 2026-11-25: **PO-approved Figma** (`EduBranch AI – Screens`) is the official design authority per screen, implemented in code using `Plus Jakarta Sans` + `Inter` and `R01` general quality rules (never edit Figma to justify old code; mark R01-vs-Figma conflicts `UNRESOLVED`). Frame codes are shown in brackets; per-screen behaviour is in [`UX-SCREEN-NOTES.md`](UX-SCREEN-NOTES.md).
 
 ### 5.2. Lecturer Portal (`LecturerLayout` — shared collapsible sidebar)
 - `/lecturer/dashboard` — Lecturer dashboard [07.1] (`D-05` 2026-11-12 → in MVP; **`OPEN PO DECISION`**: post-login default landing route `ROLE_HOME.LECTURER` — `/lecturer/dashboard` vs `/lecturer/courses` currently in `frontend/src/routes/paths.ts`).

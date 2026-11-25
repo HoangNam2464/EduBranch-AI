@@ -3,7 +3,7 @@
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 
 > **Priority**: NOW. The other half of the MVP-critical loop.
-> **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`.
+> **Visual system**: PO-approved Figma governs per-screen design (`docs/05_FIGMA.md`); `R01` (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX quality rules without overriding approved Figma; token values in `frontend/src/index.css` (target `frontend/src/styles/`).
 > **Covers**: `/student/desk` (`07.2`), `/student/courses` (`07.3`, `07.4`), `/student/history`, `/student/cases/:caseId/branching-play` (`05.1–05.3`), `/student/cases/:caseId/attempt/:attemptId/review` (`05.4`), `/student/cases/:caseId/attempt/:attemptId/reflect` (`05.7–05.10`), `/student/cases/:caseId/challenge/:sessionId` (`05.5–05.6`, `OPD-005`).
 
 ---

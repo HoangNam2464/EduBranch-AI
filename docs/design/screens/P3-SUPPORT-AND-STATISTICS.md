@@ -2,7 +2,7 @@
 
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 > - **Priority / MVP Scope**: **MVP Scope** (`(LATER)` label removed by PO decision `2026-11-25`; Figma frames `04.1`, `04.2`, `04.2b`, `04.3` synchronized). **Distinction from implementation**: MVP scope inclusion does not mark full feature completion — open UI element decisions (**`D-04`**, **`OPD-010`**), Lecturer Feedback route convention (`/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`), `BE-033` CSV export backend (PR #80), and Visual/E2E acceptance remain in progress or `OPEN PO DECISION`.
-> - **Visual system**: `R01` (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`).
+> - **Visual system**: PO-approved Figma governs per-screen design (`docs/05_FIGMA.md`); `R01` (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX quality rules without overriding approved Figma; token values in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`).
 > - **Covers**: `/lecturer/statistics`, and Lecturer Feedback (`/lecturer/feedback`, `/lecturer/feedback/:submissionId` in `SITE-ARCHITECTURE.md` / `paths.ts` vs `/lecturer/cases/:caseId/feedback` here — route convention **`OPEN PO DECISION / UNRESOLVED`**).
 
 ---

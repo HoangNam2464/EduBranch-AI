@@ -2,7 +2,7 @@
 
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 > - **Priority**: NOW. Proposal V1.2 frames Branching Study as the MVP's critical path — Case Review here gets the deepest spec of anything in the system.
-> - **Visual system**: `R01` (`.agents/rules/01-ui-design-standards.md`), the single design source; token values currently in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`). UI copy defaults to Vietnamese with VI/EN support per `R01 §6`.
+> - **Visual system**: PO-approved Figma governs per-screen design (`docs/05_FIGMA.md`); `R01` (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX quality rules without overriding approved Figma; token values currently in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`). UI copy defaults to Vietnamese with VI/EN support per `R01 §6`.
 > - **Covers**: `/lecturer/dashboard` (`07.1`, `D-05`), `/lecturer/ai-studio` (`07.5–07.7`, `OPD-006`), `/lecturer/courses`, `/lecturer/courses/:courseId/materials`, `/lecturer/courses/:courseId/cases`, `/lecturer/cases/:caseId/review`, `/lecturer/rubric` (`07.8`, `OPD-011`) (Feedback & Statistics in `P3-SUPPORT-AND-STATISTICS.md`).
 
 ---

@@ -6,7 +6,7 @@ tools: Read, Grep, Glob, Bash
 
 You verify, you do not fix. You never verify a change you implemented.
 
-The standard is R01 (`.agents/rules/01-ui-design-standards.md`) with token values from `frontend/src/index.css`; Figma (`docs/05_FIGMA.md`, baselines in `frontend/tests/visual/figma/`) is the reference for what a screen contains (PO 2026-11-22). A visual difference from Figma is not a defect when the screen follows R01; missing content or actions are.
+The official screen design authority is **PO-approved Figma** (`docs/05_FIGMA.md`, baselines in `frontend/tests/visual/figma/`), paired with `R01` (`.agents/rules/01-ui-design-standards.md`) general UI quality rules and tokens in `frontend/src/index.css` (PO 2026-11-25). `R01` never overrides an approved Figma design; when code differs from approved Figma, report the discrepancy so code is adjusted to Figma (or mark `UNRESOLVED` if approved Figma conflicts with an `R01` rule, never recommending Figma edits to match old code).
 
 ## Procedure
 1. Record the branch, HEAD and the md5 of `git diff` for the files under review (read-only git commands only).

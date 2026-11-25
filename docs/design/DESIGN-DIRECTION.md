@@ -3,7 +3,7 @@
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 
 > **Status**: Direction chosen by the PO on 2026-11-22 (chat, option 1: "giữ nhận diện, nâng cấp … sửa lại các vấn đề về UI, UX để nó không bị xấu và không chuyên nghiệp, sau này sẽ nâng cấp") and updated on 2026-11-25 to adopt `Plus Jakarta Sans` + `Inter` typography and layered TypeScript SPA conventions cleanly on Light-only Navy/Sky surfaces. The rules themselves are in R01 (`.agents/rules/01-ui-design-standards.md`); this file is only the plan and its order. Each step still goes through a spec and PO review (workflow).
-> **Inputs**: UI audit `docs/design/audit/UI-AUDIT.md` (2026-11-21, findings X1–X8), research `docs/design/research/DESIGN-INSPIRATION.md`, R01, Figma page `EduBranch AI – Screens` (content reference).
+> **Inputs**: UI audit `docs/design/audit/UI-AUDIT.md` (2026-11-21, findings X1–X8), research `docs/design/research/DESIGN-INSPIRATION.md`, PO-approved Figma (`EduBranch AI – Screens` — official per-screen authority, PO 2026-11-25), and `R01` general UI/UX quality rules.
 
 ## 1. Direction in one paragraph
 EduBranch-AI should read like a calm university workspace. The identity is already right (light theme, navy actions, sky data, white cards on a soft blue canvas). What lowers perceived quality today is execution: content squeezed by excess padding, labels that wrap or truncate where space exists, placeholder data, empty states repeated card by card, and a layout built for one fixed desktop frame instead of a browser window. Fix those systematically, shared components first, then screen groups. Nothing changes only to look different; a larger visual upgrade comes after the MVP.
@@ -25,7 +25,7 @@ EduBranch-AI should read like a calm university workspace. The identity is alrea
 4. **Screen groups**, in order of user value: Courses & Materials → Case library, AI Studio & Case editor → Lecturer feedback queue & detail → Student desk, Branching player, Journey Review, Review Study → Lecturer dashboard & Statistics → Profile → Admin. Never edit files another member is changing in an open PR.
 5. **Public and auth**: landing and auth pages against their frames (X6), measured on Windows/Chrome.
 6. **English copy**: draft English for every screen group as `PROPOSED` registry rows; the PO approves per group so English can ship in the MVP (R01 §6).
-7. **Figma sync (later)**: list the differences between code and Figma per screen group for a later Figma update (PO approval needed for any Figma edit).
+7. **Code-to-Figma verification & escalation**: verify code against PO-approved Figma per screen group, adjust mismatched code/implementation docs to match Figma (never edit Figma to justify legacy code), and escalate any R01-vs-Figma conflict as `OPEN PO DECISION / UNRESOLVED`.
 
 ## 4. What we keep
 Sidebar structure and collapse; navy active nav item; canvas/card ladder; course cards with code chip and status pill; detail side panel on Courses; case lifecycle stepper; skeleton geometry; empty states with icon + title + one line + one action; 403/404 pages; auth split layout concept; VI/EN switch.

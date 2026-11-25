@@ -37,7 +37,7 @@ Flow: browser → `/api/v1/*` on the backend (auth, ownership, all business stat
 
 ## 3. Design rules — colours, font, style
 
-Full rules: **R01** (`.agents/rules/01-ui-design-standards.md`), the single design source. Token values: `frontend/src/index.css` `@theme` only. Figma (`docs/05_FIGMA.md`) shows what each screen contains; code + R01 are the visual standard and Figma follows later (PO 2026-11-22).
+**Design Authority (PO 2026-11-25)**: **PO-approved Figma** (`docs/05_FIGMA.md`, file `6CtSgJPKo4jCIbB7WwCaWw`) is the **official design authority for each screen**. **R01** (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX standards and quality rules without overriding approved Figma. Frontend code (`frontend/src/index.css` `@theme` / target `frontend/src/styles/`) is the **implementation** of the design, never the authority: when code differs from PO-approved Figma, adjust code and implementation docs to match Figma, never edit Figma to justify legacy code, and escalate any R01-vs-Figma conflict as `OPEN PO DECISION / UNRESOLVED`.
 
 - **Style**: calm, minimal, professional university workspace; white shell, soft blue canvas, white cards with a thin edge and soft shadow; hierarchy from typography and spacing, not colour.
 - **Colours**: light theme only (no dark mode). Navy `#2A4E7F` for actions, active states and focal data; sky `#00A5F5` for data and highlights, never text; status/mode/feedback colours only through their tokens. No purple/indigo, gradients, glow or emoji.

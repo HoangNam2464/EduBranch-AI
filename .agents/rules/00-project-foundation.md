@@ -61,7 +61,7 @@ EduBranch-AI/
 ├── specs/                      ← Active Spec Kit v1.4.0 feature specs & records (001, 002, 006..010)
 ├── .agents/rules/              ← Universal AI Agent Governance (loaded by Antigravity & imported via AGENTS.md)
 │   ├── 00-project-foundation.md        ← FND: domain, terminology, boundaries, lifecycle, Git rules
-│   ├── 01-ui-design-standards.md       ← R01: single UI/UX design source & frontend styling standard
+│   ├── 01-ui-design-standards.md       ← R01: general UI/UX rules & quality standards
 │   ├── 02-agent-operating-policy.md    ← Ownership, escalation & evidence policy
 │   ├── 03-engineering-and-task-standards.md ← Tier, DB, AI, FE sync & Jira ID standards
 │   └── feature-*.md                    ← 15 domain-specific feature rules
@@ -206,4 +206,4 @@ docs/<topic>             →  develop
 
 - **Backend Gateway (`backend/`)**: NestJS modular architecture (`auth/`, `user/`, `course/`, `material/`, `case/`, `branching-attempt/`, `reasoning/`, `challenge-support/`, `review-study/`, `lecturer-feedback/`, `statistics/`, `evaluation/`, `notification/`, `common/`). Raw parameterized SQL via `pg` Pool (`common/database/`), mandatory `class-validator` DTOs; never return raw DB entities. See `03-engineering-and-task-standards.md §2–§3`.
 - **AI Service (`ai-service/`)**: FastAPI domain packages (`core/`, `providers/`, `ingestion/`, `retrieval/`, `generation/`, `challenge_support/`, `evaluation/`). Always route LLM calls through `providers/factory.py`; strict Pydantic v2 schemas. See `03-engineering-and-task-standards.md §4`.
-- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI strictly governed by `.agents/rules/01-ui-design-standards.md` (single design source; token values currently in `frontend/src/index.css`, transitioning to modular `frontend/src/styles/` per Target Frontend Architecture) and standardized naming rules in `03-engineering-and-task-standards.md §5 & §8`.
+- **Frontend (`frontend/`)**: React 19 + TypeScript + TailwindCSS v4. All HTTP calls via `src/services/apiClient.ts`; state via Zustand (`src/stores/`); UI implements PO-approved Figma designs (`docs/05_FIGMA.md`) and general UI quality rules in `.agents/rules/01-ui-design-standards.md` (`R01`; token values currently in `frontend/src/index.css`, transitioning to modular `frontend/src/styles/` per Target Frontend Architecture) plus naming rules in `03-engineering-and-task-standards.md §5 & §8`.

@@ -3,7 +3,7 @@
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 
 > **Priority**: NOW. Nothing else can be built consistently without this.
-> **Visual system**: R01 (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css`. Section numbers of the former Global Design System cited below are historical; use the matching R01 section.
+> **Visual system**: PO-approved Figma governs per-screen design (`docs/05_FIGMA.md`); `R01` (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX quality rules without overriding approved Figma; token values implemented in `frontend/src/index.css` (target `frontend/src/styles/`). Section numbers of the former Global Design System cited below are historical; use the matching R01 section.
 > **Covers**: Landing / Introduction Page (`/`), App shell & role-aware navigation (`LecturerLayout`, `StudentLayout`, `PublicLayout`), `/login`, `/register`, 403/404 & session states, case status/mode badges, core component library.
 > **Important Note**: Because Sprint feature tasks focus on core academic workflows, `P0 — Global Foundation` in the Figma Master File serves as the **authoritative visual template** for all public, onboarding, navigation shell, and system state screens when rebuilding the Frontend UI.
 

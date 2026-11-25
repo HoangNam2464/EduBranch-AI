@@ -8,9 +8,8 @@ trigger: always_on
 
 # EduBranch-AI — UI/UX Design Rules (R01)
 
-> - **Single design source** (PO 2026-11-22: "theo đề xuất"). This file and the code tokens are the only design rules. `CLAUDE.md` §3 summarises them; no other document restates design values.
-> - **Values** (colours, radii, shadows, fonts) live only in `frontend/src/index.css` `@theme`. This file names tokens; it never repeats a hex value except the two brand colours below.
-> - **Figma** (file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens`, frame register `docs/05_FIGMA.md`) is the reference for screen content: which fields, sections and actions a screen has. Code and this file are the visual standard; Figma is updated to follow them later (PO 2026-11-22).
+> - **Design authority & precedence (PO 2026-11-25)**: **PO-approved Figma** (`file 6CtSgJPKo4jCIbB7WwCaWw`, pages `EduBranch AI – Screens` & `EduBranch AI – Design System`, frame register `docs/05_FIGMA.md`) is the **official design authority for each screen**. **`R01`** (this file) defines general UI/UX design rules and quality standards — it must **NOT** be used to override a specific PO-approved Figma design.
+> - **Code vs Design**: Frontend code (`frontend/src/index.css` `@theme` / target `frontend/src/styles/variables.css`) is the **implementation** of the design, never the authority deciding the design. When code mismatches PO-approved Figma, update code and implementation docs to follow Figma. **Never edit Figma to legitimize or conform to old code.** If a conflict arises between PO-approved Figma and `R01` general rules, report it and keep it **`OPEN PO DECISION / UNRESOLVED`** until the PO decides.
 > - **Per-screen behaviour**: `docs/design/UX-SCREEN-NOTES.md`. Routes: `frontend/src/routes/paths.ts`.
 > - **Frontend architecture & typography standard** (updated 2026-11-25): UI uses `Plus Jakarta Sans` (primary) and `Inter` (secondary) on Light-only Navy `#2A4E7F` / Sky `#00A5F5` surfaces, Vietnamese default UI (`vi.json` / `en.json`), and a modular TypeScript architecture (`styles/`, `routes/`, `layouts/`, `pages/<domain>/`, `features/<domain>/components/`, `components/ui/`, `components/feedback/`, `hooks/`, `services/`, `stores/`, domain-scoped `utils/`, `config/`, `lib/`). Naming & structure must reflect EduBranch-AI's own higher-education domain exclusively—never import non-university concepts, dark mode, unapproved color palettes, or external brand names.
 > - **Improvement plan** for the current UI: `docs/design/DESIGN-DIRECTION.md`.
@@ -25,7 +24,7 @@ trigger: always_on
 | Platform | Web app in the browser. App screens are fluid with the window; landing and auth pages are centred at `max-w-7xl` | PO 2026-11-21, 2026-11-22 |
 | Language | Vietnamese default, English through the VI/EN switch, both in the MVP; one language per screen | PO 2026-11-16, 2026-11-22 |
 | Style goal | Keep the identity; fix what looks broken or unprofessional first; a bigger visual upgrade comes later | PO 2026-11-22 |
-| Standard | Code + this file are the standard; Figma follows | PO 2026-11-22 |
+| Design Authority | **PO-approved Figma** governs per-screen design; **`R01`** governs general UI quality rules without overriding approved Figma; **code implements Figma** (never edit Figma to justify legacy code; escalate R01-vs-Figma conflicts as `UNRESOLVED`) | PO 2026-11-25 |
 
 ## 1. Character
 

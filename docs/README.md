@@ -50,7 +50,7 @@ Every document under this repository belongs to one of six strictly separated au
 - [`AGENTS.md`](../AGENTS.md) — Shared rules 1–13, precedence & router (all agents)
 - [`CLAUDE.md`](../CLAUDE.md) — Claude Code workspace instructions & command reference
 - [`.agents/rules/00-project-foundation.md`](../.agents/rules/00-project-foundation.md) (`FND`) — Project identity, canonical terminology, architecture boundaries, case lifecycle, DAG invariants, Git rules
-- [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (`R01`) — Single UI/UX design source (`Light` theme `#2A4E7F`/`#00A5F5`, `Plus Jakarta Sans` + `Inter`, target modular SPA architecture, tokens, layout, components, VI/EN)
+- [`.agents/rules/01-ui-design-standards.md`](../.agents/rules/01-ui-design-standards.md) (`R01`) — General UI/UX design rules & quality standards (`Light` theme `#2A4E7F`/`#00A5F5`, `Plus Jakarta Sans` + `Inter`, target modular SPA architecture, layout, components, VI/EN; does not override PO-approved Figma per-screen design)
 - [`.agents/rules/02-agent-operating-policy.md`](../.agents/rules/02-agent-operating-policy.md) — Autonomous execution, PO boundary & open-decision rule
 - [`.agents/rules/03-engineering-and-task-standards.md`](../.agents/rules/03-engineering-and-task-standards.md) — Shared backend/DB/AI/FE code-sync standards, canonical naming & module organization (`§8`), and Jira ID disambiguation
 - [`.agents/rules/feature-*.md`](../.agents/rules/) — 15 domain-specific rule files

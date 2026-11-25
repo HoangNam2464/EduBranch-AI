@@ -2,7 +2,7 @@
 
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 > - **Priority / MVP Scope**: **MVP Scope** (`(LATER)` label removed by PO decision `2026-11-25`; Proposal V1.2 explicitly includes simple Review Study in MVP and Figma frames `06.1`–`06.3` are synchronized). **Distinction from implementation**: MVP scope inclusion does not imply complete verification — open UI element decision **`D4-13`** (`student_analysis` required vs optional), `06.2` status badge check, draft persistence parity, and live Visual/E2E acceptance remain open or in verification even though core `BE-025` / `ReviewStudyPage.tsx` / `ReviewFeedbackPage.tsx` landed on `develop` (`PR #69`).
-> - **Visual system**: `R01` (`.agents/rules/01-ui-design-standards.md`), the single design source; token values in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`).
+> - **Visual system**: PO-approved Figma governs per-screen design (`docs/05_FIGMA.md`); `R01` (`.agents/rules/01-ui-design-standards.md`) sets general UI/UX quality rules without overriding approved Figma; token values in `frontend/src/index.css` (target modular stylesheets in `frontend/src/styles/`).
 > - **Covers**: `/student/cases/:caseId/review-study`, `/student/cases/:caseId/review-study/:submissionId/feedback`.
 
 ---

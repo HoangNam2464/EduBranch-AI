@@ -2,9 +2,9 @@
 
 > - **Document Class**: `[LIVING FEATURE / DESIGN SPEC]`
 
-> **Cập nhật**: 2026-11-25 · **Nguồn thiết kế**: Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens` (tham chiếu nội dung; chuẩn hình ảnh và kiểu chữ `Plus Jakarta Sans` + `Inter` theo R01, Figma cập nhật sau — PO 2026-11-22 & 2026-11-25).
+> **Cập nhật**: 2026-11-25 · **Nguồn thiết kế**: **Figma file `6CtSgJPKo4jCIbB7WwCaWw`, page `EduBranch AI – Screens` được PO phê duyệt là căn cứ thiết kế chính thức cho từng màn hình** (PO 2026-11-25); kiểu chữ `Plus Jakarta Sans` + `Inter` và các chuẩn chất lượng chung theo `R01` (không tự ý ghi đè Figma; khi code lệch Figma phải sửa code theo Figma).
 > **Mục đích**: thay cho các lớp ghi chú `_note / …` đã xóa khỏi canvas. Người làm UX/FE đọc file này để biết mỗi màn dùng để làm gì, có những hành động và trạng thái nào, và các quy tắc chung phải giữ.
-> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; token, kiểu chữ (`Plus Jakarta Sans` + `Inter`), component và trạng thái theo R01 (`.agents/rules/01-ui-design-standards.md`, nguồn thiết kế duy nhất); trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn, register quyết định phạm vi; khi còn lệch giữa Figma và code về tính năng chưa chốt, đánh dấu `UNRESOLVED` để hỏi PO.
+> **Quan hệ với tài liệu khác**: phạm vi MVP/HOLD theo `docs/mvp-scope/MVP_SCOPE_AND_FIGMA_FRAME_REGISTER.md`; thiết kế màn hình cụ thể theo **Figma được PO phê duyệt**; quy chuẩn chung, token và trạng thái theo `R01` (`.agents/rules/01-ui-design-standards.md`, không ghi đè thiết kế Figma đã duyệt); trang công khai theo `docs/design/screens/P0-FOUNDATION.md §0`. Khi mâu thuẫn phạm vi, register quyết định; khi có mâu thuẫn giữa Figma được duyệt và `R01` hoặc tính năng chưa chốt, báo cáo và giữ trạng thái `UNRESOLVED` chờ PO quyết định.
 > **Ghi chú hành vi trong Figma**: một số hành vi được gắn thẳng vào node dưới dạng *annotation* (xem ở Dev Mode). File này chép lại toàn bộ các annotation đó ở mục tương ứng.
 
 ---
