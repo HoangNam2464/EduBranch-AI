@@ -1,7 +1,8 @@
 # MVP Baseline — QG7 trên `develop` `cf3a6a5`
 
 > - **Document Class**: `[HISTORICAL SNAPSHOT]`. Bằng chứng tại một thời điểm (2026-11-27). Trạng thái task hiện hành xem Jira `EBA`; quyết định PO xem [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md).
-> - **Baseline**: `develop` `cf3a6a5cc36d07fdfc55313129d13117cef1c816` (merge PR #91, 2026-11-27).
+> - **Baseline code**: `develop` `cf3a6a5cc36d07fdfc55313129d13117cef1c816` (merge PR #91, 2026-11-27). QG7 chạy trên commit này.
+> - **`develop` hiện tại**: `12c01f5` (merge PR #93, chỉ sửa tài liệu). `git diff --name-only cf3a6a5 12c01f5` không có file nào ngoài `docs/` và `specs/`, nên kết quả QG7 vẫn đúng cho code trên `develop`.
 > - **Kết luận**: giai đoạn hoàn thiện MVP khép lại với QG7 **PASS** trên `cf3a6a5`, cùng các ngoại lệ có tên ở §4 và các quyết định PO còn mở ở §5.
 
 ## 1. Các PR của giai đoạn hoàn thiện MVP
@@ -14,6 +15,7 @@
 | #90 | Backend build ra `dist/main.js` (`start:prod`, Docker); checksum migration chấp nhận CRLF/LF | `26c52d7` | EBA-107 (Done) |
 | #91 | Backend không còn sập khi PostgreSQL ngắt kết nối; lỗi UI 03.1 / 10.6 / 10.9; bộ lọc nhóm và nhãn sự kiện 10.9; footer; EN "1 node" | `cf3a6a5` | EBA-108, EBA-109 (Done); EBA-110 (Sprint 4, In Progress) |
 | #92 | Sửa test F-07 (`<sources>` boundary) theo contract hiện tại | `19a1a2b` | EBA-111 (Done) |
+| #93 | Ghi baseline MVP, quyết định PO 26–27/11 và D5 (chỉ tài liệu) | `12c01f5` | — (tài liệu) |
 
 PR #59 và #74 đã đóng, mỗi PR kèm comment dẫn tới PR thay thế; commit của các thành viên vẫn được giữ. Mọi lần admin-merge đều theo lệnh trực tiếp của PO cho từng PR (policy 02 §7) và khóa đúng HEAD đã review bằng `--match-head-commit` (thể hiện trong log lệnh merge, GitHub không lưu tham số này). Comment ghi nhận QG5–QG6 có trên PR #88, #91, #92 (cùng #87). PR #89 có comment QG5 và comment bằng chứng review, nhưng không có comment QG6. PR #90 không có comment nào. Lệnh merge của PO cho #89 và #90 nằm trong chat ngày 2026-11-26.
 

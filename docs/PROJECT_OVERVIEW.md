@@ -79,7 +79,7 @@ Use [`docs/README.md`](README.md) as the unified Documentation Hub for the full 
 
 ## Feature Status (as of 2026-11-27)
 
-> **Baseline**: `develop` `cf3a6a5` (merge PR #91). The MVP completion phase closed with **QG7 PASS** on this commit. It covers PRs #87, #88, #89, #90, #91, #92; PR #59 and #74 were closed and point to their replacement PRs. Evidence, test numbers and remaining exceptions: [`docs/qa/MVP-BASELINE-QG7-REPORT.md`](qa/MVP-BASELINE-QG7-REPORT.md).
+> **Baseline**: code on `develop` `cf3a6a5` (merge PR #91). The MVP completion phase closed with **QG7 PASS** on this commit. The current `develop` HEAD is `12c01f5` (merge PR #93, docs only); it has no code change after `cf3a6a5`. The phase covers PRs #87, #88, #89, #90, #91, #92, #93; PR #59 and #74 were closed and point to their replacement PRs. Evidence, test numbers and remaining exceptions: [`docs/qa/MVP-BASELINE-QG7-REPORT.md`](qa/MVP-BASELINE-QG7-REPORT.md).
 >
 > Status words:
 > - **Implemented**: code on `develop` with automated tests.
