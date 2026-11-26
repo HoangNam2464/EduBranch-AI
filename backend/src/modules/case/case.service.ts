@@ -5,8 +5,10 @@ import {
   BadRequestException,
   ConflictException,
   Logger,
+  Optional,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
+import { AuditService } from "../../common/audit/audit.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
 import { randomUUID } from "crypto";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
@@ -19,6 +21,7 @@ export class CaseService {
   constructor(
     private readonly db: DatabaseService,
     private readonly aiClient: AiClientService,
+    @Optional() private readonly audit?: AuditService,
   ) {}
 
   async generateCase(
@@ -49,13 +52,20 @@ export class CaseService {
     }
 
     // 2. Call AI Service to generate case draft with idempotency support
-    const aiResponse = await this.aiClient.generateCase({
-      material_ids: dto.materialIds,
-      course_id: courseId,
-      topic_hint: dto.topicHint,
-      num_nodes: dto.numNodes,
-      idempotency_key: dto.idempotencyKey,
-    });
+    const startedAt = Date.now();
+    let aiResponse: any;
+    try {
+      aiResponse = await this.aiClient.generateCase({
+        material_ids: dto.materialIds,
+        course_id: courseId,
+        topic_hint: dto.topicHint,
+        num_nodes: dto.numNodes,
+        idempotency_key: dto.idempotencyKey,
+      });
+    } catch (err) {
+      await this.recordGenerationFailure(lecturerId, courseId, startedAt, err);
+      throw err;
+    }
 
     const client = await this.db.getClient();
     try {
@@ -122,10 +132,26 @@ export class CaseService {
 
       await client.query("COMMIT");
 
+      await this.audit?.record({
+        type: "CASE_GENERATED",
+        outcome: "SUCCESS",
+        actorId: lecturerId,
+        targetId: caseId,
+        meta: {
+          courseId,
+          caseTitle: title,
+          learningMode: "BRANCHING_STUDY",
+          decisionsCount: nodes.filter((n: any) => n.options && n.options.length > 0).length,
+          materialsCount: dto.materialIds.length,
+          durationMs: Date.now() - startedAt,
+        },
+      });
+
       return this.getCaseById(caseId, "LECTURER", lecturerId);
     } catch (e) {
       await client.query("ROLLBACK");
       this.logger.error("Failed to persist generated case:", e);
+      await this.recordGenerationFailure(lecturerId, courseId, startedAt, e);
       throw e;
     } finally {
       client.release();
@@ -487,6 +513,30 @@ export class CaseService {
     }
 
     await this.db.query("UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2", [newStatus, caseId]);
+    if (currentStatus !== newStatus) {
+      await this.audit?.record({
+        type: "CASE_STATUS_CHANGED",
+        outcome: "SUCCESS",
+        actorId: lecturerId,
+        targetId: caseId,
+        meta: { from: currentStatus, to: newStatus },
+      });
+    }
     return { id: caseId, status: newStatus };
+  }
+
+  /** Spec 007 AC-A9: a failed generation is logged with its duration; never with material text. */
+  private async recordGenerationFailure(lecturerId: string, courseId: string, startedAt: number, err: unknown) {
+    const status = (err as { status?: number; getStatus?: () => number })?.getStatus?.() ?? (err as any)?.status;
+    await this.audit?.record({
+      type: "CASE_GENERATION_FAILED",
+      outcome: "ERROR",
+      actorId: lecturerId,
+      meta: {
+        courseId,
+        durationMs: Date.now() - startedAt,
+        errorCode: typeof status === "number" ? `HTTP_${status}` : (err as Error)?.name ?? "ERROR",
+      },
+    });
   }
 }

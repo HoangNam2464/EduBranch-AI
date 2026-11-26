@@ -72,6 +72,8 @@ async def health():
         "service": settings.app_name,
         "version": settings.app_version,
         "provider": settings.ai_provider,
+        # Model name only (no key), read by the Gateway admin screen 10.7 (spec 007 AC-A8).
+        "model": settings.gemini_model if settings.ai_provider == "gemini" else settings.openai_model,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
