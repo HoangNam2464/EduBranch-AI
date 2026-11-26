@@ -1,6 +1,6 @@
 import { Injectable, OnModuleDestroy, OnModuleInit, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { Pool, QueryResult, QueryResultRow } from "pg";
+import { Pool, PoolClient, QueryResult, QueryResultRow } from "pg";
 import { MigrationRunner } from "./migration-runner";
 
 @Injectable()
@@ -48,6 +48,13 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       max: Number(this.configService.get<number>("DB_POOL_MAX_SIZE", 10)),
     });
 
+    // An idle connection that PostgreSQL closes (restart, admin termination, network drop) makes the
+    // pool emit "error". Without a listener Node treats it as unhandled and the whole backend exits.
+    // The pool already discards that client and opens a new one on the next query, so only log it.
+    this.pool.on("error", (error) => {
+      this.logger.error(`PostgreSQL idle connection lost: ${error.message}`);
+    });
+
     try {
       const client = await this.pool.connect();
       client.release();
@@ -79,8 +86,24 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     return this.pool.query<T>(text, params);
   }
 
-  async getClient() {
-    return this.pool.connect();
+  /**
+   * Checks out a client for a transaction. While checked out the pool's idle listener is detached,
+   * so a connection lost between two queries would emit an unhandled "error" and exit the process.
+   * The listener below keeps the process alive; the next query on that client rejects and the
+   * caller's rollback/release path runs as usual (pg drops a broken client instead of reusing it).
+   */
+  async getClient(): Promise<PoolClient> {
+    const client = await this.pool.connect();
+    const onError = (error: Error) => {
+      this.logger.error(`PostgreSQL connection lost during a transaction: ${error.message}`);
+    };
+    client.on("error", onError);
+    const release = client.release.bind(client);
+    client.release = (destroy?: Error | boolean) => {
+      client.removeListener("error", onError);
+      return release(destroy);
+    };
+    return client;
   }
 
   getPool(): Pool {
