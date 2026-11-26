@@ -57,6 +57,22 @@ export class MigrationRunner {
     return crypto.createHash("sha256").update(content, "utf8").digest("hex");
   }
 
+  /** CRLF → LF. Line endings depend on the checkout (Windows autocrlf), not on the migration. */
+  normalizeLineEndings(content: string): string {
+    return content.replace(/\r\n/g, "\n");
+  }
+
+  /**
+   * Checksums that identify the same migration whatever its line endings: the raw file, its LF form
+   * and its CRLF form. A database migrated from a CRLF checkout stores the CRLF hash, while a fresh
+   * LF clone (`.gitattributes`: `*.sql eol=lf`) hashes LF; both are the same SQL. Any other change
+   * (one character of content) still produces a different hash and is rejected.
+   */
+  equivalentChecksums(content: string): Set<string> {
+    const lf = this.normalizeLineEndings(content);
+    return new Set([content, lf, lf.replace(/\n/g, "\r\n")].map((c) => this.computeChecksum(c)));
+  }
+
   /**
    * Parse hierarchical numeric version parts (e.g. V1 -> [1], V2_1 -> [2, 1], V10 -> [10])
    */
@@ -214,7 +230,8 @@ export class MigrationRunner {
       // 4. Process each discovered migration sequentially
       for (const migration of discovered) {
         const sql = fs.readFileSync(migration.filepath, "utf8");
-        const fileChecksum = this.computeChecksum(sql);
+        // Stored for new migrations: the LF form, so the record does not depend on the checkout.
+        const fileChecksum = this.computeChecksum(this.normalizeLineEndings(sql));
 
         if (appliedMap.has(migration.version)) {
           const stored = appliedMap.get(migration.version)!;
@@ -238,13 +255,18 @@ export class MigrationRunner {
             throw new Error(corruptMetaErr);
           }
 
-          // C. Valid checksum mismatch
-          if (trimmedChecksum.toLowerCase() !== fileChecksum.toLowerCase()) {
+          // C. Valid checksum mismatch (line-ending-only differences are the same migration)
+          if (!this.equivalentChecksums(sql).has(trimmedChecksum.toLowerCase())) {
             const mismatchErr = `Migration checksum mismatch for ${migration.version} (${migration.filename})! ` +
               `Expected (stored): ${stored.checksum}, Actual (file): ${fileChecksum}. ` +
               `The migration file content has been altered after execution.`;
             this.logger.error(mismatchErr);
             throw new Error(mismatchErr);
+          }
+          if (trimmedChecksum.toLowerCase() !== this.computeChecksum(sql)) {
+            this.logger.warn(
+              `Migration ${migration.version} (${migration.filename}): stored checksum matches this file with different line endings (CRLF/LF); content unchanged.`,
+            );
           }
 
           skipped.push(migration.version);
