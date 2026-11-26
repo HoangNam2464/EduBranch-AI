@@ -233,8 +233,11 @@ export function CasesPage() {
   } else if (visible.length === 0) {
     library = <NoResultsState framed={false} className="self-center" keyword={search} onClear={() => { setSearch(""); setStatus("ALL"); }} />;
   } else {
+    // 03.1: four cards per row from 1440, three from 1280, two below. Narrower cards cannot hold the
+    // mode tag + node count / "Không dùng cây" row and clip it (R01: counts and labels are never cut).
+    // Arbitrary min-[…] variants only, so Tailwind orders them by width (a named xl: would win at 1440).
     library = (
-      <div id="g3-case-grid" role="tabpanel" className="grid grid-cols-4 gap-4">
+      <div id="g3-case-grid" role="tabpanel" className="grid grid-cols-2 gap-4 min-[1280px]:grid-cols-3 min-[1440px]:grid-cols-4">
         {pageItems.map((item) => (
           <CaseLibraryCard
             key={item.id}

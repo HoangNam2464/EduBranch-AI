@@ -20,6 +20,10 @@ import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
 import { adminService, type AdminCaseAnalytics, type AdminCaseItem } from "@/services/adminService";
 import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 import { PATHS, buildPath } from "@/routes/paths";
+import { formatDay } from "@/pages/cases/caseUi";
+
+/** dd/mm/yyyy like the lecturer case cards (03.1); "—" when the API sent no valid date. */
+const shownDay = (iso: string) => formatDay(iso) || "—";
 
 export function AdminCasesPage() {
   const { t } = useTranslation();
@@ -209,7 +213,7 @@ export function AdminCasesPage() {
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <span className="truncate text-[13px] font-medium text-ink">{item.title}</span>
                       <span className="text-[11px] text-ink-secondary">
-                        {item.updatedAt} · {item.learningMode === "BRANCHING_STUDY" ? t("g6.cases.card.branchingMode") : t("g6.cases.card.reviewMode")}
+                        {shownDay(item.updatedAt)} · {item.learningMode === "BRANCHING_STUDY" ? t("g6.cases.card.branchingMode") : t("g6.cases.card.reviewMode")}
                       </span>
                     </div>
                   </div>
@@ -336,7 +340,7 @@ export function AdminCasesPage() {
 
                   {/* Card Footer: Updated Date & View Button */}
                   <div className="flex items-center justify-between border-t border-line/60 pt-3 mt-3 text-[12px]">
-                    <span className="text-ink-muted">{t("g6.cases.card.updatedAt", { date: c.updatedAt })}</span>
+                    <span className="text-ink-muted">{t("g6.cases.card.updatedAt", { date: shownDay(c.updatedAt) })}</span>
                     <Link
                       to={buildPath(PATHS.ADMIN.CASE_RUBRIC, { caseId: c.id })}
                       className="rounded-eb-md border border-line bg-surface px-2.5 py-1 text-[12px] font-medium text-ink hover:bg-canvas transition-colors"

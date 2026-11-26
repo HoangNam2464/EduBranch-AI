@@ -17,8 +17,14 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Dialog, MetricCard, cx } from "@/components/ds";
-import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
-import { adminService, type AdminSystemLogItem } from "@/services/adminService";
+import { EmptyState, ErrorState, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
+
+/** The API sends ISO timestamps; show local "dd/mm/yyyy HH:mm", or "—" when the value is not a date. */
+function shownTime(iso: string): string {
+  const date = new Date(iso);
+  return isValidDate(date) ? formatDateTime(date) : "—";
+}
+import { adminService, type AdminLogTimeRange, type AdminSystemLogItem } from "@/services/adminService";
 import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
 export function AdminLogsPage() {
@@ -38,7 +44,7 @@ export function AdminLogsPage() {
   // Filters
   const [search, setSearch] = useState("");
   const [eventFilter, setEventFilter] = useState("ALL");
-  const [timeFilter, setTimeFilter] = useState("TODAY");
+  const [timeFilter, setTimeFilter] = useState<AdminLogTimeRange>("today");
   const [sortOrder, setSortOrder] = useState("NEWEST");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
@@ -58,7 +64,8 @@ export function AdminLogsPage() {
       .getSystemLogs({
         search: search.trim() || undefined,
         eventType: eventFilter !== "ALL" ? eventFilter : undefined,
-        timeRange: timeFilter !== "ALL" ? timeFilter : undefined,
+        // Contract values only (`today` · `7d` · `30d` · `all`): the old TODAY/7_DAYS values made every load a 400.
+        timeRange: timeFilter,
         page: currentPage,
         size: pageSize,
       })
@@ -156,14 +163,14 @@ export function AdminLogsPage() {
 
           <select
             value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)}
+            onChange={(e) => setTimeFilter(e.target.value as AdminLogTimeRange)}
             aria-label={t("g6.logs.filterTimeAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="TODAY">{t("g6.logs.filterTime.today")}</option>
-            <option value="7_DAYS">{t("g6.logs.filterTime.sevenDays")}</option>
-            <option value="30_DAYS">{t("g6.logs.filterTime.thirtyDays")}</option>
-            <option value="ALL">{t("g6.logs.filterTime.all")}</option>
+            <option value="today">{t("g6.logs.filterTime.today")}</option>
+            <option value="7d">{t("g6.logs.filterTime.sevenDays")}</option>
+            <option value="30d">{t("g6.logs.filterTime.thirtyDays")}</option>
+            <option value="all">{t("g6.logs.filterTime.all")}</option>
           </select>
 
           <select
@@ -245,7 +252,7 @@ export function AdminLogsPage() {
 
                       {/* Column 2: Timestamp */}
                       <td className="px-4 py-3.5 text-ink-secondary">
-                        {log.timestamp}
+                        {shownTime(log.timestamp)}
                       </td>
 
                       {/* Column 3: Event */}
@@ -359,7 +366,7 @@ export function AdminLogsPage() {
             </div>
             <div className="flex items-center justify-between border-b border-line pb-2">
               <span className="text-ink-secondary">{t("g6.logs.dialog.time")}</span>
-              <span className="font-medium text-ink">{selectedLog.timestamp}</span>
+              <span className="font-medium text-ink">{shownTime(selectedLog.timestamp)}</span>
             </div>
             <div className="flex items-center justify-between border-b border-line pb-2">
               <span className="text-ink-secondary">{t("g6.logs.dialog.action")}</span>

@@ -148,6 +148,10 @@ export interface AdminSystemLogItem {
   details?: string;
 }
 
+/** `timeRange` values accepted by `GET /admin/logs` (backend `LOG_TIME_RANGES`); any other value is a 400. */
+export const ADMIN_LOG_TIME_RANGES = ["today", "7d", "30d", "all"] as const;
+export type AdminLogTimeRange = (typeof ADMIN_LOG_TIME_RANGES)[number];
+
 export interface AdminLogsResponse {
   logs: AdminSystemLogItem[];
   metrics: {
@@ -256,7 +260,7 @@ export const adminService = {
   async getSystemLogs(params?: {
     search?: string;
     eventType?: string;
-    timeRange?: string;
+    timeRange?: AdminLogTimeRange;
     page?: number;
     size?: number;
   }): Promise<AdminLogsResponse> {
