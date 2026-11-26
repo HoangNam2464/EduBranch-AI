@@ -57,7 +57,7 @@
 | `g4.dashboard.quickActions.aiStudio.desc` | Tạo kịch bản rẽ nhánh hoặc bài phân tích tình huống từ giáo trình. | Generate a branching scenario or review study from course materials. | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.quickActions.materials.title` | Quản lý Tài liệu | Manage Materials | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.quickActions.materials.desc` | Tải lên giáo trình, tài liệu tham khảo và theo dõi trạng thái lập chỉ mục. | Upload syllabi, references, and monitor indexing status. | PROPOSED | — | — | PR-54-FIX |
-| `g4.dashboard.quickActions.cases.title` | Quản lý Case Study | Manage Case Studies | PROPOSED | — | — | PR-54-FIX |
+| `g4.dashboard.quickActions.cases.title` | Quản lý Case Study | Manage Case Study | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.quickActions.cases.desc` | Rà soát cây quyết định, phê duyệt kịch bản và xuất bản cho lớp học. | Review decision trees, approve scenarios, and publish to class. | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.quickActions.stats.title` | Thống kê Luồng học | Learning Analytics | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.quickActions.stats.desc` | Theo dõi lựa chọn rẽ nhánh và phân bố hành vi của người học. | Track branching decisions and student cohort behavior distribution. | PROPOSED | — | — | PR-54-FIX |
@@ -360,7 +360,7 @@
 | `g6.courses.detail.close` | Đóng chi tiết | Close details | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.attempts` | Lượt làm bài | Study attempts | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.materials` | Tài liệu | Materials | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.courses.detail.cases` | Case Study | Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.cases` | Case Study | Case Study | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.about` | Về khóa học | About this course | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.infoTitle` | Thông tin khóa học | Course information | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.courseCode` | Mã học phần: | Course code: | PROPOSED | — | — | FE-032 PR #75 |
@@ -372,14 +372,14 @@
 | `g6.courses.detail.navMaterials` | Tài liệu môn học | Course materials | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.navMaterialsSub` | {{count}} tệp - {{ready}} sẵn sàng{{errorPart}} | {{count}} files - {{ready}} ready{{errorPart}} | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.navMaterialsError` | , {{count}} lỗi | , {{count}} errors | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.courses.detail.navCases` | Case Study | Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.courses.detail.navCases` | Case Study | Case Study | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.navCasesSub` | {{count}} case | {{count}} cases | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.header` | Case Study toàn hệ thống | System-wide Case Studies | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.loadErrorTitle` | Lỗi tải Case Study | Failed to load Case Studies | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.emptyFilteredTitle` | Không tìm thấy Case Study | No Case Studies found | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.header` | Case Study toàn hệ thống | System-wide Case Study | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.loadErrorTitle` | Lỗi tải Case Study | Failed to load Case Study | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.emptyFilteredTitle` | Không tìm thấy Case Study | No Case Study found | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.emptyFilteredDescription` | Không có tình huống nào khớp với bộ lọc hiện tại. | No cases matched the current filters. | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.loading` | Đang tải danh sách Case... | Loading Case Studies... | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.totalSuffix` | Case Study | Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.loading` | Đang tải danh sách Case... | Loading Case Study... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.totalSuffix` | Case Study | Case Study | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.status.draft` | Bản nháp | Draft | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.status.reviewed` | Đã rà soát | Reviewed | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.status.approved` | Đã phê duyệt | Approved | PROPOSED | — | — | FE-032 PR #75 |
@@ -399,7 +399,7 @@
 | `g6.cases.card.noTree` | Không dùng cây | No decision tree | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.card.updatedAt` | Cập nhật {{date}} | Updated {{date}} | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.card.viewAction` | Xem | View | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.pagination.showing` | Hiển thị {{shown}} trên {{total}} Case Study | Showing {{shown}} of {{total}} Case Studies | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.pagination.showing` | Hiển thị {{shown}} trên {{total}} Case Study | Showing {{shown}} of {{total}} Case Study | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.pagination.prev` | Previous page | Previous page | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.pagination.next` | Next page | Next page | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.aiService.config.lastUpdatedLabel` | Cập nhật lần cuối | Last updated | PROPOSED | — | — | FE-032 PR #75 |
@@ -594,9 +594,9 @@
 | `rubric.case.forbiddenTitle` | Không có quyền truy cập case này | Access denied for this case | PROPOSED | — | — | FE-029 |
 | `rubric.case.forbiddenDescription` | Bạn chỉ có thể đánh giá các case thuộc khóa học do mình phụ trách. | You can only evaluate cases belonging to your own courses. | PROPOSED | — | — | FE-029 |
 | `rubric.case.noneTitle` | Chưa chọn case | No case selected | PROPOSED | — | — | FE-029 |
-| `rubric.case.noneDescriptionLecturer` | Chọn một tình huống từ danh sách Case Study để chấm điểm rubric nghiên cứu. | Open a case from Case Studies to complete the research quality rubric. | PROPOSED | — | — | FE-029 |
-| `rubric.case.noneDescriptionAdmin` | Chọn một tình huống từ danh sách Case Study toàn hệ thống để chấm điểm rubric nghiên cứu. | Open a case from All Case Studies to complete the research quality rubric. | PROPOSED | — | — | FE-029 |
-| `rubric.case.goToCases` | Mở danh sách Case Study | Browse Case Studies | PROPOSED | — | — | FE-029 |
+| `rubric.case.noneDescriptionLecturer` | Chọn một tình huống từ danh sách Case Study để chấm điểm rubric nghiên cứu. | Open a case from the Case Study list to complete the research quality rubric. | PROPOSED | — | — | FE-029 |
+| `rubric.case.noneDescriptionAdmin` | Chọn một tình huống từ danh sách Case Study toàn hệ thống để chấm điểm rubric nghiên cứu. | Open a case from the system-wide Case Study list to complete the research quality rubric. | PROPOSED | — | — | FE-029 |
+| `rubric.case.goToCases` | Mở danh sách Case Study | Open Case Study list | PROPOSED | — | — | FE-029 |
 | `rubric.case.mode.BRANCHING_STUDY` | Branching Study | Branching Study | PROPOSED | — | — | FE-029 |
 | `rubric.case.mode.REVIEW_STUDY` | Review Study | Review Study | PROPOSED | — | — | FE-029 |
 | `rubric.average.label` | Điểm trung bình | Average score | PROPOSED | — | — | FE-029 |

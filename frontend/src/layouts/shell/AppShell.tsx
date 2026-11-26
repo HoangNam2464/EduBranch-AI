@@ -85,7 +85,7 @@ function ShellFrame({ role }: { role: Role }) {
             sidebar with fixed side gutters; only the public landing and auth pages stay capped at max-w-7xl. */}
         <div className="flex w-full min-w-0 flex-1 flex-col px-3 sm:px-6 lg:px-8">
           {/* Title column takes its full width first; the actions column gets the rest and only its search
-              shrinks (Rule F3), so titles truncate only when the search is already at its minimum. */}
+              shrinks (Rule F3; below 1280 px it collapses to a button); a title that still does not fit wraps. */}
           <header className="grid h-[84px] shrink-0 grid-cols-[minmax(0,max-content)_minmax(min-content,1fr)] items-center gap-6 px-2 sm:px-4">
             <div className="flex min-w-0 items-center gap-4">
               {/* Figma 10.8 "Back" (40×40, chevron-left 20) — only when a screen declares it. */}
@@ -100,7 +100,8 @@ function ShellFrame({ role }: { role: Role }) {
                 </Link>
               )}
               <div className="flex min-w-0 flex-col gap-0.5">
-                <h1 className="min-w-0 truncate text-[22px] leading-7 font-normal tracking-normal text-ink">{title}</h1>
+                {/* R01: a page title may wrap but is not cut; a long title takes a second line at 1024–1280. */}
+                <h1 title={title} className="min-w-0 line-clamp-2 break-words text-[22px] leading-7 font-normal tracking-normal text-ink">{title}</h1>
                 {/* Figma 10.8 "Breadcrumb" (12/16, chevron-right 10) under the page heading. */}
                 {headerExtras?.crumbs && headerExtras.crumbs.length > 0 && (
                   <nav aria-label={t("shell.breadcrumb")} className="w-max">

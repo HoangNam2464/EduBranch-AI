@@ -9,7 +9,7 @@
   "nav": {
     "lecturer": {
       "courses": "Courses",
-      "cases": "Case Studies",
+      "cases": "Case Study",
       "feedback": "Student feedback",
       "statistics": "Learning statistics"
     },
@@ -22,7 +22,7 @@
       "dashboard": "Dashboard",
       "users": "Users",
       "courses": "Courses",
-      "cases": "Case Studies",
+      "cases": "Case Study",
       "rubric": "Research & Rubric",
       "logs": "System logs",
       "aiService": "AI service",
@@ -109,7 +109,7 @@
       "adminDashboard": "Dashboard",
       "adminUsers": "User management",
       "adminCourses": "All courses",
-      "adminCases": "All Case Studies",
+      "adminCases": "System-wide Case Study",
       "adminRubric": "Research & Rubric",
       "adminLogs": "System logs",
       "adminAiService": "AI service",
@@ -959,7 +959,7 @@
     },
     "aiDraft": "AI Draft",
     "list": {
-      "statusPanel": "Case Studies by status",
+      "statusPanel": "Case Study by status",
       "caseUnit": "Case Study",
       "modePanel": "Learning mode by case",
       "recent": "Recently updated cases",
@@ -985,7 +985,7 @@
       "edit": "Edit",
       "view": "View",
       "showing": "Showing",
-      "ofTotal": "of {{count}} Case Studies",
+      "ofTotal": "of {{count}} Case Study",
       "pageSize": "Cases per page",
       "pagination": "Pagination",
       "previous": "Previous page",
@@ -993,7 +993,7 @@
       "page": "Page {{page}}",
       "loading": "Loading the case list",
       "loadError": "Could not load the case list",
-      "emptyTitle": "No Case Studies yet",
+      "emptyTitle": "No Case Study yet",
       "emptyDescription": "Create your first case in AI Studio from indexed course materials.",
       "noCoursesTitle": "No courses yet",
       "noCoursesDescription": "Create a course and upload materials before generating cases.",
@@ -1013,7 +1013,7 @@
     },
     "editor": {
       "breadcrumb": "Breadcrumb",
-      "back": "Back to Case Studies",
+      "back": "Back to Case Study",
       "branchingCrumb": "Editor",
       "reviewCrumb": "Review Study editor",
       "situation": "Situation",
@@ -1105,7 +1105,7 @@
     },
     "studio": {
       "title": "AI Studio",
-      "back": "Back to Case Studies",
+      "back": "Back to Case Study",
       "crumbStep": "Step {{step}}/3 · {{label}}",
       "step1": "Course & learning mode",
       "step2": "Topic & source materials",
@@ -1181,7 +1181,7 @@
       "savedEmpty": "No evaluation has been saved yet.",
       "pickTitle": "Choose a case to evaluate",
       "pickDescription": "Open the rubric from a case in the Case Study library.",
-      "pickAction": "Go to Case Studies",
+      "pickAction": "Go to Case Study",
       "meta": "{{code}} · {{course}}"
     }
   },
@@ -2113,7 +2113,7 @@
         "close": "Close details",
         "attempts": "Study attempts",
         "materials": "Materials",
-        "cases": "Case Studies",
+        "cases": "Case Study",
         "about": "About this course",
         "infoTitle": "Course information",
         "courseCode": "Course code:",
@@ -2125,22 +2125,22 @@
         "navMaterials": "Course materials",
         "navMaterialsSub": "{{count}} files - {{ready}} ready{{errorPart}}",
         "navMaterialsError": ", {{count}} errors",
-        "navCases": "Case Studies",
+        "navCases": "Case Study",
         "navCasesSub": "{{count}} cases"
       }
     },
     "cases": {
-      "byStatus": "Case Studies by status",
+      "byStatus": "Case Study by status",
       "byMode": "Learning mode per case",
       "library": "Case Study library",
       "emptyTitle": "No Case Study data yet",
-      "emptyDescription": "System-wide Case Studies appear once the server provides Case Study administration data.",
-      "header": "System-wide Case Studies",
-      "loadErrorTitle": "Failed to load Case Studies",
-      "emptyFilteredTitle": "No Case Studies found",
+      "emptyDescription": "System-wide Case Study items appear once the server provides Case Study administration data.",
+      "header": "System-wide Case Study",
+      "loadErrorTitle": "Failed to load Case Study",
+      "emptyFilteredTitle": "No Case Study found",
       "emptyFilteredDescription": "No cases matched the current filters.",
-      "loading": "Loading Case Studies...",
-      "totalSuffix": "Case Studies",
+      "loading": "Loading Case Study...",
+      "totalSuffix": "Case Study",
       "status": {
         "draft": "Draft",
         "reviewed": "Reviewed",
@@ -2169,7 +2169,7 @@
         "viewAction": "View"
       },
       "pagination": {
-        "showing": "Showing {{shown}} of {{total}} Case Studies",
+        "showing": "Showing {{shown}} of {{total}} Case Study",
         "prev": "Previous page",
         "next": "Next page"
       }
@@ -2406,9 +2406,9 @@
       "forbiddenTitle": "Access denied for this case",
       "forbiddenDescription": "You can only evaluate cases belonging to your own courses.",
       "noneTitle": "No case selected",
-      "noneDescriptionLecturer": "Open a case from Case Studies to complete the research quality rubric.",
-      "noneDescriptionAdmin": "Open a case from All Case Studies to complete the research quality rubric.",
-      "goToCases": "Browse Case Studies",
+      "noneDescriptionLecturer": "Open a case from the Case Study list to complete the research quality rubric.",
+      "noneDescriptionAdmin": "Open a case from the system-wide Case Study list to complete the research quality rubric.",
+      "goToCases": "Open Case Study list",
       "mode": {
         "BRANCHING_STUDY": "Branching Study",
         "REVIEW_STUDY": "Review Study"

@@ -109,9 +109,12 @@ export function CaseGovernanceBar({
       <div
         role="group"
         aria-label={t("caseReview.bar.label")}
-        className="flex h-[84px] items-center justify-between rounded-eb-xl bg-surface p-5"
+        // ≥1440 (Figma 03.4/03.5): one 84-high row, left · stepper (up to 720) · right. Narrower, the
+        // two button groups share the first row and the stepper takes a full-width row below them,
+        // so the bar never overflows the page at 1024–1280.
+        className="grid grid-cols-[auto_auto] items-center justify-between gap-x-6 gap-y-4 rounded-eb-xl bg-surface p-5 min-[1440px]:h-[84px] min-[1440px]:grid-cols-[auto_minmax(min-content,720px)_auto]"
       >
-        <div className="flex">
+        <div className="col-start-1 row-start-1 flex">
           {status === "DRAFT" && (
             <button type="button" onClick={onSaveReviewed} disabled={saving} className={LEFT_BUTTON}>
               {busy(t("caseReview.bar.saveAndReview"))}
@@ -133,10 +136,10 @@ export function CaseGovernanceBar({
           status={status === "DRAFT" ? "draft" : status === "REVIEWED" ? "reviewed" : status === "APPROVED" ? "approved" : "published"}
           labels={[t("caseReview.status.DRAFT"), t("caseReview.status.REVIEWED"), t("caseReview.status.APPROVED"), t("caseReview.status.PUBLISHED")]}
           ariaLabel={t("caseReview.bar.stepper")}
-          className="w-[720px] shrink-0"
+          className="col-span-2 row-start-2 w-full min-[1440px]:col-span-1 min-[1440px]:col-start-2 min-[1440px]:row-start-1"
         />
 
-        <div className="flex gap-2">
+        <div className="col-start-2 row-start-1 flex justify-self-end gap-2 min-[1440px]:col-start-3">
           <span id={lockedHintId} className="sr-only">
             {t(`caseReview.bar.locked.${status}`)}
           </span>

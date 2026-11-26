@@ -108,10 +108,10 @@ export function AdminCasesPage() {
         </h2>
       </div>
 
-      {/* Analytics Row (Figma 10.6) */}
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-stretch">
+      {/* Analytics Row (Figma 10.6): side by side from 1280; stacked below so the mode card is never squeezed. */}
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-stretch">
         {/* Left Analytics Card: Case Study theo trạng thái */}
-        <AdminPanel className="w-full shrink-0 lg:w-[478px]" title={t("g6.cases.byStatus")}>
+        <AdminPanel className="w-full shrink-0 xl:w-[478px]" title={t("g6.cases.byStatus")}>
           <div className="flex flex-col gap-4">
             <div className="flex items-baseline gap-2">
               <span className="text-[32px] font-bold text-ink">{analytics.totalCases}</span>
@@ -167,7 +167,7 @@ export function AdminCasesPage() {
         </AdminPanel>
 
         {/* Right Analytics Card: Chế độ học theo case & Cập nhật gần đây */}
-        <AdminPanel className="flex-1" title={t("g6.cases.byMode")}>
+        <AdminPanel className="min-w-0 flex-1" title={t("g6.cases.byMode")}>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
             {/* Visual Mode Comparison */}
             <div className="flex shrink-0 flex-col gap-3">

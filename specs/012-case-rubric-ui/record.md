@@ -12,7 +12,7 @@
 | Ủy quyền + D3 | PASS | PO trong chat ngày 2026-11-26: "Frontend: Tạo branch mới từ develop, tách FE-029 từ PR #74, tích hợp BE-033 và sửa các lỗi đã phát hiện." PO chốt D3a–D3d cùng ngày (`spec.md` §1). |
 | QG1 | PASS | Xem §3. |
 | QG2 | PASS | Xem §4. |
-| QG3 | PASS WITH CONDITIONS | Xem §5. Điều kiện: các lỗi có sẵn ngoài phạm vi (§6), và breadcrumb của Figma chưa làm được. |
+| QG3 | PASS WITH CONDITIONS | Xem §5, §7, §8. Breadcrumb và nút quay lại đã làm ở §7. Lỗi tiêu đề bị cắt và cuộn ngang ở §6 đã sửa ở §8. Điều kiện còn lại: các lỗi có sẵn ngoài phạm vi ghi ở cuối §8. |
 | QG4 | PASS WITH CONDITIONS | Mọi key `rubric.*` và `caseReview.openRubric` đã đăng ký `PROPOSED`, không có lỗi. Script vẫn exit 1 vì nợ đăng ký key có sẵn từ trước (§3). |
 | QG5–QG7 | Chờ | Chờ CI, PO duyệt, rồi kiểm tra lại trên `develop`. |
 
@@ -120,3 +120,28 @@
   - `l10n-approval-check`: exit 1. Nhánh 1348 lỗi, `develop` `c94c954` 1380 lỗi; không có lỗi mới, các key mới đều `PROPOSED`.
   - Vòng thao tác 19/19.
 - **Điều kiện còn lại:** tiêu đề vẫn bị cắt ở 1024 khi đã mở case, và ở 1280 với tiêu đề tiếng Việt của giảng viên ("Rubric nghiên cứu chất lượng tình huống"). Ô tìm kiếm khi đó đã co hết cỡ (160px), không còn chỗ. Trước thay đổi này, tiêu đề của các màn khác cũng đã bị cắt ở 1024.
+
+## 8. Vòng 3 — tiêu đề, cuộn ngang ở 1024–1280 và thuật ngữ (PO 2026-11-26)
+
+Yêu cầu PO: sửa tiêu đề bị cắt ở 1024/1280, sửa cuộn ngang ở trang Review Case và trang 10.6 trong một phạm vi UI nhỏ, chuẩn hóa `Case Studies` thành `Case Study` theo R01 §6. Figma 10.8 giữ nguyên (đối chiếu chỉ đọc: tiêu đề admin "Nghiên cứu & Rubric" vẫn khớp).
+
+- **Tiêu đề shell** (`AppShell.tsx`): tiêu đề được xuống tối đa 2 dòng thay vì bị cắt (R01 §5 cho phép tiêu đề xuống dòng; R01 §8 cấm cắt tiêu đề ở 1024). Có `title` để xem đủ nếu tên case quá dài.
+- **Ô tìm kiếm** (`HeaderActions.tsx`): dưới 1280px thu thành nút 40×40. Bấm nút hoặc Ctrl K mở ô nhập dạng panel dưới cụm action. Enter tìm theo `?q=` như cũ rồi đóng; Esc đóng và trả focus về nút; bấm ra ngoài thì đóng. Từ 1280px trở lên giữ nguyên hành vi vòng 2 (160 → 224, 320 ở ≥1440).
+- **Thanh điều phối Review Case** (`CaseGovernanceBar.tsx`): ở 1024 cả 4 trạng thái đều tràn (tới 374px); ở 1280 thì DRAFT/REVIEWED/APPROVED tràn (tới 118px). Nguyên nhân: stepper cố định 720px cộng hai cụm nút. Dưới 1440: cụm nút ở hàng trên, stepper chiếm trọn hàng dưới. Từ 1440: một hàng cao 84px như Figma 03.4/03.5, stepper rộng tối đa 720px.
+- **Trang 10.6** (`AdminCasesPage.tsx`): hai thẻ biểu đồ chỉ đặt cạnh nhau từ 1280 (trước là 1024, khi thẻ "Chế độ học theo case" bị ép vào cột 194px).
+- **Cùng nguyên nhân, màn giảng viên** (`CasesPage.tsx`): hai thẻ biểu đồ chỉ đặt cạnh nhau từ 1440. Trước đó ở 1024/1280 chú thích trạng thái bị cắt ("Đã phê d…") và danh sách "Case cập nhật gần đây" bị bóp.
+- **Thuật ngữ:** 22 chuỗi trong `en.json` đổi "Case Studies" → "Case Study". Các câu bị sai ngữ pháp khi thay được viết lại theo câu tiếng Việt gốc. Registry cập nhật 12 dòng, vẫn `PROPOSED`.
+
+**Kiểm tra** (DB tạm `edubranch_ui_tmp`, Chrome qua Playwright):
+- `npm run lint`: exit 0.
+- `npm test`: 314/314.
+- `npm run build`: exit 0.
+- `l10n-approval-check`: exit 1, 1348 lỗi, bằng đúng vòng 2. Không có lỗi mới.
+- Header, 21 route × 4 độ rộng × VI/EN = 168 lần chụp: không tiêu đề nào bị cắt, không cuộn ngang, header luôn cao 84px, breadcrumb không bị cắt hoặc đè.
+- Thanh điều phối, 4 trạng thái × 4 độ rộng × VI/EN = 32 lần đo: không tràn.
+- Panel tìm kiếm: 22/22 thao tác đạt.
+- `/admin/cases` và `/lecturer/cases`: không cuộn ngang ở cả 4 độ rộng.
+
+**Còn lại, có sẵn, ngoài phạm vi:**
+- Thẻ case trong "Kho Case Study" ở 1024 cắt nhãn đếm "1 nút" và meta "Không dùng cây" (`CaseLibraryCard`).
+- Backend sập khi Postgres ngắt kết nối pool đang rảnh: pool `pg` không có listener `error` (`database.service.ts`). Gặp khi Docker Desktop tự dừng trong lúc QA.
