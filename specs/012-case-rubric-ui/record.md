@@ -14,7 +14,9 @@
 | QG2 | PASS | Xem §4. |
 | QG3 | PASS WITH CONDITIONS | Xem §5, §7, §8. Breadcrumb và nút quay lại đã làm ở §7. Lỗi tiêu đề bị cắt và cuộn ngang ở §6 đã sửa ở §8. Điều kiện còn lại: các lỗi có sẵn ngoài phạm vi ghi ở cuối §8. |
 | QG4 | PASS WITH CONDITIONS | Mọi key `rubric.*` và `caseReview.openRubric` đã đăng ký `PROPOSED`, không có lỗi. Script vẫn exit 1 vì nợ đăng ký key có sẵn từ trước (§3). |
-| QG5–QG7 | Chờ | Chờ CI, PO duyệt, rồi kiểm tra lại trên `develop`. |
+| QG5 | PASS | CI của PR #89 (React Build) success trên HEAD `9948f39`. |
+| QG6 | PASS | PO ra lệnh admin-merge PR #89 tại HEAD `9948f39` trực tiếp trong chat ngày 2026-11-26 (policy 02 §7). Merge `150a9f7` vào `develop`. |
+| QG7 | PASS | Kiểm tra lại trên `develop` (clone sạch):<br>• `150a9f7`: frontend lint 0, test 314/314, build 0; backend unit 397/397, e2e 337 pass / 43 skip, matrix 26/26, regression 44/44; CI trên `develop` success.<br>• `cf3a6a5` (2026-11-27): frontend 321/321, kiểm tra trình duyệt 84/84.<br>PR #74 đã đóng, kèm comment dẫn tới PR #89. Jira FE-029 (EBA-93) thuộc Sprint 4: giữ In Progress, Done khi mở Sprint 4 (quy tắc PO 2026-11-20). |
 
 ## 2. Phạm vi đã làm
 

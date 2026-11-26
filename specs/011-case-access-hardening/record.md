@@ -14,7 +14,9 @@
 | QG2 | PASS | §4. Review độc lập: Claude review mã do Antigravity viết. |
 | QG3 | Không áp dụng | Không đổi frontend. |
 | QG4 | PASS | Không đổi chuỗi i18n; không có secret trong diff. |
-| QG5–QG7 | Chờ | CI trên PR, PO duyệt hoặc ra lệnh merge, rồi chạy lại trên `develop`. |
+| QG5 | PASS | CI của PR #88 (Backend CI) success trên HEAD được merge. |
+| QG6 | PASS | PO ra lệnh admin-merge PR #88 trực tiếp trong chat ngày 2026-11-26 (policy 02 §7). Merge `c94c954` vào `develop`. |
+| QG7 | PASS | Kiểm tra lại trên `develop`:<br>• `c94c954`: unit 393, e2e 337 pass / 43 skip (live), matrix 26/26, regression 44/44, kiểm tra quyền qua HTTP 26/26, CI trên `develop` success.<br>• `cf3a6a5` (clone sạch, 2026-11-27): unit 410/410, e2e 337 pass / 43 skip, matrix 26/26, regression 44/44, `start:prod` và Docker chạy được.<br>Jira: task corrective EBA-112 (Done). Phần INV-01 cho attempt đã tồn tại vẫn `BLOCKED-ON-D5` (EBA-113). |
 
 ## 2. Phạm vi
 - AC-H1, AC-H2, AC-H3, AC-D, AC-E, AC-F, AC-G, AC-H, AC-I, AC-J theo `spec.md` §3.
