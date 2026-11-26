@@ -52,7 +52,7 @@ Quy ước chung:
 | GET | `/admin/courses` | `search, status=ACTIVE\|ARCHIVED, page, size` | `{ courses[], total, page, size }` |
 | GET | `/admin/cases` | `search, status, learningMode, courseId, page, size` | `{ cases[], analytics, total, page, size }` |
 | GET | `/admin/ai-service` | — | `{ metrics, config, recentGenerations[], indexingStatuses[] }` |
-| GET | `/admin/logs` | `search, eventType, timeRange=today\|7d\|30d\|all, page, size` | `{ logs[], metrics, total, page, size }` |
+| GET | `/admin/logs` | `search, eventType, timeRange=today\|7d\|30d\|all, order=newest\|oldest, page, size`. `eventType`: một hoặc nhiều loại sự kiện audit, ngăn cách bằng dấu phẩy hoặc lặp tham số (vd. `LOGIN_SUCCEEDED,LOGIN_FAILED`); mã ngoài danh sách → 400. `order` mặc định `newest`, áp dụng trong SQL | `{ logs[], metrics, total, page, size }` |
 | GET | `/admin/settings` | — | `{ platformName, operatorUnit, loginNotice, supportEmail, aiPolicyNote, limits }` |
 | PUT | `/admin/settings` | `{ platformName?(1..120), operatorUnit?(0..200), loginNotice?(0..500), supportEmail?(email\|""), aiPolicyNote?(0..1000) }` | như GET |
 

@@ -27,7 +27,9 @@ export function InstructorLine({ name, initials, avatarTone = "subtle" }: { name
       >
         {initials}
       </span>
-      <span className="truncate text-[14px] leading-5 text-ink-secondary">{name}</span>
+      <span className="truncate text-[14px] leading-5 text-ink-secondary" title={name}>
+        {name}
+      </span>
     </span>
   );
 }

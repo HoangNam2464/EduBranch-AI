@@ -979,7 +979,8 @@
       "noticeCourse": "AI chỉ dùng tài liệu đã lập chỉ mục xong. {{code}} hiện có {{ready}}/{{total}} tài liệu sẵn sàng.",
       "noticeCourseFailed": "AI chỉ dùng tài liệu đã lập chỉ mục xong. {{code}} hiện có {{ready}}/{{total}} tài liệu sẵn sàng; {{failed}} tệp lỗi cần tải lại.",
       "manageMaterials": "Quản lý tài liệu",
-      "nodes": "{{count}} nút",
+      "nodes_one": "{{count}} nút",
+      "nodes_other": "{{count}} nút",
       "noTree": "Không dùng cây",
       "updated": "Cập nhật {{date}}",
       "edit": "Chỉnh sửa",
@@ -2244,7 +2245,6 @@
         "all": "Mọi loại sự kiện",
         "login": "Đăng nhập",
         "aiGen": "Sinh case",
-        "submission": "Nộp bài",
         "material": "Tài liệu"
       },
       "filterTimeAria": "Lọc theo thời gian",
@@ -2289,6 +2289,23 @@
         "target": "Đối tượng liên quan:",
         "technicalDetails": "Chi tiết kỹ thuật:",
         "noDetails": "Không có chi tiết bổ sung."
+      },
+      "events": {
+        "LOGIN_SUCCEEDED": "Đăng nhập thành công",
+        "LOGIN_FAILED": "Đăng nhập thất bại",
+        "USER_LOCKED": "Khóa tài khoản",
+        "USER_UNLOCKED": "Mở khóa tài khoản",
+        "USER_ROLE_CHANGED": "Đổi vai trò người dùng",
+        "CASE_GENERATED": "Sinh case bằng AI",
+        "CASE_GENERATION_FAILED": "Sinh case bằng AI thất bại",
+        "CASE_STATUS_CHANGED": "Đổi trạng thái case",
+        "MATERIAL_UPLOADED": "Tải lên tài liệu",
+        "SETTINGS_UPDATED": "Cập nhật cài đặt hệ thống"
+      },
+      "reasons": {
+        "UNKNOWN_ACCOUNT": "Tài khoản không tồn tại",
+        "BAD_PASSWORD": "Sai mật khẩu",
+        "ACCOUNT_LOCKED": "Tài khoản đang bị khóa"
       }
     },
     "settings": {

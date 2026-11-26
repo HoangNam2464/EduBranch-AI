@@ -599,10 +599,14 @@ export class AdminService {
           OR ae.meta->>'targetName' ILIKE $${n} ESCAPE '\\')`,
       );
     }
-    if (q.eventType) {
-      params.push(q.eventType);
-      where.push(`ae.event_type = $${params.length}`);
+    // A filter group (e.g. sign-in = LOGIN_SUCCEEDED + LOGIN_FAILED) arrives as a list; one type still works.
+    const eventTypes = q.eventType === undefined ? [] : Array.isArray(q.eventType) ? q.eventType : [q.eventType];
+    if (eventTypes.length) {
+      params.push(eventTypes);
+      where.push(`ae.event_type = ANY($${params.length}::text[])`);
     }
+    // Fixed SQL keywords chosen from the validated value, never the raw input.
+    const direction = q.order === "oldest" ? "ASC" : "DESC";
     if (q.timeRange === "today") where.push(`ae.created_at >= ${TODAY}`);
     if (q.timeRange === "7d") where.push(`ae.created_at >= NOW() - INTERVAL '7 days'`);
     if (q.timeRange === "30d") where.push(`ae.created_at >= NOW() - INTERVAL '30 days'`);
@@ -616,7 +620,7 @@ export class AdminService {
            FROM audit_events ae
            LEFT JOIN users u ON u.id = ae.actor_id
           ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-          ORDER BY ae.created_at DESC, ae.id
+          ORDER BY ae.created_at ${direction}, ae.id ${direction}
           LIMIT $${params.length - 1} OFFSET $${params.length}`,
         params,
       ),

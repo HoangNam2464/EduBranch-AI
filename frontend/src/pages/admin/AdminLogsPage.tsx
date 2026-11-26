@@ -6,7 +6,7 @@
  * log detail dialog, loading/empty/error states, and pagination.
  */
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   AlertTriangle,
@@ -17,9 +17,23 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Dialog, MetricCard, cx } from "@/components/ds";
-import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
-import { adminService, type AdminSystemLogItem } from "@/services/adminService";
+import { EmptyState, ErrorState, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
+import {
+  ADMIN_LOG_EVENT_GROUPS,
+  adminService,
+  type AdminLogEventGroup,
+  type AdminLogOrder,
+  type AdminLogTimeRange,
+  type AdminSystemLogItem,
+} from "@/services/adminService";
 import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
+import { eventLabel, eventMetaLabel } from "@/pages/admin/adminLogLabels";
+
+/** The API sends ISO timestamps; show local "dd/mm/yyyy HH:mm", or "—" when the value is not a date. */
+function shownTime(iso: string): string {
+  const date = new Date(iso);
+  return isValidDate(date) ? formatDateTime(date) : "—";
+}
 
 export function AdminLogsPage() {
   const { t } = useTranslation();
@@ -37,10 +51,12 @@ export function AdminLogsPage() {
 
   // Filters
   const [search, setSearch] = useState("");
-  const [eventFilter, setEventFilter] = useState("ALL");
-  const [timeFilter, setTimeFilter] = useState("TODAY");
-  const [sortOrder, setSortOrder] = useState("NEWEST");
+  const [eventFilter, setEventFilter] = useState<"ALL" | AdminLogEventGroup>("ALL");
+  const [timeFilter, setTimeFilter] = useState<AdminLogTimeRange>("today");
+  const [sortOrder, setSortOrder] = useState<AdminLogOrder>("newest");
   const [currentPage, setCurrentPage] = useState(1);
+  /** Events matching the current filters across all pages (API `total`), not today's KPI count. */
+  const [total, setTotal] = useState(0);
   const pageSize = 10;
 
   // Selected Log for detail modal
@@ -57,14 +73,18 @@ export function AdminLogsPage() {
     adminService
       .getSystemLogs({
         search: search.trim() || undefined,
-        eventType: eventFilter !== "ALL" ? eventFilter : undefined,
-        timeRange: timeFilter !== "ALL" ? timeFilter : undefined,
+        // A group covers every event type of that action, e.g. sign-in = succeeded + failed.
+        eventTypes: eventFilter === "ALL" ? undefined : ADMIN_LOG_EVENT_GROUPS[eventFilter],
+        // Contract values only (`today` · `7d` · `30d` · `all`): the old TODAY/7_DAYS values made every load a 400.
+        timeRange: timeFilter,
+        order: sortOrder,
         page: currentPage,
         size: pageSize,
       })
       .then((res) => {
         if (cancelled) return;
         setLogs(res.logs ?? []);
+        setTotal(Number.isFinite(res.total) ? res.total : 0);
         if (res.metrics) {
           setMetrics(res.metrics);
         }
@@ -78,31 +98,13 @@ export function AdminLogsPage() {
     return () => {
       cancelled = true;
     };
-  }, [search, eventFilter, timeFilter, currentPage, reloadToken]);
+  }, [search, eventFilter, timeFilter, sortOrder, currentPage, reloadToken]);
 
-  // Client-side filtering fallback
-  const filteredLogs = useMemo(() => {
-    let result = [...logs];
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      result = result.filter(
-        (l) =>
-          l.actorName.toLowerCase().includes(q) ||
-          l.actorEmail.toLowerCase().includes(q) ||
-          l.eventTitle.toLowerCase().includes(q) ||
-          l.code.toLowerCase().includes(q),
-      );
-    }
-    if (eventFilter !== "ALL") {
-      result = result.filter((l) => l.eventTitle.includes(eventFilter));
-    }
-    return result;
-  }, [logs, search, eventFilter]);
 
   return (
     <div className="flex flex-1 flex-col gap-5 pb-6">
       {/* 4 KPI Cards (Figma 10.9) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 min-[1280px]:grid-cols-4">
         <MetricCard
           icon={Calendar}
           label={t("g6.logs.kpi.eventsToday")}
@@ -134,7 +136,10 @@ export function AdminLogsPage() {
             type="text"
             placeholder={t("g6.logs.searchPlaceholder")}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full rounded-eb-md border border-line bg-canvas py-2 pr-3 pl-9 text-[14px] text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none"
           />
         </div>
@@ -143,37 +148,47 @@ export function AdminLogsPage() {
         <div className="flex flex-wrap items-center gap-3">
           <select
             value={eventFilter}
-            onChange={(e) => setEventFilter(e.target.value)}
+            onChange={(e) => {
+              setEventFilter(e.target.value as "ALL" | AdminLogEventGroup);
+              setCurrentPage(1);
+            }}
             aria-label={t("g6.logs.filterEventAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
             <option value="ALL">{t("g6.logs.filterEvent.all")}</option>
-            <option value="Đăng nhập">{t("g6.logs.filterEvent.login")}</option>
-            <option value="Sinh case">{t("g6.logs.filterEvent.aiGen")}</option>
-            <option value="Nộp bài">{t("g6.logs.filterEvent.submission")}</option>
-            <option value="Tài liệu">{t("g6.logs.filterEvent.material")}</option>
+            {/* No "Nộp bài" option: the API records no submission event yet. */}
+            <option value="login">{t("g6.logs.filterEvent.login")}</option>
+            <option value="aiGen">{t("g6.logs.filterEvent.aiGen")}</option>
+            <option value="material">{t("g6.logs.filterEvent.material")}</option>
           </select>
 
           <select
             value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)}
+            onChange={(e) => {
+              // A new filter starts from page 1; staying on page 3 of a shorter range shows an empty page.
+              setTimeFilter(e.target.value as AdminLogTimeRange);
+              setCurrentPage(1);
+            }}
             aria-label={t("g6.logs.filterTimeAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="TODAY">{t("g6.logs.filterTime.today")}</option>
-            <option value="7_DAYS">{t("g6.logs.filterTime.sevenDays")}</option>
-            <option value="30_DAYS">{t("g6.logs.filterTime.thirtyDays")}</option>
-            <option value="ALL">{t("g6.logs.filterTime.all")}</option>
+            <option value="today">{t("g6.logs.filterTime.today")}</option>
+            <option value="7d">{t("g6.logs.filterTime.sevenDays")}</option>
+            <option value="30d">{t("g6.logs.filterTime.thirtyDays")}</option>
+            <option value="all">{t("g6.logs.filterTime.all")}</option>
           </select>
 
           <select
             value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
+            onChange={(e) => {
+              setSortOrder(e.target.value as AdminLogOrder);
+              setCurrentPage(1);
+            }}
             aria-label={t("g6.logs.sortAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
-            <option value="NEWEST">{t("g6.logs.sort.newest")}</option>
-            <option value="OLDEST">{t("g6.logs.sort.oldest")}</option>
+            <option value="newest">{t("g6.logs.sort.newest")}</option>
+            <option value="oldest">{t("g6.logs.sort.oldest")}</option>
           </select>
         </div>
       </div>
@@ -192,7 +207,7 @@ export function AdminLogsPage() {
           <div className="p-6">
             <ErrorState title={t("g6.logs.loadErrorTitle")} description={t(loadError)} onRetry={reload} />
           </div>
-        ) : filteredLogs.length === 0 ? (
+        ) : logs.length === 0 ? (
           <div className="p-8">
             <EmptyState
               icon={ScrollText}
@@ -207,14 +222,15 @@ export function AdminLogsPage() {
                 <tr>
                   <th className="py-3 pr-4 pl-5">{t("g6.logs.columns.actor")}</th>
                   <th className="px-4 py-3">{t("g6.logs.columns.time")}</th>
-                  <th className="px-4 py-3">{t("g6.logs.columns.event")}</th>
-                  <th className="px-4 py-3 text-center">{t("g6.logs.columns.code")}</th>
+                  <th className="min-w-40 px-4 py-3">{t("g6.logs.columns.event")}</th>
+                  {/* Below 1280 the code column is hidden so the event name has room; the code stays in the detail dialog title. */}
+                  <th className="hidden px-4 py-3 text-center xl:table-cell">{t("g6.logs.columns.code")}</th>
                   <th className="px-4 py-3 text-center">{t("g6.logs.columns.detail")}</th>
                   <th className="py-3 pr-5 pl-4 text-right">{t("g6.logs.columns.result")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                {filteredLogs.map((log) => {
+                {logs.map((log) => {
                   const isSuccess = log.status === "SUCCESS";
                   const isWarning = log.status === "WARNING";
                   const initials = log.actorName
@@ -223,7 +239,7 @@ export function AdminLogsPage() {
                     .slice(-2)
                     .map((w) => w[0])
                     .join("")
-                    .toUpperCase() || "ND";
+                    .toUpperCase() || "—";
 
                   return (
                     <tr
@@ -237,7 +253,7 @@ export function AdminLogsPage() {
                             {initials}
                           </span>
                           <div className="flex flex-col">
-                            <span className="font-medium text-ink">{log.actorName}</span>
+                            <span className="font-medium text-ink">{log.actorName || "—"}</span>
                             <span className="text-[12px] text-ink-secondary">{log.actorEmail}</span>
                           </div>
                         </div>
@@ -245,23 +261,23 @@ export function AdminLogsPage() {
 
                       {/* Column 2: Timestamp */}
                       <td className="px-4 py-3.5 text-ink-secondary">
-                        {log.timestamp}
+                        {shownTime(log.timestamp)}
                       </td>
 
                       {/* Column 3: Event */}
                       <td className="px-4 py-3.5">
                         <div className="flex flex-col">
-                          <span className="font-medium text-ink">{log.eventTitle}</span>
+                          <span className="font-medium text-ink">{eventLabel(t, log.eventTitle)}</span>
                           {log.eventMeta && (
                             <span className="text-[12px] text-ink-secondary">
-                              {log.eventMeta}
+                              {eventMetaLabel(t, log.eventMeta)}
                             </span>
                           )}
                         </div>
                       </td>
 
                       {/* Column 4: Code */}
-                      <td className="px-4 py-3.5 text-center font-mono text-[13px] text-ink-secondary">
+                      <td className="hidden px-4 py-3.5 text-center font-mono text-[13px] whitespace-nowrap text-ink-secondary xl:table-cell">
                         {log.code}
                       </td>
 
@@ -270,7 +286,7 @@ export function AdminLogsPage() {
                         <button
                           type="button"
                           onClick={() => setSelectedLog(log)}
-                          className="rounded-eb-md border border-line bg-canvas px-2.5 py-1 text-[12px] font-medium text-link hover:bg-surface-hover hover:underline"
+                          className="shrink-0 rounded-eb-md border border-line bg-canvas px-2.5 py-1 text-[12px] font-medium whitespace-nowrap text-link hover:bg-surface-hover hover:underline"
                         >
                           {t("g6.logs.action.viewDetail")}
                         </button>
@@ -280,7 +296,7 @@ export function AdminLogsPage() {
                       <td className="py-3.5 pr-5 pl-4 text-right">
                         <span
                           className={cx(
-                            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium",
+                            "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium whitespace-nowrap",
                             isSuccess
                               ? "bg-success-bg text-success-text"
                               : isWarning
@@ -313,8 +329,8 @@ export function AdminLogsPage() {
         <div className="flex items-center justify-between border-t border-line px-5 py-3 text-[13px] text-ink-secondary">
           <span>
             {t("g6.logs.pagination.showing", {
-              shown: Math.min(filteredLogs.length, pageSize),
-              total: metrics.eventsToday,
+              shown: Math.min(logs.length, pageSize),
+              total,
             })}
           </span>
           <div className="flex items-center gap-1">
@@ -332,7 +348,7 @@ export function AdminLogsPage() {
             </span>
             <button
               type="button"
-              disabled={filteredLogs.length < pageSize}
+              disabled={currentPage * pageSize >= total}
               onClick={() => setCurrentPage((p) => p + 1)}
               className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
               aria-label={t("g6.logs.pagination.next")}
@@ -355,20 +371,22 @@ export function AdminLogsPage() {
           <div className="flex flex-col gap-3 text-[13px]">
             <div className="flex items-center justify-between border-b border-line pb-2">
               <span className="text-ink-secondary">{t("g6.logs.dialog.actor")}</span>
-              <span className="font-semibold text-ink">{selectedLog.actorName} ({selectedLog.actorEmail})</span>
+              <span className="font-semibold text-ink">{selectedLog.actorName || "—"}
+                {selectedLog.actorEmail ? ` (${selectedLog.actorEmail})` : ""}
+              </span>
             </div>
             <div className="flex items-center justify-between border-b border-line pb-2">
               <span className="text-ink-secondary">{t("g6.logs.dialog.time")}</span>
-              <span className="font-medium text-ink">{selectedLog.timestamp}</span>
+              <span className="font-medium text-ink">{shownTime(selectedLog.timestamp)}</span>
             </div>
             <div className="flex items-center justify-between border-b border-line pb-2">
               <span className="text-ink-secondary">{t("g6.logs.dialog.action")}</span>
-              <span className="font-semibold text-ink">{selectedLog.eventTitle}</span>
+              <span className="font-semibold text-ink">{eventLabel(t, selectedLog.eventTitle)}</span>
             </div>
             {selectedLog.eventMeta && (
               <div className="flex items-center justify-between border-b border-line pb-2">
                 <span className="text-ink-secondary">{t("g6.logs.dialog.target")}</span>
-                <span className="font-medium text-ink">{selectedLog.eventMeta}</span>
+                <span className="font-medium text-ink">{eventMetaLabel(t, selectedLog.eventMeta)}</span>
               </div>
             )}
             <div className="flex flex-col gap-1 pt-1">

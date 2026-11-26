@@ -437,7 +437,6 @@
 | `g6.logs.filterEvent.all` | Mọi loại sự kiện | All event types | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterEvent.login` | Đăng nhập | Sign-in | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterEvent.aiGen` | Sinh case | AI case generation | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.logs.filterEvent.submission` | Nộp bài | Submission | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterEvent.material` | Tài liệu | Materials | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterTimeAria` | Lọc theo thời gian | Filter by time | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterTime.today` | Hôm nay | Today | PROPOSED | — | — | FE-032 PR #75 |
@@ -675,3 +674,18 @@
 | `g6.cases.byStatus` | Case Study theo trạng thái | Case Study by status | PROPOSED | — | — | FE-029 R3 |
 | `g6.cases.emptyDescription` | Case Study toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị Case Study. | System-wide Case Study items appear once the server provides Case Study administration data. | PROPOSED | — | — | FE-029 R3 |
 | `states.empty.courses.description` | Tạo khóa học để tải tài liệu môn học và xây dựng case study. | Create a course to upload course materials and build each Case Study. | PROPOSED | — | — | FE-029 R3 |
+| `g6.logs.events.LOGIN_SUCCEEDED` | Đăng nhập thành công | Sign-in succeeded | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.LOGIN_FAILED` | Đăng nhập thất bại | Sign-in failed | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.USER_LOCKED` | Khóa tài khoản | Account locked | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.USER_UNLOCKED` | Mở khóa tài khoản | Account unlocked | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.USER_ROLE_CHANGED` | Đổi vai trò người dùng | User role changed | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.CASE_GENERATED` | Sinh case bằng AI | AI case generated | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.CASE_GENERATION_FAILED` | Sinh case bằng AI thất bại | AI case generation failed | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.CASE_STATUS_CHANGED` | Đổi trạng thái case | Case status changed | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.MATERIAL_UPLOADED` | Tải lên tài liệu | Material uploaded | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.events.SETTINGS_UPDATED` | Cập nhật cài đặt hệ thống | System settings updated | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.reasons.UNKNOWN_ACCOUNT` | Tài khoản không tồn tại | Unknown account | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.reasons.BAD_PASSWORD` | Sai mật khẩu | Wrong password | PROPOSED | — | — | FE-032 R5 |
+| `g6.logs.reasons.ACCOUNT_LOCKED` | Tài khoản đang bị khóa | Account is locked | PROPOSED | — | — | FE-032 R5 |
+| `g3.list.nodes_one` | {{count}} nút | {{count}} node | PROPOSED | — | — | FE-032 R5 |
+| `g3.list.nodes_other` | {{count}} nút | {{count}} nodes | PROPOSED | — | — | FE-032 R5 |

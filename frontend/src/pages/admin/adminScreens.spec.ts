@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
 const { default: apiClient } = await import("@/services/apiClient");
-const { adminService } = await import("@/services/adminService");
+const { adminService, ADMIN_LOG_TIME_RANGES, ADMIN_LOG_EVENT_GROUPS } = await import("@/services/adminService");
 const { mapAdminHttpErrorToKey } = await import("@/pages/admin/adminErrorHelper");
 
 describe("adminErrorHelper — pure HTTP status to i18n key mapping", () => {
@@ -315,6 +315,41 @@ describe("adminService — routes, parsing, and error propagation (no fake data)
         () => adminService.getSystemLogs(),
         (err: any) => err.response?.status === 403,
       );
+    } finally {
+      apiClient.get = originalGet;
+    }
+  });
+
+  it("getSystemLogs sends only timeRange values the backend accepts (today · 7d · 30d · all)", async () => {
+    // Backend AdminLogsQueryDto: @IsIn(["today", "7d", "30d", "all"]) with forbidNonWhitelisted → anything else is a 400.
+    assert.deepEqual([...ADMIN_LOG_TIME_RANGES], ["today", "7d", "30d", "all"]);
+    const originalGet = apiClient.get;
+    const sent: unknown[] = [];
+    try {
+      apiClient.get = (async (_url: string, config?: { params?: Record<string, unknown> }) => {
+        sent.push(config?.params?.timeRange);
+        return { data: { status: "SUCCESS", data: { logs: [], metrics: {}, total: 0, page: 1, size: 10 } } };
+      }) as any;
+      for (const timeRange of ADMIN_LOG_TIME_RANGES) await adminService.getSystemLogs({ timeRange, page: 1, size: 10 });
+      assert.deepEqual(sent, ["today", "7d", "30d", "all"]);
+    } finally {
+      apiClient.get = originalGet;
+    }
+  });
+
+  it("getSystemLogs sends a filter group as one comma-separated eventType and passes the order", async () => {
+    const originalGet = apiClient.get;
+    const sent: Array<Record<string, unknown> | undefined> = [];
+    try {
+      apiClient.get = (async (_url: string, config?: { params?: Record<string, unknown> }) => {
+        sent.push(config?.params);
+        return { data: { status: "SUCCESS", data: { logs: [], metrics: {}, total: 0, page: 1, size: 10 } } };
+      }) as any;
+      await adminService.getSystemLogs({ eventTypes: ADMIN_LOG_EVENT_GROUPS.login, order: "oldest", page: 2, size: 10 });
+      await adminService.getSystemLogs({ eventTypes: [], page: 1 });
+      assert.deepEqual(sent[0], { eventType: "LOGIN_SUCCEEDED,LOGIN_FAILED", order: "oldest", page: 2, size: 10 });
+      assert.deepEqual(sent[1], { page: 1 }, "an empty group sends no eventType (all events)");
+      assert.ok(!("eventTypes" in (sent[0] ?? {})), "the API only knows eventType");
     } finally {
       apiClient.get = originalGet;
     }
