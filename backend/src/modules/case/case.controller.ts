@@ -15,6 +15,7 @@ import { CaseService } from "./case.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
+import { UpdateCaseStatusDto } from "./dto/update-case-status.dto";
 
 /**
  * CaseController — Flow 2: AI Case Generation & Lecturer Review Lifecycle
@@ -57,10 +58,10 @@ export class CaseController {
 
   @Get("courses/:courseId/cases")
   async getCasesByCourse(
-    @Param("courseId") courseId: string,
+    @Param("courseId", ParseUUIDPipe) courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
-    const cases = await this.caseService.getCasesByCourse(courseId, user.role);
+    const cases = await this.caseService.getCasesByCourse(courseId, user);
     return {
       status: "SUCCESS",
       data: cases,
@@ -69,7 +70,7 @@ export class CaseController {
 
   @Get("cases/:id")
   async getCaseById(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     const caseData = await this.caseService.getCaseById(id, user.role, user.id);
@@ -82,7 +83,7 @@ export class CaseController {
   @Roles("LECTURER")
   @Put("cases/:id")
   async updateCase(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() body: { title?: string; description?: string; nodes?: any[] },
     @CurrentUser() user: { id: string; role: string },
   ) {
@@ -117,8 +118,8 @@ export class CaseController {
   @Roles("LECTURER")
   @Patch("cases/:id/status")
   async updateCaseStatus(
-    @Param("id") id: string,
-    @Body() body: { status: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED" },
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() body: UpdateCaseStatusDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
     if (user.role !== "LECTURER") {

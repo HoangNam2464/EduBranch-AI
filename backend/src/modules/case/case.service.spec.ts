@@ -2,7 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CaseService } from './case.service';
 import { DatabaseService } from '../../common/database/database.service';
 import { AiClientService } from '../../common/ai-client/ai-client.service';
-import { ForbiddenException, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import { AuditService } from '../../common/audit/audit.service';
+import {
+  ForbiddenException,
+  NotFoundException,
+  BadRequestException,
+  BadGatewayException,
+  ConflictException,
+} from '@nestjs/common';
 
 describe('CaseService', () => {
   let service: CaseService;
@@ -21,12 +28,17 @@ describe('CaseService', () => {
     generateCase: jest.fn(),
   };
 
+  const mockAuditService = {
+    record: jest.fn().mockResolvedValue(undefined),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CaseService,
         { provide: DatabaseService, useValue: mockDbService },
         { provide: AiClientService, useValue: mockAiClientService },
+        { provide: AuditService, useValue: mockAuditService },
       ],
     }).compile();
 
@@ -107,6 +119,52 @@ describe('CaseService', () => {
       expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
       expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO cases'), expect.anything());
       expect(mockDbClient.release).toHaveBeenCalled();
+    });
+
+    it.each([
+      ['out-of-bounds root_node_index', { title: 'T', root_node_index: 5, nodes: [{ situation: 'S', options: [] }] }],
+      ['negative root_node_index', { title: 'T', root_node_index: -1, nodes: [{ situation: 'S', options: [] }] }],
+      ['non-integer root_node_index', { title: 'T', root_node_index: 0.5, nodes: [{ situation: 'S', options: [] }] }],
+      ['null root_node_index', { title: 'T', root_node_index: null, nodes: [{ situation: 'S', options: [] }] }],
+      [
+        'out-of-bounds option next_node_index',
+        {
+          title: 'T',
+          root_node_index: 0,
+          nodes: [{ situation: 'S', options: [{ text: 'Opt', consequence: 'Cons', next_node_index: 9 }] }],
+        },
+      ],
+      [
+        'non-integer option next_node_index',
+        {
+          title: 'T',
+          root_node_index: 0,
+          nodes: [{ situation: 'S', options: [{ text: 'Opt', consequence: 'Cons', next_node_index: 1.2 }] }],
+        },
+      ],
+    ])('rejects %s with 502 BadGatewayException, rolls back and records failure audit (E)', async (_label, payload) => {
+      mockAiClientService.generateCase.mockResolvedValue(payload);
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'course-1', is_active: true }] });
+      mockDbClient.query
+        .mockResolvedValueOnce(undefined) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ is_active: true }] }); // FOR SHARE
+
+      await expect(
+        service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }),
+      ).rejects.toThrow(BadGatewayException);
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO cases'), expect.anything());
+      expect(mockDbClient.release).toHaveBeenCalled();
+      expect(mockAuditService.record).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'CASE_GENERATION_FAILED',
+          outcome: 'ERROR',
+          meta: expect.objectContaining({ errorCode: 'HTTP_502' }),
+        }),
+      );
     });
   });
 
@@ -379,28 +437,53 @@ describe('CaseService', () => {
     });
   });
 
-  describe('student access restriction and data privacy (P0-SEC-01 & P0-SEC-02)', () => {
-    it('should forbid student from accessing non-published case', async () => {
-      mockDbService.query.mockResolvedValueOnce({
-        rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }],
-      });
-      await expect(service.getCaseById('case-1', 'STUDENT')).rejects.toThrow(ForbiddenException);
+  describe('student access restriction and data privacy (P0-SEC-01 & P0-SEC-02, H1, H2)', () => {
+    it('H1: rejects missing or unknown role with 403 ForbiddenException', async () => {
+      await expect(service.getCaseById('case-1')).rejects.toThrow(ForbiddenException);
+      await expect(service.getCaseById('case-1', 'GUEST', 'u-1')).rejects.toThrow(ForbiddenException);
+      expect(mockDbService.query).not.toHaveBeenCalled();
     });
 
-    it('should allow student accessing published case but HIDE nodes, options, and consequences', async () => {
+    it('H1: should forbid student from accessing non-published case with SQL status filter', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] }) // PUBLISHED query returns empty
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1' }] }); // id-only existence check
+
+      await expect(service.getCaseById('case-1', 'STUDENT', 'student-1')).rejects.toThrow(
+        new ForbiddenException('Students can only access PUBLISHED cases'),
+      );
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
+      expect(mockDbService.query.mock.calls[0][1]).toEqual(['case-1']);
+    });
+
+    it('H1: returns 404 NotFoundException when case does not exist for student', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [] });
+
+      await expect(service.getCaseById('missing-case', 'STUDENT', 'student-1')).rejects.toThrow(NotFoundException);
+    });
+
+    it('H1: should allow student accessing published case but HIDE nodes, options, and consequences', async () => {
       mockDbService.query.mockResolvedValueOnce({
         rows: [{
           id: 'case-1',
           title: 'Business Ethics Case',
           description: 'A study on supply chain ethics',
+          course_id: 'course-1',
           status: 'PUBLISHED',
           learning_mode: 'BRANCHING_STUDY',
+          context_text: null,
+          problem_text: null,
+          created_at: '2026-01-01',
+          updated_at: '2026-01-01',
           lecturer_id: 'lecturer-1',
         }],
       });
 
       const result = await service.getCaseById('case-1', 'STUDENT');
 
+      expect(mockDbService.query.mock.calls[0][0]).toContain("c.status = 'PUBLISHED'");
       expect(result.status).toBe('PUBLISHED');
       expect(result.title).toBe('Business Ethics Case');
       // P0-SEC-02: Nodes and options MUST NOT be returned in student DTO
@@ -408,7 +491,7 @@ describe('CaseService', () => {
       expect(result.all_options).toBeUndefined();
     });
 
-    it('should return full tree with nodes and consequences for lecturer', async () => {
+    it('H1: should return full tree with nodes and consequences for owner lecturer using SQL lecturer_id filter', async () => {
       mockDbService.query
         .mockResolvedValueOnce({
           rows: [{
@@ -426,8 +509,79 @@ describe('CaseService', () => {
 
       const result = await service.getCaseById('case-1', 'LECTURER', 'lecturer-1');
 
+      expect(mockDbService.query.mock.calls[0][0]).toContain('co.lecturer_id = $2');
+      expect(mockDbService.query.mock.calls[0][1]).toEqual(['case-1', 'lecturer-1']);
       expect(result.nodes).toBeDefined();
       expect(result.nodes[0].options[0].consequence).toBe('Severe stock drop');
+    });
+
+    it('H1: forbids non-owner lecturer with 403 and returns 404 when missing', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1' }] });
+      await expect(service.getCaseById('case-1', 'LECTURER', 'other-lecturer')).rejects.toThrow(ForbiddenException);
+
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [] });
+      await expect(service.getCaseById('missing-case', 'LECTURER', 'other-lecturer')).rejects.toThrow(NotFoundException);
+    });
+
+    it('H1: allows ADMIN to read any case with full tree and no owner filter', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'node-1', situation: 'Sit', node_index: 0 }] })
+        .mockResolvedValueOnce({ rows: [] });
+
+      const result = await service.getCaseById('case-1', 'ADMIN', 'admin-1');
+      expect(mockDbService.query.mock.calls[0][0]).not.toContain('lecturer_id =');
+      expect(mockDbService.query.mock.calls[0][1]).toEqual(['case-1']);
+      expect(result.nodes).toHaveLength(1);
+    });
+
+    it('H2: getCasesByCourse enforces role, course existence (404), lecturer owner (403) and student enrollment (403)', async () => {
+      await expect(service.getCasesByCourse('c-1', { id: 'u-1', role: 'UNKNOWN' })).rejects.toThrow(ForbiddenException);
+
+      // Unknown course -> 404
+      mockDbService.query.mockResolvedValueOnce({ rows: [] });
+      await expect(service.getCasesByCourse('missing', { id: 'admin-1', role: 'ADMIN' })).rejects.toThrow(NotFoundException);
+
+      // ADMIN -> all statuses
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'c-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'k-1', status: 'DRAFT' }] });
+      await expect(service.getCasesByCourse('c-1', { id: 'admin-1', role: 'ADMIN' })).resolves.toHaveLength(1);
+
+      // LECTURER owner -> SQL includes lecturer_id = $2
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'c-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'k-1', status: 'DRAFT' }] });
+      await service.getCasesByCourse('c-1', { id: 'lect-1', role: 'LECTURER' });
+      expect(mockDbService.query.mock.calls[4][0]).toContain('lecturer_id = $2');
+      expect(mockDbService.query.mock.calls[4][1]).toEqual(['c-1', 'lect-1']);
+
+      // LECTURER non-owner -> 403
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: 'c-1' }] });
+      await expect(service.getCasesByCourse('c-1', { id: 'lect-2', role: 'LECTURER' })).rejects.toThrow(ForbiddenException);
+
+      // STUDENT not enrolled -> 403
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: 'c-1' }] });
+      await expect(service.getCasesByCourse('c-1', { id: 'stu-2', role: 'STUDENT' })).rejects.toThrow(ForbiddenException);
+
+      // STUDENT enrolled -> SQL checks course_enrollments + PUBLISHED + exact columns
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'enr-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'k-pub', status: 'PUBLISHED' }] });
+      await service.getCasesByCourse('c-1', { id: 'stu-1', role: 'STUDENT' });
+      const studentCasesSql = mockDbService.query.mock.calls[10][0] as string;
+      expect(studentCasesSql).toContain('course_enrollments');
+      expect(studentCasesSql).toContain("c.status = 'PUBLISHED'");
+      expect(studentCasesSql).not.toContain('SELECT *');
+      expect(mockDbService.query.mock.calls[10][1]).toEqual(['c-1', 'stu-1']);
     });
   });
 });

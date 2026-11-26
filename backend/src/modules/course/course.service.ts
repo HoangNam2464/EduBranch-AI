@@ -63,6 +63,66 @@ export class CourseService {
     return result.rows[0];
   }
 
+  async getCourseForViewer(courseId: string, user?: { id?: string; role?: string }) {
+    const role = user?.role;
+    const userId = user?.id;
+    if (role !== "ADMIN" && role !== "LECTURER" && role !== "STUDENT") {
+      throw new ForbiddenException("Access denied");
+    }
+    if (role !== "ADMIN" && !userId) {
+      throw new ForbiddenException("Access denied");
+    }
+
+    if (role === "ADMIN") {
+      const result = await this.db.query(
+        `SELECT id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at
+         FROM courses
+         WHERE id = $1`,
+        [courseId],
+      );
+      if (result.rows.length === 0) {
+        throw new NotFoundException(`Course ${courseId} not found`);
+      }
+      return result.rows[0];
+    }
+
+    if (role === "LECTURER") {
+      const result = await this.db.query(
+        `SELECT id, name, description, course_code, lecturer_id, is_active AS active, is_active, created_at, updated_at
+         FROM courses
+         WHERE id = $1 AND lecturer_id = $2`,
+        [courseId, userId],
+      );
+      if (result.rows.length === 0) {
+        const existsRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+        if (existsRes.rows.length === 0) {
+          throw new NotFoundException(`Course ${courseId} not found`);
+        }
+        throw new ForbiddenException("You can only view your own courses");
+      }
+      return result.rows[0];
+    }
+
+    const result = await this.db.query(
+      `SELECT c.id, c.name, c.description, c.course_code, c.is_active AS active, c.is_active, c.created_at, c.updated_at
+       FROM courses c
+       WHERE c.id = $1
+         AND (
+           EXISTS (SELECT 1 FROM course_enrollments ce WHERE ce.course_id = c.id AND ce.student_id = $2)
+           OR EXISTS (SELECT 1 FROM cases cs WHERE cs.course_id = c.id AND cs.status = 'PUBLISHED')
+         )`,
+      [courseId, userId],
+    );
+    if (result.rows.length === 0) {
+      const existsRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+      if (existsRes.rows.length === 0) {
+        throw new NotFoundException(`Course ${courseId} not found`);
+      }
+      throw new ForbiddenException("You do not have access to this course");
+    }
+    return result.rows[0];
+  }
+
   async updateCourse(courseId: string, lecturerId: string, dto: UpdateCourseDto) {
     const course = await this.getCourseById(courseId);
 

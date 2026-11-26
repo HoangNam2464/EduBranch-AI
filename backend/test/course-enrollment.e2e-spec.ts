@@ -52,6 +52,7 @@ describe("Course Enrollment & Invite Code E2E (BE-029 / FE-028)", () => {
     createCourse: jest.fn(),
     getCoursesByLecturer: jest.fn(),
     getCourseById: jest.fn(),
+    getCourseForViewer: jest.fn(),
     updateCourse: jest.fn(),
     archiveCourse: jest.fn(),
     enrollStudentByInviteCode: jest.fn(),
@@ -220,9 +221,11 @@ describe("Course Enrollment & Invite Code E2E (BE-029 / FE-028)", () => {
   });
 
   describe("Lecturer Invite Code API", () => {
+    const courseUuid = "33333333-3333-4333-8333-333333333333";
+
     it("GET /api/v1/courses/:courseId/invite-code rejects student with 403", async () => {
       await request(app.getHttpServer())
-        .get("/api/v1/courses/c-1/invite-code")
+        .get(`/api/v1/courses/${courseUuid}/invite-code`)
         .set("Authorization", `Bearer ${studentToken}`)
         .expect(403);
     });
@@ -234,7 +237,7 @@ describe("Course Enrollment & Invite Code E2E (BE-029 / FE-028)", () => {
       });
 
       const res = await request(app.getHttpServer())
-        .get("/api/v1/courses/c-1/invite-code")
+        .get(`/api/v1/courses/${courseUuid}/invite-code`)
         .set("Authorization", `Bearer ${lecturerToken}`)
         .expect(200);
 
@@ -248,7 +251,7 @@ describe("Course Enrollment & Invite Code E2E (BE-029 / FE-028)", () => {
       });
 
       const res = await request(app.getHttpServer())
-        .get("/api/v1/courses/c-1/invite-code")
+        .get(`/api/v1/courses/${courseUuid}/invite-code`)
         .set("Authorization", `Bearer ${lecturerToken}`)
         .expect(200);
 
@@ -257,18 +260,17 @@ describe("Course Enrollment & Invite Code E2E (BE-029 / FE-028)", () => {
 
     it("GET /api/v1/courses/:courseId does not expose invite_code or invite_code_active (Fix 2)", async () => {
       const safeCourse = {
-        id: "c-1",
+        id: courseUuid,
         name: "Corporate Law",
         description: "Desc",
         course_code: "LAW-301",
-        lecturer_id: "lecturer-1",
         active: true,
         is_active: true,
       };
-      mockCourseService.getCourseById.mockResolvedValueOnce(safeCourse);
+      mockCourseService.getCourseForViewer.mockResolvedValueOnce(safeCourse);
 
       const res = await request(app.getHttpServer())
-        .get("/api/v1/courses/c-1")
+        .get(`/api/v1/courses/${courseUuid}`)
         .set("Authorization", `Bearer ${studentToken}`)
         .expect(200);
 
@@ -284,7 +286,7 @@ describe("Course Enrollment & Invite Code E2E (BE-029 / FE-028)", () => {
       });
 
       const res = await request(app.getHttpServer())
-        .post("/api/v1/courses/c-1/invite-code")
+        .post(`/api/v1/courses/${courseUuid}/invite-code`)
         .set("Authorization", `Bearer ${lecturerToken}`)
         .expect(201);
 
@@ -301,7 +303,7 @@ describe("Course Enrollment & Invite Code E2E (BE-029 / FE-028)", () => {
       });
 
       const res = await request(app.getHttpServer())
-        .delete("/api/v1/courses/c-1/invite-code")
+        .delete(`/api/v1/courses/${courseUuid}/invite-code`)
         .set("Authorization", `Bearer ${lecturerToken}`)
         .expect(200);
 

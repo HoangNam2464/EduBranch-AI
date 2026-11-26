@@ -1,4 +1,6 @@
 import { Test, TestingModule } from "@nestjs/testing";
+import { ParseUUIDPipe } from "@nestjs/common";
+import { ROUTE_ARGS_METADATA } from "@nestjs/common/constants";
 import { CourseController } from "./course.controller";
 import { CourseService } from "./course.service";
 import { CreateCourseDto } from "./dto/create-course.dto";
@@ -11,6 +13,7 @@ describe("CourseController", () => {
     createCourse: jest.fn(),
     getCoursesByLecturer: jest.fn(),
     getCourseById: jest.fn(),
+    getCourseForViewer: jest.fn(),
     updateCourse: jest.fn(),
     archiveCourse: jest.fn(),
     enrollStudentByInviteCode: jest.fn(),
@@ -89,20 +92,31 @@ describe("CourseController", () => {
   });
 
   describe("GET /api/v1/courses/:courseId (getCourse)", () => {
-    it("should return course details by ID", async () => {
+    it("should delegate to getCourseForViewer with courseId and user", async () => {
       const mockCourse = { id: "c-1", name: "Course A", lecturer_id: "lecturer-1" };
-      mockCourseService.getCourseById.mockResolvedValueOnce(mockCourse);
+      mockCourseService.getCourseForViewer.mockResolvedValueOnce(mockCourse);
 
-      const response = await controller.getCourse("c-1", {
-        id: "lecturer-1",
-        role: "LECTURER",
-      });
+      const user = { id: "lecturer-1", role: "LECTURER" };
+      const response = await controller.getCourse("c-1", user);
 
-      expect(mockCourseService.getCourseById).toHaveBeenCalledWith("c-1", "lecturer-1");
+      expect(mockCourseService.getCourseForViewer).toHaveBeenCalledWith("c-1", user);
       expect(response).toEqual({
         status: "SUCCESS",
         data: mockCourse,
       });
+    });
+
+    it.each([
+      "getCourse",
+      "updateCourse",
+      "archiveCourse",
+      "getInviteCode",
+      "rotateInviteCode",
+      "disableInviteCode",
+    ] as const)("attaches ParseUUIDPipe to :courseId on %s (D)", (method) => {
+      const meta = Reflect.getMetadata(ROUTE_ARGS_METADATA, CourseController, method) as Record<string, any>;
+      const paramMeta = Object.values(meta).find((entry) => entry.index === 0);
+      expect(paramMeta.pipes).toContain(ParseUUIDPipe);
     });
   });
 

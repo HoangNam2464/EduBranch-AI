@@ -3,24 +3,16 @@ import {
   NotFoundException,
   ForbiddenException,
   BadRequestException,
+  ConflictException,
   Logger,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
 import { randomUUID } from "crypto";
+import { ChooseOptionDto } from "./dto/choose-option.dto";
+import { SaveReasoningDto } from "./dto/save-reasoning.dto";
+import { SubmitReflectionDto } from "./dto/submit-reflection.dto";
 
-export interface ChooseOptionDto {
-  nodeId: string;
-  selectedOptionId: string;
-}
-
-export interface SaveReasoningDto {
-  nodeId: string;
-  reasoningText: string;
-}
-
-export interface SubmitReflectionDto {
-  reflectionText: string;
-}
+export { ChooseOptionDto, SaveReasoningDto, SubmitReflectionDto };
 
 @Injectable()
 export class BranchingAttemptService {
@@ -55,40 +47,69 @@ export class BranchingAttemptService {
   async startAttempt(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
 
-    const caseRes = await this.db.query(
-      "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1",
-      [caseId],
-    );
-    if (caseRes.rows.length === 0) {
-      throw new NotFoundException(`Case ${caseId} not found`);
-    }
-
-    const caseData = caseRes.rows[0];
-    if (caseData.status !== "PUBLISHED") {
-      throw new ForbiddenException("Cannot start attempt on an unpublished case");
-    }
-
-    if (caseData.learning_mode !== "BRANCHING_STUDY") {
-      throw new BadRequestException("Case is not a BRANCHING_STUDY mode case");
-    }
-
-    if (!caseData.root_node_id) {
-      throw new BadRequestException("Case does not have an active root node");
-    }
-
-    // Determine attempt number
-    const prevAttemptsRes = await this.db.query(
-      "SELECT COALESCE(MAX(attempt_number), 0) as max_num FROM branching_attempts WHERE case_id = $1 AND student_id = $2",
-      [caseId, effectiveStudentId],
-    );
-    const attemptNumber = parseInt(prevAttemptsRes.rows[0].max_num, 10) + 1;
-
+    const client = await this.db.getClient();
     const attemptId = randomUUID();
-    await this.db.query(
-      `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, current_node_id, is_completed, reflection_status)
-       VALUES ($1, $2, $3, $4, $5, FALSE, 'NOT_STARTED')`,
-      [attemptId, effectiveStudentId, caseId, attemptNumber, caseData.root_node_id],
-    );
+    try {
+      await client.query("BEGIN");
+
+      const caseRes = await client.query(
+        "SELECT id, title, status, root_node_id, learning_mode FROM cases WHERE id = $1 FOR UPDATE",
+        [caseId],
+      );
+      if (caseRes.rows.length === 0) {
+        throw new NotFoundException(`Case ${caseId} not found`);
+      }
+
+      const caseData = caseRes.rows[0];
+      if (caseData.status !== "PUBLISHED") {
+        throw new ForbiddenException("Cannot start attempt on an unpublished case");
+      }
+
+      if (caseData.learning_mode !== "BRANCHING_STUDY") {
+        throw new BadRequestException("Case is not a BRANCHING_STUDY mode case");
+      }
+
+      if (!caseData.root_node_id) {
+        throw new BadRequestException("Case does not have an active root node");
+      }
+
+      // Determine attempt number under case row lock
+      const prevAttemptsRes = await client.query(
+        "SELECT COALESCE(MAX(attempt_number), 0) as max_num FROM branching_attempts WHERE case_id = $1 AND student_id = $2",
+        [caseId, effectiveStudentId],
+      );
+      const attemptNumber = parseInt(prevAttemptsRes.rows[0].max_num, 10) + 1;
+
+      try {
+        await client.query(
+          `INSERT INTO branching_attempts (id, student_id, case_id, attempt_number, current_node_id, is_completed, reflection_status)
+           VALUES ($1, $2, $3, $4, $5, FALSE, 'NOT_STARTED')`,
+          [attemptId, effectiveStudentId, caseId, attemptNumber, caseData.root_node_id],
+        );
+      } catch (err: any) {
+        if (
+          err?.code === "23505" &&
+          (err?.constraint === "uq_branching_attempt_number" ||
+            !err?.constraint ||
+            String(err?.message).includes("uq_branching_attempt_number"))
+        ) {
+          throw new ConflictException("Concurrent attempt creation conflict; please retry");
+        }
+        throw err;
+      }
+
+      await client.query("COMMIT");
+    } catch (e: any) {
+      try {
+        await client.query("ROLLBACK");
+      } catch {
+        // ignore rollback error
+      }
+      this.logger.error(`Error starting attempt: ${e?.message}`, e?.stack);
+      throw e;
+    } finally {
+      client.release();
+    }
 
     return this.getAttempt(attemptId, effectiveStudentId);
   }
@@ -278,10 +299,13 @@ export class BranchingAttemptService {
         isTerminalTransition = true;
       } else {
         const nextNodeRes = await client.query(
-          "SELECT is_terminal FROM case_nodes WHERE id = $1",
-          [nextNodeId],
+          "SELECT is_terminal FROM case_nodes WHERE id = $1 AND case_id = $2",
+          [nextNodeId, attempt.case_id],
         );
-        if (nextNodeRes.rows.length === 0 || nextNodeRes.rows[0].is_terminal) {
+        if (nextNodeRes.rows.length === 0) {
+          throw new BadRequestException("Next node does not belong to this case");
+        }
+        if (nextNodeRes.rows[0].is_terminal) {
           isTerminalTransition = true;
         }
       }
@@ -303,14 +327,19 @@ export class BranchingAttemptService {
       }
 
       await client.query("COMMIT");
-      return this.getAttempt(attemptId, studentId);
-    } catch (e) {
-      await client.query("ROLLBACK");
+    } catch (e: any) {
+      try {
+        await client.query("ROLLBACK");
+      } catch {
+        // ignore rollback error
+      }
       this.logger.error(`Error choosing option: ${e.message}`, e.stack);
       throw e;
     } finally {
       client.release();
     }
+
+    return this.getAttempt(attemptId, studentId);
   }
 
   /**
@@ -332,6 +361,10 @@ export class BranchingAttemptService {
 
       if (attemptRes.rows[0].student_id !== studentId) {
         throw new ForbiddenException("You do not have permission to modify this attempt");
+      }
+
+      if (!attemptRes.rows[0].is_completed) {
+        throw new BadRequestException("Retrospective reasoning is available only after the attempt is completed");
       }
 
       const reasoningRes = await client.query(
