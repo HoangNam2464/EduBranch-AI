@@ -1,7 +1,7 @@
 # Feature Record: 003-reasoning-access — Chặn truy cập trái phép API reasoning [BE-024]
 
 > Theo `docs/workflows/FEATURE-DELIVERY-WORKFLOW.md` §3–§6. Nội dung tiếng Việt.
-> **Created**: 2026-11-21 · **Last Updated**: 2026-11-26 (PR #77 đã merge tại `bbf4156`; QG1–QG7 PASS trên `develop` `dec96f0`)
+> **Created**: 2026-11-21 · **Last Updated**: 2026-11-26 (PR #77 đã merge tại `bbf4156`. QG1 PASS 2026-11-21 sau merge `3499b08`; QG2 PASS trên `5b20fd6`; QG3 N/A (không đổi frontend); QG4 PASS; QG5 PASS trên head `aa13f89`; QG6 PASS, merge `bbf4156`; QG7 PASS trên `develop` `dec96f0`)
 
 ## 1. Discover (Stage 0)
 
