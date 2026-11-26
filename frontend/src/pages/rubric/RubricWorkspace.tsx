@@ -39,7 +39,8 @@ import {
 } from "@/services/rubricService";
 import type { RubricCriterionId, RubricDraftScores } from "@/services/mappers/rubric";
 import { useAuthStore } from "@/stores/authStore";
-import { PATHS, buildPath } from "@/routes/paths";
+import { useShellHeader } from "@/layouts/shell/ShellTitleContext";
+import { rubricBackPath, rubricCasePath, rubricCasesPath } from "@/pages/rubric/rubricNavigation";
 import type { CaseDetail, Course, RubricEvaluation } from "@/types";
 
 const SCALE = [1, 2, 3, 4, 5] as const;
@@ -78,7 +79,7 @@ function RubricWorkspaceContent({ role, caseId }: RubricWorkspaceProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const currentUserId = useAuthStore((state) => state.user?.id);
-  const casesPath = role === "ADMIN" ? PATHS.ADMIN.CASES : PATHS.LECTURER.CASES;
+  const casesPath = rubricCasesPath(role);
 
   // Case header state (when caseId is present)
   const [caseData, setCaseData] = useState<CaseDetail | null>(null);
@@ -86,6 +87,20 @@ function RubricWorkspaceContent({ role, caseId }: RubricWorkspaceProps) {
   const [loadingCase, setLoadingCase] = useState(Boolean(caseId));
   const [caseError, setCaseError] = useState<{ code?: number; at: Date } | null>(null);
   const [caseReloadTick, setCaseReloadTick] = useState(0);
+
+  // Figma 10.8 header: back button + "Case Study › Rubric nghiên cứu" when a case is open.
+  // Without a case (sidebar entry, D3a) the screen is a top-level page: no back, no breadcrumb.
+  useShellHeader(
+    caseId
+      ? {
+          back: { to: rubricBackPath(role, caseId, caseError?.code), label: t("shell.back") },
+          crumbs: [
+            { label: t(role === "ADMIN" ? "nav.admin.cases" : "nav.lecturer.cases"), to: casesPath },
+            { label: t("rubric.breadcrumb.current") },
+          ],
+        }
+      : null,
+  );
 
   // Saved evaluations list state (always all visible evaluations via GET /evaluation/rubrics)
   const [savedEvaluations, setSavedEvaluations] = useState<RubricEvaluation[]>([]);
@@ -240,11 +255,7 @@ function RubricWorkspaceContent({ role, caseId }: RubricWorkspaceProps) {
 
   const handleStartEdit = (ev: RubricEvaluation) => {
     if (ev.caseId !== caseId) {
-      const targetPath = buildPath(
-        role === "ADMIN" ? PATHS.ADMIN.CASE_RUBRIC : PATHS.LECTURER.CASE_RUBRIC,
-        { caseId: ev.caseId },
-      );
-      navigate(targetPath);
+      navigate(rubricCasePath(role, ev.caseId));
       return;
     }
     userInteractedRef.current = true;

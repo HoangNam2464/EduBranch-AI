@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Bell, Search, SlidersHorizontal } from "lucide-react";
 import { LanguageSwitcher } from "@/components/ds";
+import { HEADER_FOCUS, HEADER_ICON_BUTTON } from "@/layouts/shell/headerButtonStyles";
 
 /*
  * Figma: `EB/Header Actions` (762×40, gap 12) — shared by the three roles.
@@ -10,8 +11,8 @@ import { LanguageSwitcher } from "@/components/ds";
  * · divider · account (avatar 40 + name/role).
  */
 
-const FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus";
-const ICON_BUTTON = `relative flex size-10 shrink-0 items-center justify-center rounded-[10px] bg-primary-subtle text-primary hover:bg-primary-subtle-hover ${FOCUS}`;
+const FOCUS = HEADER_FOCUS;
+const ICON_BUTTON = HEADER_ICON_BUTTON;
 
 interface HeaderActionsProps {
   searchPlaceholder: string;
@@ -74,8 +75,10 @@ export function HeaderActions({
   }
 
   return (
-    <div className="flex h-10 items-center gap-3">
-      <form role="search" onSubmit={onSubmit} className="h-10 w-56 min-[1440px]:w-80">
+    // Rule F3: the search is based on 160 px and only grows into free space (up to 224, or 320 at
+    // ≥1440), so the header's minimum width never forces the page title to give way first.
+    <div className="flex h-10 min-w-0 items-center justify-end gap-3">
+      <form role="search" onSubmit={onSubmit} className="h-10 w-40 grow max-w-56 min-[1440px]:max-w-80">
         <label
           className={`flex h-10 w-full items-center gap-2.5 rounded-[10px] border border-line bg-surface-muted pr-2 pl-3.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus`}
         >
@@ -95,7 +98,7 @@ export function HeaderActions({
         </label>
       </form>
 
-      <LanguageSwitcher />
+      <LanguageSwitcher className="shrink-0" />
 
       <button
         type="button"
@@ -115,7 +118,7 @@ export function HeaderActions({
 
       <span data-shell="divider" className="h-7 w-px shrink-0 bg-line" aria-hidden="true" />
 
-      <Link to={profilePath} className={`flex h-10 items-center gap-2.5 rounded-[10px] ${FOCUS}`} aria-label={t("shell.account")}>
+      <Link to={profilePath} className={`flex h-10 shrink-0 items-center gap-2.5 rounded-[10px] ${FOCUS}`} aria-label={t("shell.account")}>
         <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm leading-5 font-medium text-ink-inverse">
           {initials}
         </span>

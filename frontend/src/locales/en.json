@@ -121,7 +121,9 @@
       "terms": "Terms of use",
       "supportEmail": "support@edubranch.ai",
       "project": "Capstone C1SE.65 · Duy Tan University"
-    }
+    },
+    "back": "Back",
+    "breadcrumb": "Breadcrumb"
   },
   "authRecovery": {
     "backToLogin": "Back to sign in",
@@ -2481,6 +2483,9 @@
       "confirm": "Delete",
       "deleting": "Deleting…",
       "error": "Could not delete the evaluation. Please try again."
+    },
+    "breadcrumb": {
+      "current": "Research rubric"
     }
   },
   "states": {

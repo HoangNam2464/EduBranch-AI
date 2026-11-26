@@ -613,6 +613,9 @@
 | `rubric.scoring.noScore` | Chưa có điểm | No score yet | PROPOSED | — | — | FE-029 |
 | `rubric.scoring.scoreOptionLabel` | {{criterion}}: {{value}} trên 5 | {{criterion}}: {{value}} out of 5 | PROPOSED | — | — | FE-029 |
 | `rubric.scoring.save` | Lưu phiếu đánh giá | Save evaluation | PROPOSED | — | — | FE-029 |
+| `shell.back` | Quay lại | Back | PROPOSED | — | — | FE-029 |
+| `shell.breadcrumb` | Đường dẫn trang | Breadcrumb | PROPOSED | — | — | FE-029 |
+| `rubric.breadcrumb.current` | Rubric nghiên cứu | Research rubric | PROPOSED | — | — | FE-029 |
 | `rubric.scoring.update` | Cập nhật phiếu đánh giá | Update evaluation | PROPOSED | — | — | FE-029 |
 | `rubric.scoring.cancelEdit` | Hủy chỉnh sửa | Cancel edit | PROPOSED | — | — | FE-029 |
 | `rubric.scoring.saving` | Đang lưu… | Saving… | PROPOSED | — | — | FE-029 |

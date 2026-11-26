@@ -121,7 +121,9 @@
       "terms": "Điều khoản sử dụng",
       "supportEmail": "support@edubranch.ai",
       "project": "Đồ án C1SE.65 · Trường Đại học Duy Tân"
-    }
+    },
+    "back": "Quay lại",
+    "breadcrumb": "Đường dẫn trang"
   },
   "authRecovery": {
     "backToLogin": "Quay lại đăng nhập",
@@ -2481,6 +2483,9 @@
       "confirm": "Xóa phiếu",
       "deleting": "Đang xóa…",
       "error": "Chưa xóa được phiếu đánh giá. Vui lòng thử lại."
+    },
+    "breadcrumb": {
+      "current": "Rubric nghiên cứu"
     }
   },
   "states": {
