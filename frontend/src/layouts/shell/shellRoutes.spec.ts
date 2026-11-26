@@ -90,9 +90,10 @@ describe("resolveShellNav — Admin (10.x)", () => {
   });
 
   it("always has exactly one or zero active item for every role path", () => {
-    for (const p of ["/admin/users", "/admin/logs", "/admin/settings"]) {
+    for (const p of ["/admin/users", "/admin/logs", "/admin/settings", "/admin/rubric", "/admin/rubric/c1"]) {
       assert.equal(activeIds(resolveShellNav("ADMIN", at(p))).length, 1, p);
     }
+    assert.deepEqual(activeIds(resolveShellNav("ADMIN", at("/admin/rubric/c1"))), ["rubric"]);
   });
 });
 
@@ -110,6 +111,8 @@ describe("resolveTitleKey — header titles match Figma", () => {
     ["/admin/dashboard", "", "Bảng điều khiển"],
     ["/admin/courses", "", "Khóa học toàn hệ thống"],
     ["/admin/cases", "", "Case Study toàn hệ thống"],
+    ["/admin/rubric", "", "Nghiên cứu & Rubric"],
+    ["/admin/rubric/c1", "", "Nghiên cứu & Rubric"],
   ];
   for (const [pathname, search, expected] of cases) {
     it(`${pathname}${search} → ${expected}`, () => {

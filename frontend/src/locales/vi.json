@@ -121,7 +121,9 @@
       "terms": "Điều khoản sử dụng",
       "supportEmail": "support@edubranch.ai",
       "project": "Đồ án C1SE.65 · Trường Đại học Duy Tân"
-    }
+    },
+    "back": "Quay lại",
+    "breadcrumb": "Đường dẫn trang"
   },
   "authRecovery": {
     "backToLogin": "Quay lại đăng nhập",
@@ -146,6 +148,7 @@
   "caseReview": {
     "back": "Quay lại danh sách case",
     "breadcrumb": "Case Study",
+    "openRubric": "Rubric nghiên cứu",
     "editor": "Trình chỉnh sửa",
     "editorReview": "Trình chỉnh sửa Review Study",
     "mode": {
@@ -2222,13 +2225,6 @@
         "failedFallback": "Không đọc được nội dung tệp"
       }
     },
-    "rubric": {
-      "title": "Đánh giá chất lượng tình huống",
-      "description": "Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
-      "saved": "Phiếu đánh giá đã lưu",
-      "emptyTitle": "Chưa có dữ liệu đánh giá",
-      "emptyDescription": "Phiếu đánh giá hiển thị khi máy chủ cung cấp dữ liệu đánh giá Case Study."
-    },
     "logs": {
       "emptyTitle": "Chưa có dữ liệu nhật ký",
       "emptyDescription": "Nhật ký hệ thống hiển thị khi máy chủ cung cấp dữ liệu nhật ký hoạt động.",
@@ -2405,8 +2401,14 @@
       "loading": "Đang tải thông tin case…",
       "errorTitle": "Không tải được case",
       "errorDescription": "Kiểm tra kết nối mạng rồi thử lại.",
+      "notFoundTitle": "Không tìm thấy Case Study",
+      "notFoundDescription": "Case này không tồn tại hoặc đã bị xóa.",
+      "forbiddenTitle": "Không có quyền truy cập case này",
+      "forbiddenDescription": "Bạn chỉ có thể đánh giá các case thuộc khóa học do mình phụ trách.",
       "noneTitle": "Chưa chọn case",
-      "noneDescription": "Mở rubric từ một case cụ thể để xem thông tin tình huống.",
+      "noneDescriptionLecturer": "Chọn một tình huống từ danh sách Case Study để chấm điểm rubric nghiên cứu.",
+      "noneDescriptionAdmin": "Chọn một tình huống từ danh sách Case Study toàn hệ thống để chấm điểm rubric nghiên cứu.",
+      "goToCases": "Mở danh sách Case Study",
       "mode": {
         "BRANCHING_STUDY": "Branching Study",
         "REVIEW_STUDY": "Review Study"
@@ -2414,6 +2416,7 @@
     },
     "average": {
       "label": "Điểm trung bình",
+      "fromCount": "từ {{count}} tiêu chí",
       "unavailable": "Chưa có điểm"
     },
     "criteria": {
@@ -2434,8 +2437,21 @@
       "title": "Đánh giá chất lượng tình huống",
       "description": "Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên.",
       "noScore": "Chưa có điểm",
-      "unavailable": "Chưa chấm và lưu được: hệ thống chưa có API rubric.",
-      "save": "Lưu phiếu đánh giá"
+      "scoreOptionLabel": "{{criterion}}: {{value}} trên 5",
+      "save": "Lưu phiếu đánh giá",
+      "update": "Cập nhật phiếu đánh giá",
+      "cancelEdit": "Hủy chỉnh sửa",
+      "saving": "Đang lưu…",
+      "saveSuccess": "Đã lưu phiếu đánh giá",
+      "updateSuccess": "Đã cập nhật phiếu đánh giá",
+      "deleteSuccess": "Đã xóa phiếu đánh giá",
+      "duplicateError": "Bạn đã có phiếu đánh giá cho case này. Hệ thống đã chuyển sang chế độ sửa phiếu đã lưu.",
+      "forbiddenError": "Bạn không có quyền thực hiện đánh giá cho case này.",
+      "validationError": "Dữ liệu đánh giá chưa hợp lệ. Vui lòng kiểm tra điểm và ghi chú.",
+      "networkError": "Không thể kết nối máy chủ. Kiểm tra mạng rồi thử lại.",
+      "saveError": "Chưa lưu được phiếu đánh giá. Vui lòng thử lại.",
+      "incompleteHint": "Chọn đủ 3 tiêu chí (1–5) để tính điểm trung bình và lưu phiếu.",
+      "closeAlert": "Đóng thông báo lỗi"
     },
     "note": {
       "label": "Ghi chú (không bắt buộc)",
@@ -2444,8 +2460,32 @@
     },
     "saved": {
       "title": "Phiếu đánh giá đã lưu",
-      "unavailableTitle": "Chưa xem được phiếu đánh giá",
-      "unavailableDescription": "Chưa có API đọc các phiếu đánh giá rubric đã lưu."
+      "titleWithCount": "Phiếu đánh giá đã lưu ({{count}})",
+      "loading": "Đang tải danh sách phiếu đánh giá…",
+      "errorTitle": "Không tải được danh sách phiếu đánh giá",
+      "errorDescription": "Kiểm tra kết nối mạng rồi thử lại.",
+      "emptyTitle": "Chưa có phiếu đánh giá nào",
+      "emptyDescription": "Các phiếu đánh giá chất lượng case sau khi lưu sẽ hiển thị tại đây.",
+      "evaluator": "Người đánh giá: {{name}}",
+      "averageBadge": "TB {{score}}/5",
+      "noteLabel": "Ghi chú:",
+      "edit": "Sửa",
+      "editAria": "Sửa phiếu đánh giá cho {{title}}",
+      "delete": "Xóa",
+      "deleteAria": "Xóa phiếu đánh giá cho {{title}}",
+      "fallbackTitle": "Phiếu #{{index}}"
+    },
+    "deleteDialog": {
+      "title": "Xóa phiếu đánh giá?",
+      "description": "Phiếu đánh giá cho “{{title}}” sẽ bị xóa vĩnh viễn và không thể khôi phục.",
+      "fallbackCase": "tình huống này",
+      "cancel": "Hủy bỏ",
+      "confirm": "Xóa phiếu",
+      "deleting": "Đang xóa…",
+      "error": "Chưa xóa được phiếu đánh giá. Vui lòng thử lại."
+    },
+    "breadcrumb": {
+      "current": "Rubric nghiên cứu"
     }
   },
   "states": {

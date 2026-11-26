@@ -250,7 +250,8 @@ export function CasesPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="grid grid-cols-[minmax(0,478fr)_minmax(0,678fr)] gap-5">
+      {/* Analytics cards side by side from 1440; stacked below so legends and the recent list are not squeezed. */}
+      <div className="grid gap-5 min-[1440px]:grid-cols-[minmax(0,478fr)_minmax(0,678fr)]">
         <CaseStatusPanel cases={cases} />
         <CaseModePanel cases={cases} courseOptions={courseOptions} courseId={chartCourse} onCourseChange={setChartCourse} />
       </div>

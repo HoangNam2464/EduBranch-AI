@@ -282,6 +282,47 @@ export interface LecturerFeedback {
 }
 
 // ============================================================================
+// Rubric & Case Quality Evaluation (Research Boundary, OPD-011 / BE-033)
+// ============================================================================
+export interface RubricCriterionItem {
+  id?: string;
+  name: string;
+  description?: string;
+  score: number;
+  maxScore?: number;
+}
+
+export interface RubricEvaluation {
+  id: string;
+  caseId: string;
+  caseTitle?: string;
+  evaluatorId?: string;
+  evaluatorName?: string;
+  criteria: RubricCriterionItem[];
+  averageScore: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+/** The three fixed criteria of FR-EVAL-01, each an integer 1–5. */
+export interface RubricScoresDto {
+  realismScore: number;
+  difficultyScore: number;
+  alignmentScore: number;
+}
+
+export interface CreateRubricEvaluationDto extends RubricScoresDto {
+  caseId: string;
+  notes?: string;
+}
+
+export interface UpdateRubricEvaluationDto extends Partial<RubricScoresDto> {
+  /** Empty string clears the note. */
+  notes?: string;
+}
+
+// ============================================================================
 // API Response Wrapper
 // ============================================================================
 export interface ApiResponse<T> {

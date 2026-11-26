@@ -9,7 +9,7 @@
   "nav": {
     "lecturer": {
       "courses": "Courses",
-      "cases": "Case Studies",
+      "cases": "Case Study",
       "feedback": "Student feedback",
       "statistics": "Learning statistics"
     },
@@ -22,7 +22,7 @@
       "dashboard": "Dashboard",
       "users": "Users",
       "courses": "Courses",
-      "cases": "Case Studies",
+      "cases": "Case Study",
       "rubric": "Research & Rubric",
       "logs": "System logs",
       "aiService": "AI service",
@@ -109,7 +109,7 @@
       "adminDashboard": "Dashboard",
       "adminUsers": "User management",
       "adminCourses": "All courses",
-      "adminCases": "All Case Studies",
+      "adminCases": "System-wide Case Study",
       "adminRubric": "Research & Rubric",
       "adminLogs": "System logs",
       "adminAiService": "AI service",
@@ -121,7 +121,9 @@
       "terms": "Terms of use",
       "supportEmail": "support@edubranch.ai",
       "project": "Capstone C1SE.65 · Duy Tan University"
-    }
+    },
+    "back": "Back",
+    "breadcrumb": "Breadcrumb"
   },
   "authRecovery": {
     "backToLogin": "Back to sign in",
@@ -146,6 +148,7 @@
   "caseReview": {
     "back": "Back to cases",
     "breadcrumb": "Case Study",
+    "openRubric": "Research rubric",
     "editor": "Editor",
     "editorReview": "Review Study editor",
     "mode": {
@@ -343,7 +346,7 @@
     },
     "showcase": {
       "title": "An experiential case-based learning platform",
-      "subtitle": "Lecturers build case studies from course materials; students make decisions, reason and reflect on every branch of the case."
+      "subtitle": "Lecturers build each Case Study from course materials; students make decisions, reason and reflect on every branch of the case."
     },
     "form": {
       "email": "Email address",
@@ -371,7 +374,7 @@
     "register": {
       "title": "Create a new account",
       "subtitleStudent": "Registration for students taking part in case-study learning",
-      "subtitleLecturer": "Registration for lecturers and staff who author case studies",
+      "subtitleLecturer": "Registration for lecturers and staff who author Case Study content",
       "roleLabel": "Role",
       "roleStudent": "Student",
       "roleLecturer": "Lecturer",
@@ -825,14 +828,14 @@
       },
       "archiveDialog": {
         "title": "Archive this course?",
-        "message": "The course will be hidden from the active list. Its materials and case studies are kept.",
+        "message": "The course will be hidden from the active list. Its materials and every Case Study are kept.",
         "summary": "{{code}} · {{name}}",
         "summaryCounts": "{{code}} · {{name}} · {{documents}} documents · {{cases}} cases",
         "confirm": "Archive course",
         "pending": "Archiving…",
         "failed": "The course could not be archived. Please try again.",
         "successTitle": "Course archived",
-        "successMessage": "{{code}} · {{name}} is hidden from the active list. Its materials and case studies are kept.",
+        "successMessage": "{{code}} · {{name}} is hidden from the active list. Its materials and every Case Study are kept.",
         "closeToast": "Close notification"
       }
     },
@@ -870,7 +873,7 @@
       "choose": "Choose files",
       "casesSection": "Case Study ({{count}})",
       "casesChip": "{{count}} cases",
-      "noCases": "This course has no case studies yet.",
+      "noCases": "This course has no Case Study yet.",
       "uploadedTitle": "Uploaded materials ({{count}})",
       "indexedSummary": "{{ready}}/{{total}} indexed",
       "chunks": "{{count}} chunks",
@@ -956,8 +959,8 @@
     },
     "aiDraft": "AI Draft",
     "list": {
-      "statusPanel": "Case Studies by status",
-      "caseUnit": "Case Study",
+      "statusPanel": "Case Study by status",
+      "caseUnit": "cases",
       "modePanel": "Learning mode by case",
       "recent": "Recently updated cases",
       "recentEmpty": "No case has been updated yet.",
@@ -982,7 +985,7 @@
       "edit": "Edit",
       "view": "View",
       "showing": "Showing",
-      "ofTotal": "of {{count}} Case Studies",
+      "ofTotal": "of {{count}} cases",
       "pageSize": "Cases per page",
       "pagination": "Pagination",
       "previous": "Previous page",
@@ -990,7 +993,7 @@
       "page": "Page {{page}}",
       "loading": "Loading the case list",
       "loadError": "Could not load the case list",
-      "emptyTitle": "No Case Studies yet",
+      "emptyTitle": "No Case Study yet",
       "emptyDescription": "Create your first case in AI Studio from indexed course materials.",
       "noCoursesTitle": "No courses yet",
       "noCoursesDescription": "Create a course and upload materials before generating cases.",
@@ -1010,7 +1013,7 @@
     },
     "editor": {
       "breadcrumb": "Breadcrumb",
-      "back": "Back to Case Studies",
+      "back": "Back to Case Study",
       "branchingCrumb": "Editor",
       "reviewCrumb": "Review Study editor",
       "situation": "Situation",
@@ -1102,7 +1105,7 @@
     },
     "studio": {
       "title": "AI Studio",
-      "back": "Back to Case Studies",
+      "back": "Back to Case Study",
       "crumbStep": "Step {{step}}/3 · {{label}}",
       "step1": "Course & learning mode",
       "step2": "Topic & source materials",
@@ -1178,7 +1181,7 @@
       "savedEmpty": "No evaluation has been saved yet.",
       "pickTitle": "Choose a case to evaluate",
       "pickDescription": "Open the rubric from a case in the Case Study library.",
-      "pickAction": "Go to Case Studies",
+      "pickAction": "Go to Case Study",
       "meta": "{{code}} · {{course}}"
     }
   },
@@ -1887,7 +1890,7 @@
     "desk": {
       "title": "Student Desk",
       "emptyTitle": "No courses or lessons yet",
-      "emptyBody": "Join a class using an invite code to start solving experiential case studies.",
+      "emptyBody": "Join a class using an invite code to start solving real-world situations.",
       "toCourses": "Explore my courses",
       "stats": {
         "enrolledCourses": "Enrolled classes",
@@ -1919,9 +1922,9 @@
       "listTitle": "Class list",
       "join": "Join a class",
       "emptyTitle": "You have not joined any class yet",
-      "emptyBody": "Enter the class code provided by your lecturer to access case studies.",
+      "emptyBody": "Enter the class code provided by your lecturer to start working on each Case Study.",
       "joinTitle": "Join a new class",
-      "joinDescription": "Enter the class code from your lecturer to access the case studies of the course.",
+      "joinDescription": "Enter the class code from your lecturer to access each Case Study of the course.",
       "codeLabel": "Class code *",
       "codePlaceholder": "e.g. SEC7A2",
       "joinSubmit": "Join class",
@@ -2110,7 +2113,7 @@
         "close": "Close details",
         "attempts": "Study attempts",
         "materials": "Materials",
-        "cases": "Case Studies",
+        "cases": "Case Study",
         "about": "About this course",
         "infoTitle": "Course information",
         "courseCode": "Course code:",
@@ -2122,22 +2125,22 @@
         "navMaterials": "Course materials",
         "navMaterialsSub": "{{count}} files - {{ready}} ready{{errorPart}}",
         "navMaterialsError": ", {{count}} errors",
-        "navCases": "Case Studies",
+        "navCases": "Case Study",
         "navCasesSub": "{{count}} cases"
       }
     },
     "cases": {
-      "byStatus": "Case Studies by status",
+      "byStatus": "Case Study by status",
       "byMode": "Learning mode per case",
       "library": "Case Study library",
       "emptyTitle": "No Case Study data yet",
-      "emptyDescription": "System-wide Case Studies appear once the server provides Case Study administration data.",
-      "header": "System-wide Case Studies",
-      "loadErrorTitle": "Failed to load Case Studies",
-      "emptyFilteredTitle": "No Case Studies found",
+      "emptyDescription": "System-wide Case Study items appear once the server provides Case Study administration data.",
+      "header": "System-wide Case Study",
+      "loadErrorTitle": "Failed to load Case Study list",
+      "emptyFilteredTitle": "No Case Study found",
       "emptyFilteredDescription": "No cases matched the current filters.",
-      "loading": "Loading Case Studies...",
-      "totalSuffix": "Case Studies",
+      "loading": "Loading Case Study list...",
+      "totalSuffix": "cases",
       "status": {
         "draft": "Draft",
         "reviewed": "Reviewed",
@@ -2166,7 +2169,7 @@
         "viewAction": "View"
       },
       "pagination": {
-        "showing": "Showing {{shown}} of {{total}} Case Studies",
+        "showing": "Showing {{shown}} of {{total}} cases",
         "prev": "Previous page",
         "next": "Next page"
       }
@@ -2221,13 +2224,6 @@
         "processing": "Chunking and embedding ({{percent}}%)",
         "failedFallback": "Unable to read file content"
       }
-    },
-    "rubric": {
-      "title": "Case quality evaluation",
-      "description": "1–5 scale for each criterion. This rates case quality for research; it is not a student grade.",
-      "saved": "Saved evaluation forms",
-      "emptyTitle": "No evaluation data yet",
-      "emptyDescription": "Evaluation forms appear once the server provides Case Study evaluation data."
     },
     "logs": {
       "emptyTitle": "No log data yet",
@@ -2405,8 +2401,14 @@
       "loading": "Loading case information…",
       "errorTitle": "Could not load the case",
       "errorDescription": "Check your network connection and try again.",
+      "notFoundTitle": "Case Study not found",
+      "notFoundDescription": "This case does not exist or has been removed.",
+      "forbiddenTitle": "Access denied for this case",
+      "forbiddenDescription": "You can only evaluate cases belonging to your own courses.",
       "noneTitle": "No case selected",
-      "noneDescription": "Open the rubric from a specific case to see its information.",
+      "noneDescriptionLecturer": "Open a case from the Case Study list to complete the research quality rubric.",
+      "noneDescriptionAdmin": "Open a case from the system-wide Case Study list to complete the research quality rubric.",
+      "goToCases": "Open Case Study list",
       "mode": {
         "BRANCHING_STUDY": "Branching Study",
         "REVIEW_STUDY": "Review Study"
@@ -2414,6 +2416,7 @@
     },
     "average": {
       "label": "Average score",
+      "fromCount": "from {{count}} criteria",
       "unavailable": "No score yet"
     },
     "criteria": {
@@ -2434,8 +2437,21 @@
       "title": "Case quality evaluation",
       "description": "Scale 1–5 for each criterion. This rates case quality for research, not student scores.",
       "noScore": "No score yet",
-      "unavailable": "Cannot score or save yet: the system has no rubric API.",
-      "save": "Save evaluation"
+      "scoreOptionLabel": "{{criterion}}: {{value}} out of 5",
+      "save": "Save evaluation",
+      "update": "Update evaluation",
+      "cancelEdit": "Cancel edit",
+      "saving": "Saving…",
+      "saveSuccess": "Evaluation saved",
+      "updateSuccess": "Evaluation updated",
+      "deleteSuccess": "Evaluation deleted",
+      "duplicateError": "You already evaluated this case. Switched to editing your saved evaluation.",
+      "forbiddenError": "You do not have permission to evaluate this case.",
+      "validationError": "Invalid evaluation data. Please check your scores and note.",
+      "networkError": "Could not reach the server. Check your connection and try again.",
+      "saveError": "Could not save the evaluation. Please try again.",
+      "incompleteHint": "Select all 3 criteria (1–5) to compute the average and save.",
+      "closeAlert": "Dismiss error"
     },
     "note": {
       "label": "Note (optional)",
@@ -2444,8 +2460,32 @@
     },
     "saved": {
       "title": "Saved evaluations",
-      "unavailableTitle": "Saved evaluations unavailable",
-      "unavailableDescription": "There is no API to read saved rubric evaluations yet."
+      "titleWithCount": "Saved evaluations ({{count}})",
+      "loading": "Loading saved evaluations…",
+      "errorTitle": "Could not load saved evaluations",
+      "errorDescription": "Check your network connection and try again.",
+      "emptyTitle": "No evaluations yet",
+      "emptyDescription": "Saved case quality evaluations will appear here.",
+      "evaluator": "Evaluator: {{name}}",
+      "averageBadge": "Avg {{score}}/5",
+      "noteLabel": "Note:",
+      "edit": "Edit",
+      "editAria": "Edit evaluation for {{title}}",
+      "delete": "Delete",
+      "deleteAria": "Delete evaluation for {{title}}",
+      "fallbackTitle": "Evaluation #{{index}}"
+    },
+    "deleteDialog": {
+      "title": "Delete evaluation?",
+      "description": "The evaluation for “{{title}}” will be permanently deleted and cannot be undone.",
+      "fallbackCase": "this case",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "error": "Could not delete the evaluation. Please try again."
+    },
+    "breadcrumb": {
+      "current": "Research rubric"
     }
   },
   "states": {
@@ -2456,7 +2496,7 @@
     "empty": {
       "courses": {
         "title": "No courses yet",
-        "description": "Create a course to upload course materials and build case studies.",
+        "description": "Create a course to upload course materials and build each Case Study.",
         "action": "Create course"
       }
     },
