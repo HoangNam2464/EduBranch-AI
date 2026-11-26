@@ -145,3 +145,18 @@ Yêu cầu PO: sửa tiêu đề bị cắt ở 1024/1280, sửa cuộn ngang �
 **Còn lại, có sẵn, ngoài phạm vi:**
 - Thẻ case trong "Kho Case Study" ở 1024 cắt nhãn đếm "1 nút" và meta "Không dùng cây" (`CaseLibraryCard`).
 - Backend sập khi Postgres ngắt kết nối pool đang rảnh: pool `pg` không có listener `error` (`database.service.ts`). Gặp khi Docker Desktop tự dừng trong lúc QA.
+
+**Review độc lập vòng 3** (Antigravity, chỉ đọc, HEAD `d0a2a79`):
+- Header: 168 lần đo, không tiêu đề nào bị cắt, không cuộn ngang. PASS.
+- Panel tìm kiếm: PASS.
+- Thanh điều phối: 32 lần đo, không tràn. PASS.
+- Trang 10.6 và `/lecturer/cases`: không cuộn ngang, không chú thích nào bị cắt. PASS.
+- Chức năng đã kiểm trước đó vẫn đúng: nút quay lại, "Xem" ở 10.6.
+- Thuật ngữ: failed, với 2 phát hiện. Đã sửa cả hai:
+  - (Medium) Còn 9 chuỗi "case studies" viết thường, một chuỗi hiện ở `/register`. Đã viết lại theo câu tiếng Việt gốc, giữ "Case Study".
+  - (Low) Câu đếm số đọc sai ("Showing 5 of 5 Case Study"). Câu đếm nay dùng "cases" ("Showing 5 of 5 cases", "4 cases"); các tiêu đề trạng thái dùng "Case Study list".
+- Đã đăng ký `PROPOSED` mọi key EN sửa ở vòng 3 mà trước đó chưa có trong registry: 21 key.
+- Kết quả sau khi sửa:
+  - `l10n-approval-check`: 1327 lỗi, giảm từ 1348. 0 lỗi ở 32 key đã sửa.
+  - lint exit 0; test 314/314; build exit 0.
+  - Không còn "case studies" trên `/lecturer/cases`, `/admin/cases` và `/register` (EN).

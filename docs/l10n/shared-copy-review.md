@@ -375,11 +375,11 @@
 | `g6.courses.detail.navCases` | Case Study | Case Study | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.courses.detail.navCasesSub` | {{count}} case | {{count}} cases | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.header` | Case Study toàn hệ thống | System-wide Case Study | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.loadErrorTitle` | Lỗi tải Case Study | Failed to load Case Study | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.loadErrorTitle` | Lỗi tải Case Study | Failed to load Case Study list | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.emptyFilteredTitle` | Không tìm thấy Case Study | No Case Study found | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.emptyFilteredDescription` | Không có tình huống nào khớp với bộ lọc hiện tại. | No cases matched the current filters. | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.loading` | Đang tải danh sách Case... | Loading Case Study... | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.totalSuffix` | Case Study | Case Study | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.loading` | Đang tải danh sách Case... | Loading Case Study list... | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.totalSuffix` | Case Study | cases | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.status.draft` | Bản nháp | Draft | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.status.reviewed` | Đã rà soát | Reviewed | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.status.approved` | Đã phê duyệt | Approved | PROPOSED | — | — | FE-032 PR #75 |
@@ -399,7 +399,7 @@
 | `g6.cases.card.noTree` | Không dùng cây | No decision tree | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.card.updatedAt` | Cập nhật {{date}} | Updated {{date}} | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.card.viewAction` | Xem | View | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.cases.pagination.showing` | Hiển thị {{shown}} trên {{total}} Case Study | Showing {{shown}} of {{total}} Case Study | PROPOSED | — | — | FE-032 PR #75 |
+| `g6.cases.pagination.showing` | Hiển thị {{shown}} trên {{total}} Case Study | Showing {{shown}} of {{total}} cases | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.pagination.prev` | Previous page | Previous page | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.cases.pagination.next` | Next page | Next page | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.aiService.config.lastUpdatedLabel` | Cập nhật lần cuối | Last updated | PROPOSED | — | — | FE-032 PR #75 |
@@ -654,3 +654,24 @@
 | `rubric.deleteDialog.confirm` | Xóa phiếu | Delete | PROPOSED | — | — | FE-029 |
 | `rubric.deleteDialog.deleting` | Đang xóa… | Deleting… | PROPOSED | — | — | FE-029 |
 | `rubric.deleteDialog.error` | Chưa xóa được phiếu đánh giá. Vui lòng thử lại. | Could not delete the evaluation. Please try again. | PROPOSED | — | — | FE-029 |
+| `nav.lecturer.cases` | Case Study | Case Study | PROPOSED | — | — | FE-029 R3 |
+| `nav.admin.cases` | Case Study | Case Study | PROPOSED | — | — | FE-029 R3 |
+| `shell.titles.adminCases` | Case Study toàn hệ thống | System-wide Case Study | PROPOSED | — | — | FE-029 R3 |
+| `g1.showcase.subtitle` | Giảng viên xây dựng Case Study từ tài liệu môn học; sinh viên ra quyết định, lập luận và suy ngẫm trên từng nhánh tình huống. | Lecturers build each Case Study from course materials; students make decisions, reason and reflect on every branch of the case. | PROPOSED | — | — | FE-029 R3 |
+| `g1.register.subtitleLecturer` | Cổng đăng ký dành cho Giảng viên & Cán bộ tham gia biên soạn Case Study | Registration for lecturers and staff who author Case Study content | PROPOSED | — | — | FE-029 R3 |
+| `g2.courses.archiveDialog.message` | Khóa học sẽ ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên. | The course will be hidden from the active list. Its materials and every Case Study are kept. | PROPOSED | — | — | FE-029 R3 |
+| `g2.courses.archiveDialog.successMessage` | {{code}} · {{name}} đã ẩn khỏi danh sách đang hoạt động. Tài liệu và case study được giữ nguyên. | {{code}} · {{name}} is hidden from the active list. Its materials and every Case Study are kept. | PROPOSED | — | — | FE-029 R3 |
+| `g2.materials.noCases` | Khóa học chưa có case study. | This course has no Case Study yet. | PROPOSED | — | — | FE-029 R3 |
+| `g3.list.statusPanel` | Case Study theo trạng thái | Case Study by status | PROPOSED | — | — | FE-029 R3 |
+| `g3.list.caseUnit` | Case Study | cases | PROPOSED | — | — | FE-029 R3 |
+| `g3.list.ofTotal` | trên {{count}} Case Study | of {{count}} cases | PROPOSED | — | — | FE-029 R3 |
+| `g3.list.emptyTitle` | Chưa có Case Study nào | No Case Study yet | PROPOSED | — | — | FE-029 R3 |
+| `g3.editor.back` | Quay lại Case Study | Back to Case Study | PROPOSED | — | — | FE-029 R3 |
+| `g3.studio.back` | Quay lại Case Study | Back to Case Study | PROPOSED | — | — | FE-029 R3 |
+| `g3.rubric.pickAction` | Đến Case Study | Go to Case Study | PROPOSED | — | — | FE-029 R3 |
+| `g5.desk.emptyBody` | Tham gia lớp học phần bằng mã mời để bắt đầu giải quyết các tình huống thực tế. | Join a class using an invite code to start solving real-world situations. | PROPOSED | — | — | FE-029 R3 |
+| `g5.courses.emptyBody` | Nhập mã lớp do giảng viên cung cấp để bắt đầu trải nghiệm các case study. | Enter the class code provided by your lecturer to start working on each Case Study. | PROPOSED | — | — | FE-029 R3 |
+| `g5.courses.joinDescription` | Nhập mã lớp do giảng viên cung cấp để truy cập các case study của môn. | Enter the class code from your lecturer to access each Case Study of the course. | PROPOSED | — | — | FE-029 R3 |
+| `g6.cases.byStatus` | Case Study theo trạng thái | Case Study by status | PROPOSED | — | — | FE-029 R3 |
+| `g6.cases.emptyDescription` | Case Study toàn hệ thống hiển thị khi máy chủ cung cấp dữ liệu quản trị Case Study. | System-wide Case Study items appear once the server provides Case Study administration data. | PROPOSED | — | — | FE-029 R3 |
+| `states.empty.courses.description` | Tạo khóa học để tải tài liệu môn học và xây dựng case study. | Create a course to upload course materials and build each Case Study. | PROPOSED | — | — | FE-029 R3 |

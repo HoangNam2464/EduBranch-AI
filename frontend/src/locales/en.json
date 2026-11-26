@@ -346,7 +346,7 @@
     },
     "showcase": {
       "title": "An experiential case-based learning platform",
-      "subtitle": "Lecturers build case studies from course materials; students make decisions, reason and reflect on every branch of the case."
+      "subtitle": "Lecturers build each Case Study from course materials; students make decisions, reason and reflect on every branch of the case."
     },
     "form": {
       "email": "Email address",
@@ -374,7 +374,7 @@
     "register": {
       "title": "Create a new account",
       "subtitleStudent": "Registration for students taking part in case-study learning",
-      "subtitleLecturer": "Registration for lecturers and staff who author case studies",
+      "subtitleLecturer": "Registration for lecturers and staff who author Case Study content",
       "roleLabel": "Role",
       "roleStudent": "Student",
       "roleLecturer": "Lecturer",
@@ -828,14 +828,14 @@
       },
       "archiveDialog": {
         "title": "Archive this course?",
-        "message": "The course will be hidden from the active list. Its materials and case studies are kept.",
+        "message": "The course will be hidden from the active list. Its materials and every Case Study are kept.",
         "summary": "{{code}} · {{name}}",
         "summaryCounts": "{{code}} · {{name}} · {{documents}} documents · {{cases}} cases",
         "confirm": "Archive course",
         "pending": "Archiving…",
         "failed": "The course could not be archived. Please try again.",
         "successTitle": "Course archived",
-        "successMessage": "{{code}} · {{name}} is hidden from the active list. Its materials and case studies are kept.",
+        "successMessage": "{{code}} · {{name}} is hidden from the active list. Its materials and every Case Study are kept.",
         "closeToast": "Close notification"
       }
     },
@@ -873,7 +873,7 @@
       "choose": "Choose files",
       "casesSection": "Case Study ({{count}})",
       "casesChip": "{{count}} cases",
-      "noCases": "This course has no case studies yet.",
+      "noCases": "This course has no Case Study yet.",
       "uploadedTitle": "Uploaded materials ({{count}})",
       "indexedSummary": "{{ready}}/{{total}} indexed",
       "chunks": "{{count}} chunks",
@@ -960,7 +960,7 @@
     "aiDraft": "AI Draft",
     "list": {
       "statusPanel": "Case Study by status",
-      "caseUnit": "Case Study",
+      "caseUnit": "cases",
       "modePanel": "Learning mode by case",
       "recent": "Recently updated cases",
       "recentEmpty": "No case has been updated yet.",
@@ -985,7 +985,7 @@
       "edit": "Edit",
       "view": "View",
       "showing": "Showing",
-      "ofTotal": "of {{count}} Case Study",
+      "ofTotal": "of {{count}} cases",
       "pageSize": "Cases per page",
       "pagination": "Pagination",
       "previous": "Previous page",
@@ -1890,7 +1890,7 @@
     "desk": {
       "title": "Student Desk",
       "emptyTitle": "No courses or lessons yet",
-      "emptyBody": "Join a class using an invite code to start solving experiential case studies.",
+      "emptyBody": "Join a class using an invite code to start solving real-world situations.",
       "toCourses": "Explore my courses",
       "stats": {
         "enrolledCourses": "Enrolled classes",
@@ -1922,9 +1922,9 @@
       "listTitle": "Class list",
       "join": "Join a class",
       "emptyTitle": "You have not joined any class yet",
-      "emptyBody": "Enter the class code provided by your lecturer to access case studies.",
+      "emptyBody": "Enter the class code provided by your lecturer to start working on each Case Study.",
       "joinTitle": "Join a new class",
-      "joinDescription": "Enter the class code from your lecturer to access the case studies of the course.",
+      "joinDescription": "Enter the class code from your lecturer to access each Case Study of the course.",
       "codeLabel": "Class code *",
       "codePlaceholder": "e.g. SEC7A2",
       "joinSubmit": "Join class",
@@ -2136,11 +2136,11 @@
       "emptyTitle": "No Case Study data yet",
       "emptyDescription": "System-wide Case Study items appear once the server provides Case Study administration data.",
       "header": "System-wide Case Study",
-      "loadErrorTitle": "Failed to load Case Study",
+      "loadErrorTitle": "Failed to load Case Study list",
       "emptyFilteredTitle": "No Case Study found",
       "emptyFilteredDescription": "No cases matched the current filters.",
-      "loading": "Loading Case Study...",
-      "totalSuffix": "Case Study",
+      "loading": "Loading Case Study list...",
+      "totalSuffix": "cases",
       "status": {
         "draft": "Draft",
         "reviewed": "Reviewed",
@@ -2169,7 +2169,7 @@
         "viewAction": "View"
       },
       "pagination": {
-        "showing": "Showing {{shown}} of {{total}} Case Study",
+        "showing": "Showing {{shown}} of {{total}} cases",
         "prev": "Previous page",
         "next": "Next page"
       }
@@ -2496,7 +2496,7 @@
     "empty": {
       "courses": {
         "title": "No courses yet",
-        "description": "Create a course to upload course materials and build case studies.",
+        "description": "Create a course to upload course materials and build each Case Study.",
         "action": "Create course"
       }
     },
