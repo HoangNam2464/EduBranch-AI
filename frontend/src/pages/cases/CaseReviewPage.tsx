@@ -20,7 +20,7 @@ import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isAxiosError } from "axios";
-import { ChevronDown, ChevronRight, CircleAlert, CircleCheck, GitFork, Link2, Plus, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, CircleAlert, CircleCheck, ClipboardList, GitFork, Link2, Plus, Trash2 } from "lucide-react";
 import { caseService, type UpdateCaseRequest } from "@/services/caseService";
 import { courseService } from "@/services/courseService";
 import type { CaseDetail, CaseNode, CaseOption, CaseStatus } from "@/types";
@@ -453,11 +453,25 @@ function CaseEditor({ caseId }: { caseId: string }) {
         </ToastRegion>
       )}
 
-      {!editable && (
-        <p role="note" className="rounded-eb-lg bg-surface px-5 py-3 text-[14px] leading-5 text-ink-secondary">
-          {t("caseReview.readOnlyNotice")}
-        </p>
-      )}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {!editable ? (
+          <p role="note" className="min-w-0 flex-1 rounded-eb-lg bg-surface px-5 py-3 text-[14px] leading-5 text-ink-secondary">
+            {t("caseReview.readOnlyNotice")}
+          </p>
+        ) : (
+          <span />
+        )}
+        <Button
+          variant="secondary"
+          size="md"
+          leadingIcon={ClipboardList}
+          iconStrokeWidth={1.7}
+          to={buildPath(PATHS.LECTURER.CASE_RUBRIC, { caseId })}
+          className="shrink-0 whitespace-nowrap"
+        >
+          {t("caseReview.openRubric")}
+        </Button>
+      </div>
 
       <div className="flex items-start gap-5">
         {saved.learningMode === "BRANCHING_STUDY" ? (

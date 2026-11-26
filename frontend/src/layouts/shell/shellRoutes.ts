@@ -215,6 +215,7 @@ const TITLE_TABLE: Array<[string, string]> = [
   [PATHS.ADMIN.COURSES, "shell.titles.adminCourses"],
   [PATHS.ADMIN.CASES, "shell.titles.adminCases"],
   [PATHS.ADMIN.RUBRIC, "shell.titles.adminRubric"],
+  [PATHS.ADMIN.CASE_RUBRIC, "shell.titles.adminRubric"],
   [PATHS.ADMIN.LOGS, "shell.titles.adminLogs"],
   [PATHS.ADMIN.AI_SERVICE, "shell.titles.adminAiService"],
   [PATHS.ADMIN.SETTINGS, "shell.titles.adminSettings"],

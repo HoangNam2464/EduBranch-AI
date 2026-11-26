@@ -338,7 +338,7 @@ export function AdminCasesPage() {
                   <div className="flex items-center justify-between border-t border-line/60 pt-3 mt-3 text-[12px]">
                     <span className="text-ink-muted">{t("g6.cases.card.updatedAt", { date: c.updatedAt })}</span>
                     <Link
-                      to={buildPath(PATHS.LECTURER.CASE_REVIEW, { caseId: c.id })}
+                      to={buildPath(PATHS.ADMIN.CASE_RUBRIC, { caseId: c.id })}
                       className="rounded-eb-md border border-line bg-surface px-2.5 py-1 text-[12px] font-medium text-ink hover:bg-canvas transition-colors"
                     >
                       {t("g6.cases.card.viewAction")}

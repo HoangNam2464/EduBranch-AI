@@ -584,3 +584,70 @@
 | `g4.queue.pagination.previous` | Trang trước | Previous page | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.pagination.next` | Trang sau | Next page | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.pagination.pageN` | Trang {{page}} | Page {{page}} | PROPOSED | — | — | FE-019 PR #68 |
+| `caseReview.openRubric` | Rubric nghiên cứu | Research rubric | PROPOSED | — | — | FE-029 |
+| `rubric.case.regionLabel` | Tình huống được đánh giá | Case being evaluated | PROPOSED | — | — | FE-029 |
+| `rubric.case.loading` | Đang tải thông tin case… | Loading case information… | PROPOSED | — | — | FE-029 |
+| `rubric.case.errorTitle` | Không tải được case | Could not load the case | PROPOSED | — | — | FE-029 |
+| `rubric.case.errorDescription` | Kiểm tra kết nối mạng rồi thử lại. | Check your network connection and try again. | PROPOSED | — | — | FE-029 |
+| `rubric.case.notFoundTitle` | Không tìm thấy Case Study | Case Study not found | PROPOSED | — | — | FE-029 |
+| `rubric.case.notFoundDescription` | Case này không tồn tại hoặc đã bị xóa. | This case does not exist or has been removed. | PROPOSED | — | — | FE-029 |
+| `rubric.case.forbiddenTitle` | Không có quyền truy cập case này | Access denied for this case | PROPOSED | — | — | FE-029 |
+| `rubric.case.forbiddenDescription` | Bạn chỉ có thể đánh giá các case thuộc khóa học do mình phụ trách. | You can only evaluate cases belonging to your own courses. | PROPOSED | — | — | FE-029 |
+| `rubric.case.noneTitle` | Chưa chọn case | No case selected | PROPOSED | — | — | FE-029 |
+| `rubric.case.noneDescriptionLecturer` | Chọn một tình huống từ danh sách Case Study để chấm điểm rubric nghiên cứu. | Open a case from Case Studies to complete the research quality rubric. | PROPOSED | — | — | FE-029 |
+| `rubric.case.noneDescriptionAdmin` | Chọn một tình huống từ danh sách Case Study toàn hệ thống để chấm điểm rubric nghiên cứu. | Open a case from All Case Studies to complete the research quality rubric. | PROPOSED | — | — | FE-029 |
+| `rubric.case.goToCases` | Mở danh sách Case Study | Browse Case Studies | PROPOSED | — | — | FE-029 |
+| `rubric.case.mode.BRANCHING_STUDY` | Branching Study | Branching Study | PROPOSED | — | — | FE-029 |
+| `rubric.case.mode.REVIEW_STUDY` | Review Study | Review Study | PROPOSED | — | — | FE-029 |
+| `rubric.average.label` | Điểm trung bình | Average score | PROPOSED | — | — | FE-029 |
+| `rubric.average.fromCount` | từ {{count}} tiêu chí | from {{count}} criteria | PROPOSED | — | — | FE-029 |
+| `rubric.average.unavailable` | Chưa có điểm | No score yet | PROPOSED | — | — | FE-029 |
+| `rubric.criteria.realism.name` | Tính thực tế | Realism | PROPOSED | — | — | FE-029 |
+| `rubric.criteria.realism.description` | Mức độ sát với các tình huống khủng hoảng thực tế tại doanh nghiệp | How closely it matches real business crisis situations | PROPOSED | — | — | FE-029 |
+| `rubric.criteria.difficulty.name` | Độ khó | Difficulty | PROPOSED | — | — | FE-029 |
+| `rubric.criteria.difficulty.description` | Mức độ phức tạp của bài toán và đòi hỏi tư duy phân tích cao | How complex the problem is and how much analytical thinking it demands | PROPOSED | — | — | FE-029 |
+| `rubric.criteria.curriculumFit.name` | Phù hợp môn | Course fit | PROPOSED | — | — | FE-029 |
+| `rubric.criteria.curriculumFit.description` | Độ gắn kết với mục tiêu chuẩn đầu ra (CLO) của học phần | How well it aligns with the course learning outcomes (CLO) | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.title` | Đánh giá chất lượng tình huống | Case quality evaluation | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.description` | Thang 1–5 cho mỗi tiêu chí. Đây là đánh giá chất lượng case phục vụ nghiên cứu, không phải điểm của sinh viên. | Scale 1–5 for each criterion. This rates case quality for research, not student scores. | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.noScore` | Chưa có điểm | No score yet | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.scoreOptionLabel` | {{criterion}}: {{value}} trên 5 | {{criterion}}: {{value}} out of 5 | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.save` | Lưu phiếu đánh giá | Save evaluation | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.update` | Cập nhật phiếu đánh giá | Update evaluation | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.cancelEdit` | Hủy chỉnh sửa | Cancel edit | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.saving` | Đang lưu… | Saving… | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.saveSuccess` | Đã lưu phiếu đánh giá | Evaluation saved | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.updateSuccess` | Đã cập nhật phiếu đánh giá | Evaluation updated | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.deleteSuccess` | Đã xóa phiếu đánh giá | Evaluation deleted | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.duplicateError` | Bạn đã có phiếu đánh giá cho case này. Hệ thống đã chuyển sang chế độ sửa phiếu đã lưu. | You already evaluated this case. Switched to editing your saved evaluation. | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.forbiddenError` | Bạn không có quyền thực hiện đánh giá cho case này. | You do not have permission to evaluate this case. | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.validationError` | Dữ liệu đánh giá chưa hợp lệ. Vui lòng kiểm tra điểm và ghi chú. | Invalid evaluation data. Please check your scores and note. | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.networkError` | Không thể kết nối máy chủ. Kiểm tra mạng rồi thử lại. | Could not reach the server. Check your connection and try again. | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.saveError` | Chưa lưu được phiếu đánh giá. Vui lòng thử lại. | Could not save the evaluation. Please try again. | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.incompleteHint` | Chọn đủ 3 tiêu chí (1–5) để tính điểm trung bình và lưu phiếu. | Select all 3 criteria (1–5) to compute the average and save. | PROPOSED | — | — | FE-029 |
+| `rubric.scoring.closeAlert` | Đóng thông báo lỗi | Dismiss error | PROPOSED | — | — | FE-029 |
+| `rubric.note.label` | Ghi chú (không bắt buộc) | Note (optional) | PROPOSED | — | — | FE-029 |
+| `rubric.note.placeholder` | Điểm cần chỉnh ở phiên bản sau… | What to adjust in the next version… | PROPOSED | — | — | FE-029 |
+| `rubric.note.counter` | {{count}}/{{max}} ký tự | {{count}}/{{max}} characters | PROPOSED | — | — | FE-029 |
+| `rubric.saved.title` | Phiếu đánh giá đã lưu | Saved evaluations | PROPOSED | — | — | FE-029 |
+| `rubric.saved.titleWithCount` | Phiếu đánh giá đã lưu ({{count}}) | Saved evaluations ({{count}}) | PROPOSED | — | — | FE-029 |
+| `rubric.saved.loading` | Đang tải danh sách phiếu đánh giá… | Loading saved evaluations… | PROPOSED | — | — | FE-029 |
+| `rubric.saved.errorTitle` | Không tải được danh sách phiếu đánh giá | Could not load saved evaluations | PROPOSED | — | — | FE-029 |
+| `rubric.saved.errorDescription` | Kiểm tra kết nối mạng rồi thử lại. | Check your network connection and try again. | PROPOSED | — | — | FE-029 |
+| `rubric.saved.emptyTitle` | Chưa có phiếu đánh giá nào | No evaluations yet | PROPOSED | — | — | FE-029 |
+| `rubric.saved.emptyDescription` | Các phiếu đánh giá chất lượng case sau khi lưu sẽ hiển thị tại đây. | Saved case quality evaluations will appear here. | PROPOSED | — | — | FE-029 |
+| `rubric.saved.evaluator` | Người đánh giá: {{name}} | Evaluator: {{name}} | PROPOSED | — | — | FE-029 |
+| `rubric.saved.averageBadge` | TB {{score}}/5 | Avg {{score}}/5 | PROPOSED | — | — | FE-029 |
+| `rubric.saved.noteLabel` | Ghi chú: | Note: | PROPOSED | — | — | FE-029 |
+| `rubric.saved.edit` | Sửa | Edit | PROPOSED | — | — | FE-029 |
+| `rubric.saved.editAria` | Sửa phiếu đánh giá cho {{title}} | Edit evaluation for {{title}} | PROPOSED | — | — | FE-029 |
+| `rubric.saved.delete` | Xóa | Delete | PROPOSED | — | — | FE-029 |
+| `rubric.saved.deleteAria` | Xóa phiếu đánh giá cho {{title}} | Delete evaluation for {{title}} | PROPOSED | — | — | FE-029 |
+| `rubric.saved.fallbackTitle` | Phiếu #{{index}} | Evaluation #{{index}} | PROPOSED | — | — | FE-029 |
+| `rubric.deleteDialog.title` | Xóa phiếu đánh giá? | Delete evaluation? | PROPOSED | — | — | FE-029 |
+| `rubric.deleteDialog.description` | Phiếu đánh giá cho “{{title}}” sẽ bị xóa vĩnh viễn và không thể khôi phục. | The evaluation for “{{title}}” will be permanently deleted and cannot be undone. | PROPOSED | — | — | FE-029 |
+| `rubric.deleteDialog.fallbackCase` | tình huống này | this case | PROPOSED | — | — | FE-029 |
+| `rubric.deleteDialog.cancel` | Hủy bỏ | Cancel | PROPOSED | — | — | FE-029 |
+| `rubric.deleteDialog.confirm` | Xóa phiếu | Delete | PROPOSED | — | — | FE-029 |
+| `rubric.deleteDialog.deleting` | Đang xóa… | Deleting… | PROPOSED | — | — | FE-029 |
+| `rubric.deleteDialog.error` | Chưa xóa được phiếu đánh giá. Vui lòng thử lại. | Could not delete the evaluation. Please try again. | PROPOSED | — | — | FE-029 |

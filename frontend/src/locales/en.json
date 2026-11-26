@@ -146,6 +146,7 @@
   "caseReview": {
     "back": "Back to cases",
     "breadcrumb": "Case Study",
+    "openRubric": "Research rubric",
     "editor": "Editor",
     "editorReview": "Review Study editor",
     "mode": {
@@ -2222,13 +2223,6 @@
         "failedFallback": "Unable to read file content"
       }
     },
-    "rubric": {
-      "title": "Case quality evaluation",
-      "description": "1–5 scale for each criterion. This rates case quality for research; it is not a student grade.",
-      "saved": "Saved evaluation forms",
-      "emptyTitle": "No evaluation data yet",
-      "emptyDescription": "Evaluation forms appear once the server provides Case Study evaluation data."
-    },
     "logs": {
       "emptyTitle": "No log data yet",
       "emptyDescription": "The system log appears once the server provides activity log data.",
@@ -2405,8 +2399,14 @@
       "loading": "Loading case information…",
       "errorTitle": "Could not load the case",
       "errorDescription": "Check your network connection and try again.",
+      "notFoundTitle": "Case Study not found",
+      "notFoundDescription": "This case does not exist or has been removed.",
+      "forbiddenTitle": "Access denied for this case",
+      "forbiddenDescription": "You can only evaluate cases belonging to your own courses.",
       "noneTitle": "No case selected",
-      "noneDescription": "Open the rubric from a specific case to see its information.",
+      "noneDescriptionLecturer": "Open a case from Case Studies to complete the research quality rubric.",
+      "noneDescriptionAdmin": "Open a case from All Case Studies to complete the research quality rubric.",
+      "goToCases": "Browse Case Studies",
       "mode": {
         "BRANCHING_STUDY": "Branching Study",
         "REVIEW_STUDY": "Review Study"
@@ -2414,6 +2414,7 @@
     },
     "average": {
       "label": "Average score",
+      "fromCount": "from {{count}} criteria",
       "unavailable": "No score yet"
     },
     "criteria": {
@@ -2434,8 +2435,21 @@
       "title": "Case quality evaluation",
       "description": "Scale 1–5 for each criterion. This rates case quality for research, not student scores.",
       "noScore": "No score yet",
-      "unavailable": "Cannot score or save yet: the system has no rubric API.",
-      "save": "Save evaluation"
+      "scoreOptionLabel": "{{criterion}}: {{value}} out of 5",
+      "save": "Save evaluation",
+      "update": "Update evaluation",
+      "cancelEdit": "Cancel edit",
+      "saving": "Saving…",
+      "saveSuccess": "Evaluation saved",
+      "updateSuccess": "Evaluation updated",
+      "deleteSuccess": "Evaluation deleted",
+      "duplicateError": "You already evaluated this case. Switched to editing your saved evaluation.",
+      "forbiddenError": "You do not have permission to evaluate this case.",
+      "validationError": "Invalid evaluation data. Please check your scores and note.",
+      "networkError": "Could not reach the server. Check your connection and try again.",
+      "saveError": "Could not save the evaluation. Please try again.",
+      "incompleteHint": "Select all 3 criteria (1–5) to compute the average and save.",
+      "closeAlert": "Dismiss error"
     },
     "note": {
       "label": "Note (optional)",
@@ -2444,8 +2458,29 @@
     },
     "saved": {
       "title": "Saved evaluations",
-      "unavailableTitle": "Saved evaluations unavailable",
-      "unavailableDescription": "There is no API to read saved rubric evaluations yet."
+      "titleWithCount": "Saved evaluations ({{count}})",
+      "loading": "Loading saved evaluations…",
+      "errorTitle": "Could not load saved evaluations",
+      "errorDescription": "Check your network connection and try again.",
+      "emptyTitle": "No evaluations yet",
+      "emptyDescription": "Saved case quality evaluations will appear here.",
+      "evaluator": "Evaluator: {{name}}",
+      "averageBadge": "Avg {{score}}/5",
+      "noteLabel": "Note:",
+      "edit": "Edit",
+      "editAria": "Edit evaluation for {{title}}",
+      "delete": "Delete",
+      "deleteAria": "Delete evaluation for {{title}}",
+      "fallbackTitle": "Evaluation #{{index}}"
+    },
+    "deleteDialog": {
+      "title": "Delete evaluation?",
+      "description": "The evaluation for “{{title}}” will be permanently deleted and cannot be undone.",
+      "fallbackCase": "this case",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting…",
+      "error": "Could not delete the evaluation. Please try again."
     }
   },
   "states": {
