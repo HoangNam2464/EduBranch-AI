@@ -343,6 +343,26 @@ describe("Spec 007 MVP completion — real PostgreSQL integration", () => {
       expect(byName.total).toBeGreaterThan(0);
       expect(failed.metrics.loginCount).toBe(2);
 
+      // 10.9 "Đăng nhập" group: succeeded + failed, total and pages exact across both types.
+      const succeeded = await admin.listLogs({ eventType: ["LOGIN_SUCCEEDED"] });
+      const anyFailed = await admin.listLogs({ eventType: ["LOGIN_FAILED"] });
+      const signIns = await admin.listLogs({ eventType: ["LOGIN_SUCCEEDED", "LOGIN_FAILED"], size: 1 });
+      expect(signIns.total).toBe(succeeded.total + anyFailed.total);
+      expect(signIns.total).toBeGreaterThan(anyFailed.total);
+      expect(signIns.logs).toHaveLength(1);
+      const allPages = [];
+      for (let page = 1; page <= signIns.total; page++) {
+        allPages.push(...(await admin.listLogs({ eventType: ["LOGIN_SUCCEEDED", "LOGIN_FAILED"], size: 1, page })).logs);
+      }
+      expect(new Set(allPages.map((l) => l.id)).size).toBe(signIns.total);
+      expect(allPages.every((l) => l.eventTitle === "LOGIN_SUCCEEDED" || l.eventTitle === "LOGIN_FAILED")).toBe(true);
+
+      // Order is applied in SQL, so the oldest-first list is the newest-first list reversed.
+      const newest = await admin.listLogs({ order: "newest", size: 100 });
+      const oldest = await admin.listLogs({ order: "oldest", size: 100 });
+      expect(oldest.total).toBe(newest.total);
+      expect(oldest.logs.map((l) => l.id)).toEqual([...newest.logs].reverse().map((l) => l.id));
+
       const before = await admin.getSettings();
       expect(before.platformName).toBe("EduBranch AI");
       expect(before.limits.maxFileSize).toBe("50 MB");

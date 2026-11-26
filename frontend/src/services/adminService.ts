@@ -152,6 +152,21 @@ export interface AdminSystemLogItem {
 export const ADMIN_LOG_TIME_RANGES = ["today", "7d", "30d", "all"] as const;
 export type AdminLogTimeRange = (typeof ADMIN_LOG_TIME_RANGES)[number];
 
+/** Sort order of `GET /admin/logs`, applied in SQL so every page follows it. */
+export type AdminLogOrder = "newest" | "oldest";
+
+/**
+ * Event-type filter groups of 10.9 → the audit event types each one covers (backend `AUDIT_EVENT_TYPES`).
+ * A group with success and failure events covers both. There is no submission event in the API yet, so
+ * there is no "Nộp bài" group.
+ */
+export const ADMIN_LOG_EVENT_GROUPS = {
+  login: ["LOGIN_SUCCEEDED", "LOGIN_FAILED"],
+  aiGen: ["CASE_GENERATED", "CASE_GENERATION_FAILED"],
+  material: ["MATERIAL_UPLOADED"],
+} as const satisfies Record<string, readonly string[]>;
+export type AdminLogEventGroup = keyof typeof ADMIN_LOG_EVENT_GROUPS;
+
 export interface AdminLogsResponse {
   logs: AdminSystemLogItem[];
   metrics: {
@@ -259,12 +274,16 @@ export const adminService = {
    */
   async getSystemLogs(params?: {
     search?: string;
-    eventType?: string;
+    /** Audit event types; several are sent as one comma-separated `eventType` (e.g. a filter group). */
+    eventTypes?: readonly string[];
     timeRange?: AdminLogTimeRange;
+    order?: AdminLogOrder;
     page?: number;
     size?: number;
   }): Promise<AdminLogsResponse> {
-    const res = await apiClient.get<Envelope<AdminLogsResponse>>("/admin/logs", { params });
+    const { eventTypes, ...rest } = params ?? {};
+    const query = eventTypes?.length ? { ...rest, eventType: eventTypes.join(",") } : rest;
+    const res = await apiClient.get<Envelope<AdminLogsResponse>>("/admin/logs", { params: query });
     return extractData<AdminLogsResponse>(res);
   },
 

@@ -979,7 +979,8 @@
       "noticeCourse": "The AI only uses materials that have finished indexing. {{code}} has {{ready}}/{{total}} materials ready.",
       "noticeCourseFailed": "The AI only uses materials that have finished indexing. {{code}} has {{ready}}/{{total}} materials ready; {{failed}} failed files need to be uploaded again.",
       "manageMaterials": "Manage materials",
-      "nodes": "{{count}} nodes",
+      "nodes_one": "{{count}} node",
+      "nodes_other": "{{count}} nodes",
       "noTree": "No tree",
       "updated": "Updated {{date}}",
       "edit": "Edit",
@@ -2289,6 +2290,23 @@
         "target": "Related target:",
         "technicalDetails": "Technical details:",
         "noDetails": "No additional details."
+      },
+      "events": {
+        "LOGIN_SUCCEEDED": "Sign-in succeeded",
+        "LOGIN_FAILED": "Sign-in failed",
+        "USER_LOCKED": "Account locked",
+        "USER_UNLOCKED": "Account unlocked",
+        "USER_ROLE_CHANGED": "User role changed",
+        "CASE_GENERATED": "AI case generated",
+        "CASE_GENERATION_FAILED": "AI case generation failed",
+        "CASE_STATUS_CHANGED": "Case status changed",
+        "MATERIAL_UPLOADED": "Material uploaded",
+        "SETTINGS_UPDATED": "System settings updated"
+      },
+      "reasons": {
+        "UNKNOWN_ACCOUNT": "Unknown account",
+        "BAD_PASSWORD": "Wrong password",
+        "ACCOUNT_LOCKED": "Account is locked"
       }
     },
     "settings": {
