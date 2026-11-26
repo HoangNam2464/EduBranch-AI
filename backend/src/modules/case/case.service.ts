@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   NotFoundException,
   BadRequestException,
+  BadGatewayException,
   ConflictException,
   Logger,
   Optional,
@@ -81,6 +82,27 @@ export class CaseService {
         throw new ConflictException("Course is archived");
       }
 
+      const nodes = Array.isArray(aiResponse?.nodes) ? aiResponse.nodes : [];
+      const rootIndex = aiResponse?.root_node_index;
+      if (!Number.isInteger(rootIndex) || rootIndex < 0 || rootIndex >= nodes.length) {
+        throw new BadGatewayException("AI generated case has invalid root_node_index");
+      }
+      for (const node of nodes) {
+        if (node.options && Array.isArray(node.options)) {
+          for (const opt of node.options) {
+            if (opt.next_node_index !== null && opt.next_node_index !== undefined) {
+              if (
+                !Number.isInteger(opt.next_node_index) ||
+                opt.next_node_index < 0 ||
+                opt.next_node_index >= nodes.length
+              ) {
+                throw new BadGatewayException("AI generated case has invalid option next_node_index");
+              }
+            }
+          }
+        }
+      }
+
       const caseId = randomUUID();
       const title = aiResponse.title || "University Case Study";
       const description = aiResponse.description || "Interactive case study generated from course materials.";
@@ -91,7 +113,6 @@ export class CaseService {
         [caseId, title, description, courseId, lecturerId],
       );
 
-      const nodes = aiResponse.nodes || [];
       const nodeMap = new Map<number, string>();
       for (let i = 0; i < nodes.length; i++) {
         nodeMap.set(i, randomUUID());
@@ -111,7 +132,7 @@ export class CaseService {
         if (node.options && Array.isArray(node.options)) {
           for (const opt of node.options) {
             const nextNodeId =
-              opt.next_node_index != null ? nodeMap.get(opt.next_node_index) || null : null;
+              opt.next_node_index != null ? nodeMap.get(opt.next_node_index) ?? null : null;
             const optionText = opt.text || opt.option_text || "Choose Option";
             const consequence = opt.consequence || "Consequence recorded.";
 
@@ -124,11 +145,8 @@ export class CaseService {
         }
       }
 
-      const rootIndex = aiResponse.root_node_index ?? 0;
-      const rootNodeId = nodeMap.get(rootIndex);
-      if (rootNodeId) {
-        await client.query(`UPDATE cases SET root_node_id = $1 WHERE id = $2`, [rootNodeId, caseId]);
-      }
+      const rootNodeId = nodeMap.get(rootIndex)!;
+      await client.query(`UPDATE cases SET root_node_id = $1 WHERE id = $2`, [rootNodeId, caseId]);
 
       await client.query("COMMIT");
 
@@ -158,22 +176,58 @@ export class CaseService {
     }
   }
 
-  async getCaseById(caseId: string, role?: string, _userId?: string) {
-    const caseRes = await this.db.query(
-      `SELECT c.*, co.lecturer_id
-       FROM cases c
-       JOIN courses co ON c.course_id = co.id
-       WHERE c.id = $1`,
-      [caseId],
-    );
-    if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
+  async getCaseById(caseId: string, role?: string, userId?: string) {
+    if (role !== "STUDENT" && role !== "LECTURER" && role !== "ADMIN") {
+      throw new ForbiddenException("Access denied");
+    }
+    if (role === "LECTURER" && !userId) {
+      throw new ForbiddenException("Access denied");
+    }
+
+    let caseRes;
+    if (role === "STUDENT") {
+      caseRes = await this.db.query(
+        `SELECT c.*, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1 AND c.status = 'PUBLISHED'`,
+        [caseId],
+      );
+    } else if (role === "LECTURER") {
+      caseRes = await this.db.query(
+        `SELECT c.*, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1 AND co.lecturer_id = $2`,
+        [caseId, userId],
+      );
+    } else {
+      caseRes = await this.db.query(
+        `SELECT c.*, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1`,
+        [caseId],
+      );
+    }
+
+    if (caseRes.rows.length === 0) {
+      if (role !== "ADMIN") {
+        const existsRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+        if (existsRes.rows.length > 0) {
+          throw new ForbiddenException(
+            role === "STUDENT"
+              ? "Students can only access PUBLISHED cases"
+              : "You can only access cases in your own courses",
+          );
+        }
+      }
+      throw new NotFoundException(`Case ${caseId} not found`);
+    }
     const caseData = caseRes.rows[0];
 
     // P0-SEC-01 & P0-SEC-02: Strict role gating and data masking for students
     if (role === "STUDENT") {
-      if (caseData.status !== "PUBLISHED") {
-        throw new ForbiddenException("Students can only access PUBLISHED cases");
-      }
       // P0-SEC-02: Never leak decision tree, options, or consequences to students
       // Students play through /branching-attempts endpoints step-by-step
       return {
@@ -190,7 +244,7 @@ export class CaseService {
       };
     }
 
-    // For lecturers: retrieve full decision tree for ReactFlow review editor
+    // For lecturers & admin: retrieve full decision tree for review editor / rubric
     const nodesRes = await this.db.query(
       "SELECT * FROM case_nodes WHERE case_id = $1 ORDER BY node_index ASC",
       [caseId],
@@ -220,17 +274,72 @@ export class CaseService {
     };
   }
 
-  async getCasesByCourse(courseId: string, role?: string) {
-    let query = "SELECT * FROM cases WHERE course_id = $1";
-    const params: any[] = [courseId];
-
-    if (role === "STUDENT") {
-      query += " AND status = 'PUBLISHED'";
+  async getCasesByCourse(courseId: string, user?: { id?: string; role?: string }) {
+    const role = user?.role;
+    const userId = user?.id;
+    if (role !== "ADMIN" && role !== "LECTURER" && role !== "STUDENT") {
+      throw new ForbiddenException("Access denied");
+    }
+    if (role !== "ADMIN" && !userId) {
+      throw new ForbiddenException("Access denied");
     }
 
-    query += " ORDER BY updated_at DESC";
+    if (role === "ADMIN") {
+      const courseRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+      if (courseRes.rows.length === 0) {
+        throw new NotFoundException(`Course ${courseId} not found`);
+      }
+      const res = await this.db.query(
+        "SELECT * FROM cases WHERE course_id = $1 ORDER BY updated_at DESC",
+        [courseId],
+      );
+      return res.rows;
+    }
 
-    const res = await this.db.query(query, params);
+    if (role === "LECTURER") {
+      const ownedRes = await this.db.query(
+        "SELECT id FROM courses WHERE id = $1 AND lecturer_id = $2",
+        [courseId, userId],
+      );
+      if (ownedRes.rows.length === 0) {
+        const existsRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+        if (existsRes.rows.length === 0) {
+          throw new NotFoundException(`Course ${courseId} not found`);
+        }
+        throw new ForbiddenException("You can only view cases in your own courses");
+      }
+      const res = await this.db.query(
+        `SELECT c.*
+         FROM cases c
+         JOIN courses co ON co.id = c.course_id
+         WHERE c.course_id = $1 AND co.lecturer_id = $2
+         ORDER BY c.updated_at DESC`,
+        [courseId, userId],
+      );
+      return res.rows;
+    }
+
+    // STUDENT: must be enrolled in course_enrollments; returns only PUBLISHED cases with safe projection
+    const enrolledRes = await this.db.query(
+      "SELECT id FROM course_enrollments WHERE course_id = $1 AND student_id = $2",
+      [courseId, userId],
+    );
+    if (enrolledRes.rows.length === 0) {
+      const existsRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+      if (existsRes.rows.length === 0) {
+        throw new NotFoundException(`Course ${courseId} not found`);
+      }
+      throw new ForbiddenException("You are not enrolled in this course");
+    }
+
+    const res = await this.db.query(
+      `SELECT c.id, c.title, c.description, c.course_id, c.status, c.learning_mode, c.created_at, c.updated_at
+       FROM cases c
+       JOIN course_enrollments ce ON ce.course_id = c.course_id AND ce.student_id = $2
+       WHERE c.course_id = $1 AND c.status = 'PUBLISHED'
+       ORDER BY c.updated_at DESC`,
+      [courseId, userId],
+    );
     return res.rows;
   }
 

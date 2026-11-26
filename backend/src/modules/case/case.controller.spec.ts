@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CaseController } from './case.controller';
 import { CaseService } from './case.service';
-import { ForbiddenException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, ParseUUIDPipe, ValidationPipe } from '@nestjs/common';
+import { ROUTE_ARGS_METADATA } from '@nestjs/common/constants';
+import { UpdateCaseStatusDto } from './dto/update-case-status.dto';
 
 describe('CaseController', () => {
   let controller: CaseController;
@@ -58,12 +60,13 @@ describe('CaseController', () => {
   });
 
   describe('getCasesByCourse', () => {
-    it('should call getCasesByCourse using authenticated user role', async () => {
+    it('should call getCasesByCourse using authenticated user object', async () => {
       mockCaseService.getCasesByCourse.mockResolvedValue([]);
-      const result = await controller.getCasesByCourse('c1', { id: 'student-1', role: 'STUDENT' });
+      const user = { id: 'student-1', role: 'STUDENT' };
+      const result = await controller.getCasesByCourse('c1', user);
 
       expect(result).toEqual({ status: 'SUCCESS', data: [] });
-      expect(mockCaseService.getCasesByCourse).toHaveBeenCalledWith('c1', 'STUDENT');
+      expect(mockCaseService.getCasesByCourse).toHaveBeenCalledWith('c1', user);
     });
   });
 
@@ -108,6 +111,30 @@ describe('CaseController', () => {
           { id: 'student-1', role: 'STUDENT' },
         ),
       ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('pipes & DTO validation (D, F)', () => {
+    it.each(['getCasesByCourse', 'getCaseById', 'updateCase', 'updateCaseStatus'] as const)(
+      'attaches ParseUUIDPipe to route parameter on %s',
+      (method) => {
+        const meta = Reflect.getMetadata(ROUTE_ARGS_METADATA, CaseController, method) as Record<string, any>;
+        const paramMeta = Object.values(meta).find((entry) => entry.index === 0);
+        expect(paramMeta.pipes).toContain(ParseUUIDPipe);
+      },
+    );
+
+    it('validates UpdateCaseStatusDto via ValidationPipe', async () => {
+      const pipe = new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true, transform: true });
+      await expect(
+        pipe.transform({ status: 'PUBLISHED' }, { type: 'body', metatype: UpdateCaseStatusDto }),
+      ).resolves.toEqual({ status: 'PUBLISHED' });
+      await expect(
+        pipe.transform({ status: 'INVALID' }, { type: 'body', metatype: UpdateCaseStatusDto }),
+      ).rejects.toThrow(BadRequestException);
+      await expect(
+        pipe.transform({ status: 'DRAFT', extra: 'x' }, { type: 'body', metatype: UpdateCaseStatusDto }),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 });

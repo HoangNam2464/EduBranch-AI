@@ -139,7 +139,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
   const mockCaseService = {
     generateCase: jest.fn().mockImplementation(async (courseId: string, lecturerId: string, dto: any) => {
-      if (courseId === "course-of-lecturer-a" && lecturerId !== "lecturer-owner-a") {
+      if (courseId === validCourseId && lecturerId !== "lecturer-owner-a") {
         throw new ForbiddenException("You do not own this course");
       }
       return { id: "case-generated-1", courseId, status: "DRAFT" };
@@ -166,6 +166,10 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
   const validReasoningId = "11111111-1111-1111-1111-111111111111";
   const validAttemptId = "22222222-2222-2222-2222-222222222222";
+  const validCourseId = "33333333-3333-4333-8333-333333333333";
+  const validCaseId = "44444444-4444-4444-8444-444444444444";
+  const validNodeId = "55555555-5555-4555-8555-555555555555";
+  const validOptionId = "66666666-6666-4666-8666-666666666666";
 
   const mockReasoningService = {
     getReasoningById: jest.fn().mockResolvedValue({
@@ -278,7 +282,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
         .expect(401);
 
       await request(app.getHttpServer())
-        .post("/api/v1/cases/case-123/branching-attempts")
+        .post(`/api/v1/cases/${validCaseId}/branching-attempts`)
         .expect(401);
     });
 
@@ -419,13 +423,13 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
       it("[RBAC-04] PATCH /cases/:id/status — LECTURER allowed (200), STUDENT forbidden (403)", async () => {
         await request(app.getHttpServer())
-          .patch("/api/v1/cases/case-1/status")
+          .patch(`/api/v1/cases/${validCaseId}/status`)
           .set("Authorization", `Bearer ${lecturerToken}`)
           .send({ status: "PUBLISHED" })
           .expect(200);
 
         await request(app.getHttpServer())
-          .patch("/api/v1/cases/case-1/status")
+          .patch(`/api/v1/cases/${validCaseId}/status`)
           .set("Authorization", `Bearer ${studentToken}`)
           .send({ status: "PUBLISHED" })
           .expect(403);
@@ -437,13 +441,13 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
       it("[RBAC-05] POST /cases/:caseId/branching-attempts — STUDENT allowed (201), LECTURER forbidden (403)", async () => {
         // STUDENT
         await request(app.getHttpServer())
-          .post("/api/v1/cases/case-1/branching-attempts")
+          .post(`/api/v1/cases/${validCaseId}/branching-attempts`)
           .set("Authorization", `Bearer ${studentToken}`)
           .expect(201);
 
         // LECTURER
         const res = await request(app.getHttpServer())
-          .post("/api/v1/cases/case-1/branching-attempts")
+          .post(`/api/v1/cases/${validCaseId}/branching-attempts`)
           .set("Authorization", `Bearer ${lecturerToken}`)
           .expect(403);
 
@@ -452,41 +456,41 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
       it("[RBAC-06] POST /branching-attempts/:id/step — STUDENT allowed (201), LECTURER forbidden (403)", async () => {
         await request(app.getHttpServer())
-          .post("/api/v1/branching-attempts/att-1/step")
+          .post(`/api/v1/branching-attempts/${validAttemptId}/step`)
           .set("Authorization", `Bearer ${studentToken}`)
-          .send({ nodeId: "n1", optionId: "o1" })
+          .send({ nodeId: validNodeId, selectedOptionId: validOptionId })
           .expect(201);
 
         await request(app.getHttpServer())
-          .post("/api/v1/branching-attempts/att-1/step")
+          .post(`/api/v1/branching-attempts/${validAttemptId}/step`)
           .set("Authorization", `Bearer ${lecturerToken}`)
-          .send({ nodeId: "n1", optionId: "o1" })
+          .send({ nodeId: validNodeId, selectedOptionId: validOptionId })
           .expect(403);
       });
 
       it("[RBAC-07] PUT /branching-attempts/:id/reasoning — STUDENT allowed (200), LECTURER forbidden (403)", async () => {
         await request(app.getHttpServer())
-          .put("/api/v1/branching-attempts/att-1/reasoning")
+          .put(`/api/v1/branching-attempts/${validAttemptId}/reasoning`)
           .set("Authorization", `Bearer ${studentToken}`)
-          .send({ nodeId: "n1", reasoningText: "Reasoning for strategic option" })
+          .send({ nodeId: validNodeId, reasoningText: "Reasoning for strategic option" })
           .expect(200);
 
         await request(app.getHttpServer())
-          .put("/api/v1/branching-attempts/att-1/reasoning")
+          .put(`/api/v1/branching-attempts/${validAttemptId}/reasoning`)
           .set("Authorization", `Bearer ${lecturerToken}`)
-          .send({ nodeId: "n1", reasoningText: "Reasoning for strategic option" })
+          .send({ nodeId: validNodeId, reasoningText: "Reasoning for strategic option" })
           .expect(403);
       });
 
       it("[RBAC-08] POST /branching-attempts/:id/reflection — STUDENT allowed (201), LECTURER forbidden (403)", async () => {
         await request(app.getHttpServer())
-          .post("/api/v1/branching-attempts/att-1/reflection")
+          .post(`/api/v1/branching-attempts/${validAttemptId}/reflection`)
           .set("Authorization", `Bearer ${studentToken}`)
           .send({ reflectionText: "Self-reflection on the outcome" })
           .expect(201);
 
         await request(app.getHttpServer())
-          .post("/api/v1/branching-attempts/att-1/reflection")
+          .post(`/api/v1/branching-attempts/${validAttemptId}/reflection`)
           .set("Authorization", `Bearer ${lecturerToken}`)
           .send({ reflectionText: "Self-reflection on the outcome" })
           .expect(403);
@@ -614,14 +618,14 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
     describe("3.2 Course Ownership Gates (Update & Delete)", () => {
       it("[OWN-03] Lecturer Owner can update their own course -> 200 OK", async () => {
         const res = await request(app.getHttpServer())
-          .put("/api/v1/courses/course-of-lecturer-a")
+          .put(`/api/v1/courses/${validCourseId}`)
           .set("Authorization", `Bearer ${ownerToken}`)
           .send({ name: "Tên khóa học đã cập nhật" })
           .expect(200);
 
         expect(res.body.status).toBe("SUCCESS");
         expect(mockCourseService.updateCourse).toHaveBeenCalledWith(
-          "course-of-lecturer-a",
+          validCourseId,
           "lecturer-owner-a",
           expect.objectContaining({ name: "Tên khóa học đã cập nhật" }),
         );
@@ -629,7 +633,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
       it("[OWN-04] Non-owner Lecturer B updating Course A receives 403 Forbidden", async () => {
         const res = await request(app.getHttpServer())
-          .put("/api/v1/courses/course-of-lecturer-a")
+          .put(`/api/v1/courses/${validCourseId}`)
           .set("Authorization", `Bearer ${intruderToken}`)
           .send({ name: "Tên bị giả mạo" })
           .expect(403);
@@ -639,21 +643,21 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
       it("[OWN-05] Lecturer Owner can archive their own course -> 200 OK (C1-B)", async () => {
         const res = await request(app.getHttpServer())
-          .patch("/api/v1/courses/course-of-lecturer-a/archive")
+          .patch(`/api/v1/courses/${validCourseId}/archive`)
           .set("Authorization", `Bearer ${ownerToken}`)
           .expect(200);
 
         expect(res.body.status).toBe("SUCCESS");
         expect(res.body.data.is_active).toBe(false);
         expect(mockCourseService.archiveCourse).toHaveBeenCalledWith(
-          "course-of-lecturer-a",
+          validCourseId,
           "lecturer-owner-a",
         );
       });
 
       it("[OWN-06] Non-owner Lecturer B archiving Course A receives 403 Forbidden", async () => {
         const res = await request(app.getHttpServer())
-          .patch("/api/v1/courses/course-of-lecturer-a/archive")
+          .patch(`/api/v1/courses/${validCourseId}/archive`)
           .set("Authorization", `Bearer ${intruderToken}`)
           .expect(403);
 
@@ -662,7 +666,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
       it("[OWN-06b] DELETE /courses/:courseId no longer exists (C1-B) -> 404, nothing called", async () => {
         await request(app.getHttpServer())
-          .delete("/api/v1/courses/course-of-lecturer-a")
+          .delete(`/api/v1/courses/${validCourseId}`)
           .set("Authorization", `Bearer ${ownerToken}`)
           .expect(404);
 
@@ -671,13 +675,13 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
 
       it("[OWN-07] Student attempting to update or archive course receives 403 Forbidden", async () => {
         await request(app.getHttpServer())
-          .put("/api/v1/courses/course-of-lecturer-a")
+          .put(`/api/v1/courses/${validCourseId}`)
           .set("Authorization", `Bearer ${studentToken}`)
           .send({ name: "Student Hacked Course" })
           .expect(403);
 
         await request(app.getHttpServer())
-          .patch("/api/v1/courses/course-of-lecturer-a/archive")
+          .patch(`/api/v1/courses/${validCourseId}/archive`)
           .set("Authorization", `Bearer ${studentToken}`)
           .expect(403);
       });
@@ -686,7 +690,7 @@ describe("[QA-001] Auth, Course & Permissions Matrix (E2E Integration)", () => {
         const res = await request(app.getHttpServer())
           .post("/api/v1/cases/generate")
           .set("Authorization", `Bearer ${intruderToken}`)
-          .send({ courseId: "course-of-lecturer-a", materialIds: ["mat-1"] })
+          .send({ courseId: validCourseId, materialIds: ["mat-1"] })
           .expect(403);
 
         expect(res.body.message).toBe("You do not own this course");

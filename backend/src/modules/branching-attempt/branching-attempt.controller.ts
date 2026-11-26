@@ -8,8 +8,12 @@ import {
   HttpCode,
   HttpStatus,
   ForbiddenException,
+  ParseUUIDPipe,
 } from "@nestjs/common";
-import { BranchingAttemptService, ChooseOptionDto, SaveReasoningDto, SubmitReflectionDto } from "./branching-attempt.service";
+import { BranchingAttemptService } from "./branching-attempt.service";
+import { ChooseOptionDto } from "./dto/choose-option.dto";
+import { SaveReasoningDto } from "./dto/save-reasoning.dto";
+import { SubmitReflectionDto } from "./dto/submit-reflection.dto";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 
@@ -32,7 +36,7 @@ export class BranchingAttemptController {
   @Post("cases/:caseId/branching-attempts")
   @HttpCode(HttpStatus.CREATED)
   async startAttempt(
-    @Param("caseId") caseId: string,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     if (user.role !== "STUDENT") {
@@ -47,7 +51,7 @@ export class BranchingAttemptController {
 
   @Get("cases/:caseId/attempts")
   async getAttemptsByCase(
-    @Param("caseId") caseId: string,
+    @Param("caseId", ParseUUIDPipe) caseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     const attempts = await this.attemptService.getAttemptsByCase(caseId, user.id);
@@ -59,7 +63,7 @@ export class BranchingAttemptController {
 
   @Get("branching-attempts/:id")
   async getAttempt(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     const result = await this.attemptService.getAttempt(id, user.id);
@@ -72,7 +76,7 @@ export class BranchingAttemptController {
   @Roles("STUDENT")
   @Post("branching-attempts/:id/step")
   async chooseOption(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() body: ChooseOptionDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
@@ -89,7 +93,7 @@ export class BranchingAttemptController {
   @Roles("STUDENT")
   @Put("branching-attempts/:id/reasoning")
   async saveRetrospectiveReasoning(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() body: SaveReasoningDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
@@ -106,7 +110,7 @@ export class BranchingAttemptController {
   @Roles("STUDENT")
   @Post("branching-attempts/:id/reflection")
   async submitReflection(
-    @Param("id") id: string,
+    @Param("id", ParseUUIDPipe) id: string,
     @Body() body: SubmitReflectionDto,
     @CurrentUser() user: { id: string; role: string },
   ) {

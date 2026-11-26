@@ -9,6 +9,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import { CourseService } from "./course.service";
 import { CreateCourseDto } from "./dto/create-course.dto";
@@ -70,17 +71,17 @@ export class CourseController {
 
   @Get(":courseId")
   async getCourse(
-    @Param("courseId") courseId: string,
+    @Param("courseId", ParseUUIDPipe) courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
-    const course = await this.courseService.getCourseById(courseId, user.id);
+    const course = await this.courseService.getCourseForViewer(courseId, user);
     return { status: "SUCCESS", data: course };
   }
 
   @Roles("LECTURER")
   @Put(":courseId")
   async updateCourse(
-    @Param("courseId") courseId: string,
+    @Param("courseId", ParseUUIDPipe) courseId: string,
     @Body() dto: UpdateCourseDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
@@ -92,7 +93,7 @@ export class CourseController {
   @Patch(":courseId/archive")
   @HttpCode(HttpStatus.OK)
   async archiveCourse(
-    @Param("courseId") courseId: string,
+    @Param("courseId", ParseUUIDPipe) courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     const course = await this.courseService.archiveCourse(courseId, user.id);
@@ -102,7 +103,7 @@ export class CourseController {
   @Roles("LECTURER")
   @Get(":courseId/invite-code")
   async getInviteCode(
-    @Param("courseId") courseId: string,
+    @Param("courseId", ParseUUIDPipe) courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     const data = await this.courseService.getInviteCode(courseId, user.id);
@@ -112,7 +113,7 @@ export class CourseController {
   @Roles("LECTURER")
   @Post(":courseId/invite-code")
   async rotateInviteCode(
-    @Param("courseId") courseId: string,
+    @Param("courseId", ParseUUIDPipe) courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     const data = await this.courseService.rotateInviteCode(courseId, user.id);
@@ -122,7 +123,7 @@ export class CourseController {
   @Roles("LECTURER")
   @Delete(":courseId/invite-code")
   async disableInviteCode(
-    @Param("courseId") courseId: string,
+    @Param("courseId", ParseUUIDPipe) courseId: string,
     @CurrentUser() user: { id: string; role: string },
   ) {
     const data = await this.courseService.disableInviteCode(courseId, user.id);
