@@ -95,3 +95,28 @@
 1. **Cuộn ngang ở 1024px trên trang review case.** Nguyên nhân là nút "Sao chép đường dẫn" trong `CaseGovernanceBar` (mép phải ở 1173px). File này không nằm trong diff.
 2. **Cuộn ngang ở 1024px trên trang 10.6 Admin.** `scrollWidth` là 1080; diff chỉ đổi link của nút "Xem".
 3. **Tiêu đề shell bị cắt ở 1024 và 1280** khi tiêu đề dài (ví dụ "Rubric nghiên cứu chất lượng tình huống", hoặc tên case trên trang review). Ở 1440 vẫn đạt yêu cầu của R01.
+
+## 7. Vòng 2 — breadcrumb và nút quay lại theo Figma 10.8 (PO 2026-11-26)
+
+- **Shell:**
+  - `useShellHeader({ back, crumbs })` là tùy chọn, chỉ được dùng ở màn Rubric khi đã mở case. Khi chưa chọn case (D3a) không có nút quay lại và breadcrumb.
+  - Nút quay lại cỡ 40×40, không có nền, chevron màu `ink`, đúng Figma 10.8.
+  - Breadcrumb cỡ 12/16: bước "Case Study" màu `ink-muted`, bước hiện tại màu navy và có `aria-current`.
+  - Header đổi sang grid: tiêu đề được ưu tiên chiều rộng; ô tìm kiếm có cơ sở 160px và chỉ giãn tới 224/320px khi còn chỗ (Rule F3).
+- **Đích của nút quay lại:**
+  - Admin: về `/admin/cases`.
+  - Giảng viên: về trang review của case.
+  - Khi case trả 403 hoặc 404: về danh sách Case Study, tránh ngõ cụt.
+- **Review độc lập** (agent `visual-qa-verifier`, 176 ảnh chụp, so sánh bố cục cũ và mới): phát hiện F1–F4 (Medium) và F5 (Low). Đã sửa F1–F4. F5 là 2 cảnh báo lint `only-export-components`, giống pattern các hook đã có trong file; giữ nguyên.
+- **Đo lại sau khi sửa** (1024/1280/1440/1920, VI/EN):
+  - Breadcrumb không bị cắt, không đè lên cụm action.
+  - Không có cuộn ngang.
+  - Từ 1440 trở lên, tiêu đề không bị cắt.
+  - Không có hồi quy header trên 19 route của 3 role.
+- **Lệnh:**
+  - `npm run lint`: exit 0.
+  - `npm test`: 314/314.
+  - `npm run build`: exit 0.
+  - `l10n-approval-check`: exit 1. Nhánh 1348 lỗi, `develop` `c94c954` 1380 lỗi; không có lỗi mới, các key mới đều `PROPOSED`.
+  - Vòng thao tác 19/19.
+- **Điều kiện còn lại:** tiêu đề vẫn bị cắt ở 1024 khi đã mở case, và ở 1280 với tiêu đề tiếng Việt của giảng viên ("Rubric nghiên cứu chất lượng tình huống"). Ô tìm kiếm khi đó đã co hết cỡ (160px), không còn chỗ. Trước thay đổi này, tiêu đề của các màn khác cũng đã bị cắt ở 1024.
