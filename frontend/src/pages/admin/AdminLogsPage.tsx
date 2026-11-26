@@ -18,14 +18,14 @@ import {
 } from "lucide-react";
 import { Dialog, MetricCard, cx } from "@/components/ds";
 import { EmptyState, ErrorState, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
+import { adminService, type AdminLogTimeRange, type AdminSystemLogItem } from "@/services/adminService";
+import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
 /** The API sends ISO timestamps; show local "dd/mm/yyyy HH:mm", or "—" when the value is not a date. */
 function shownTime(iso: string): string {
   const date = new Date(iso);
   return isValidDate(date) ? formatDateTime(date) : "—";
 }
-import { adminService, type AdminLogTimeRange, type AdminSystemLogItem } from "@/services/adminService";
-import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
 export function AdminLogsPage() {
   const { t } = useTranslation();
@@ -47,6 +47,8 @@ export function AdminLogsPage() {
   const [timeFilter, setTimeFilter] = useState<AdminLogTimeRange>("today");
   const [sortOrder, setSortOrder] = useState("NEWEST");
   const [currentPage, setCurrentPage] = useState(1);
+  /** Events matching the current filters across all pages (API `total`), not today's KPI count. */
+  const [total, setTotal] = useState(0);
   const pageSize = 10;
 
   // Selected Log for detail modal
@@ -72,6 +74,7 @@ export function AdminLogsPage() {
       .then((res) => {
         if (cancelled) return;
         setLogs(res.logs ?? []);
+        setTotal(Number.isFinite(res.total) ? res.total : 0);
         if (res.metrics) {
           setMetrics(res.metrics);
         }
@@ -141,7 +144,10 @@ export function AdminLogsPage() {
             type="text"
             placeholder={t("g6.logs.searchPlaceholder")}
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
             className="w-full rounded-eb-md border border-line bg-canvas py-2 pr-3 pl-9 text-[14px] text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none"
           />
         </div>
@@ -150,7 +156,10 @@ export function AdminLogsPage() {
         <div className="flex flex-wrap items-center gap-3">
           <select
             value={eventFilter}
-            onChange={(e) => setEventFilter(e.target.value)}
+            onChange={(e) => {
+              setEventFilter(e.target.value);
+              setCurrentPage(1);
+            }}
             aria-label={t("g6.logs.filterEventAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
@@ -163,7 +172,11 @@ export function AdminLogsPage() {
 
           <select
             value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value as AdminLogTimeRange)}
+            onChange={(e) => {
+              // A new filter starts from page 1; staying on page 3 of a shorter range shows an empty page.
+              setTimeFilter(e.target.value as AdminLogTimeRange);
+              setCurrentPage(1);
+            }}
             aria-label={t("g6.logs.filterTimeAria")}
             className="rounded-eb-md border border-line bg-canvas px-3 py-2 text-[14px] text-ink focus:border-primary focus:outline-none"
           >
@@ -321,7 +334,7 @@ export function AdminLogsPage() {
           <span>
             {t("g6.logs.pagination.showing", {
               shown: Math.min(filteredLogs.length, pageSize),
-              total: metrics.eventsToday,
+              total,
             })}
           </span>
           <div className="flex items-center gap-1">
@@ -339,7 +352,7 @@ export function AdminLogsPage() {
             </span>
             <button
               type="button"
-              disabled={filteredLogs.length < pageSize}
+              disabled={currentPage * pageSize >= total}
               onClick={() => setCurrentPage((p) => p + 1)}
               className="flex size-7 items-center justify-center rounded border border-line text-ink disabled:opacity-40"
               aria-label={t("g6.logs.pagination.next")}

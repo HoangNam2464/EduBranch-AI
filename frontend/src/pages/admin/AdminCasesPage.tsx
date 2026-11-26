@@ -282,7 +282,8 @@ export function AdminCasesPage() {
             description={t("g6.cases.emptyFilteredDescription")}
           />
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          // Two cards per row below 1280: four at 1024 wrap the mode tag, node count and date labels.
+          <div className="grid grid-cols-2 gap-4 min-[1280px]:grid-cols-4">
             {filteredCases.map((c) => {
               const isBranching = c.learningMode === "BRANCHING_STUDY";
               const isPublished = c.status === "PUBLISHED";

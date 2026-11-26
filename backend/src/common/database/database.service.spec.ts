@@ -84,7 +84,12 @@ describe("DatabaseService connection-loss handling", () => {
   it("leaves no listener behind when the pool hands out the same client again", async () => {
     const { service, pool } = await createService();
     const shared = new FakeClient();
-    pool.connect = async () => shared;
+    const poolRelease = shared.release.bind(shared);
+    // Like pg-pool `_acquireClient`: a fresh `release` is assigned on every checkout.
+    pool.connect = async () => {
+      shared.release = (destroy?: Error | boolean) => poolRelease(destroy);
+      return shared;
+    };
     for (let i = 0; i < 3; i++) {
       const client = (await service.getClient()) as unknown as FakeClient;
       expect(client.listenerCount("error")).toBe(1);
