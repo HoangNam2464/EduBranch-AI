@@ -35,6 +35,10 @@ describe("10.9 event labels (VI/EN)", () => {
     assert.equal(eventMetaLabel(tVi, "UNKNOWN_ACCOUNT"), "Tài khoản không tồn tại");
     assert.equal(eventMetaLabel(tEn, "Ca A · DRAFT → REVIEWED"), `Ca A · ${en.g3.status.DRAFT} → ${en.g3.status.REVIEWED}`);
     assert.equal(eventMetaLabel(tVi, "DRAFT → PUBLISHED"), "Bản nháp → Đã xuất bản");
+    // USER_ROLE_CHANGED meta as describeEventMeta joins it: from → to first, then targetName.
+    assert.equal(eventMetaLabel(tVi, "STUDENT → LECTURER · Student S"), "Sinh viên → Giảng viên · Student S");
+    assert.equal(eventMetaLabel(tEn, "Student S · LECTURER → ADMIN"), "Student S · Lecturer → Administrator");
+    assert.equal(eventMetaLabel(tVi, "DRAFT → LECTURER"), "DRAFT → LECTURER", "mixed kinds are not a known change");
     assert.equal(eventMetaLabel(tVi, "Ca A · 12.3s"), "Ca A · 12.3s");
     assert.equal(eventMetaLabel(tVi, "HTTP_504 · 30.0s"), "HTTP_504 · 30.0s");
     assert.equal(eventMetaLabel(tVi, "DRAFT"), "DRAFT", "a lone status word may be a typed name; only A → B is a status change");

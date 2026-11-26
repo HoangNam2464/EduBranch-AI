@@ -2245,7 +2245,6 @@
         "all": "All event types",
         "login": "Sign-in",
         "aiGen": "AI case generation",
-        "submission": "Submission",
         "material": "Materials"
       },
       "filterTimeAria": "Filter by time",

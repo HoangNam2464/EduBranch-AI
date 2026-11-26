@@ -437,7 +437,6 @@
 | `g6.logs.filterEvent.all` | Mọi loại sự kiện | All event types | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterEvent.login` | Đăng nhập | Sign-in | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterEvent.aiGen` | Sinh case | AI case generation | PROPOSED | — | — | FE-032 PR #75 |
-| `g6.logs.filterEvent.submission` | Nộp bài | Submission | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterEvent.material` | Tài liệu | Materials | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterTimeAria` | Lọc theo thời gian | Filter by time | PROPOSED | — | — | FE-032 PR #75 |
 | `g6.logs.filterTime.today` | Hôm nay | Today | PROPOSED | — | — | FE-032 PR #75 |

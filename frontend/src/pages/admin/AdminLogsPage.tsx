@@ -104,7 +104,7 @@ export function AdminLogsPage() {
   return (
     <div className="flex flex-1 flex-col gap-5 pb-6">
       {/* 4 KPI Cards (Figma 10.9) */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 min-[1280px]:grid-cols-4">
         <MetricCard
           icon={Calendar}
           label={t("g6.logs.kpi.eventsToday")}
@@ -222,8 +222,9 @@ export function AdminLogsPage() {
                 <tr>
                   <th className="py-3 pr-4 pl-5">{t("g6.logs.columns.actor")}</th>
                   <th className="px-4 py-3">{t("g6.logs.columns.time")}</th>
-                  <th className="px-4 py-3">{t("g6.logs.columns.event")}</th>
-                  <th className="px-4 py-3 text-center">{t("g6.logs.columns.code")}</th>
+                  <th className="min-w-40 px-4 py-3">{t("g6.logs.columns.event")}</th>
+                  {/* Below 1280 the code column is hidden so the event name has room; the code stays in the detail dialog title. */}
+                  <th className="hidden px-4 py-3 text-center xl:table-cell">{t("g6.logs.columns.code")}</th>
                   <th className="px-4 py-3 text-center">{t("g6.logs.columns.detail")}</th>
                   <th className="py-3 pr-5 pl-4 text-right">{t("g6.logs.columns.result")}</th>
                 </tr>
@@ -276,7 +277,7 @@ export function AdminLogsPage() {
                       </td>
 
                       {/* Column 4: Code */}
-                      <td className="px-4 py-3.5 text-center font-mono text-[13px] text-ink-secondary">
+                      <td className="hidden px-4 py-3.5 text-center font-mono text-[13px] whitespace-nowrap text-ink-secondary xl:table-cell">
                         {log.code}
                       </td>
 
@@ -285,7 +286,7 @@ export function AdminLogsPage() {
                         <button
                           type="button"
                           onClick={() => setSelectedLog(log)}
-                          className="rounded-eb-md border border-line bg-canvas px-2.5 py-1 text-[12px] font-medium text-link hover:bg-surface-hover hover:underline"
+                          className="shrink-0 rounded-eb-md border border-line bg-canvas px-2.5 py-1 text-[12px] font-medium whitespace-nowrap text-link hover:bg-surface-hover hover:underline"
                         >
                           {t("g6.logs.action.viewDetail")}
                         </button>
@@ -295,7 +296,7 @@ export function AdminLogsPage() {
                       <td className="py-3.5 pr-5 pl-4 text-right">
                         <span
                           className={cx(
-                            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium",
+                            "inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium whitespace-nowrap",
                             isSuccess
                               ? "bg-success-bg text-success-text"
                               : isWarning
