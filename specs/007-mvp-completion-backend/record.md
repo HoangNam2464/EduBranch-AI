@@ -6,11 +6,12 @@
 | G0 | PASS | PO chat 2026-11-21 (§2) |
 | G1–G7 | PASS | PO duyệt gộp 2026-11-21 (§2) |
 | QG1 | PASS (cục bộ) | §4 |
-| QG2 | PASS WITH CONDITIONS | §5, §7.2, §7.3; PO đã chốt chính thức R-L3b phương án B (2026-11-26, §6) và reviewer độc lập (`040ec391`) xác nhận `PASS WITH CONDITIONS`; điều kiện: các giới hạn ghép còn lại thuộc AC-R4/AC-R5 (§7.3) đã được ghi nhận minh bạch và cần chạy lại QG5 CI sau commit |
+| QG2 | PASS WITH CONDITIONS | §5, §7.2, §7.3; PO chốt R-L3b phương án B (2026-11-26, §6) và ngày 2026-11-26 chính thức chấp nhận 5 rủi ro còn lại tại §7.3 cho MVP (giữ nguyên `PASS WITH CONDITIONS`, không chuyển sang PASS hoàn toàn) |
 | QG3 | Không áp dụng | Không đổi UI |
 | QG4 | PASS | Không đổi chuỗi i18n; không có secret trong diff (§4) |
-| QG5 | Xem PR #80 | Bằng chứng CI gắn với head SHA, ghi trong comment của PR #80; mỗi commit mới phải chạy lại |
-| QG6–QG7 | Chưa chạy | QG6 cần PO/Code Owner duyệt; QG7 sau khi merge |
+| QG5 | PASS | PR #80 trên head `550602fdbdd0584daec951205ac8c3236311a85a`: 3/3 `success` ([comment PR #80](https://github.com/HoangNam2464/EduBranch-AI/pull/80#issuecomment-7178502879)) |
+| QG6 | PASS | `admin-merge PR #80` theo lệnh trực tiếp của PO ngày 2026-11-26 (policy §7). Merge commit trên `develop`: `dec96f07068bebf991e9c7f6169643bbc1fa67ef` |
+| QG7 | PASS | Kiểm chứng hậu merge trên `develop` tại `dec96f07068bebf991e9c7f6169643bbc1fa67ef` (§7.4) |
 
 ## 2. G0, nguyên văn
 - PO, 2026-11-21: "tôi k quan tâm số liệu, chỉ quan tâm tới sản phẩm, nên tôi cần sản phẩm phải được hoàn thành".
@@ -191,7 +192,7 @@ Môi trường chạy lại sau lần sửa code cuối: Windows, Docker `edubra
 
 *Kết quả re-review độc lập (`040ec391`, 2026-11-26)*: `PASS WITH CONDITIONS` — xác nhận cả 4 hạng mục khắc phục đều đạt (không còn lỗi code, test hoặc tài liệu); điều kiện còn lại gồm 5 giới hạn ghép ngược cố hữu dưới AC-R4 + AC-R5 (chủ: PO) và việc chạy lại QG5 trên CI sau khi PO cho phép commit/push (chứng cứ test cục bộ do phiên chính thực thi và đối soát log).
 
-*Lưu ý*: Các thay đổi hiện nằm trong working tree cục bộ của nhánh `feature/mvp-completion-backend` (chưa commit/push theo giới hạn PO), nên QG5 (CI GitHub) sẽ cần chạy lại sau khi PO duyệt và cho phép commit/push.
+*Trạng thái PR #80*: Thay đổi tại §7.3 đã được commit ở `550602fdbdd0584daec951205ac8c3236311a85a`, đạt CI 3/3 `success` ([comment PR #80](https://github.com/HoangNam2464/EduBranch-AI/pull/80#issuecomment-7178502879)) và `admin-merge` vào `develop` tại `dec96f07068bebf991e9c7f6169643bbc1fa67ef` theo lệnh PO ngày 2026-11-26.
 
 #### Giới hạn và rủi ro còn lại (pseudonymization + giảm liên kết, không phải ẩn danh tuyệt đối)
 1. **Đa dòng trên sinh viên có nhiều lượt thử**: vì AC-R4 xuất mỗi attempt một dòng, đếm số dòng theo `(case_id, participant_code)` vẫn suy ra được tổng số lần thử (`1` + số dòng `"2+"`), có thể phân biệt sinh viên thử lại `3` lần với sinh viên thử `2` lần.
@@ -200,3 +201,20 @@ Môi trường chạy lại sau lần sửa code cuối: Windows, Docker `edubra
 4. **Sai phân qua nhiều lần xuất (`T₁` vs `T₂`)**: xuất CSV trước và sau khi có sinh viên mới hoàn thành trên dashboard/hàng đợi vẫn cô lập được dòng mới phát sinh; đây là hệ quả cố hữu khi đồng thời giữ AC-R4 (giảng viên tự xuất) và AC-R5 (pseudonym ổn định).
 5. **Độ trễ / lộ thêm trường sau khi ghép được 1 dòng**: nếu một dòng bị ghép đúng danh tính, `participant_code` sẽ liên kết được cả các attempt chưa hoàn thành (`completed = "false"`) và `challenge_rounds` vốn giảng viên không thấy trên hàng đợi. Với `rubrics` CSV, `GET /evaluation/rubrics` đã trả `evaluatorName` kèm 3 điểm cho giảng viên sở hữu khóa và ADMIN.
 6. **Ghi nhận ngoài phạm vi thay đổi**: nếu về sau muốn triệt tiêu rủi ro giảng viên ghép với hàng đợi mà vẫn giữ AC-R5, hướng phù hợp là giới hạn quyền xuất `activity` về `ADMIN` (vốn không xem được hàng đợi nhận xét/lập luận theo B-6) hoặc áp dụng ngưỡng ẩn nhóm nhỏ (`k`-anonymity suppression) — hiện chưa thực hiện để giữ nguyên quyền AC-R4 đã duyệt.
+
+### 7.4 QG7 — Xác minh hậu merge trên `develop` (2026-11-26)
+
+- **Merge commit trên `develop`**: `dec96f07068bebf991e9c7f6169643bbc1fa67ef` (`2026-11-26T00:12:01Z`).
+- **Môi trường kiểm thử**: Windows, Docker `edubranch_postgres` (PostgreSQL 16.14 + pgvector), **giữ nguyên toàn bộ DB volume và dữ liệu hiện có** (`edubranch_ai` đã có `V1–V8`), bật container trong lúc chạy kiểm thử rồi tắt lại sau khi xong.
+
+| Lệnh | Exit | Kết quả |
+|---|---|---|
+| `backend/`: `npm run build` | `0` | Biên dịch sạch |
+| `backend/`: `npm test -- --runInBand` | `0` | **39 suite, 353/353 PASS** |
+| `backend/`: `npx jest --config ./test/jest-e2e.json --runInBand` | `0` | **9 suite PASS (305/305 test)** — gồm `migration.integration.e2e-spec.ts` (xác minh toàn vẹn migration `V1–V8` trên `edubranch_ai`), `mvp-completion.integration.e2e-spec.ts` (19/19 trên DB tạm `edubranch_spec007_it`), `mvp-completion.e2e-spec.ts` (124/124) và 6 suite HTTP/bảo mật khác; 5 suite phụ thuộc AI/MinIO/`QA_LIVE` skip (`43 skipped`) |
+| `backend/`: `QA_LIVE=1 npx jest --config ./test/jest-e2e.json test/reasoning-access.live.spec.ts --runInBand` | `0` | **10/10 PASS** trên DB tạm |
+| `backend/`: `npm run test:matrix` | `0` | **26/26 PASS** |
+| `backend/`: `npm run test:regression` | `0` | **44/44 PASS** |
+| `ai-service/`: `pytest tests/test_health.py -v` | `0` | **2/2 PASS** |
+
+- **Điều kiện PO chấp nhận 5 rủi ro còn lại (2026-11-26)**: PO chấp nhận 5 giới hạn tại §7.3 cho MVP để giữ QG2 ở `PASS WITH CONDITIONS` (giữ AC-R4, AC-R5, L3 Option C; mô tả là pseudonymization + giảm khả năng liên kết, không phải anonymization tuyệt đối; không công bố hay chia sẻ tùy tiện dữ liệu cấp dòng). Đề xuất mở **task riêng hậu MVP** xử lý tiếp biện pháp giảm thiểu cho **nhóm nhỏ** và **khả năng so sánh nhiều lần export**.
