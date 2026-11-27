@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { ChevronDown, ChevronUp, CircleAlert, CircleCheck, Clock, CloudUpload, Database, File, FileText, GitBranch, LoaderCircle, Trash2, Upload, X } from "lucide-react";
 import { Button, CaseStatusBadge, CourseOverview, Dialog, cx, FOCUS_RING, type CaseStatus as CaseBadgeStatus } from "@/components/ds";
 import { ErrorState, SkeletonBlock, SkeletonRegion } from "@/components/feedback";
+import { httpStatusOf } from "@/pages/statistics/useLecturerCourseCases";
 import { useAuthStore } from "@/stores/authStore";
 import { initialsOf } from "@/layouts/shell/shellRoutes";
 import { useShellTitle } from "@/layouts/shell/ShellTitleContext";
@@ -79,7 +80,7 @@ function MaterialRow({
     );
   } else if (status === "PROCESSING") {
     indicator = (
-      <span className="flex items-center gap-1 text-[12px] leading-4 font-medium text-accent">
+      <span className="flex items-center gap-1 text-[12px] leading-4 font-medium text-link">
         <LoaderCircle aria-hidden="true" size={14} absoluteStrokeWidth strokeWidth={1.33} className="motion-safe:animate-spin" />
         {t("g2.materials.statusProcessing")}
       </span>
@@ -287,6 +288,7 @@ export function MaterialsPage() {
   const [courseIndex, setCourseIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  const [loadErrorCode, setLoadErrorCode] = useState<number | undefined>(undefined);
   const [reloadKey, setReloadKey] = useState(0);
 
   const [uploadExpanded, setUploadExpanded] = useState(true);
@@ -308,8 +310,13 @@ export function MaterialsPage() {
         // Same decorative cover as the course's card on 02.1 (position in the lecturer's list).
         setCourseIndex(Math.max(0, mine.findIndex((m) => m.id === c.id)));
         setLoadError(false);
+        setLoadErrorCode(undefined);
       })
-      .catch(() => !cancelled && setLoadError(true))
+      .catch((error) => {
+        if (cancelled) return;
+        setLoadError(true);
+        setLoadErrorCode(httpStatusOf(error));
+      })
       .finally(() => !cancelled && setLoading(false));
     return () => {
       cancelled = true;
@@ -358,7 +365,15 @@ export function MaterialsPage() {
     );
   }
   if (loadError || !course || !insights) {
-    return <ErrorState title={t("g2.materials.loadError")} onRetry={() => { setLoading(true); setReloadKey((k) => k + 1); }} />;
+    const retry = () => {
+      setLoading(true);
+      setReloadKey((k) => k + 1);
+    };
+    return loadErrorCode === 403 ? (
+      <ErrorState title={t("states.forbidden.title")} description={t("states.forbidden.description")} errorCode={403} onRetry={retry} />
+    ) : (
+      <ErrorState title={t("g2.materials.loadError")} errorCode={loadErrorCode} onRetry={retry} />
+    );
   }
 
   const s = summarize(insights);
@@ -372,9 +387,11 @@ export function MaterialsPage() {
   ];
 
   return (
-    <div className="flex items-start gap-5">
+    // Figma 02.4 is two columns at 1440 (379 + fluid); below 1440 the course column stacks above the materials so
+    // the upload area keeps a usable width and nothing scrolls sideways (R01, 1024–1920).
+    <div className="flex flex-col gap-5 min-[1440px]:flex-row min-[1440px]:items-start">
       {/* ── Course information (379) ── */}
-      <div className="flex w-[379px] shrink-0 flex-col gap-5">
+      <div className="flex w-full flex-col gap-5 min-[1440px]:w-[379px] min-[1440px]:shrink-0">
         <section className="rounded-eb-xl bg-surface p-5 shadow-eb-card">
           <CourseOverview
             variant="sidebar"
@@ -461,7 +478,7 @@ export function MaterialsPage() {
                         <li key={title} className={cx("flex h-11 items-center gap-3 rounded-eb-md px-3", i === 0 && "border border-selected bg-canvas")}>
                           <CircleCheck aria-hidden="true" size={12} absoluteStrokeWidth strokeWidth={0.85} className="shrink-0 text-link" />
                           <span className="min-w-0 flex-1 text-[12px] leading-4 text-ink">{title}</span>
-                          <span className="text-[10px] leading-[14px] text-ink-muted">{hint}</span>
+                          <span className="text-[12px] leading-[14px] text-ink-muted">{hint}</span>
                         </li>
                       ))}
                     </ol>

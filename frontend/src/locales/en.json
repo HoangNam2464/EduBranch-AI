@@ -1373,7 +1373,7 @@
         "feedbackMin": "Feedback must contain at least 10 characters.",
         "submitFeedback": "Save & Send Feedback to Student",
         "submittingFeedback": "Saving feedback...",
-        "feedbackSuccess": "Qualitative feedback saved and submission transitioned to REVIEWED successfully!",
+        "feedbackSuccess": "Feedback saved. The submission is now Reviewed.",
         "feedbackFailed": "Failed to save feedback: {{error}}",
         "previousFeedback": "Previously sent feedback:",
         "alreadyReviewedNotice": "This submission already has qualitative feedback (read-only, cannot be modified).",
@@ -1384,7 +1384,7 @@
         "stepNumber": "Step {{n}}",
         "stepReasoningTitle": "Student retrospective reasoning",
         "sentAt": "Sent on {{time}}",
-        "close": "Close panel",
+        "close": "Close details",
         "selectPromptTitle": "Select a submission to review",
         "selectPromptDesc": "Click any submission in the list on the left to inspect student work and compose qualitative feedback."
       },
@@ -1402,7 +1402,7 @@
         "avgAttempts": "Average attempts",
         "inProgress": "Currently in a journey",
         "totalAttempts": "Total attempts",
-        "singleVsRetry": "Single / Retry",
+        "singleVsRetry": "Students: once / retried",
         "reflectionsSubmitted": "Reflections submitted"
       },
       "filters": {
@@ -1415,7 +1415,7 @@
       },
       "panels": {
         "choices": "Branch selection distribution",
-        "attempts": "Attempts statistics (Single vs. Retry)",
+        "attempts": "Students: one attempt vs retried",
         "outcomes": "Terminal outcomes distribution",
         "timing": "When students work",
         "progress": "Progress of students who opened a case",
@@ -1428,22 +1428,26 @@
         "selections": "{{count}} selections",
         "percent": "{{percent}}%",
         "noBranches": "This case has no branch data or is in Review Study mode.",
-        "emptyCase": "No students have traversed branches in this case yet."
+        "emptyCase": "No students have traversed branches in this case yet.",
+        "selections_one": "{{count}} selection",
+        "selections_other": "{{count}} selections"
       },
       "outcomes": {
         "title": "Terminal outcomes distribution",
-        "subtitle": "Percentage of students reaching each terminal conclusion node",
+        "subtitle": "Share of completed attempts ending at each outcome",
         "terminalNode": "Outcome: {{title}}",
         "reachCount": "{{count}} completions ({{percent}}%)",
-        "emptyOutcomes": "No students have reached a terminal outcome yet."
+        "emptyOutcomes": "No students have reached a terminal outcome yet.",
+        "reachCount_one": "{{count}} completion ({{percent}}%)",
+        "reachCount_other": "{{count}} completions ({{percent}}%)"
       },
       "attempts": {
-        "title": "Attempts statistics",
-        "subtitle": "Ratio of single-attempt completions versus retry attempts to explore alternative paths",
-        "singleLabel": "Single Attempt",
-        "retryLabel": "Retry Attempt",
-        "singleVsRetry": "Single / Retry Ratio: {{single}} / {{retry}}",
-        "totalLabel": "Total attempts: {{total}}",
+        "title": "Attempt statistics",
+        "subtitle": "Share of students who made one attempt versus students who retried to explore other branches",
+        "singleLabel": "Students with one attempt",
+        "retryLabel": "Students who retried",
+        "singleVsRetry": "Students once / retried: {{single}} / {{retry}}",
+        "totalLabel": "{{total}} attempts by {{participants}} students",
         "emptyAttempts": "No attempts data available yet."
       },
       "openCases": "Open cases",
@@ -1452,7 +1456,6 @@
       "published": "Published",
       "updatedOn": "Updated on {{date}}",
       "recent": "Recent submissions",
-      "recentUnavailable": "No submission data: the system does not provide student work to lecturers yet.",
       "prompt": {
         "title": "Select a case study to view learning analytics",
         "description": "Select a course and a case study from the filters above to track branching data and student cohort behavior."
@@ -1482,7 +1485,10 @@
         "forbidden": "You do not have permission to view statistics for this case.",
         "serverError": "Server error loading statistics. Please try again later.",
         "network": "Cannot connect to server. Check your connection and try again."
-      }
+      },
+      "recentPickCase": "Select a case to see its latest submissions.",
+      "recentEmpty": "This case has no submissions yet.",
+      "recentError": "Could not load the submissions."
     },
     "profile": {
       "loadError": "Could not load your profile",
@@ -1811,7 +1817,7 @@
       "format": "Format",
       "formatValue": "Written submission",
       "status": "Status",
-      "submittedStatus": "Submitted (SUBMITTED)",
+      "submittedStatus": "Submitted",
       "submittedBadge": "Submitted",
       "submittedNotice": "Your submission has been recorded and is awaiting lecturer review. Review Study permits exactly one submission per case.",
       "submittedAt": "Submitted at: {{time}}",
@@ -1845,9 +1851,9 @@
       "backToDesk": "Back to Desk",
       "backToWork": "Back to Workspace",
       "caseAndCourse": "Case: {{case}} · Course: {{course}}",
-      "submittedBadge": "Submitted (SUBMITTED)",
-      "reviewedBadge": "Reviewed (REVIEWED)",
-      "reflectedBadge": "Reflected (REFLECTED)",
+      "submittedBadge": "Submitted",
+      "reviewedBadge": "Reviewed",
+      "reflectedBadge": "Reflected",
       "pendingTitle": "Awaiting Lecturer Feedback",
       "pendingBody": "Your lecturer has not provided qualitative feedback for this submission yet. The reflection composer will unlock once feedback is available.",
       "unauthorizedTitle": "Access Denied",
@@ -1856,7 +1862,7 @@
       "notFoundBody": "The submission does not exist or has been removed.",
       "submissionDetailsTitle": "Your Submitted Work",
       "analysisTitle": "1. Situation Analysis",
-      "emptyAnalysis": "No situation analysis provided",
+      "emptyAnalysis": "You did not provide a situation analysis",
       "solutionTitle": "2. Proposed Solution",
       "reasoningTitle": "3. Supporting Reasoning & Trade-offs",
       "submittedAt": "Submitted at {{time}}",
@@ -1870,10 +1876,10 @@
       "reflectionHelper": "{{current}} / {{max}} characters",
       "reflectionMin": "Reflection commentary must contain at least 10 characters.",
       "reflectionLockedTitle": "Reflection Composer is Locked",
-      "reflectionLockedNotice": "Reflection unlocks only after the lecturer has submitted qualitative feedback (REVIEWED status).",
+      "reflectionLockedNotice": "Your reflection unlocks once the lecturer has sent feedback.",
       "submitReflection": "Submit Reflection",
       "submittingReflection": "Submitting reflection...",
-      "reflectionSuccess": "Reflection submitted successfully. Submission status transitioned to REFLECTED.",
+      "reflectionSuccess": "Reflection submitted. Your submission is now Reflected.",
       "reflectionFailed": "Failed to submit reflection: {{error}}",
       "reflectionSubmittedNotice": "You have completed your post-feedback reflection. Your learning cycle for this case is complete.",
       "reflectionSubmittedAt": "Reflection submitted at {{time}}",
@@ -2075,7 +2081,13 @@
         "lockSuccess": "Locked account {{name}}",
         "unlockSuccess": "Unlocked account {{name}}",
         "actionError": "An error occurred while changing user account status."
-      }
+      },
+      "coursesTaught": "{{count}} courses taught",
+      "coursesJoined": "{{count}} courses joined",
+      "coursesTaught_one": "{{count}} course taught",
+      "coursesTaught_other": "{{count}} courses taught",
+      "coursesJoined_one": "{{count}} course joined",
+      "coursesJoined_other": "{{count}} courses joined"
     },
     "courses": {
       "title": "All courses",
@@ -2177,11 +2189,13 @@
     "aiService": {
       "recent": {
         "title": "Recent case generations",
-        "subtitle": "Each generation creates a draft for the lecturer to review"
+        "subtitle": "Each generation creates a draft for the lecturer to review",
+        "empty": "No case generation has been recorded yet."
       },
       "indexing": {
         "title": "Document indexing status",
-        "subtitle": "Documents are chunked and indexed so the AI can cite them when generating cases"
+        "subtitle": "Documents are chunked and indexed so the AI can cite them when generating cases",
+        "empty": "No material has been uploaded for indexing yet."
       },
       "config": {
         "title": "Current configuration",
@@ -2193,7 +2207,7 @@
       },
       "change": {
         "title": "Changing the configuration",
-        "body": "The AI provider and model are fixed in the server environment file (OPD-013). This screen is for monitoring only; it has no action to change the configuration."
+        "body": "The AI provider and model are fixed in the server environment file. This screen is for monitoring only; it has no action to change the configuration."
       },
       "loadErrorTitle": "AI service error",
       "loading": "Loading AI service information...",
@@ -2315,7 +2329,7 @@
         "title": "AI service",
         "provider": "Provider: fixed in the server configuration",
         "monitor": "Monitor its status under AI service",
-        "note": "The AI configuration is not edited in the interface (OPD-013)."
+        "note": "The AI configuration is not edited in the interface."
       },
       "breadcrumb": "Administration > Settings",
       "header": "System settings",
@@ -2352,6 +2366,9 @@
         "description": "Updated details will be saved and applied to all users across the EduBranch AI platform.",
         "confirm": "Save & Apply",
         "cancel": "Cancel"
+      },
+      "registrationModes": {
+        "OPEN_LECTURER_STUDENT": "Open to lecturers and students"
       }
     }
   },

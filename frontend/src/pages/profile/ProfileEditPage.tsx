@@ -229,7 +229,7 @@ function EditProfileDialog({ open, onClose, profile, onProfileUpdated }: EditPro
             value={profile.email}
             className="h-10 w-full rounded-eb-md border border-line bg-canvas px-3 text-[14px] text-ink-muted cursor-not-allowed select-none"
           />
-          <p className="text-[11px] text-ink-secondary">{t("g4.profile.emailImmutable")}</p>
+          <p className="text-[12px] text-ink-secondary">{t("g4.profile.emailImmutable")}</p>
         </div>
 
         <div className="flex flex-col gap-1.5">
@@ -245,7 +245,7 @@ function EditProfileDialog({ open, onClose, profile, onProfileUpdated }: EditPro
 
         <div className="flex flex-col gap-2">
           <label className="text-[13px] font-medium text-ink-secondary">{t("g4.profile.language")}</label>
-          <p className="text-[11px] text-ink-secondary">{t("g4.profile.languageDesc")}</p>
+          <p className="text-[12px] text-ink-secondary">{t("g4.profile.languageDesc")}</p>
           <div className="flex gap-3">
             <button
               type="button"
@@ -285,7 +285,7 @@ function EditProfileDialog({ open, onClose, profile, onProfileUpdated }: EditPro
 function Detail({ label, value }: { label: string; value: ReactNode }) {
   return (
     <div className="flex min-w-0 flex-1 flex-col gap-1">
-      <p className="text-[11px] leading-4 text-ink-secondary">{label}</p>
+      <p className="text-[12px] leading-4 text-ink-secondary">{label}</p>
       <p className="truncate text-[12px] leading-4 text-ink">{value}</p>
     </div>
   );
@@ -330,7 +330,7 @@ function AccountCard({
             <>
               <div className="flex gap-4">
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
-                  <p className="text-[11px] leading-4 text-ink-secondary">{t("g4.profile.teaching")}</p>
+                  <p className="text-[12px] leading-4 text-ink-secondary">{t("g4.profile.teaching")}</p>
                   {courses.status === "ready" ? (
                     <div className="flex h-5 items-center justify-between gap-3">
                       <p className="text-[12px] leading-4 text-ink">{t("g4.profile.teachingCount", { count: active.length })}</p>
@@ -522,7 +522,7 @@ function ContactRow({ icon: Icon, label, value }: { icon: LucideIcon; label: str
         <Icon size={16} absoluteStrokeWidth strokeWidth={1.07} className="text-ink" />
       </span>
       <span className="flex min-w-0 flex-col gap-1">
-        <span className="text-[11px] leading-[13px] text-ink-secondary">{label}</span>
+        <span className="text-[12px] leading-[13px] text-ink-secondary">{label}</span>
         <span className="truncate text-[13px] leading-[15px] text-ink">{value}</span>
       </span>
     </li>

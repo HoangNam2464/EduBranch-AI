@@ -58,7 +58,7 @@ export function BranchStatsChart({
         <p className="text-[13px] font-medium text-ink-secondary">
           {t("g4.stats.branchChart.noBranches")}
         </p>
-        <p className="mt-1 text-[11px] text-ink-muted">
+        <p className="mt-1 text-[12px] text-ink-muted">
           {t("g4.stats.branchChart.emptyCase")}
         </p>
       </div>
@@ -95,7 +95,7 @@ export function BranchStatsChart({
                   {t("g4.stats.branchChart.nodeTitle", { title: pointTitle })}
                 </h4>
               </div>
-              <span className="shrink-0 rounded-full border border-line bg-surface px-2 py-0.5 text-[11px] font-medium text-ink-secondary">
+              <span className="shrink-0 rounded-full border border-line bg-surface px-2 py-0.5 text-[12px] font-medium text-ink-secondary">
                 {t("g4.stats.branchChart.selections", { count: point.totalSelections })}
               </span>
             </div>
@@ -114,7 +114,7 @@ export function BranchStatsChart({
                         {opt.optionText}
                       </span>
                       <div className="flex shrink-0 items-center gap-2">
-                        <span className="text-[11px] text-ink-secondary">
+                        <span className="text-[12px] text-ink-secondary">
                           {t("g4.stats.branchChart.selections", { count: opt.count })}
                         </span>
                         <span className="w-10 text-right font-medium text-ink">

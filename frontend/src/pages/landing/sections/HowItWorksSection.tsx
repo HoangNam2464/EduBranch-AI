@@ -281,7 +281,7 @@ function StepDemo({ index, state }: { index: number; state: StepState }) {
         </span>
         <span className="flex flex-wrap gap-1 pt-0.5">
           {list("nodes").map((node) => (
-            <Pill key={node} className={cx("bg-surface text-[11px]", isDoneOrActive && "border border-primary-subtle font-medium")}>
+            <Pill key={node} className={cx("bg-surface text-[12px]", isDoneOrActive && "border border-primary-subtle font-medium")}>
               {node}
             </Pill>
           ))}
@@ -324,7 +324,7 @@ function StepDemo({ index, state }: { index: number; state: StepState }) {
             >
               <span
                 className={cx(
-                  "flex size-[18px] shrink-0 items-center justify-center rounded-[5px] text-[11px] leading-4 font-bold",
+                  "flex size-[18px] shrink-0 items-center justify-center rounded-[5px] text-[12px] leading-4 font-bold",
                   chosen ? "bg-accent text-white" : "bg-canvas text-ink-secondary",
                 )}
               >
@@ -342,12 +342,12 @@ function StepDemo({ index, state }: { index: number; state: StepState }) {
   return (
     <>
       <span className="flex flex-col gap-0.5 rounded-[10px] bg-surface px-2.5 py-2 shadow-xs border border-line-soft">
-        <span className="text-[11px] leading-4 font-semibold text-primary">{d("lecturer")}</span>
+        <span className="text-[12px] leading-4 font-semibold text-primary">{d("lecturer")}</span>
         <span className="text-[12px] leading-4 text-ink italic">"{d("feedback")}"</span>
       </span>
       <span className="flex items-center gap-1.5 rounded-[10px] bg-surface px-2.5 py-1.5 border border-line-soft">
         <SquarePen aria-hidden="true" size={12} className="shrink-0 text-accent" />
-        <span className="min-w-0 flex-1 text-[11px] leading-4 font-medium text-accent">{d("reflection")}</span>
+        <span className="min-w-0 flex-1 text-[12px] leading-4 font-medium text-accent">{d("reflection")}</span>
       </span>
     </>
   );

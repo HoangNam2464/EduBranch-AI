@@ -630,8 +630,8 @@ function RubricWorkspaceContent({ role, caseId }: RubricWorkspaceProps) {
           ) : rubricsError ? (
             <ErrorState
               framed={false}
-              title={t("rubric.saved.errorTitle")}
-              description={t("rubric.saved.errorDescription")}
+              title={rubricsError.code === 403 ? t("states.forbidden.title") : t("rubric.saved.errorTitle")}
+              description={rubricsError.code === 403 ? t("states.forbidden.description") : t("rubric.saved.errorDescription")}
               onRetry={retryRubrics}
               errorCode={rubricsError.code}
               occurredAt={rubricsError.at}

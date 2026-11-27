@@ -21,7 +21,6 @@ import {
   Pagination,
   ResultCount,
   SearchField,
-  SubmissionBadge,
   cx,
 } from "@/components/ds";
 import { SubmissionReviewList } from "@/components/feedback";
@@ -460,9 +459,9 @@ export function LecturerFeedbackPage() {
                   <div className="flex flex-wrap items-center gap-2 pt-1 text-[12px] text-ink-secondary">
                     <span
                       className={cx(
-                        "inline-flex items-center gap-1 rounded-eb-sm px-2 py-0.5 text-[11px] font-medium",
+                        "inline-flex items-center gap-1 rounded-eb-sm px-2 py-0.5 text-[12px] font-medium",
                         selectedItem.targetType === "REVIEW_STUDY"
-                          ? "border border-accent/20 bg-sky-50 text-accent"
+                          ? "border border-selected bg-selected text-link"
                           : "border border-primary/20 bg-primary/10 text-primary",
                       )}
                     >
@@ -614,7 +613,7 @@ export function LecturerFeedbackPage() {
 
                             {/* Retrospective Reasoning */}
                             <div className="flex flex-col gap-1 pt-1">
-                              <span className="text-[11px] font-medium text-ink-secondary">
+                              <span className="text-[12px] font-medium text-ink-secondary">
                                 {t("g4.queue.inspector.stepReasoningTitle")}
                               </span>
                               <div className="rounded-eb-sm border border-line/80 bg-surface p-2.5 text-[13px] leading-5 text-ink">
@@ -663,9 +662,9 @@ export function LecturerFeedbackPage() {
                     </h3>
                   </div>
                   {selectedItem.feedbackStatus === "REVIEWED" && (
-                    <SubmissionBadge status="reviewed">
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-selected px-2.5 py-0.5 text-[12px] leading-4 font-medium whitespace-nowrap text-link">
                       {t("g4.queue.badges.reviewed")}
-                    </SubmissionBadge>
+                    </span>
                   )}
                 </div>
 
@@ -681,7 +680,7 @@ export function LecturerFeedbackPage() {
                         {t("g4.queue.inspector.previousFeedback")}
                       </span>
                       {selectedItem.existingFeedback.createdAt && (
-                        <span className="text-[11px] text-ink-muted">
+                        <span className="text-[12px] text-ink-muted">
                           {t("g4.queue.inspector.sentAt", {
                             time: formatDateTime(new Date(selectedItem.existingFeedback.createdAt)),
                           })}
@@ -691,7 +690,7 @@ export function LecturerFeedbackPage() {
                     <p className="whitespace-pre-wrap rounded-eb-sm bg-canvas/60 p-3 text-ink">
                       {selectedItem.existingFeedback.feedbackText}
                     </p>
-                    <p className="text-[11px] text-ink-muted italic">
+                    <p className="text-[12px] text-ink-muted italic">
                       {t("g4.queue.inspector.alreadyReviewedNotice")}
                     </p>
                   </div>
@@ -720,9 +719,9 @@ export function LecturerFeedbackPage() {
                         size="md"
                         onClick={handleSubmitFeedback}
                         disabled={isSubmitting || feedbackText.trim().length < FEEDBACK_MIN_LENGTH}
-                        className="inline-flex items-center gap-2"
+                        className="inline-flex items-center gap-2 whitespace-nowrap"
                       >
-                        <MessageSquareText size={16} />
+                        <MessageSquareText size={16} className="shrink-0" />
                         <span>
                           {isSubmitting
                             ? t("g4.queue.inspector.submittingFeedback")

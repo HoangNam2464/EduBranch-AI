@@ -95,7 +95,7 @@ function SubmissionVisual() {
       <div className="flex flex-col gap-2.5 rounded-eb-lg bg-canvas p-4 border border-line-soft">
         <div className="flex items-center justify-between">
           <p className="text-[12px] leading-4 font-medium text-ink-secondary">{t("g1.landing.modes.review.answerLabel")}</p>
-          <span className="text-[11px] font-medium text-success-text bg-success-bg px-2 py-0.5 rounded-full border border-success-border">
+          <span className="text-[12px] font-medium text-success-text bg-success-bg px-2 py-0.5 rounded-full border border-success-border">
             {t("g1.landing.modes.review.completed")}
           </span>
         </div>
@@ -108,7 +108,7 @@ function SubmissionVisual() {
           <span className="size-2 rounded-full bg-accent animate-pulse" />
           {t("g1.landing.modes.review.sent")}
         </p>
-        <span className="text-[11px] text-primary font-medium">
+        <span className="text-[12px] text-primary font-medium">
           {t("g1.landing.modes.review.receiveFeedback")}
         </span>
       </div>

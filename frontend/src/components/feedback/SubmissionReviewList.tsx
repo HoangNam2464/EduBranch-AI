@@ -54,7 +54,7 @@ export function SubmissionReviewList({
         <div className="flex flex-col items-center justify-center py-10 px-4 text-center">
           <Inbox size={32} className="text-ink-muted mb-2" />
           <p className="text-[13px] font-medium text-ink-secondary">{t("g4.queue.emptyTitle")}</p>
-          <p className="text-[11px] text-ink-muted mt-1">{t("g4.queue.emptyDescription")}</p>
+          <p className="text-[12px] text-ink-muted mt-1">{t("g4.queue.emptyDescription")}</p>
         </div>
       );
     }
@@ -94,15 +94,15 @@ export function SubmissionReviewList({
                 <span className="truncate text-[13px] leading-5 font-medium text-ink">
                   {item.studentName}
                 </span>
-                <span className="shrink-0 text-[11px] leading-4 text-ink-secondary">
+                <span className="shrink-0 text-[12px] leading-4 text-ink-secondary">
                   {formattedDate}
                 </span>
               </div>
 
               <div className="flex items-center gap-1.5">
                 <span className={cx(
-                  "inline-flex items-center gap-1 rounded-eb-sm px-1.5 py-0.5 text-[10px] leading-3 font-medium",
-                  isReviewStudy ? "bg-sky-50 text-accent border border-accent/20" : "bg-primary/10 text-primary border border-primary/20",
+                  "inline-flex items-center gap-1 rounded-eb-sm px-1.5 py-0.5 text-[12px] leading-3 font-medium",
+                  isReviewStudy ? "bg-selected text-link border border-selected" : "bg-primary/10 text-primary border border-primary/20",
                 )}>
                   {isReviewStudy ? <FileCheck2 size={11} /> : <GitBranch size={11} />}
                   <span>{isReviewStudy ? t("g4.queue.modes.review") : `${t("g4.queue.modes.branching")} ${item.attemptNumber ? `#${item.attemptNumber}` : ""}`}</span>
@@ -114,19 +114,19 @@ export function SubmissionReviewList({
 
               <div className="flex items-center justify-between gap-2 pt-1">
                 {queueStatus === "PENDING" && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-warning-bg px-2 py-0.5 text-[10px] leading-3 font-medium text-status-approved-text">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-warning-bg px-2 py-0.5 text-[12px] leading-3 font-medium text-status-approved-text">
                     <Clock size={11} className="text-warning" />
                     <span>{t("g4.queue.badges.pending")}</span>
                   </span>
                 )}
                 {queueStatus === "REVIEWED" && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-selected px-2 py-0.5 text-[10px] leading-3 font-medium text-link">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-selected px-2 py-0.5 text-[12px] leading-3 font-medium text-link">
                     <CheckCircle2 size={11} className="text-link" />
                     <span>{t("g4.queue.badges.reviewed")}</span>
                   </span>
                 )}
                 {queueStatus === "REFLECTED" && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-[10px] leading-3 font-medium text-status-published-text">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-success-bg px-2 py-0.5 text-[12px] leading-3 font-medium text-status-published-text">
                     <CheckCircle2 size={11} className="text-status-published-text" />
                     <span>{t("g4.queue.badges.reflected")}</span>
                   </span>
@@ -141,32 +141,32 @@ export function SubmissionReviewList({
 
   return (
     <div className="w-full overflow-x-auto">
-      <table className="w-full table-fixed border-separate border-spacing-0" aria-label={t("g4.queue.listLabel")}>
+      <table className="w-full min-w-[960px] table-fixed border-separate border-spacing-0" aria-label={t("g4.queue.listLabel")}>
         <thead>
           <tr className="h-10">
             <th scope="col" className="w-[216px] rounded-l-eb-md bg-canvas pl-4 text-left text-[12px] leading-4 font-normal text-ink-secondary">
               {t("g4.queue.columns.student")}
-              <span aria-hidden="true" className="ml-1 text-[10px] leading-[14px]">↕</span>
+              <span aria-hidden="true" className="ml-1 text-[12px] leading-[14px]">↕</span>
             </th>
             <th scope="col" className="w-[150px] bg-canvas text-left text-[12px] leading-4 font-normal text-ink-secondary">
               {t("g4.queue.columns.submittedAt")}
-              <span aria-hidden="true" className="ml-1 text-[10px] leading-[14px]">↕</span>
+              <span aria-hidden="true" className="ml-1 text-[12px] leading-[14px]">↕</span>
             </th>
             <th scope="col" className="bg-canvas text-left text-[12px] leading-4 font-normal text-ink-secondary">
               {t("g4.queue.columns.case")}
-              <span aria-hidden="true" className="ml-1 text-[10px] leading-[14px]">↕</span>
+              <span aria-hidden="true" className="ml-1 text-[12px] leading-[14px]">↕</span>
             </th>
             <th scope="col" className="w-[72px] bg-canvas text-left text-[12px] leading-4 font-normal text-ink-secondary">
               {t("g4.queue.columns.attempt")}
-              <span aria-hidden="true" className="ml-1 text-[10px] leading-[14px]">↕</span>
+              <span aria-hidden="true" className="ml-1 text-[12px] leading-[14px]">↕</span>
             </th>
             <th scope="col" className="w-[152px] bg-canvas text-left text-[12px] leading-4 font-normal text-ink-secondary">
               {t("g4.queue.columns.action")}
-              <span aria-hidden="true" className="ml-1 text-[10px] leading-[14px]">↕</span>
+              <span aria-hidden="true" className="ml-1 text-[12px] leading-[14px]">↕</span>
             </th>
             <th scope="col" className="w-[148px] rounded-r-eb-md bg-canvas pr-4 text-left text-[12px] leading-4 font-normal text-ink-secondary">
               {t("g4.queue.columns.status")}
-              <span aria-hidden="true" className="ml-1 text-[10px] leading-[14px]">↕</span>
+              <span aria-hidden="true" className="ml-1 text-[12px] leading-[14px]">↕</span>
             </th>
           </tr>
         </thead>
@@ -254,19 +254,19 @@ export function SubmissionReviewList({
                 {/* 6. Status */}
                 <td className="pr-4">
                   {queueStatus === "PENDING" && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-warning-bg px-2.5 py-0.5 text-[11px] leading-4 font-medium text-status-approved-text">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-warning-bg px-2.5 py-0.5 text-[12px] leading-4 font-medium text-status-approved-text">
                       <Clock size={12} className="text-warning" />
                       <span>{t("g4.queue.badges.pending")}</span>
                     </span>
                   )}
                   {queueStatus === "REVIEWED" && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-selected px-2.5 py-0.5 text-[11px] leading-4 font-medium text-link">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-selected px-2.5 py-0.5 text-[12px] leading-4 font-medium text-link">
                       <CheckCircle2 size={12} className="text-link" />
                       <span>{t("g4.queue.badges.reviewed")}</span>
                     </span>
                   )}
                   {queueStatus === "REFLECTED" && (
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[11px] leading-4 font-medium text-status-published-text">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] leading-4 font-medium text-status-published-text">
                       <CheckCircle2 size={12} className="text-status-published-text" />
                       <span>{t("g4.queue.badges.reflected")}</span>
                     </span>

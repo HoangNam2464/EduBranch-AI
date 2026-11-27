@@ -194,7 +194,7 @@ export function AdminCasesPage() {
                 <div className="flex flex-col items-center gap-1.5">
                   <div className="flex flex-col gap-1">
                     {Array.from({ length: analytics.byMode.review }).map((_, i) => (
-                      <div key={i} className="h-5 w-16 rounded bg-sky-500" />
+                      <div key={i} className="h-5 w-16 rounded bg-accent" />
                     ))}
                   </div>
                   <span className="text-[12px] font-medium text-ink-secondary">{t("g6.cases.analytics.modeReview")}</span>
@@ -216,7 +216,7 @@ export function AdminCasesPage() {
                   >
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <span className="truncate text-[13px] font-medium text-ink">{item.title}</span>
-                      <span className="text-[11px] text-ink-secondary">
+                      <span className="text-[12px] text-ink-secondary">
                         {shownDay(item.updatedAt)} · {item.learningMode === "BRANCHING_STUDY" ? t("g6.cases.card.branchingMode") : t("g6.cases.card.reviewMode")}
                       </span>
                     </div>
@@ -301,7 +301,7 @@ export function AdminCasesPage() {
                     {/* Top status badges */}
                     <div className="flex items-center justify-between">
                       <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[12px] font-medium ${
                           isPublished
                             ? "bg-success-bg text-success-text"
                             : "bg-surface text-ink-secondary border border-line"
@@ -310,7 +310,7 @@ export function AdminCasesPage() {
                         {isPublished ? t("g6.cases.status.published") : t("g6.cases.status.draft")}
                       </span>
                       {c.isAiDraft && (
-                        <span className="flex items-center gap-1 rounded bg-surface px-1.5 py-0.5 text-[11px] text-ink-muted border border-line">
+                        <span className="flex items-center gap-1 rounded bg-surface px-1.5 py-0.5 text-[12px] text-ink-muted border border-line">
                           <Sparkles size={11} />
                           {t("g6.cases.card.aiDraft")}
                         </span>
@@ -323,7 +323,7 @@ export function AdminCasesPage() {
                     </div>
 
                     {/* Mode tag */}
-                    <div className="flex items-center justify-between text-[11px] text-ink-secondary">
+                    <div className="flex items-center justify-between text-[12px] text-ink-secondary">
                       <span className="rounded bg-surface px-1.5 py-0.5 font-medium text-primary">
                         {isBranching ? t("g6.cases.card.branchingMode") : t("g6.cases.card.reviewMode")}
                       </span>

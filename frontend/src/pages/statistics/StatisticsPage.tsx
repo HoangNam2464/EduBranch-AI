@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   ChartColumn,
@@ -11,6 +12,8 @@ import {
   Users,
 } from "lucide-react";
 import {
+  Avatar,
+  Button,
   FilterControl,
   MetricCard,
   SectionHeading,
@@ -39,6 +42,97 @@ import {
   type CaseStatisticsDto,
 } from "@/services/statisticsService";
 import type { Case } from "@/types";
+import { lecturerFeedbackService, type SubmissionReviewItem } from "@/services/lecturerFeedbackService";
+import { getSubmissionQueueStatus } from "@/pages/feedback/lecturerFeedbackLogic";
+import { initialsOf } from "@/layouts/shell/shellRoutes";
+import { PATHS, buildPath } from "@/routes/paths";
+import { formatDateTime, isValidDate } from "@/components/feedback";
+
+const RECENT_LIMIT = 5;
+
+/**
+ * 04.3 "Bài nộp gần đây": the newest submissions of the selected case, from the lecturer feedback queue
+ * (`GET /lecturer-feedback/submissions?caseId=`, already used by 04.1). Each row opens the case feedback queue.
+ */
+function RecentSubmissions({ caseId }: { caseId: string }) {
+  const { t } = useTranslation();
+  const [state, setState] = useState<{ status: "idle" | "loading" | "error" | "ready"; items: SubmissionReviewItem[] }>({
+    status: "idle",
+    items: [],
+  });
+  const [reload, setReload] = useState(0);
+  useEffect(() => {
+    if (!caseId) {
+      setState({ status: "idle", items: [] });
+      return;
+    }
+    let cancelled = false;
+    setState({ status: "loading", items: [] });
+    lecturerFeedbackService
+      .getQueueSubmissions({ caseId })
+      .then((items) => {
+        if (cancelled) return;
+        const sorted = [...items].sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
+        setState({ status: "ready", items: sorted.slice(0, RECENT_LIMIT) });
+      })
+      .catch(() => {
+        if (!cancelled) setState({ status: "error", items: [] });
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [caseId, reload]);
+
+  const note = (text: string) => <p className="rounded-[14px] bg-canvas p-3 text-[12px] leading-4 text-ink-secondary">{text}</p>;
+  if (state.status === "idle") return note(t("g4.stats.recentPickCase"));
+  if (state.status === "loading") {
+    return (
+      <SkeletonRegion className="flex flex-col gap-2 rounded-[14px] bg-canvas p-3">
+        <SkeletonLine width="70%" />
+        <SkeletonLine width="45%" size="sm" />
+      </SkeletonRegion>
+    );
+  }
+  if (state.status === "error") {
+    return (
+      <div role="alert" className="flex flex-col items-start gap-2 rounded-[14px] bg-canvas p-3">
+        <p className="text-[12px] leading-4 text-ink-secondary">{t("g4.stats.recentError")}</p>
+        <Button variant="secondary" size="sm" onClick={() => setReload((k) => k + 1)}>
+          {t("g2.common.retry")}
+        </Button>
+      </div>
+    );
+  }
+  if (state.items.length === 0) return note(t("g4.stats.recentEmpty"));
+  return (
+    <ul className="flex flex-col gap-2">
+      {state.items.map((item) => {
+        const at = new Date(item.submittedAt);
+        const status = getSubmissionQueueStatus(item);
+        return (
+          <li key={item.targetType + item.targetId}>
+            <Link
+              to={buildPath(PATHS.LECTURER.CASE_FEEDBACK, { caseId: item.caseId })}
+              className="group flex items-center gap-3 rounded-[14px] bg-canvas p-3 transition-colors hover:bg-surface-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            >
+              <Avatar initials={initialsOf(item.studentName) || "—"} size="sm" />
+              <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <span className="truncate text-[14px] leading-5 text-ink group-hover:text-primary" title={item.studentName}>
+                  {item.studentName || "—"}
+                </span>
+                <span className="flex min-w-0 gap-1 text-[12px] leading-4 text-ink-secondary">
+                  <span className="truncate">{t(`g4.queue.status.${status.toLowerCase()}`)}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="shrink-0 whitespace-nowrap">{isValidDate(at) ? formatDateTime(at) : "—"}</span>
+                </span>
+              </span>
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
 
 /**
  * 04.3 & 05.5 Thống kê luồng học tập — Figma page EduBranch AI – Screens, node 483:15369 & Frame 05.5 (FE-022, EBA-417).
@@ -83,9 +177,12 @@ function Panel({
 }
 
 function OpenCaseRow({ item }: { item: Case }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const updated = new Date(item.updatedAt);
   const valid = !Number.isNaN(updated.getTime());
+  const isEn = i18n.language?.startsWith("en");
+  // EN shows the short month name ("Nov"); VI keeps the Figma "Th11" form.
+  const monthLabel = !valid ? "" : isEn ? updated.toLocaleDateString("en-GB", { month: "short" }) : t("g4.calendar.monthShort", { month: updated.getMonth() + 1 });
   const mode =
     item.learningMode === "REVIEW_STUDY"
       ? t("g4.common.review")
@@ -102,13 +199,13 @@ function OpenCaseRow({ item }: { item: Case }) {
         )}
         aria-label={
           valid
-            ? t("g4.stats.updatedOn", { date: updated.toLocaleDateString("vi-VN") })
+            ? t("g4.stats.updatedOn", { date: updated.toLocaleDateString(isEn ? "en-GB" : "vi-VN") })
             : undefined
         }
       >
         <span className="text-[14px] font-medium leading-5">{valid ? updated.getDate() : "—"}</span>
-        <span className="text-[10px] leading-[14px]">
-          {valid ? t("g4.calendar.monthShort", { month: updated.getMonth() + 1 }) : ""}
+        <span className="text-[12px] leading-[14px]">
+          {monthLabel}
         </span>
       </span>
       <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
@@ -118,7 +215,7 @@ function OpenCaseRow({ item }: { item: Case }) {
               {mode}
             </StatusPill>
           )}
-          <span className="text-[10px] leading-[14px] text-ink-muted">
+          <span className="text-[12px] leading-[14px] text-ink-muted">
             {t("g4.stats.published")}
           </span>
         </div>
@@ -440,8 +537,8 @@ export function StatisticsPage() {
 
     mainContent = (
       <div className="flex flex-col gap-5">
-        {/* 4 MetricCards across the top */}
-        <div className="grid grid-cols-4 gap-4">
+        {/* 4 KPI cards in a row from 1440px (Figma 04.3); 2 x 2 below so labels and values fit (R01). */}
+        <div className="grid grid-cols-2 gap-4 min-[1440px]:grid-cols-4">
           <MetricCard
             variant="compact"
             icon={CircleCheck}
@@ -485,8 +582,8 @@ export function StatisticsPage() {
           />
         </Panel>
 
-        {/* Row of 2 panels: Attempts Statistics & Terminal Outcomes */}
-        <div className="grid grid-cols-2 gap-5">
+        {/* Attempts and outcomes side by side from 1440px; stacked below so headings never overlap. */}
+        <div className="grid grid-cols-1 gap-5 min-[1440px]:grid-cols-2">
           {/* Attempts Statistics */}
           <Panel
             title={t("g4.stats.panels.attempts")}
@@ -499,8 +596,8 @@ export function StatisticsPage() {
                   <span>{t("g4.stats.attempts.singleLabel")}</span>
                   <span className="font-medium">
                     {b.singleAttemptStudents} (
-                    {b.totalAttempts > 0
-                      ? Math.round((b.singleAttemptStudents / b.totalAttempts) * 100)
+                    {b.participants > 0
+                      ? Math.round((b.singleAttemptStudents / b.participants) * 100)
                       : 0}
                     %)
                   </span>
@@ -509,8 +606,8 @@ export function StatisticsPage() {
                   className="h-2 w-full overflow-hidden rounded-full bg-surface-muted"
                   role="progressbar"
                   aria-valuenow={
-                    b.totalAttempts > 0
-                      ? Math.round((b.singleAttemptStudents / b.totalAttempts) * 100)
+                    b.participants > 0
+                      ? Math.round((b.singleAttemptStudents / b.participants) * 100)
                       : 0
                   }
                   aria-valuemin={0}
@@ -519,7 +616,7 @@ export function StatisticsPage() {
                   <div
                     className="h-full rounded-full bg-primary"
                     style={{
-                      width: `${b.totalAttempts > 0 ? (b.singleAttemptStudents / b.totalAttempts) * 100 : 0}%`,
+                      width: `${b.participants > 0 ? (b.singleAttemptStudents / b.participants) * 100 : 0}%`,
                     }}
                   />
                 </div>
@@ -530,8 +627,8 @@ export function StatisticsPage() {
                   <span>{t("g4.stats.attempts.retryLabel")}</span>
                   <span className="font-medium">
                     {b.retryStudents} (
-                    {b.totalAttempts > 0
-                      ? Math.round((b.retryStudents / b.totalAttempts) * 100)
+                    {b.participants > 0
+                      ? Math.round((b.retryStudents / b.participants) * 100)
                       : 0}
                     %)
                   </span>
@@ -540,8 +637,8 @@ export function StatisticsPage() {
                   className="h-2 w-full overflow-hidden rounded-full bg-surface-muted"
                   role="progressbar"
                   aria-valuenow={
-                    b.totalAttempts > 0
-                      ? Math.round((b.retryStudents / b.totalAttempts) * 100)
+                    b.participants > 0
+                      ? Math.round((b.retryStudents / b.participants) * 100)
                       : 0
                   }
                   aria-valuemin={0}
@@ -550,14 +647,14 @@ export function StatisticsPage() {
                   <div
                     className="h-full rounded-full bg-accent"
                     style={{
-                      width: `${b.totalAttempts > 0 ? (b.retryStudents / b.totalAttempts) * 100 : 0}%`,
+                      width: `${b.participants > 0 ? (b.retryStudents / b.participants) * 100 : 0}%`,
                     }}
                   />
                 </div>
               </div>
 
               <div className="mt-2 rounded-eb-md border border-line bg-canvas/50 p-3 text-[12px] text-ink-secondary">
-                <span>{t("g4.stats.attempts.totalLabel", { total: b.totalAttempts })}</span>
+                <span>{t("g4.stats.attempts.totalLabel", { total: b.totalAttempts, participants: b.participants })}</span>
               </div>
             </div>
           </Panel>
@@ -716,9 +813,7 @@ export function StatisticsPage() {
           aria-label={t("g4.stats.recent")}
         >
           <h2 className="text-[16px] font-normal leading-6 text-ink">{t("g4.stats.recent")}</h2>
-          <p className="rounded-[14px] bg-canvas p-3 text-[12px] leading-4 text-ink-secondary">
-            {t("g4.stats.recentUnavailable")}
-          </p>
+          <RecentSubmissions caseId={selectedCaseId} />
         </section>
       </aside>
     </div>

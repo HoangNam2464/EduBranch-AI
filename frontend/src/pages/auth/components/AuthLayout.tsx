@@ -283,7 +283,7 @@ export function AuthSelectField({
             ) : hasCategories && !query.trim() ? (
               Object.entries(grouped).map(([category, items]) => (
                 <div key={category} className="flex flex-col">
-                  <div className="bg-canvas/50 px-4 pt-2.5 pb-1 text-[11px] font-medium tracking-wide uppercase text-ink-secondary">
+                  <div className="bg-canvas/50 px-4 pt-2.5 pb-1 text-[12px] font-medium tracking-wide uppercase text-ink-secondary">
                     {category}
                   </div>
                   {items.map((opt) => {
@@ -296,7 +296,7 @@ export function AuthSelectField({
                         onClick={() => handleSelect(opt.value)}
                         className={cx(
                           "flex cursor-pointer items-center justify-between px-4 py-2 text-[14px] leading-5 text-ink transition-colors hover:bg-canvas hover:text-accent",
-                          isSelected && "bg-selected font-medium text-accent",
+                          isSelected && "bg-selected font-medium text-link",
                         )}
                       >
                         <span className="truncate pr-2">{opt.label}</span>
@@ -317,7 +317,7 @@ export function AuthSelectField({
                     onClick={() => handleSelect(opt.value)}
                     className={cx(
                       "flex cursor-pointer items-center justify-between px-4 py-2.5 text-[14px] leading-5 text-ink transition-colors hover:bg-canvas hover:text-accent",
-                      isSelected && "bg-selected font-medium text-accent",
+                      isSelected && "bg-selected font-medium text-link",
                     )}
                   >
                     <span className="truncate pr-2">{opt.label}</span>

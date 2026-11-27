@@ -103,7 +103,11 @@ export function AdminAiConfigPage() {
           label={t("g6.aiService.kpi.avgDuration")}
           value={
             <span className="flex flex-col">
-              <span>{t("g6.aiService.kpi.avgDurationValue", { seconds: aiData.metrics.avgDurationSeconds })}</span>
+              <span>
+                {aiData.metrics.totalGenerated > 0
+                  ? t("g6.aiService.kpi.avgDurationValue", { seconds: aiData.metrics.avgDurationSeconds })
+                  : "—"}
+              </span>
               <span className="mt-1 text-[12px] font-normal leading-4 text-ink-muted">
                 {t("g6.aiService.kpi.avgDurationDesc")}
               </span>
@@ -134,6 +138,7 @@ export function AdminAiConfigPage() {
             subtitle={t("g6.aiService.recent.subtitle")}
           >
             <div className="flex flex-col gap-3">
+              {aiData.recentGenerations.length === 0 && <p className="rounded-eb-lg bg-canvas p-3.5 text-[12px] leading-4 text-ink-secondary">{t("g6.aiService.recent.empty")}</p>}
               {aiData.recentGenerations.map((gen) => (
                 <div
                   key={gen.id}
@@ -150,7 +155,7 @@ export function AdminAiConfigPage() {
                       <p className="text-[12px] text-ink-secondary truncate">
                         {gen.courseCode} · {gen.lecturerName} · {gen.createdAt}
                       </p>
-                      <p className="text-[11px] text-ink-muted">
+                      <p className="text-[12px] text-ink-muted">
                         {t("g6.aiService.gen.duration", { seconds: gen.durationSeconds })}
                         {gen.decisionsCount ? t("g6.aiService.gen.decisions", { count: gen.decisionsCount }) : ""}
                         {gen.materialsCitedCount ? t("g6.aiService.gen.materialsCited", { count: gen.materialsCitedCount }) : ""}
@@ -174,6 +179,7 @@ export function AdminAiConfigPage() {
             subtitle={t("g6.aiService.indexing.subtitle")}
           >
             <div className="flex flex-col gap-3">
+              {aiData.indexingStatuses.length === 0 && <p className="rounded-eb-lg bg-canvas p-3.5 text-[12px] leading-4 text-ink-secondary">{t("g6.aiService.indexing.empty")}</p>}
               {aiData.indexingStatuses.map((idxItem) => {
                 const isCompleted = idxItem.status === "COMPLETED";
                 const isPending = idxItem.status === "PENDING";
@@ -256,7 +262,7 @@ export function AdminAiConfigPage() {
               </div>
               <div className="flex flex-col gap-1 border-t border-line/60 pt-3">
                 <span className="text-ink-secondary">{t("g6.aiService.config.lastUpdatedLabel")}</span>
-                <span className="font-medium text-ink">{aiData.config.lastUpdated}</span>
+                <span className="font-medium text-ink">{aiData.config.lastUpdated || "—"}</span>
               </div>
               <div className="border-t border-line/60 pt-3">
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] font-medium text-success-text">

@@ -193,7 +193,9 @@ export function AdminSettingsPage() {
               </li>
               <li className="flex items-center justify-between py-2.5">
                 <span className="text-ink-secondary">{t("g6.settings.limitLabels.registration")}</span>
-                <span className="font-semibold text-success-text">{settings.limits.registration}</span>
+                <span className="font-semibold text-success-text">
+                  {t(`g6.settings.registrationModes.${settings.limits.registration}`, { defaultValue: "—" })}
+                </span>
               </li>
               <li className="flex items-center justify-between py-2.5">
                 <span className="text-ink-secondary">{t("g6.settings.limitLabels.version")}</span>

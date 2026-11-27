@@ -247,7 +247,7 @@ export function AdminUsersPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-[14px]">
+            <table className="w-full min-w-[880px] text-left text-[14px]">
               <thead className="border-b border-line bg-canvas text-[12px] font-medium text-ink-secondary">
                 <tr>
                   <th className="py-3 pr-4 pl-5">{t("g6.users.columns.user")}</th>
@@ -302,9 +302,11 @@ export function AdminUsersPage() {
                               ? t("g6.users.role.admin")
                               : t("g6.users.role.student")}
                           </span>
-                          {user.coursesInfo && (
-                            <span className="text-[12px] text-ink-secondary">
-                              {user.coursesInfo}
+                          {user.coursesInfo !== undefined && user.role !== "ADMIN" && (
+                            <span className="text-[12px] whitespace-nowrap text-ink-secondary">
+                              {t(user.role === "LECTURER" ? "g6.users.coursesTaught" : "g6.users.coursesJoined", {
+                                count: Number(user.coursesInfo) || 0,
+                              })}
                             </span>
                           )}
                         </div>

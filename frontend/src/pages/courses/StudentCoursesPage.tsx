@@ -164,7 +164,7 @@ export function StudentCoursesPage() {
                       <School size={20} />
                     </span>
                     {course.courseCode && (
-                      <span className="rounded-eb-xs bg-surface-muted px-2 py-0.5 font-mono text-[11px] font-medium text-ink-secondary">
+                      <span className="rounded-eb-xs bg-surface-muted px-2 py-0.5 font-mono text-[12px] font-medium text-ink-secondary">
                         {course.courseCode}
                       </span>
                     )}

@@ -145,7 +145,7 @@ function HistoryContent({ ctx }: { ctx: CaseAttemptsContext }) {
           className={cx("inline-flex cursor-pointer items-center gap-[5px] rounded-sm text-[12px] leading-4 text-ink-secondary", FOCUS_RING)}
         >
           {label}
-          <span aria-hidden="true" className="text-[10px] leading-[14px]">
+          <span aria-hidden="true" className="text-[12px] leading-[14px]">
             ↕
           </span>
         </button>

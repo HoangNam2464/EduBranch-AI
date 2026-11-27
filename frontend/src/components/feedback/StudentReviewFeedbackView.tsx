@@ -113,9 +113,9 @@ export function StudentReviewFeedbackView({
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-eb-xl border border-line bg-surface p-5 shadow-eb-card">
         <div className="flex flex-col gap-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1 rounded-eb-sm border border-accent/20 bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-accent">
+            <span className="inline-flex items-center gap-1 rounded-eb-sm border border-selected/20 bg-selected px-2 py-0.5 text-[12px] font-medium text-link">
               <FileCheck2 size={13} />
-              <span>Review Study</span>
+              <span>{t("g5.common.modeReview")}</span>
             </span>
             <span className="text-[12px] text-ink-secondary">·</span>
             <span className="text-[13px] text-ink-secondary">
@@ -288,7 +288,7 @@ export function StudentReviewFeedbackView({
               {feedback.feedbackText}
             </p>
             {feedback.createdAt && (
-              <span className="text-right text-[11px] text-ink-muted">
+              <span className="text-right text-[12px] text-ink-muted">
                 {t("g5.feedback.feedbackSentAt", {
                   time: formatDateTime(new Date(feedback.createdAt)),
                 })}
@@ -392,7 +392,7 @@ export function StudentReviewFeedbackView({
                 {submission.reflectionText || "—"}
               </p>
               {submission.reflectionSubmittedAt && (
-                <span className="text-right text-[11px] text-ink-muted">
+                <span className="text-right text-[12px] text-ink-muted">
                   {t("g5.feedback.reflectionSubmittedAt", {
                     time: formatDateTime(new Date(submission.reflectionSubmittedAt)),
                   })}

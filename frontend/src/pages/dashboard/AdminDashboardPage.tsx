@@ -298,7 +298,7 @@ function ActivityChartPanel() {
               strokeWidth="2.5"
             />
           </svg>
-          <div className="flex justify-between pt-2 text-[11px] text-ink-muted">
+          <div className="flex justify-between pt-2 text-[12px] text-ink-muted">
             <span>Tuần 40</span>
             <span>Tuần 41</span>
             <span>Tuần 42</span>
@@ -369,7 +369,7 @@ function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["rol
           </svg>
           <div className="absolute flex flex-col items-center justify-center text-center">
             <span className="text-[18px] font-semibold text-ink">{total}</span>
-            <span className="text-[10px] text-ink-muted">{t("g6.dashboard.kpi.users")}</span>
+            <span className="text-[12px] text-ink-muted">{t("g6.dashboard.kpi.users")}</span>
           </div>
         </div>
 
@@ -573,7 +573,7 @@ function RecentLogsPanel({ logs }: { logs: AdminOverview["recentLogs"] }) {
               <span aria-hidden="true" className={`mt-1.5 size-2 shrink-0 rounded-full ${dotColor}`} />
               <div className="flex min-w-0 flex-1 flex-col">
                 <span className="line-clamp-1 text-[13px] leading-5 font-medium text-ink">{log.description}</span>
-                <span className="text-[11px] leading-4 text-ink-muted">{log.meta}</span>
+                <span className="text-[12px] leading-4 text-ink-muted">{log.meta}</span>
               </div>
             </li>
           );

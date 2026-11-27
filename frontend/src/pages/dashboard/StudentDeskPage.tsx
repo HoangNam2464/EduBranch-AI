@@ -182,7 +182,7 @@ export function StudentDeskPage() {
                 )}
               >
                 <span className="line-clamp-1 text-[13px] font-medium text-ink">{cs.title}</span>
-                <span className="text-[11px] text-ink-secondary">{cs.course_name}</span>
+                <span className="text-[12px] text-ink-secondary">{cs.course_name}</span>
               </Link>
             ))}
           </div>
