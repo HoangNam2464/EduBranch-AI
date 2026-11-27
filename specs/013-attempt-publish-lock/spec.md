@@ -1,7 +1,7 @@
 # Spec 013 — Khóa case đã có attempt và INV-01 cho attempt (D5)
 
 > **Nguồn**:
-> - Quyết định PO ngày 2026-11-27 trong chat: "Case đã có ít nhất một attempt thì không được chuyển từ `PUBLISHED` về `DRAFT`. Case chưa có attempt vẫn được chỉnh sửa như hiện tại. Attempt đang làm dở được tiếp tục đến terminal; attempt hoàn thành và reflection vẫn được xem lại." và "OPD-007: Chức năng versioning case để Post-MVP."
+> - Quyết định PO ngày 2026-11-27 trong chat, mục có tiêu đề "**D5 / OPD-003:**": "Case đã có ít nhất một attempt thì không được chuyển từ `PUBLISHED` về `DRAFT`. Case chưa có attempt vẫn được chỉnh sửa như hiện tại. Attempt đang làm dở được tiếp tục đến terminal; attempt hoàn thành và reflection vẫn được xem lại." và "OPD-007: Chức năng versioning case để Post-MVP."
 > - `docs/mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md` §0.A, PSD-11.
 > - FND §4–§6 (INV-01).
 > - `specs/011-case-access-hardening/spec.md` §4 (`BLOCKED-ON-D5`).
@@ -25,6 +25,7 @@ Trên `develop`, backend cho phép `PUBLISHED → DRAFT` bất kể đã có sin
 - **AC-5:** attempt đang làm dở trên case `PUBLISHED` đi tiếp được tới terminal; attempt đã hoàn thành, Journey Review và reflection vẫn xem lại và nộp được như trước (OPD-003).
 - **AC-6:** với dữ liệu cũ (case đã rời `PUBLISHED` trước khi có quy tắc này):
   - sinh viên nhận **403** ở `getAttempt`, `chooseOption`, `saveRetrospectiveReasoning`, `submitReflection`;
+  - Challenge Support (`createOrGetSession`, `sendReply`, `getSession`, `completeSession`) cũng trả **403**, và nội dung case không được gửi tới AI service;
   - `getAttemptsByCase` trả danh sách rỗng;
   - không ghi gì vào DB.
 

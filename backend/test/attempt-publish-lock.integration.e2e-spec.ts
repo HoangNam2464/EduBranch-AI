@@ -5,6 +5,7 @@ import { MigrationRunner } from "../src/common/database/migration-runner";
 import { AuditService } from "../src/common/audit/audit.service";
 import { CaseService } from "../src/modules/case/case.service";
 import { BranchingAttemptService } from "../src/modules/branching-attempt/branching-attempt.service";
+import { ChallengeSupportService } from "../src/modules/challenge-support/challenge-support.service";
 
 /**
  * D5 / INV-01 (PO decision 2026-11-27), real PostgreSQL 16:
@@ -12,7 +13,8 @@ import { BranchingAttemptService } from "../src/modules/branching-attempt/branch
  * - in-progress attempts continue to terminal, completed attempts and reflection stay readable;
  * - "start attempt" and "revert to DRAFT" never interleave (both lock the case row);
  * - students cannot act on attempts of a case that is not PUBLISHED (older data).
- * Uses its own throwaway database `edubranch_publish_lock_it` and drops it afterwards.
+ * Uses its own throwaway database `edubranch_publish_lock_it` and drops it afterwards; CREATE/DROP go through the
+ * `postgres` maintenance database, so this suite never connects to the dev database `edubranch_ai`.
  */
 describe("D5 publish lock + INV-01 for attempts — real PostgreSQL", () => {
   const base = {
@@ -28,6 +30,8 @@ describe("D5 publish lock + INV-01 for attempts — real PostgreSQL", () => {
   let reachable = false;
   let caseService: CaseService;
   let attemptService: BranchingAttemptService;
+  let challengeService: ChallengeSupportService;
+  const ai = { generateChallenge: jest.fn() };
 
   const lecturer = randomUUID();
   const students = Array.from({ length: 3 }, () => randomUUID());
@@ -64,7 +68,7 @@ describe("D5 publish lock + INV-01 for attempts — real PostgreSQL", () => {
     Number((await q(`SELECT COUNT(*)::int AS n FROM branching_attempts WHERE case_id = $1`, [caseId])).rows[0].n);
 
   beforeAll(async () => {
-    const admin0 = new Pool({ ...base, database: process.env.POSTGRES_DB || "edubranch_ai" });
+    const admin0 = new Pool({ ...base, database: "postgres" });
     try {
       await admin0.query(`DROP DATABASE IF EXISTS ${DB_NAME}`);
       await admin0.query(`CREATE DATABASE ${DB_NAME}`);
@@ -80,6 +84,7 @@ describe("D5 publish lock + INV-01 for attempts — real PostgreSQL", () => {
     const db = { query: (t: string, p?: any[]) => pool!.query(t, p), getClient: () => pool!.connect() } as any;
     caseService = new CaseService(db, { generateCase: jest.fn() } as any, new AuditService(db));
     attemptService = new BranchingAttemptService(db);
+    challengeService = new ChallengeSupportService(db, ai as any);
 
     await q(`INSERT INTO users (id, email, password_hash, full_name, role) VALUES ($1,'lect@uni.edu.vn','h','Lecturer','LECTURER')`, [
       lecturer,
@@ -101,7 +106,7 @@ describe("D5 publish lock + INV-01 for attempts — real PostgreSQL", () => {
   afterAll(async () => {
     if (pool) await pool.end().catch(() => undefined);
     if (reachable) {
-      const admin0 = new Pool({ ...base, database: process.env.POSTGRES_DB || "edubranch_ai" });
+      const admin0 = new Pool({ ...base, database: "postgres" });
       try {
         await admin0.query(`DROP DATABASE IF EXISTS ${DB_NAME}`);
       } finally {
@@ -162,6 +167,14 @@ describe("D5 publish lock + INV-01 for attempts — real PostgreSQL", () => {
     // Nothing was written by the rejected step.
     const steps = await q(`SELECT COUNT(*)::int AS n FROM student_reasoning WHERE attempt_id = $1`, [a.id]);
     expect(steps.rows[0].n).toBe(0);
+    // Challenge Support on that attempt's reasoning is refused too, before any AI call.
+    const r = randomUUID();
+    await q(
+      `INSERT INTO student_reasoning (id, attempt_id, node_id, selected_option_id, reasoning_text) VALUES ($1,$2,$3,$4,'why')`,
+      [r, a.id, c.root, c.opt],
+    );
+    await expect(challengeService.createOrGetSession(students[2], { reasoningId: r } as any)).rejects.toThrow(ForbiddenException);
+    expect(ai.generateChallenge).not.toHaveBeenCalled();
     // The lecturer's own view is not affected by the student-only rule.
     await expect(attemptService.getAttempt(a.id, undefined, true)).resolves.toMatchObject({ id: a.id });
   });

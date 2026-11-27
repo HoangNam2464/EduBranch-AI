@@ -77,9 +77,11 @@ export class ChallengeSupportService {
   ): Promise<ChallengeSession> {
     const reasoningRes = await this.db.query(
       `SELECT r.id, r.attempt_id, r.node_id, r.selected_option_id, r.reasoning_text,
-              n.situation, o.option_text, a.student_id, a.is_completed as attempt_completed, a.case_id
+              n.situation, o.option_text, a.student_id, a.is_completed as attempt_completed, a.case_id,
+              c.status AS case_status
        FROM student_reasoning r
        JOIN branching_attempts a ON r.attempt_id = a.id
+       JOIN cases c ON c.id = a.case_id
        JOIN case_nodes n ON r.node_id = n.id
        JOIN case_options o ON r.selected_option_id = o.id
        WHERE r.id = $1`,
@@ -94,6 +96,12 @@ export class ChallengeSupportService {
 
     if (reasoning.student_id !== studentId) {
       throw new ForbiddenException("You do not have permission to access this reasoning");
+    }
+
+    // INV-01 (D5, PO 2026-11-27): no Challenge Support on a case that is not PUBLISHED (its node text
+    // may be an unpublished draft). Checked after ownership so other students learn nothing.
+    if (reasoning.case_status !== "PUBLISHED") {
+      throw new ForbiddenException("This case is not published");
     }
 
     if (!reasoning.reasoning_text || reasoning.reasoning_text.trim().length === 0) {
@@ -215,10 +223,11 @@ export class ChallengeSupportService {
   ): Promise<ChallengeSession> {
     const sessionRes = await this.db.query(
       `SELECT s.id, s.reasoning_id, s.review_submission_id, s.current_round, s.is_completed, s.created_at, s.updated_at,
-              r.reasoning_text, n.situation, o.option_text, a.student_id
+              r.reasoning_text, n.situation, o.option_text, a.student_id, c.status AS case_status
        FROM challenge_support_sessions s
        JOIN student_reasoning r ON s.reasoning_id = r.id
        JOIN branching_attempts a ON r.attempt_id = a.id
+       JOIN cases c ON c.id = a.case_id
        JOIN case_nodes n ON r.node_id = n.id
        JOIN case_options o ON r.selected_option_id = o.id
        WHERE s.id = $1`,
@@ -233,6 +242,12 @@ export class ChallengeSupportService {
 
     if (session.student_id !== studentId) {
       throw new ForbiddenException("You do not have permission to modify this session");
+    }
+
+    // INV-01 (D5, PO 2026-11-27): no Challenge Support on a case that is not PUBLISHED (its node text
+    // may be an unpublished draft). Checked after ownership so other students learn nothing.
+    if (session.case_status !== "PUBLISHED") {
+      throw new ForbiddenException("This case is not published");
     }
 
     // Hard cap enforcement: reject round 3 or replies on completed sessions
@@ -363,10 +378,11 @@ export class ChallengeSupportService {
   async getSession(studentId: string, sessionId: string): Promise<ChallengeSession> {
     const sessionRes = await this.db.query(
       `SELECT s.id, s.reasoning_id, s.review_submission_id, s.current_round, s.is_completed, s.created_at, s.updated_at,
-              a.student_id
+              a.student_id, c.status AS case_status
        FROM challenge_support_sessions s
        JOIN student_reasoning r ON s.reasoning_id = r.id
        JOIN branching_attempts a ON r.attempt_id = a.id
+       JOIN cases c ON c.id = a.case_id
        WHERE s.id = $1`,
       [sessionId],
     );
@@ -379,6 +395,12 @@ export class ChallengeSupportService {
 
     if (session.student_id !== studentId) {
       throw new ForbiddenException("You do not have permission to view this session");
+    }
+
+    // INV-01 (D5, PO 2026-11-27): no Challenge Support on a case that is not PUBLISHED (its node text
+    // may be an unpublished draft). Checked after ownership so other students learn nothing.
+    if (session.case_status !== "PUBLISHED") {
+      throw new ForbiddenException("This case is not published");
     }
 
     const msgRes = await this.db.query(
@@ -402,10 +424,11 @@ export class ChallengeSupportService {
   ): Promise<ChallengeSession> {
     const sessionRes = await this.db.query(
       `SELECT s.id, s.reasoning_id, s.review_submission_id, s.current_round, s.is_completed, s.created_at, s.updated_at,
-              a.student_id
+              a.student_id, c.status AS case_status
        FROM challenge_support_sessions s
        JOIN student_reasoning r ON s.reasoning_id = r.id
        JOIN branching_attempts a ON r.attempt_id = a.id
+       JOIN cases c ON c.id = a.case_id
        WHERE s.id = $1`,
       [sessionId],
     );
@@ -418,6 +441,12 @@ export class ChallengeSupportService {
 
     if (session.student_id !== studentId) {
       throw new ForbiddenException("You do not have permission to modify this session");
+    }
+
+    // INV-01 (D5, PO 2026-11-27): no Challenge Support on a case that is not PUBLISHED (its node text
+    // may be an unpublished draft). Checked after ownership so other students learn nothing.
+    if (session.case_status !== "PUBLISHED") {
+      throw new ForbiddenException("This case is not published");
     }
 
     let updatedSession = session;
