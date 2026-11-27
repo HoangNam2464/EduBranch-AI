@@ -15,10 +15,10 @@
 
 | Task | Kết quả | Ghi chú |
 |---|---|---|
-| QA-011 | PASS | API: suite HTTP thật. Giao diện: §4 |
-| QA-012 | PASS | API và DOM; có cả trường hợp tải lại trang và lỗi API |
+| QA-011 | PASS WITH CONDITIONS | API: suite HTTP thật. Điều kiện: bằng chứng giao diện (§4) do một script ngoài repo tạo ra, chỉ chạy ở 1440 và tiếng Việt |
+| QA-012 | PASS WITH CONDITIONS | API và DOM; có cả trường hợp tải lại trang và lỗi API. Điều kiện như QA-011 |
 | QA-013 | PASS | — |
-| QA-014 | PASS WITH CONDITIONS | Bộ lọc theo chế độ/trạng thái và nhãn chờ phản hồi nằm ở frontend (dựa vào unit test FE và Visual QA của FE-019). Frontend dùng mã `PENDING` chứ không phải `PENDING_REVIEW` như chữ trong AC (§3) |
+| QA-014 | PASS WITH CONDITIONS | Các cổng lifecycle (409) được kiểm tra theo đúng quy tắc, đã chứng minh bằng đột biến 3. Điều kiện: bộ lọc theo chế độ/trạng thái và nhãn chờ phản hồi nằm ở frontend (dựa vào unit test FE và Visual QA của FE-019). Frontend dùng mã `PENDING` chứ không phải `PENDING_REVIEW` như chữ trong AC (§3) |
 | QA-015 | PASS WITH CONDITIONS | Ở gateway: nội dung sinh viên chỉ đi trong lịch sử hội thoại với vai trò sinh viên. Việc AI thật không bị prompt injection ghi đè chỉ dựa trên test của AI service (schema cấm chấm điểm). Chưa chạy với Gemini thật (cần API key) |
 
 Mức kết luận theo policy §8; PO chấp nhận các điều kiện thì mới đạt Quality Gate.
@@ -34,7 +34,8 @@ Mức kết luận theo policy §8; PO chấp nhận các điều kiện thì m�
 | Suite mới `test/learning-flow-http.integration.e2e-spec.ts` | 0 | 18/18 |
 | Đột biến 1: lộ `consequence` khi attempt chưa xong | 1 | Test QA-012 về "không lộ hệ quả" chuyển sang fail |
 | Đột biến 2: bỏ kiểm tra "tối đa 2 vòng" | 1 | Test QA-015 về vòng thứ 3 chuyển sang fail |
-| Script giao diện (Playwright, Chrome, 1440, VI) | 0 | 18/18 (§4) |
+| Đột biến 3 (do reviewer đề xuất): nới cổng reflection của Review Study, cho reflection trước khi review và reflection lần 2 | 1 | Test QA-014 chuyển sang fail. Ở bản `78b40c7`, phép này vẫn cho 18/18 (xem §6, F1) |
+| Script giao diện (Playwright, Chrome, 1440, VI) | 0 | 18 kiểm tra, gom thành 10 dòng ở §4 |
 
 **Suite chạy theo đường HTTP thật**, gồm các tầng sau:
 - supertest;
@@ -42,7 +43,13 @@ Mức kết luận theo policy §8; PO chấp nhận các điều kiện thì m�
 - `ValidationPipe` với cùng tùy chọn như `main.ts`;
 - controller và service thật của case, attempt, Review Study, phản hồi giảng viên và Challenge Support;
 - `AiClientService` thật; chỉ lời gọi `fetch` sang AI service được giả lập;
-- DB riêng `edubranch_learning_flow_it`, tạo và xóa qua DB quản trị `postgres`.
+- SQL thật trên DB riêng `edubranch_learning_flow_it`, tạo và xóa qua DB quản trị `postgres`.
+
+Hai chỗ thay thế:
+- `DatabaseService` được thay bằng một adapter mỏng gọi thẳng `pg` Pool;
+- `ConfigService` được giả lập để cấp khóa JWT và timeout của Challenge Support.
+
+Trong các lần chạy ở trên, DB tạm luôn kết nối được; log có migration chạy và lỗi service thật. Lưu ý: nếu không có PostgreSQL, `itDb` vẫn báo "pass". Đây là quy ước chung của dự án, đã có backlog EBA-119.
 
 ## 3. Đối chiếu AC (suite HTTP thật)
 
@@ -123,8 +130,30 @@ Kết quả 18/18 PASS:
 | Chọn tiếp sau khi kết thúc | 400 |
 | Journey Review khi API lỗi 500 | Hiện trạng thái lỗi, không hiện dữ liệu cũ |
 
-Ảnh chụp ở thư mục QA cục bộ: `qa11-node1`, `qa11-selected-*`, `qa11-step-error`, `qa11-node2`, `qa11-journey-review`, `qa11-review-error`.
+**Nguồn bằng chứng:**
+- Script và ảnh chụp nằm ở máy kiểm thử, ngoài repo: `scratchpad/qa1112-ui.cjs`; ảnh trong `scratchpad/qa1112/`: `qa11-node1`, `qa11-selected-*`, `qa11-step-error`, `qa11-node2`, `qa11-journey-review`, `qa11-review-error`.
+- Script chỉ chạy ở 1440 và tiếng Việt.
+
+Vì vậy QA-011/QA-012 để ở PASS WITH CONDITIONS cho tới khi ảnh được đính kèm Jira, hoặc kiểm tra được chạy lại ở các độ rộng khác.
 
 ## 5. Chưa kiểm chứng
+- Giao diện của QA-011/QA-012 ở 1024, 1280, 1920 và tiếng Anh: NOT VERIFIED.
 - AI Challenge Support với Gemini thật (cần `GEMINI_API_KEY`): NOT VERIFIED.
 - Các suite `*.live.spec.ts`: skip, không tính là pass.
+
+## 6. Review độc lập (QG2)
+Reviewer là Claude subagent chỉ đọc, review commit `78b40c7`, có chạy đột biến. Các phát hiện được xử lý trong commit tiếp theo.
+
+| # | Mức | Phát hiện | Xử lý |
+|---|---|---|---|
+| F1 | High | Hai cổng reflection của QA-014 PASS sai lý do: chuỗi ngắn hơn 10 ký tự nên bị DTO chặn (400), và đột biến 3 vẫn PASS | **Đã sửa:** dùng chuỗi đủ dài; assert đúng 409 kèm message; kiểm tra DB không đổi. Đột biến 3 nay fail |
+| F2 | Medium | REFLECTED chưa được assert chặt | **Đã sửa:** `submission_status = REFLECTED`, `reflection_status = SUBMITTED` và nội dung reflection |
+| F3 | Medium | Hàng chờ có `feedbackStatus` nhưng chưa được assert | **Đã sửa:** `PENDING` trước khi phản hồi, `REVIEWED` sau đó; mọi mục đều có `feedbackStatus` |
+| F4 | Low–Med | Kiểm tra "không trộn dữ liệu" không có tác dụng | **Đã sửa:** lượt làm lại 2 đi đường khác (root → mid → B); mỗi attempt khớp đúng lựa chọn của nó, cả trong DB lẫn `GET` |
+| F5 | Low–Med | Chưa assert mã trạng thái của reasoning/reflection, chưa assert nội dung reasoning | **Đã sửa** |
+| F6 | Medium | `itDb` báo "pass" khi không có DB | Quy ước chung của dự án (EBA-119); đã ghi rõ trong §2 |
+| F7 | Medium | Bằng chứng giao diện nằm ngoài repo, chỉ 1440 và tiếng Việt; số "18/18" dễ hiểu nhầm | Đã ghi rõ nguồn, phạm vi và số kiểm tra; QA-011/QA-012 hạ xuống PASS WITH CONDITIONS |
+| F8 | Low | Kiểm tra prompt injection còn lỏng | **Đã sửa:** assert 200; không có khóa chỉ thị nào; reasoning của sinh viên chỉ nằm trong `student_reasoning` |
+| F9 | Low | Không rõ quy tắc nào từ chối lựa chọn sau khi kết thúc | **Đã sửa:** assert message "already reached its terminal outcome" |
+| F10 | Low | Nhiều assert lỏng; test hàng chờ phụ thuộc dữ liệu của test khác | **Đã sửa:** đúng 409; đúng 200 với `feedback: null`; test hàng chờ tự tạo dữ liệu; giảng viên khác nhận 200 |
+| F11 | Low | Báo cáo chưa nêu các thành phần bị thay thế | **Đã sửa** (§2) |
