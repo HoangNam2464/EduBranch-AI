@@ -118,17 +118,21 @@ export class CaseService {
         nodeMap.set(i, randomUUID());
       }
 
+      // All nodes first: an option may point to a node later in the array (the root is index 0),
+      // and case_options.next_node_id is an immediate (non-deferrable) foreign key.
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        const nodeId = nodeMap.get(i)!;
         const isTerminal = !node.options || node.options.length === 0;
-
         await client.query(
           `INSERT INTO case_nodes (id, case_id, situation, is_terminal, node_index)
            VALUES ($1, $2, $3, $4, $5)`,
-          [nodeId, caseId, node.situation, isTerminal, i],
+          [nodeMap.get(i)!, caseId, node.situation, isTerminal, i],
         );
+      }
 
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const nodeId = nodeMap.get(i)!;
         if (node.options && Array.isArray(node.options)) {
           for (const opt of node.options) {
             const nextNodeId =

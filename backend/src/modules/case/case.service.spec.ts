@@ -91,6 +91,33 @@ describe('CaseService', () => {
       expect(mockDbClient.query).toHaveBeenCalledWith(expect.stringContaining('INSERT INTO case_options'), expect.any(Array));
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
     });
+    it('BE-015: inserts every node before any option, so forward links satisfy the next_node_id foreign key', async () => {
+      mockAiClientService.generateCase.mockResolvedValue({
+        title: 'T',
+        root_node_index: 0,
+        nodes: [
+          { situation: 'Root', options: [{ text: 'a', consequence: 'c', next_node_index: 1 }, { text: 'b', consequence: 'c', next_node_index: 2 }] },
+          { situation: 'Mid', options: [{ text: 'a', consequence: 'c', next_node_index: 2 }, { text: 'b', consequence: 'c', next_node_index: 2 }] },
+          { situation: 'End', options: [] },
+        ],
+      });
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'course-1' }] })
+        .mockResolvedValueOnce({ rows: [{ id: 'case-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }] })
+        .mockResolvedValueOnce({ rows: [] });
+      mockDbClient.query.mockResolvedValueOnce(undefined).mockResolvedValueOnce({ rows: [{ is_active: true }] });
+
+      await service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] });
+
+      const sql = mockDbClient.query.mock.calls.map(([text]: [string]) => String(text));
+      const nodeInserts = sql.map((t, i) => (t.includes('INSERT INTO case_nodes') ? i : -1)).filter((i) => i >= 0);
+      const optionInserts = sql.map((t, i) => (t.includes('INSERT INTO case_options') ? i : -1)).filter((i) => i >= 0);
+      expect(nodeInserts).toHaveLength(3);
+      expect(optionInserts).toHaveLength(4);
+      expect(Math.max(...nodeInserts)).toBeLessThan(Math.min(...optionInserts));
+    });
+
     it('rejects generation in an archived course with 409 before calling the AI service (C1-B)', async () => {
       mockDbService.query
         .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] }) // user check
