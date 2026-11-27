@@ -67,6 +67,8 @@ export function LecturerFeedbackPage() {
   const [search, setSearch] = useState("");
   const [course, setCourse] = useState("ALL");
   const [status, setStatus] = useState("ALL");
+  // FE-019 AC: filter by learning mode; each mode keeps its own status rules (lecturerFeedbackLogic).
+  const [learningMode, setLearningMode] = useState<"ALL" | "BRANCHING_STUDY" | "REVIEW_STUDY">("ALL");
   const [sort, setSort] = useState<"NEWEST" | "OLDEST">("NEWEST");
 
   // Pagination states
@@ -171,10 +173,11 @@ export function LecturerFeedbackPage() {
     return filterSubmissions(submissions, {
       search,
       course,
+      learningMode,
       status,
       sort,
     });
-  }, [submissions, search, course, status, sort]);
+  }, [submissions, search, course, learningMode, status, sort]);
 
   // Pagination calculation
   const pageCount = Math.max(1, Math.ceil(filteredSubmissions.length / pageSize));
@@ -366,6 +369,19 @@ export function LecturerFeedbackPage() {
               ]}
             />
             <FilterControl
+              label={t("g4.queue.modeFilter")}
+              value={learningMode}
+              onChange={(e) => {
+                setLearningMode(e.target.value as "ALL" | "BRANCHING_STUDY" | "REVIEW_STUDY");
+                setPage(1);
+              }}
+              options={[
+                { value: "ALL", label: t("g4.queue.allModes") },
+                { value: "BRANCHING_STUDY", label: t("g4.common.branching") },
+                { value: "REVIEW_STUDY", label: t("g4.common.review") },
+              ]}
+            />
+            <FilterControl
               label={t("g4.queue.statusFilter")}
               value={status}
               onChange={(e) => {
@@ -404,8 +420,8 @@ export function LecturerFeedbackPage() {
         ) : selectedItem ? (
           <div className="flex flex-1 gap-5 overflow-hidden">
             {/* Master List (360px left column) */}
-            <div className="flex w-[360px] shrink-0 flex-col overflow-hidden rounded-eb-lg border border-default bg-canvas/40">
-              <div className="flex items-center justify-between border-b border-default bg-canvas px-4 py-2.5">
+            <div className="flex w-[360px] shrink-0 flex-col overflow-hidden rounded-eb-lg border border-line bg-canvas/40">
+              <div className="flex items-center justify-between border-b border-line bg-canvas px-4 py-2.5">
                 <span className="text-[12px] font-medium text-ink-secondary">
                   {t("g4.queue.listLabel")} ({filteredSubmissions.length})
                 </span>
@@ -422,9 +438,9 @@ export function LecturerFeedbackPage() {
             </div>
 
             {/* Submission Inspection & Feedback Composer (Right column) */}
-            <div className="flex flex-1 flex-col overflow-y-auto rounded-eb-lg border border-default bg-surface p-5">
+            <div className="flex flex-1 flex-col overflow-y-auto rounded-eb-lg border border-line bg-surface p-5">
               {/* Header */}
-              <div className="flex items-start justify-between border-b border-default pb-4">
+              <div className="flex items-start justify-between border-b border-line pb-4">
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center gap-2.5">
                     <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-selected text-link">
@@ -505,7 +521,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.analysisTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.studentAnalysis || (
                           <span className="italic text-ink-muted">
                             {t("g4.queue.inspector.emptyAnalysis")}
@@ -519,7 +535,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.solutionTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.proposedSolution || (
                           <span className="italic text-ink-muted">—</span>
                         )}
@@ -531,7 +547,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.reasoningTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.reasoningText || (
                           <span className="italic text-ink-muted">—</span>
                         )}
@@ -545,7 +561,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.journeyTitle")}
                       </span>
-                      <div className="flex flex-wrap items-center gap-4 rounded-eb-md border border-default bg-canvas/60 p-3 text-[13px] text-ink">
+                      <div className="flex flex-wrap items-center gap-4 rounded-eb-md border border-line bg-canvas/60 p-3 text-[13px] text-ink">
                         {selectedItem.attemptNumber !== undefined && (
                           <span>
                             {t("g4.queue.inspector.attemptNumber", {
@@ -572,9 +588,9 @@ export function LecturerFeedbackPage() {
                         selectedItem.steps.map((step, idx) => (
                           <div
                             key={step.nodeId || idx}
-                            className="flex flex-col gap-2 rounded-eb-md border border-default bg-canvas/40 p-3.5"
+                            className="flex flex-col gap-2 rounded-eb-md border border-line bg-canvas/40 p-3.5"
                           >
-                            <div className="flex items-center justify-between border-b border-default/60 pb-2">
+                            <div className="flex items-center justify-between border-b border-line/60 pb-2">
                               <span className="text-[12px] font-medium text-primary">
                                 {t("g4.queue.inspector.stepNumber", { n: idx + 1 })}
                               </span>
@@ -601,7 +617,7 @@ export function LecturerFeedbackPage() {
                               <span className="text-[11px] font-medium text-ink-secondary">
                                 {t("g4.queue.inspector.stepReasoningTitle")}
                               </span>
-                              <div className="rounded-eb-sm border border-default/80 bg-surface p-2.5 text-[13px] leading-5 text-ink">
+                              <div className="rounded-eb-sm border border-line/80 bg-surface p-2.5 text-[13px] leading-5 text-ink">
                                 {step.reasoningText && step.reasoningText.trim() ? (
                                   step.reasoningText
                                 ) : (
@@ -614,7 +630,7 @@ export function LecturerFeedbackPage() {
                           </div>
                         ))
                       ) : (
-                        <div className="rounded-eb-md border border-default bg-canvas/40 p-3 text-[13px] text-ink-muted italic">
+                        <div className="rounded-eb-md border border-line bg-canvas/40 p-3 text-[13px] text-ink-muted italic">
                           {t("g4.queue.inspector.emptySteps")}
                         </div>
                       )}
@@ -625,7 +641,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.reflectionTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.reflectionText || (
                           <span className="italic text-ink-muted">
                             {t("g4.queue.inspector.emptyReflection")}
@@ -638,7 +654,7 @@ export function LecturerFeedbackPage() {
               </div>
 
               {/* Qualitative Feedback Composer (AC-3, Frame 05.3, Fix 4: C2-A) */}
-              <div className="flex flex-col gap-3.5 rounded-eb-lg border border-default bg-surface-muted/50 p-5">
+              <div className="flex flex-col gap-3.5 rounded-eb-lg border border-line bg-surface-muted/50 p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <UserCheck size={18} className="text-primary" />
@@ -659,7 +675,7 @@ export function LecturerFeedbackPage() {
 
                 {/* When existingFeedback is present, show read-only card and hide composer */}
                 {selectedItem.existingFeedback ? (
-                  <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-surface p-4 text-[13px] leading-5">
+                  <div className="flex flex-col gap-2 rounded-eb-md border border-line bg-surface p-4 text-[13px] leading-5">
                     <div className="flex items-center justify-between">
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.previousFeedback")}

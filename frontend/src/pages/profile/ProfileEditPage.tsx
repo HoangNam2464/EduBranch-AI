@@ -258,7 +258,7 @@ function EditProfileDialog({ open, onClose, profile, onProfileUpdated }: EditPro
                   : "border-line bg-surface text-ink hover:bg-canvas",
               )}
             >
-              <span>🇻🇳</span> {t("g4.profile.languageVi")}
+              {t("g4.profile.languageVi")}
             </button>
             <button
               type="button"
@@ -271,7 +271,7 @@ function EditProfileDialog({ open, onClose, profile, onProfileUpdated }: EditPro
                   : "border-line bg-surface text-ink hover:bg-canvas",
               )}
             >
-              <span>🇬🇧</span> {t("g4.profile.languageEn")}
+              {t("g4.profile.languageEn")}
             </button>
           </div>
         </div>

@@ -581,6 +581,8 @@
 | `g4.queue.pagination.previous` | Trang trước | Previous page | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.pagination.next` | Trang sau | Next page | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.pagination.pageN` | Trang {{page}} | Page {{page}} | PROPOSED | — | — | FE-019 PR #68 |
+| `g4.queue.modeFilter` | Lọc theo chế độ học | Filter by learning mode | PROPOSED | — | — | FE-019 screen quality |
+| `g4.queue.allModes` | Mọi chế độ học | All learning modes | PROPOSED | — | — | FE-019 screen quality |
 | `caseReview.openRubric` | Rubric nghiên cứu | Research rubric | PROPOSED | — | — | FE-029 |
 | `rubric.case.regionLabel` | Tình huống được đánh giá | Case being evaluated | PROPOSED | — | — | FE-029 |
 | `rubric.case.loading` | Đang tải thông tin case… | Loading case information… | PROPOSED | — | — | FE-029 |

@@ -556,7 +556,7 @@ export function StatisticsPage() {
                 </div>
               </div>
 
-              <div className="mt-2 rounded-eb-md border border-default bg-canvas/50 p-3 text-[12px] text-ink-secondary">
+              <div className="mt-2 rounded-eb-md border border-line bg-canvas/50 p-3 text-[12px] text-ink-secondary">
                 <span>{t("g4.stats.attempts.totalLabel", { total: b.totalAttempts })}</span>
               </div>
             </div>
@@ -621,26 +621,26 @@ export function StatisticsPage() {
           className="min-h-[220px]"
         >
           <div className="grid grid-cols-4 gap-4 py-2">
-            <div className="flex flex-col gap-1 rounded-eb-lg border border-default bg-canvas/40 p-3">
+            <div className="flex flex-col gap-1 rounded-eb-lg border border-line bg-canvas/40 p-3">
               <span className="flex items-center gap-1.5 text-[12px] text-ink-secondary">
                 <Users size={14} className="text-primary" />
                 {t("g4.stats.flow.participants")}
               </span>
               <span className="text-[16px] font-medium text-ink">{b.participants}</span>
             </div>
-            <div className="flex flex-col gap-1 rounded-eb-lg border border-default bg-canvas/40 p-3">
+            <div className="flex flex-col gap-1 rounded-eb-lg border border-line bg-canvas/40 p-3">
               <span className="text-[12px] text-ink-secondary">
                 {t("g4.stats.flow.inProgress")}
               </span>
               <span className="text-[16px] font-medium text-ink">{b.flowStatus.inProgress}</span>
             </div>
-            <div className="flex flex-col gap-1 rounded-eb-lg border border-default bg-canvas/40 p-3">
+            <div className="flex flex-col gap-1 rounded-eb-lg border border-line bg-canvas/40 p-3">
               <span className="text-[12px] text-ink-secondary">
                 {t("g4.stats.flow.completed")}
               </span>
               <span className="text-[16px] font-medium text-ink">{b.flowStatus.completed}</span>
             </div>
-            <div className="flex flex-col gap-1 rounded-eb-lg border border-default bg-canvas/40 p-3">
+            <div className="flex flex-col gap-1 rounded-eb-lg border border-line bg-canvas/40 p-3">
               <span className="text-[12px] text-ink-secondary">
                 {t("g4.stats.flow.reflected")}
               </span>
@@ -681,7 +681,7 @@ export function StatisticsPage() {
                 { value: "", label: t("g4.stats.filters.selectCase") },
                 ...filteredCases.map((c) => ({
                   value: c.id,
-                  label: `${c.learningMode === "BRANCHING_STUDY" ? "🌿 " : ""}${c.title}`,
+                  label: c.title,
                 })),
               ]}
             />

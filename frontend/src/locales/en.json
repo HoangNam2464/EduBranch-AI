@@ -1387,7 +1387,8 @@
         "close": "Close panel",
         "selectPromptTitle": "Select a submission to review",
         "selectPromptDesc": "Click any submission in the list on the left to inspect student work and compose qualitative feedback."
-      }
+      },
+      "allModes": "All learning modes"
     },
     "detail": {
       "unavailableTitle": "This submission cannot be shown",

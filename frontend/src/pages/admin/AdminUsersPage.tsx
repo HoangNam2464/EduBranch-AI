@@ -16,7 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import { Dialog, MetricCard, Toast, ToastRegion, cx } from "@/components/ds";
-import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
+import { EmptyState, ErrorState, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
 import { adminService, type AdminUserItem } from "@/services/adminService";
 import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
@@ -32,6 +32,9 @@ export function AdminUsersPage() {
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Rule F2: KPI cards show "—" until real metrics arrive, and again after a failed load — never a placeholder 0.
+  const [metricsReady, setMetricsReady] = useState(false);
+  const kpi = (value: number) => (metricsReady && !loadError ? value : "—");
   const [reloadToken, setReloadToken] = useState(0);
 
   // Filters & Pagination
@@ -69,6 +72,7 @@ export function AdminUsersPage() {
         setUsers(res.users ?? []);
         if (res.metrics) {
           setMetrics(res.metrics);
+          setMetricsReady(true);
         }
         setLoading(false);
       })
@@ -149,22 +153,22 @@ export function AdminUsersPage() {
         <MetricCard
           icon={Users}
           label={t("g6.users.kpi.totalUsers")}
-          value={metrics.totalUsers}
+          value={kpi(metrics.totalUsers)}
         />
         <MetricCard
           icon={GraduationCap}
           label={t("g6.users.kpi.lecturers")}
-          value={metrics.lecturers}
+          value={kpi(metrics.lecturers)}
         />
         <MetricCard
           icon={UserCheck}
           label={t("g6.users.kpi.students")}
-          value={metrics.students}
+          value={kpi(metrics.students)}
         />
         <MetricCard
           icon={Lock}
           label={t("g6.users.kpi.lockedUsers")}
-          value={metrics.lockedUsers}
+          value={kpi(metrics.lockedUsers)}
         />
       </div>
 
@@ -284,8 +288,8 @@ export function AdminUsersPage() {
                       </td>
 
                       {/* Column 2: Created Date */}
-                      <td className="px-4 py-3.5 text-ink-secondary">
-                        {user.createdAt}
+                      <td className="px-4 py-3.5 whitespace-nowrap text-ink-secondary">
+                        {isValidDate(new Date(user.createdAt)) ? formatDateTime(new Date(user.createdAt)) : "—"}
                       </td>
 
                       {/* Column 3: Role & Courses */}

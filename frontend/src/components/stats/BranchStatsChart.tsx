@@ -80,10 +80,10 @@ export function BranchStatsChart({
         return (
           <div
             key={point.nodeId || point.nodeIndex}
-            className="flex flex-col gap-3 rounded-eb-lg border border-default bg-canvas/40 p-4"
+            className="flex flex-col gap-3 rounded-eb-lg border border-line bg-canvas/40 p-4"
           >
             {/* Decision Node Header */}
-            <div className="flex items-center justify-between gap-3 border-b border-default pb-2">
+            <div className="flex items-center justify-between gap-3 border-b border-line pb-2">
               <div className="flex min-w-0 items-center gap-2">
                 <div className="flex size-6 shrink-0 items-center justify-center rounded bg-selected text-primary">
                   <GitFork size={14} />
@@ -95,7 +95,7 @@ export function BranchStatsChart({
                   {t("g4.stats.branchChart.nodeTitle", { title: pointTitle })}
                 </h4>
               </div>
-              <span className="shrink-0 rounded-full border border-default bg-surface px-2 py-0.5 text-[11px] font-medium text-ink-secondary">
+              <span className="shrink-0 rounded-full border border-line bg-surface px-2 py-0.5 text-[11px] font-medium text-ink-secondary">
                 {t("g4.stats.branchChart.selections", { count: point.totalSelections })}
               </span>
             </div>

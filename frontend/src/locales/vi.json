@@ -1387,7 +1387,8 @@
         "close": "Đóng panel",
         "selectPromptTitle": "Chọn bài nộp để xét duyệt",
         "selectPromptDesc": "Nhấp vào bất kỳ bài nộp nào ở danh sách bên trái để kiểm tra chi tiết bài làm và soạn nhận xét định tính."
-      }
+      },
+      "allModes": "Mọi chế độ học"
     },
     "detail": {
       "unavailableTitle": "Chưa thể hiển thị bài nộp",

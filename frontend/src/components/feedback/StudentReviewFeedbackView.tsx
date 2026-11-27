@@ -110,7 +110,7 @@ export function StudentReviewFeedbackView({
   return (
     <div className="flex flex-col gap-6">
       {/* Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-4 rounded-eb-xl border border-default bg-surface p-5 shadow-eb-card">
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-eb-xl border border-line bg-surface p-5 shadow-eb-card">
         <div className="flex flex-col gap-1.5">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1 rounded-eb-sm border border-accent/20 bg-sky-50 px-2 py-0.5 text-[11px] font-medium text-accent">
@@ -180,10 +180,10 @@ export function StudentReviewFeedbackView({
 
       {/* Section 1: Student Submitted Work Summary */}
       <section
-        className="flex flex-col gap-4 rounded-eb-xl border border-default bg-surface p-5 shadow-eb-card"
+        className="flex flex-col gap-4 rounded-eb-xl border border-line bg-surface p-5 shadow-eb-card"
         aria-label={t("g5.feedback.submissionDetailsTitle")}
       >
-        <div className="border-b border-default pb-3">
+        <div className="border-b border-line pb-3">
           <h2 className="text-[16px] font-medium text-ink">
             {t("g5.feedback.submissionDetailsTitle")}
           </h2>
@@ -195,7 +195,7 @@ export function StudentReviewFeedbackView({
             <span className="text-[12px] font-medium text-ink-secondary">
               {t("g5.feedback.analysisTitle")}
             </span>
-            <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+            <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
               {submission.studentAnalysis || (
                 <span className="italic text-ink-muted">
                   {t("g5.feedback.emptyAnalysis")}
@@ -209,7 +209,7 @@ export function StudentReviewFeedbackView({
             <span className="text-[12px] font-medium text-ink-secondary">
               {t("g5.feedback.solutionTitle")}
             </span>
-            <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+            <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
               {submission.proposedSolution}
             </div>
           </div>
@@ -219,7 +219,7 @@ export function StudentReviewFeedbackView({
             <span className="text-[12px] font-medium text-ink-secondary">
               {t("g5.feedback.reasoningTitle")}
             </span>
-            <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+            <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
               {submission.reasoningText}
             </div>
           </div>
@@ -231,12 +231,12 @@ export function StudentReviewFeedbackView({
         className={cx(
           "flex flex-col gap-3.5 rounded-eb-xl border p-5 shadow-eb-card transition-colors",
           feedback || isReviewed
-            ? "border-default bg-surface"
+            ? "border-line bg-surface"
             : "border-warning-border bg-warning-bg/40",
         )}
         aria-label={t("g5.feedback.lecturerFeedbackTitle")}
       >
-        <div className="flex items-center justify-between border-b border-default pb-3">
+        <div className="flex items-center justify-between border-b border-line pb-3">
           <div className="flex items-center gap-2">
             <UserCheck size={18} className="text-primary" />
             <h2 className="text-[16px] font-medium text-ink">
@@ -256,7 +256,7 @@ export function StudentReviewFeedbackView({
         </p>
 
         {feedbackLoading ? (
-          <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-canvas/70 p-4 motion-safe:animate-pulse">
+          <div className="flex flex-col gap-2 rounded-eb-md border border-line bg-canvas/70 p-4 motion-safe:animate-pulse">
             <div className="h-4 w-3/4 rounded bg-surface" />
             <div className="h-4 w-1/2 rounded bg-surface" />
           </div>
@@ -283,7 +283,7 @@ export function StudentReviewFeedbackView({
             )}
           </div>
         ) : feedback ? (
-          <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-canvas/70 p-4">
+          <div className="flex flex-col gap-2 rounded-eb-md border border-line bg-canvas/70 p-4">
             <p className="whitespace-pre-wrap text-[14px] leading-6 text-ink">
               {feedback.feedbackText}
             </p>
@@ -308,10 +308,10 @@ export function StudentReviewFeedbackView({
 
       {/* Section 3: Post-Feedback Reflection Section */}
       <section
-        className="flex flex-col gap-4 rounded-eb-xl border border-default bg-surface p-5 shadow-eb-card"
+        className="flex flex-col gap-4 rounded-eb-xl border border-line bg-surface p-5 shadow-eb-card"
         aria-label={t("g5.feedback.reflectionTitle")}
       >
-        <div className="flex items-center justify-between border-b border-default pb-3">
+        <div className="flex items-center justify-between border-b border-line pb-3">
           <div className="flex items-center gap-2">
             <MessageSquareText size={18} className="text-primary" />
             <h2 className="text-[16px] font-medium text-ink">
@@ -327,7 +327,7 @@ export function StudentReviewFeedbackView({
 
         {/* Case A: Reflection is locked (either SUBMITTED or awaiting feedback / error) */}
         {!isReflected && !isReflectionUnlocked && (
-          <div className="flex items-start gap-3 rounded-eb-md border border-default bg-canvas/60 p-4 text-ink-secondary">
+          <div className="flex items-start gap-3 rounded-eb-md border border-line bg-canvas/60 p-4 text-ink-secondary">
             <Lock size={18} className="mt-0.5 shrink-0 text-ink-muted" />
             <div className="flex flex-col gap-1 text-[13px] leading-5">
               <p className="font-medium text-ink">{t("g5.feedback.reflectionLockedTitle")}</p>
@@ -387,7 +387,7 @@ export function StudentReviewFeedbackView({
               <span>{t("g5.feedback.reflectionSubmittedNotice")}</span>
             </div>
 
-            <div className="flex flex-col gap-1.5 rounded-eb-md border border-default bg-canvas/60 p-4">
+            <div className="flex flex-col gap-1.5 rounded-eb-md border border-line bg-canvas/60 p-4">
               <p className="whitespace-pre-wrap text-[14px] leading-6 text-ink">
                 {submission.reflectionText || "—"}
               </p>

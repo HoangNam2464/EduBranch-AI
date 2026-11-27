@@ -37,6 +37,9 @@ export function AdminCasesPage() {
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Rule F2: the analytics show "—" until real numbers arrive, and again after a failed load.
+  const [analyticsReady, setAnalyticsReady] = useState(false);
+  const ready = analyticsReady && !loadError;
   const [reloadToken, setReloadToken] = useState(0);
 
   // Filters
@@ -67,6 +70,7 @@ export function AdminCasesPage() {
         setCases(res.cases ?? []);
         if (res.analytics) {
           setAnalytics(res.analytics);
+          setAnalyticsReady(true);
         }
         setLoading(false);
       })
@@ -118,7 +122,7 @@ export function AdminCasesPage() {
         <AdminPanel className="w-full shrink-0 xl:w-[478px]" title={t("g6.cases.byStatus")}>
           <div className="flex flex-col gap-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-[32px] font-bold text-ink">{analytics.totalCases}</span>
+              <span className="text-[32px] font-bold text-ink">{ready ? analytics.totalCases : "—"}</span>
               <span className="text-[14px] text-ink-secondary">{t("g6.cases.totalSuffix")}</span>
             </div>
 
@@ -142,28 +146,28 @@ export function AdminCasesPage() {
                 <span className="size-2.5 rounded-full bg-line-strong" />
                 <span className="text-ink-secondary">{t("g6.cases.status.draft")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.draft / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.draft})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.draft / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.draft})` : "—"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2.5 rounded-full bg-primary" />
                 <span className="text-ink-secondary">{t("g6.cases.status.published")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.published / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.published})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.published / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.published})` : "—"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2.5 rounded-full bg-accent" />
                 <span className="text-ink-secondary">{t("g6.cases.status.reviewed")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.reviewed / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.reviewed})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.reviewed / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.reviewed})` : "—"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2.5 rounded-full bg-warning" />
                 <span className="text-ink-secondary">{t("g6.cases.status.approved")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.approved / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.approved})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.approved / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.approved})` : "—"}
                 </span>
               </div>
             </div>

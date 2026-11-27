@@ -108,7 +108,7 @@ function MaterialRow({
             {meta}
           </span>
         </span>
-        <span className="flex shrink-0 items-center group-hover/row:hidden group-has-[:focus-visible]/row:hidden">{indicator}</span>
+        <span className={cx("flex shrink-0 items-center", status !== "FAILED" && "group-hover/row:hidden group-has-[:focus-visible]/row:hidden")}>{indicator}</span>
         <button
           type="button"
           onClick={onDelete}

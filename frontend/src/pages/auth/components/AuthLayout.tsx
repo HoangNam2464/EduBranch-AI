@@ -258,11 +258,11 @@ export function AuthSelectField({
       {open && (
         <div
           role="listbox"
-          className="absolute left-0 top-[calc(100%+6px)] z-50 flex w-full flex-col overflow-hidden rounded-[10px] border border-line-default bg-surface shadow-lg"
+          className="absolute left-0 top-[calc(100%+6px)] z-50 flex w-full flex-col overflow-hidden rounded-[10px] border border-line bg-surface shadow-lg"
           style={{ boxShadow: "0 12px 32px -4px rgba(32, 33, 36, 0.16), 0 4px 12px -2px rgba(32, 33, 36, 0.08)" }}
         >
           {/* Quick search bar */}
-          <div className="flex items-center gap-2.5 border-b border-line-default bg-canvas/60 px-3.5 py-2">
+          <div className="flex items-center gap-2.5 border-b border-line bg-canvas/60 px-3.5 py-2">
             <Search size={14} className="shrink-0 text-ink-muted" aria-hidden="true" />
             <input
               ref={searchInputRef}
