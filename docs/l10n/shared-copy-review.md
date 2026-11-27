@@ -688,5 +688,5 @@
 | `g3.list.nodes_one` | {{count}} nút | {{count}} node | PROPOSED | — | — | FE-032 R5 |
 | `g3.list.nodes_other` | {{count}} nút | {{count}} nodes | PROPOSED | — | — | FE-032 R5 |
 | `g4.dashboard.pendingEmpty` | Không có bài nộp nào đang chờ bạn phản hồi. | No submissions are waiting for your feedback. | PROPOSED | — | — | FE-027 |
-| `g4.dashboard.pendingItemMeta` | {{caseTitle}} · {{time}} | {{caseTitle}} · {{time}} | PROPOSED | — | — | FE-027 |
+| `g4.dashboard.metrics.drafts` | Bản nháp · chờ duyệt | Drafts · to approve | PROPOSED | — | — | FE-027 (EN shortened to fit one line) |
 | `g4.dashboard.pendingTitle` | Bài nộp chờ bạn phản hồi | Submissions awaiting your feedback | PROPOSED | — | — | FE-027 |

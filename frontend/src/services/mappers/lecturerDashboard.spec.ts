@@ -19,15 +19,18 @@ describe("lecturer dashboard (FE-027 on BE-030)", () => {
     });
     assert.deepEqual(
       { courses: d.courses, publishedCases: d.publishedCases, draftCases: d.draftCases, pendingReviews: d.pendingReviews },
-      { courses: 3, publishedCases: 5, draftCases: 3, pendingReviews: 7 },
+      // Active courses only, as in the portfolio list (the archived one is not counted).
+      { courses: 2, publishedCases: 5, draftCases: 3, pendingReviews: 7 },
     );
     // The count is the backend total, not the length of the 5-item preview list.
     assert.equal(d.pendingItems.length, 1);
     assert.equal(d.pendingItems[0].submissionId, "s-1");
+    // The case id is kept so the item can open that case's feedback queue.
+    assert.equal(d.pendingItems[0].caseId, "k-1");
   });
 
   it("never invents data: missing or malformed numbers become 0, missing lists become empty", () => {
-    const d = toLecturerDashboard({ courses: { total: "x" }, cases: { byStatus: { PUBLISHED: -4 } }, pendingReviews: {} });
+    const d = toLecturerDashboard({ courses: { total: 3, active: "x" }, cases: { byStatus: { PUBLISHED: -4 } }, pendingReviews: {} });
     assert.deepEqual(
       { courses: d.courses, publishedCases: d.publishedCases, draftCases: d.draftCases, pendingReviews: d.pendingReviews, items: d.pendingItems },
       { courses: 0, publishedCases: 0, draftCases: 0, pendingReviews: 0, items: [] },
@@ -38,6 +41,7 @@ describe("lecturer dashboard (FE-027 on BE-030)", () => {
   it("drops pending items without a submission id (they could not be opened)", () => {
     const d = toLecturerDashboard({ pendingReviews: { count: 2, items: [{ caseTitle: "no id" }, { submissionId: "s-2" }] } });
     assert.deepEqual(d.pendingItems.map((i) => i.submissionId), ["s-2"]);
+    assert.equal(d.pendingItems[0].caseId, "");
     assert.equal(d.pendingReviews, 2);
   });
 
@@ -46,7 +50,7 @@ describe("lecturer dashboard (FE-027 on BE-030)", () => {
     try {
       apiClient.get = (async (url: string) => {
         assert.equal(url, "/lecturer/dashboard");
-        return { data: { status: "SUCCESS", data: { courses: { total: 1 } } } };
+        return { data: { status: "SUCCESS", data: { courses: { total: 4, active: 1 } } } };
       }) as any;
       assert.equal((await lecturerDashboardService.getDashboard()).courses, 1);
 

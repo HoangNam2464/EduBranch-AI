@@ -1238,7 +1238,6 @@
       "moreCases": "+{{count}} case khác",
       "pendingTitle": "Bài nộp chờ bạn phản hồi",
       "pendingEmpty": "Không có bài nộp nào đang chờ bạn phản hồi.",
-      "pendingItemMeta": "{{caseTitle}} · {{time}}",
       "todoTitle": "Việc cần làm",
       "todoEmpty": "Không có case nào đang chờ bạn rà soát.",
       "access": "Truy cập",

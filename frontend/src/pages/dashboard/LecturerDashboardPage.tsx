@@ -15,15 +15,16 @@ import {
   SquarePen,
   type LucideIcon,
 } from "lucide-react";
-import { Button, FilterControl, MetricCard, StatusTabs, cx } from "@/components/ds";
+import { Avatar, Button, FilterControl, MetricCard, StatusTabs, cx } from "@/components/ds";
 import { ErrorState, SkeletonLine, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
 import { PATHS, buildPath } from "@/routes/paths";
+import { initialsOf } from "@/layouts/shell/shellRoutes";
 import { addMonths, buildMonthWeeks, startOfMonth } from "@/pages/profile/components/calendar";
 import { MonthStepper } from "@/pages/profile/components/MonthStepper";
-import { describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo } from "@/pages/statistics/useLecturerCourseCases";
+import { describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo, type LoadState } from "@/pages/statistics/useLecturerCourseCases";
 import { groupCasesByDay } from "./calendarGrouping";
 import { useLecturerDashboard } from "./useLecturerDashboard";
-import type { PendingReviewItem } from "@/services/mappers/lecturerDashboard";
+import type { LecturerDashboard } from "@/services/mappers/lecturerDashboard";
 import { usePrefersReducedMotion } from "@/pages/landing/usePrefersReducedMotion";
 import type { Case } from "@/types";
 
@@ -42,11 +43,17 @@ import type { Case } from "@/types";
 
 const MONTH_VIEW_MIN_WEEKS = 5;
 
-function SidePanel({ title, children, className }: { title: string; children: ReactNode; className?: string }) {
+const LINK_FOCUS = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
+
+function SidePanel({ title, count, children, className }: { title: string; count?: number; children: ReactNode; className?: string }) {
   return (
     <section className={cx("flex flex-col gap-2 rounded-[14px] bg-selected p-2", className)} aria-label={title}>
       <div className="flex h-8 items-center px-3">
-        <h2 className="truncate text-[16px] leading-6 font-normal text-ink">{title}</h2>
+        {/* The count never truncates; only the title does (one-line labels and counts, R01). */}
+        <h2 className="flex min-w-0 items-baseline gap-1 text-[16px] leading-6 font-normal text-ink">
+          <span className="truncate">{title}</span>
+          {count !== undefined && <span className="shrink-0 whitespace-nowrap">({count})</span>}
+        </h2>
       </div>
       {children}
     </section>
@@ -69,7 +76,7 @@ function TodoList({ todos }: { todos: LecturerTodo[] }) {
           <li key={todo.key}>
             <Link
               to={targetUrl}
-              className="group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-surface-hover transition-colors"
+              className={cx("group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-surface-hover transition-colors", LINK_FOCUS)}
             >
               <div className="flex items-center gap-3 min-w-0">
                 <span
@@ -100,13 +107,30 @@ function TodoList({ todos }: { todos: LecturerTodo[] }) {
   );
 }
 
-function initialsOf(name: string): string {
-  const words = name.split(" ").filter(Boolean);
-  return words.slice(-2).map((w) => w[0]).join("").toUpperCase() || "—";
-}
-
-function PendingReviews({ items }: { items: PendingReviewItem[] }) {
+function PendingReviews({ dash, onRetry }: { dash: LoadState<LecturerDashboard>; onRetry: () => void }) {
   const { t } = useTranslation();
+  if (dash.status === "loading") {
+    return (
+      <SkeletonRegion className="flex flex-col gap-2 rounded-eb-lg bg-canvas px-3.5 py-3">
+        <SkeletonLine width="70%" />
+        <SkeletonLine width="45%" size="sm" />
+      </SkeletonRegion>
+    );
+  }
+  // Only this panel and the metric cards depend on the aggregate; the rest of the page stays usable.
+  if (dash.status === "error") {
+    return (
+      <div role="alert" className="flex flex-col items-start gap-2 rounded-eb-lg bg-canvas px-3.5 py-3">
+        <p className="text-[12px] leading-4 text-ink-secondary">
+          {dash.code === 403 ? t("g4.queue.errors.forbidden") : t("g4.dashboard.loadError")}
+        </p>
+        <Button variant="secondary" size="sm" onClick={onRetry}>
+          {t("g2.common.retry")}
+        </Button>
+      </div>
+    );
+  }
+  const items = dash.data.pendingItems;
   if (items.length === 0) return <NoteRow>{t("g4.dashboard.pendingEmpty")}</NoteRow>;
   return (
     <ul className="flex flex-col gap-2">
@@ -115,19 +139,21 @@ function PendingReviews({ items }: { items: PendingReviewItem[] }) {
         return (
           <li key={item.submissionId}>
             <Link
-              to={buildPath(PATHS.LECTURER.FEEDBACK_DETAIL, { submissionId: item.submissionId })}
-              className="group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-surface-hover transition-colors"
+              // The case's feedback queue (07.2) is where the lecturer answers the submission.
+              to={item.caseId ? buildPath(PATHS.LECTURER.CASE_FEEDBACK, { caseId: item.caseId }) : PATHS.LECTURER.FEEDBACK}
+              className={cx("group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-surface-hover transition-colors", LINK_FOCUS)}
             >
               {/* Figma 07.1: initials avatar · student name · case and submission time. */}
-              <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-eb-md bg-primary-subtle text-[12px] font-semibold text-primary">
-                {initialsOf(item.studentName)}
-              </span>
+              <Avatar initials={initialsOf(item.studentName) || "—"} size="sm" />
               <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                <p className="truncate text-[14px] leading-5 font-medium text-ink group-hover:text-primary transition-colors" title={item.caseTitle}>
+                <p className="truncate text-[14px] leading-5 font-medium text-ink group-hover:text-primary transition-colors" title={item.studentName}>
                   {item.studentName || "—"}
                 </p>
-                <p className="truncate text-[12px] leading-4 text-ink-secondary" title={item.caseTitle}>
-                  {t("g4.dashboard.pendingItemMeta", { caseTitle: item.caseTitle || "—", time: isValidDate(at) ? formatDateTime(at) : "—" })}
+                {/* The time never truncates; a long case title does. */}
+                <p className="flex min-w-0 gap-1 text-[12px] leading-4 text-ink-secondary">
+                  <span className="truncate" title={item.caseTitle}>{item.caseTitle || "—"}</span>
+                  <span aria-hidden="true">·</span>
+                  <span className="shrink-0 whitespace-nowrap">{isValidDate(at) ? formatDateTime(at) : "—"}</span>
                 </p>
               </div>
               <ChevronRight size={16} className="shrink-0 text-ink-muted group-hover:text-primary transition-colors" />
@@ -246,24 +272,25 @@ export function LecturerDashboardPage() {
       .filter((c) => mode === "ALL" || c.learningMode === mode);
   }, [ready, course, mode]);
 
-  if (state.status === "error" || dashState.status === "error") {
-    const failed = state.status === "error" ? state : dashState.status === "error" ? dashState : null;
+  if (state.status === "error") {
     return (
       <div className="flex flex-1 flex-col pb-5">
         <ErrorState
           title={t("g4.dashboard.loadError")}
           onRetry={() => {
-            if (state.status === "error") retry();
+            retry();
             if (dashState.status === "error") retryDash();
           }}
-          errorCode={failed?.code}
-          occurredAt={failed?.at}
+          errorCode={state.code}
+          occurredAt={state.at}
         />
       </div>
     );
   }
 
-  const metricValue = (value: number | null) => (value === null ? <SkeletonLine width={16} /> : value);
+  // Loading: skeleton; aggregate failed: an honest "—" (the pending panel offers the retry).
+  const metricValue = (value: number | null) =>
+    value !== null ? value : dashState.status === "error" ? "—" : <SkeletonLine width={16} />;
   const metrics = [
     // Counts from the backend aggregate (BE-030), not computed in the browser (FE-027 AC-1).
     { icon: BookOpen, stroke: 1.7, label: t("g4.dashboard.metrics.courses"), value: metricValue(dash ? dash.courses : null) },
@@ -313,8 +340,8 @@ export function LecturerDashboardPage() {
       transition={reducedMotion ? { duration: 0 } : { duration: 0.2 }}
       className="flex flex-col gap-6"
     >
-      {/* 4 Metrics in a row */}
-      <div className="grid grid-cols-4 gap-5">
+      {/* 4 metrics in a row as in Figma 07.1 (1440); 2 × 2 below 1440 so every label stays on one line (R01). */}
+      <div className="grid grid-cols-2 gap-5 min-[1440px]:grid-cols-4">
         {metrics.map((m) => (
           <MetricCard key={m.label} variant="inline" icon={m.icon} iconStrokeWidth={m.stroke} label={m.label} value={m.value} />
         ))}
@@ -359,15 +386,8 @@ export function LecturerDashboardPage() {
         <div className="flex items-start gap-5">
           <MonthView month={month} today={today} cases={filteredCases} />
           <div className="flex w-[259px] shrink-0 flex-col gap-4">
-            <SidePanel title={dash ? `${t("g4.dashboard.pendingTitle")} (${dash.pendingReviews})` : t("g4.dashboard.pendingTitle")}>
-              {dash ? (
-                <PendingReviews items={dash.pendingItems} />
-              ) : (
-                <SkeletonRegion className="flex flex-col gap-2 rounded-eb-lg bg-canvas px-3.5 py-3">
-                  <SkeletonLine width="70%" />
-                  <SkeletonLine width="45%" size="sm" />
-                </SkeletonRegion>
-              )}
+            <SidePanel title={t("g4.dashboard.pendingTitle")} count={dash ? dash.pendingReviews : undefined}>
+              <PendingReviews dash={dashState} onRetry={retryDash} />
             </SidePanel>
             <SidePanel title={t("g4.dashboard.todoTitle")}>
               {ready ? (

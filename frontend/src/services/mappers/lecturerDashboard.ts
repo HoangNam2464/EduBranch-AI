@@ -25,6 +25,8 @@ export interface LecturerDashboardRow {
 
 export interface PendingReviewItem {
   submissionId: string;
+  /** Opens the case's feedback queue (07.2); empty when the backend did not send it. */
+  caseId: string;
   caseTitle: string;
   courseName: string;
   studentName: string;
@@ -32,6 +34,7 @@ export interface PendingReviewItem {
 }
 
 export interface LecturerDashboard {
+  /** Active courses, as listed in the portfolio below (archived courses are not counted). */
   courses: number;
   publishedCases: number;
   /** Draft or reviewed cases that still need the lecturer's attention. */
@@ -48,7 +51,7 @@ const count = (v: unknown): number => {
 export function toLecturerDashboard(row: LecturerDashboardRow | null | undefined): LecturerDashboard {
   const byStatus = row?.cases?.byStatus ?? {};
   return {
-    courses: count(row?.courses?.total),
+    courses: count(row?.courses?.active),
     publishedCases: count(byStatus.PUBLISHED),
     draftCases: count(byStatus.DRAFT) + count(byStatus.REVIEWED),
     pendingReviews: count(row?.pendingReviews?.count),
@@ -56,6 +59,7 @@ export function toLecturerDashboard(row: LecturerDashboardRow | null | undefined
       .filter((i) => typeof i?.submissionId === "string" && i.submissionId.length > 0)
       .map((i) => ({
         submissionId: i.submissionId as string,
+        caseId: typeof i.caseId === "string" ? i.caseId : "",
         caseTitle: i.caseTitle ?? "",
         courseName: i.courseName ?? "",
         studentName: i.studentName ?? "",

@@ -1226,7 +1226,7 @@
       "metrics": {
         "courses": "Courses you teach",
         "published": "Published cases",
-        "drafts": "Drafts · awaiting approval",
+        "drafts": "Drafts · to approve",
         "pending": "Submissions to review"
       },
       "modeFilter": "Filter by learning mode",
@@ -1238,7 +1238,6 @@
       "moreCases": "+{{count}} other cases",
       "pendingTitle": "Submissions awaiting your feedback",
       "pendingEmpty": "No submissions are waiting for your feedback.",
-      "pendingItemMeta": "{{caseTitle}} · {{time}}",
       "todoTitle": "To do",
       "todoEmpty": "No case is waiting for your review.",
       "access": "Access",
