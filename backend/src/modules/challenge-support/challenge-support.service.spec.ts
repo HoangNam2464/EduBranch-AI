@@ -62,6 +62,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               situation: "Hospital network compromised by ransomware.",
               option_text: "Isolate infected servers.",
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
               attempt_completed: true,
               case_id: "case-1",
             },
@@ -138,6 +139,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               situation: "Situation",
               option_text: "Option",
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
             },
           ],
         })
@@ -207,6 +209,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
           {
             id: REASONING_ID,
             student_id: STUDENT_ID,
+            case_status: 'PUBLISHED',
             reasoning_text: "   ",
           },
         ],
@@ -228,6 +231,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               situation: "Situation",
               option_text: "Option",
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
             },
           ],
         })
@@ -258,6 +262,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               situation: "Situation",
               option_text: "Option",
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
               attempt_completed: true,
               case_id: "case-1",
             },
@@ -333,6 +338,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               situation: "Situation",
               option_text: "Option",
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
             },
           ],
         })
@@ -437,6 +443,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
             current_round: 2,
             is_completed: true,
             student_id: STUDENT_ID,
+            case_status: 'PUBLISHED',
           },
         ],
       });
@@ -459,6 +466,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               current_round: 1,
               is_completed: false,
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
               situation: "Situation",
               option_text: "Option",
             },
@@ -518,6 +526,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               situation: "Situation",
               option_text: "Option",
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
             },
           ],
         })
@@ -571,6 +580,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               current_round: 1,
               is_completed: false,
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
               created_at: "2026-11-19T10:00:00Z",
               updated_at: "2026-11-19T10:00:00Z",
             },
@@ -604,6 +614,7 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
               current_round: 1,
               is_completed: false,
               student_id: STUDENT_ID,
+              case_status: 'PUBLISHED',
               created_at: "2026-11-19T10:00:00Z",
               updated_at: "2026-11-19T10:00:00Z",
             },
@@ -636,6 +647,51 @@ describe("ChallengeSupportService (BE-027 / EBA-74)", () => {
 
       const session = await service.completeSession(STUDENT_ID, SESSION_ID);
       expect(session.isCompleted).toBe(true);
+    });
+  });
+  describe("INV-01: no Challenge Support on a case that is not PUBLISHED (D5, PO 2026-11-27)", () => {
+    const draftReasoning = {
+      id: REASONING_ID, attempt_id: "attempt-1", node_id: "n-1", selected_option_id: "o-1",
+      reasoning_text: "My reasoning", situation: "Unpublished draft text", option_text: "A",
+      student_id: STUDENT_ID, attempt_completed: true, case_id: "case-1", case_status: "DRAFT",
+    };
+    const draftSession = {
+      id: SESSION_ID, reasoning_id: REASONING_ID, review_submission_id: null, current_round: 1, is_completed: false,
+      reasoning_text: "My reasoning", situation: "Unpublished draft text", option_text: "A",
+      student_id: STUDENT_ID, case_status: "DRAFT",
+    };
+
+    it("createOrGetSession: 403 and the draft text never reaches the AI service", async () => {
+      mockDb.query.mockResolvedValueOnce({ rows: [draftReasoning] });
+      await expect(service.createOrGetSession(STUDENT_ID, { reasoningId: REASONING_ID } as any)).rejects.toThrow(
+        new ForbiddenException("This case is not published"),
+      );
+      expect(mockAiClient.generateChallenge).not.toHaveBeenCalled();
+      expect(mockDb.getClient).not.toHaveBeenCalled();
+    });
+
+    it("createOrGetSession: ownership is checked before the case status", async () => {
+      mockDb.query.mockResolvedValueOnce({ rows: [{ ...draftReasoning, student_id: OTHER_STUDENT_ID }] });
+      await expect(service.createOrGetSession(STUDENT_ID, { reasoningId: REASONING_ID } as any)).rejects.toThrow(
+        new ForbiddenException("You do not have permission to access this reasoning"),
+      );
+    });
+
+    it("sendReply: 403 and no AI call, no write", async () => {
+      mockDb.query.mockResolvedValueOnce({ rows: [draftSession] });
+      await expect(service.sendReply(STUDENT_ID, SESSION_ID, { replyText: "x" } as any)).rejects.toThrow(
+        new ForbiddenException("This case is not published"),
+      );
+      expect(mockAiClient.generateChallenge).not.toHaveBeenCalled();
+      expect(mockDb.getClient).not.toHaveBeenCalled();
+    });
+
+    it("getSession and completeSession: 403", async () => {
+      mockDb.query.mockResolvedValueOnce({ rows: [draftSession] });
+      await expect(service.getSession(STUDENT_ID, SESSION_ID)).rejects.toThrow(new ForbiddenException("This case is not published"));
+      mockDb.query.mockResolvedValueOnce({ rows: [draftSession] });
+      await expect(service.completeSession(STUDENT_ID, SESSION_ID)).rejects.toThrow(new ForbiddenException("This case is not published"));
+      expect(mockDb.query).toHaveBeenCalledWith(expect.stringContaining("JOIN cases c ON c.id = a.case_id"), [SESSION_ID]);
     });
   });
 });

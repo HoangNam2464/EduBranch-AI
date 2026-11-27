@@ -168,7 +168,7 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
       });
 
       await request(app.getHttpServer())
-        .patch('/api/v1/cases/case-1/status?role=LECTURER')
+        .patch('/api/v1/cases/44444444-4444-4444-8444-444444444444/status?role=LECTURER')
         .set('Authorization', `Bearer ${studentToken}`)
         .send({ status: 'PUBLISHED' })
         .expect(403);
@@ -180,6 +180,7 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
   // ─── 3. Student Accessing DRAFT Case ────────────────────────────────────────
   describe('3. Student access restriction to non-PUBLISHED cases', () => {
     it('should reject student accessing DRAFT case with 403 Forbidden', async () => {
+      const draftCaseId = '44444444-4444-4444-8444-444444444445';
       const studentToken = signJwt({
         sub: 'student-legit-1',
         role: 'STUDENT',
@@ -190,13 +191,13 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
       );
 
       const res = await request(app.getHttpServer())
-        .get('/api/v1/cases/case-draft-999')
+        .get(`/api/v1/cases/${draftCaseId}`)
         .set('Authorization', `Bearer ${studentToken}`)
         .expect(403);
 
       expect(res.body.message).toBe('Students can only access PUBLISHED cases');
       expect(mockCaseService.getCaseById).toHaveBeenCalledWith(
-        'case-draft-999',
+        draftCaseId,
         'STUDENT',
         'student-legit-1',
       );
@@ -227,7 +228,7 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
       });
 
       const res = await request(app.getHttpServer())
-        .patch('/api/v1/cases/c1/status')
+        .patch('/api/v1/cases/44444444-4444-4444-8444-444444444444/status')
         .set('Authorization', `Bearer ${studentToken}`)
         .send({ status: 'PUBLISHED' })
         .expect(403);
@@ -239,6 +240,7 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
   // ─── 5. Cross-Lecturer Unauthorized Case Modification ───────────────────────
   describe('5. Cross-lecturer authorization boundary', () => {
     it('should reject Lecturer B attempting to edit Lecturer A\'s case with 403 Forbidden', async () => {
+      const caseOfLecturerA = '44444444-4444-4444-8444-444444444444';
       const lecturerBToken = signJwt({
         sub: 'lecturer-intruder-b',
         role: 'LECTURER',
@@ -249,14 +251,14 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
       );
 
       const res = await request(app.getHttpServer())
-        .put('/api/v1/cases/case-of-lecturer-a')
+        .put(`/api/v1/cases/${caseOfLecturerA}`)
         .set('Authorization', `Bearer ${lecturerBToken}`)
         .send({ title: 'Tampered Title' })
         .expect(403);
 
       expect(res.body.message).toBe('You can only edit cases in your own courses');
       expect(mockCaseService.updateCase).toHaveBeenCalledWith(
-        'case-of-lecturer-a',
+        caseOfLecturerA,
         'lecturer-intruder-b',
         { title: 'Tampered Title' },
       );
@@ -266,6 +268,7 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
   // ─── 6. Cross-Student Attempt Boundary ──────────────────────────────────────
   describe('6. Cross-student attempt boundary', () => {
     it('should reject Student B reading Student A\'s attempt with 403 Forbidden', async () => {
+      const attemptOfStudentA = '22222222-2222-4222-8222-222222222222';
       const studentBToken = signJwt({
         sub: 'student-b',
         role: 'STUDENT',
@@ -276,18 +279,19 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
       );
 
       const res = await request(app.getHttpServer())
-        .get('/api/v1/branching-attempts/attempt-of-student-a')
+        .get(`/api/v1/branching-attempts/${attemptOfStudentA}`)
         .set('Authorization', `Bearer ${studentBToken}`)
         .expect(403);
 
       expect(res.body.message).toBe('You do not have permission to view this attempt');
       expect(mockAttemptService.getAttempt).toHaveBeenCalledWith(
-        'attempt-of-student-a',
+        attemptOfStudentA,
         'student-b',
       );
     });
 
     it('should reject Student B submitting a decision step on Student A\'s attempt with 403 Forbidden', async () => {
+      const attemptOfStudentA = '22222222-2222-4222-8222-222222222222';
       const studentBToken = signJwt({
         sub: 'student-b',
         role: 'STUDENT',
@@ -298,13 +302,13 @@ describe('HTTP Security & RBAC Enforcement (E2E with Supertest)', () => {
       );
 
       await request(app.getHttpServer())
-        .post('/api/v1/branching-attempts/attempt-of-student-a/step')
+        .post(`/api/v1/branching-attempts/${attemptOfStudentA}/step`)
         .set('Authorization', `Bearer ${studentBToken}`)
         .send({ nodeId: 'node-1', optionId: 'opt-1' })
         .expect(403);
 
       expect(mockAttemptService.chooseOption).toHaveBeenCalledWith(
-        'attempt-of-student-a',
+        attemptOfStudentA,
         'student-b',
         { nodeId: 'node-1', optionId: 'opt-1' },
       );

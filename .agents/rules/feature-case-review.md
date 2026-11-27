@@ -31,7 +31,7 @@ Frontend — `pages/cases/CaseReviewPage.tsx` (ReactFlow decision tree visualiza
 - This check must be at the repository query level
 - A case advances through the lifecycle (`DRAFT → REVIEWED → APPROVED → PUBLISHED`)
 - Reverting an unpublished/approved draft to `DRAFT` is allowed for further editing
-- **Post-publication edits (`OPD-007` OPEN PO DECISION)**: Structural edits to a `PUBLISHED` case that already has active student attempts must preserve attempt history (`version = version + 1`); exact UI/policy rule (lock vs unpublish vs new version) awaits `OPD-007` PO closure — do not invent unapproved restrictions.
+- **Post-publication edits (`OPD-007` decided 2026-11-27: versioning is Post-MVP)**: in the MVP a `PUBLISHED` case with at least one student attempt cannot return to `DRAFT` (D5, enforced in `CaseService.updateCaseStatus` under a row lock shared with `startAttempt`); a case without attempts can still be reverted and edited. Do not add versioning or other edit paths for published cases in the MVP.
 
 ## Testing Expectations
 - Status transition tests (valid and invalid transitions)

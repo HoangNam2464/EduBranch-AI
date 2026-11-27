@@ -118,7 +118,7 @@ flowchart LR
 - `branching_attempts` (`attempt_number`, `current_node_id`, `outcome_node_id`, `is_completed`, `reflection_text`, `reflection_status`)
 - `student_reasoning` (`attempt_id`, `node_id`, `selected_option_id`, `reasoning_text`) — `reasoning_text` populated in REVIEW phase, not mid-flow
 
-> **Open PO Decisions**: `OPD-002` (pivotal reasoning requirement rule), `OPD-003` (resume vs cancel in-progress attempt), `OPD-004` (max attempt limit), `OPD-005` (Challenge Support modal vs page), `PSD-07` (two-column vs single-column player layout), and `PSD-08` (confirmation button vs instant advance) remain open in [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md).
+> **Open PO Decisions**: `OPD-002` (pivotal reasoning requirement rule), `OPD-004` (max attempt limit), `OPD-005` (Challenge Support modal vs page), `PSD-07` (two-column vs single-column player layout), and `PSD-08` (confirmation button vs instant advance) remain open in [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md). `OPD-003` was decided on 2026-11-27: an in-progress attempt continues to terminal.
 
 ---
 

@@ -3,12 +3,14 @@ import {
   ForbiddenException,
   NotFoundException,
   BadRequestException,
+  BadGatewayException,
   ConflictException,
   Logger,
+  Optional,
 } from "@nestjs/common";
 import { DatabaseService } from "../../common/database/database.service";
+import { AuditService } from "../../common/audit/audit.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
-import { CaseStatus } from "./dto/update-case-status.dto";
 import { randomUUID } from "crypto";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
 import { findTreeViolation } from "./case-tree.validator";
@@ -20,6 +22,7 @@ export class CaseService {
   constructor(
     private readonly db: DatabaseService,
     private readonly aiClient: AiClientService,
+    @Optional() private readonly audit?: AuditService,
   ) {}
 
   async generateCase(
@@ -50,16 +53,22 @@ export class CaseService {
     }
 
     // 2. Call AI Service to generate case draft with idempotency support
-    const aiResponse = await this.aiClient.generateCase({
-      material_ids: dto.materialIds,
-      course_id: courseId,
-      topic_hint: dto.topicHint,
-      num_nodes: dto.numNodes,
-      idempotency_key: dto.idempotencyKey,
-    });
+    const startedAt = Date.now();
+    let aiResponse: any;
+    try {
+      aiResponse = await this.aiClient.generateCase({
+        material_ids: dto.materialIds,
+        course_id: courseId,
+        topic_hint: dto.topicHint,
+        num_nodes: dto.numNodes,
+        idempotency_key: dto.idempotencyKey,
+      });
+    } catch (err) {
+      await this.recordGenerationFailure(lecturerId, courseId, startedAt, err);
+      throw err;
+    }
 
     const client = await this.db.getClient();
-    let transactionCommitted = false;
     try {
       await client.query("BEGIN");
 
@@ -73,6 +82,27 @@ export class CaseService {
         throw new ConflictException("Course is archived");
       }
 
+      const nodes = Array.isArray(aiResponse?.nodes) ? aiResponse.nodes : [];
+      const rootIndex = aiResponse?.root_node_index;
+      if (!Number.isInteger(rootIndex) || rootIndex < 0 || rootIndex >= nodes.length) {
+        throw new BadGatewayException("AI generated case has invalid root_node_index");
+      }
+      for (const node of nodes) {
+        if (node.options && Array.isArray(node.options)) {
+          for (const opt of node.options) {
+            if (opt.next_node_index !== null && opt.next_node_index !== undefined) {
+              if (
+                !Number.isInteger(opt.next_node_index) ||
+                opt.next_node_index < 0 ||
+                opt.next_node_index >= nodes.length
+              ) {
+                throw new BadGatewayException("AI generated case has invalid option next_node_index");
+              }
+            }
+          }
+        }
+      }
+
       const caseId = randomUUID();
       const title = aiResponse.title || "University Case Study";
       const description = aiResponse.description || "Interactive case study generated from course materials.";
@@ -83,56 +113,30 @@ export class CaseService {
         [caseId, title, description, courseId, lecturerId],
       );
 
-      const nodes = aiResponse.nodes || [];
-      if (!Array.isArray(nodes) || nodes.length === 0) {
-        throw new BadRequestException("Generated decision tree must contain at least one node");
-      }
-
-      const rootIndex = aiResponse.root_node_index ?? 0;
-      if (!Number.isInteger(rootIndex) || rootIndex < 0 || rootIndex >= nodes.length) {
-        throw new BadRequestException(`Invalid root node index: ${rootIndex}`);
-      }
-
-      // Validate every temporary edge before writing nodes/options. This prevents
-      // dangling references from being silently persisted as terminal options.
-      for (let sourceIndex = 0; sourceIndex < nodes.length; sourceIndex++) {
-        const node = nodes[sourceIndex];
-        if (!node || typeof node.situation !== "string" || !node.situation.trim()) {
-          throw new BadRequestException(`Node ${sourceIndex} has no valid situation`);
-        }
-        if (node.options != null && !Array.isArray(node.options)) {
-          throw new BadRequestException(`Node ${sourceIndex} options must be an array`);
-        }
-        for (const option of node.options || []) {
-          if (option.next_node_index != null &&
-              (!Number.isInteger(option.next_node_index) || option.next_node_index < 0 || option.next_node_index >= nodes.length)) {
-            throw new BadRequestException(`Option on node ${sourceIndex} references invalid node index ${option.next_node_index}`);
-          }
-        }
-      }
-
       const nodeMap = new Map<number, string>();
       for (let i = 0; i < nodes.length; i++) {
         nodeMap.set(i, randomUUID());
       }
 
+      // All nodes first: an option may point to a node later in the array (the root is index 0),
+      // and case_options.next_node_id is an immediate (non-deferrable) foreign key.
       for (let i = 0; i < nodes.length; i++) {
         const node = nodes[i];
-        const nodeId = nodeMap.get(i)!;
         const isTerminal = !node.options || node.options.length === 0;
-
         await client.query(
           `INSERT INTO case_nodes (id, case_id, situation, is_terminal, node_index)
            VALUES ($1, $2, $3, $4, $5)`,
-          [nodeId, caseId, node.situation, isTerminal, i],
+          [nodeMap.get(i)!, caseId, node.situation, isTerminal, i],
         );
+      }
 
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        const nodeId = nodeMap.get(i)!;
         if (node.options && Array.isArray(node.options)) {
           for (const opt of node.options) {
-            const nextNodeId = opt.next_node_index != null ? nodeMap.get(opt.next_node_index) : null;
-            if (opt.next_node_index != null && !nextNodeId) {
-              throw new BadRequestException(`Option references unmapped node index ${opt.next_node_index}`);
-            }
+            const nextNodeId =
+              opt.next_node_index != null ? nodeMap.get(opt.next_node_index) ?? null : null;
             const optionText = opt.text || opt.option_text || "Choose Option";
             const consequence = opt.consequence || "Consequence recorded.";
 
@@ -145,67 +149,81 @@ export class CaseService {
         }
       }
 
-      const rootNodeId = nodeMap.get(rootIndex);
-      if (!rootNodeId) {
-        throw new BadRequestException(`Root node index ${rootIndex} was not persisted`);
-      }
+      const rootNodeId = nodeMap.get(rootIndex)!;
       await client.query(`UPDATE cases SET root_node_id = $1 WHERE id = $2`, [rootNodeId, caseId]);
 
-      // Confirm persisted references and root linkage before allowing the commit.
-      const referencesRes = await client.query(
-        `SELECT
-           (SELECT COUNT(*) FROM case_nodes WHERE case_id = $1) AS node_count,
-           (SELECT COUNT(*) FROM cases c JOIN case_nodes n ON n.id = c.root_node_id
-             WHERE c.id = $1 AND n.case_id = c.id) AS root_count,
-           (SELECT COUNT(*) FROM case_options o
-             JOIN case_nodes source ON source.id = o.node_id
-             LEFT JOIN case_nodes target ON target.id = o.next_node_id
-             WHERE source.case_id = $1 AND (target.id IS NULL OR target.case_id = $1 OR o.next_node_id IS NULL)) AS valid_option_count,
-           (SELECT COUNT(*) FROM case_options o JOIN case_nodes source ON source.id = o.node_id
-             LEFT JOIN case_nodes target ON target.id = o.next_node_id
-             WHERE source.case_id = $1 AND o.next_node_id IS NOT NULL AND target.id IS NULL) AS invalid_target_count`,
-        [caseId],
-      );
-      const refs = referencesRes.rows[0];
-      const expectedOptionCount = nodes.reduce((count, node) => count + (node.options?.length || 0), 0);
-      const persistedOptionCount = Number(refs.valid_option_count);
-      if (Number(refs.node_count) !== nodes.length || Number(refs.root_count) !== 1 ||
-          persistedOptionCount !== expectedOptionCount || Number(refs.invalid_target_count) !== 0) {
-        throw new BadRequestException("Persisted decision tree contains invalid node or option references");
-      }
-
       await client.query("COMMIT");
-      transactionCommitted = true;
+
+      await this.audit?.record({
+        type: "CASE_GENERATED",
+        outcome: "SUCCESS",
+        actorId: lecturerId,
+        targetId: caseId,
+        meta: {
+          courseId,
+          caseTitle: title,
+          learningMode: "BRANCHING_STUDY",
+          decisionsCount: nodes.filter((n: any) => n.options && n.options.length > 0).length,
+          materialsCount: dto.materialIds.length,
+          durationMs: Date.now() - startedAt,
+        },
+      });
 
       return this.getCaseById(caseId, "LECTURER", lecturerId);
     } catch (e) {
-      if (!transactionCommitted) {
-        await client.query("ROLLBACK");
-      }
+      await client.query("ROLLBACK");
       this.logger.error("Failed to persist generated case:", e);
+      await this.recordGenerationFailure(lecturerId, courseId, startedAt, e);
       throw e;
     } finally {
       client.release();
     }
   }
 
-  async getCaseById(caseId: string, role?: string, _userId?: string) {
-    const isStudent = role === "STUDENT";
-    const caseRes = await this.db.query(
-      `SELECT c.*, co.lecturer_id
-       FROM cases c
-       JOIN courses co ON c.course_id = co.id
-       WHERE c.id = $1
-         AND ($2::boolean = FALSE OR c.status = 'PUBLISHED')`,
-      [caseId, isStudent],
-    );
+  async getCaseById(caseId: string, role?: string, userId?: string) {
+    if (role !== "STUDENT" && role !== "LECTURER" && role !== "ADMIN") {
+      throw new ForbiddenException("Access denied");
+    }
+    if (role === "LECTURER" && !userId) {
+      throw new ForbiddenException("Access denied");
+    }
+
+    let caseRes;
+    if (role === "STUDENT") {
+      caseRes = await this.db.query(
+        `SELECT c.*, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1 AND c.status = 'PUBLISHED'`,
+        [caseId],
+      );
+    } else if (role === "LECTURER") {
+      caseRes = await this.db.query(
+        `SELECT c.*, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1 AND co.lecturer_id = $2`,
+        [caseId, userId],
+      );
+    } else {
+      caseRes = await this.db.query(
+        `SELECT c.*, co.lecturer_id
+         FROM cases c
+         JOIN courses co ON c.course_id = co.id
+         WHERE c.id = $1`,
+        [caseId],
+      );
+    }
+
     if (caseRes.rows.length === 0) {
-      if (isStudent) {
-        // Check existence using only the identifier; never load case content for
-        // a student unless the published-only query above returns a row.
-        const existenceRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
-        if (existenceRes.rows.length > 0) {
-          throw new ForbiddenException("Students can only access PUBLISHED cases");
+      if (role !== "ADMIN") {
+        const existsRes = await this.db.query("SELECT id FROM cases WHERE id = $1", [caseId]);
+        if (existsRes.rows.length > 0) {
+          throw new ForbiddenException(
+            role === "STUDENT"
+              ? "Students can only access PUBLISHED cases"
+              : "You can only access cases in your own courses",
+          );
         }
       }
       throw new NotFoundException(`Case ${caseId} not found`);
@@ -230,7 +248,7 @@ export class CaseService {
       };
     }
 
-    // For lecturers: retrieve full decision tree for ReactFlow review editor
+    // For lecturers & admin: retrieve full decision tree for review editor / rubric
     const nodesRes = await this.db.query(
       "SELECT * FROM case_nodes WHERE case_id = $1 ORDER BY node_index ASC",
       [caseId],
@@ -260,17 +278,72 @@ export class CaseService {
     };
   }
 
-  async getCasesByCourse(courseId: string, role?: string) {
-    let query = "SELECT * FROM cases WHERE course_id = $1";
-    const params: any[] = [courseId];
-
-    if (role === "STUDENT") {
-      query += " AND status = 'PUBLISHED'";
+  async getCasesByCourse(courseId: string, user?: { id?: string; role?: string }) {
+    const role = user?.role;
+    const userId = user?.id;
+    if (role !== "ADMIN" && role !== "LECTURER" && role !== "STUDENT") {
+      throw new ForbiddenException("Access denied");
+    }
+    if (role !== "ADMIN" && !userId) {
+      throw new ForbiddenException("Access denied");
     }
 
-    query += " ORDER BY updated_at DESC";
+    if (role === "ADMIN") {
+      const courseRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+      if (courseRes.rows.length === 0) {
+        throw new NotFoundException(`Course ${courseId} not found`);
+      }
+      const res = await this.db.query(
+        "SELECT * FROM cases WHERE course_id = $1 ORDER BY updated_at DESC",
+        [courseId],
+      );
+      return res.rows;
+    }
 
-    const res = await this.db.query(query, params);
+    if (role === "LECTURER") {
+      const ownedRes = await this.db.query(
+        "SELECT id FROM courses WHERE id = $1 AND lecturer_id = $2",
+        [courseId, userId],
+      );
+      if (ownedRes.rows.length === 0) {
+        const existsRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+        if (existsRes.rows.length === 0) {
+          throw new NotFoundException(`Course ${courseId} not found`);
+        }
+        throw new ForbiddenException("You can only view cases in your own courses");
+      }
+      const res = await this.db.query(
+        `SELECT c.*
+         FROM cases c
+         JOIN courses co ON co.id = c.course_id
+         WHERE c.course_id = $1 AND co.lecturer_id = $2
+         ORDER BY c.updated_at DESC`,
+        [courseId, userId],
+      );
+      return res.rows;
+    }
+
+    // STUDENT: must be enrolled in course_enrollments; returns only PUBLISHED cases with safe projection
+    const enrolledRes = await this.db.query(
+      "SELECT id FROM course_enrollments WHERE course_id = $1 AND student_id = $2",
+      [courseId, userId],
+    );
+    if (enrolledRes.rows.length === 0) {
+      const existsRes = await this.db.query("SELECT id FROM courses WHERE id = $1", [courseId]);
+      if (existsRes.rows.length === 0) {
+        throw new NotFoundException(`Course ${courseId} not found`);
+      }
+      throw new ForbiddenException("You are not enrolled in this course");
+    }
+
+    const res = await this.db.query(
+      `SELECT c.id, c.title, c.description, c.course_id, c.status, c.learning_mode, c.created_at, c.updated_at
+       FROM cases c
+       JOIN course_enrollments ce ON ce.course_id = c.course_id AND ce.student_id = $2
+       WHERE c.course_id = $1 AND c.status = 'PUBLISHED'
+       ORDER BY c.updated_at DESC`,
+      [courseId, userId],
+    );
     return res.rows;
   }
 
@@ -489,92 +562,123 @@ export class CaseService {
   async updateCaseStatus(
     caseId: string,
     lecturerId: string,
-    newStatus: CaseStatus,
+    newStatus: "DRAFT" | "REVIEWED" | "APPROVED" | "PUBLISHED",
   ) {
-    const allowedTransitions: Record<CaseStatus, readonly CaseStatus[]> = {
+    // P0-DATA-03: Verify course ownership
+    const caseRes = await this.db.query(
+      `SELECT c.id, c.status, c.learning_mode, c.root_node_id, c.context_text, c.problem_text, co.lecturer_id
+       FROM cases c
+       JOIN courses co ON c.course_id = co.id
+       WHERE c.id = $1`,
+      [caseId],
+    );
+    if (caseRes.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
+    const caseRow = caseRes.rows[0];
+
+    if (caseRow.lecturer_id !== lecturerId) {
+      throw new ForbiddenException("You can only change the status of cases in your own courses");
+    }
+
+    // P0-DATA-03: Enforce valid state machine transitions (DRAFT -> REVIEWED -> APPROVED -> PUBLISHED)
+    const ALLOWED_TRANSITIONS: Record<string, string[]> = {
       DRAFT: ["REVIEWED"],
       REVIEWED: ["APPROVED", "DRAFT"],
       APPROVED: ["PUBLISHED", "DRAFT"],
       PUBLISHED: ["DRAFT"],
     };
 
-    const client = await this.db.getClient();
-    let transactionCommitted = false;
-    try {
-      await client.query("BEGIN");
-      // Serialize transitions for this case so two concurrent requests cannot
-      // both validate against the same stale status.
-      const caseRes = await client.query(
-        `SELECT c.id, c.status, c.learning_mode, c.root_node_id, c.context_text, c.problem_text, co.lecturer_id
-         FROM cases c
-         JOIN courses co ON c.course_id = co.id
-         WHERE c.id = $1
-         FOR UPDATE OF c`,
-        [caseId],
-      );
-      if (caseRes.rows.length === 0) {
-        throw new NotFoundException(`Case ${caseId} not found`);
-      }
-      const caseRow = caseRes.rows[0];
-      if (caseRow.lecturer_id !== lecturerId) {
-        throw new ForbiddenException("You can only change the status of cases in your own courses");
-      }
-
-      const currentStatus = caseRow.status as CaseStatus;
-      if (currentStatus !== newStatus && !allowedTransitions[currentStatus]?.includes(newStatus)) {
-        const allowed = allowedTransitions[currentStatus] || [];
+    const currentStatus = caseRow.status;
+    if (currentStatus !== newStatus) {
+      const allowed = ALLOWED_TRANSITIONS[currentStatus];
+      if (!allowed || !allowed.includes(newStatus)) {
         throw new BadRequestException(
-          `Invalid status transition from ${currentStatus} to ${newStatus}. Permitted transitions: ${allowed.length ? allowed.join(", ") : "none"}`,
+          `Invalid status transition from ${currentStatus} to ${newStatus}. Permitted transitions: ${allowed ? allowed.join(", ") : "none"}`
         );
       }
+    }
 
-      if (currentStatus === newStatus) {
-        await client.query("COMMIT");
-        transactionCommitted = true;
-        return { id: caseId, status: currentStatus };
-      }
+    // P0-DATA-03: Publishing gates differentiated by learning_mode (Proposal V1.2 & INV-02/INV-03)
+    if (newStatus === "PUBLISHED") {
+      const mode = caseRow.learning_mode || "BRANCHING_STUDY";
 
-      if (newStatus === "PUBLISHED") {
-        const mode = caseRow.learning_mode || "BRANCHING_STUDY";
-        if (mode === "REVIEW_STUDY") {
-          if (!caseRow.context_text || !caseRow.context_text.trim()) {
-            throw new BadRequestException("Cannot publish Review Study case: Context text must be provided");
-          }
-          if (!caseRow.problem_text || !caseRow.problem_text.trim()) {
-            throw new BadRequestException("Cannot publish Review Study case: Problem text must be provided");
-          }
-        } else {
-          if (!caseRow.root_node_id) {
-            throw new ForbiddenException("Cannot publish case without a designated root node");
-          }
-          const terminalRes = await client.query(
-            "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
-            [caseId],
-          );
-          if (parseInt(terminalRes.rows[0]?.count || "0", 10) === 0) {
-            throw new BadRequestException("Cannot publish case: The decision tree must contain at least one terminal node");
-          }
+      if (mode === "REVIEW_STUDY") {
+        if (!caseRow.context_text || !caseRow.context_text.trim()) {
+          throw new BadRequestException("Cannot publish Review Study case: Context text must be provided");
+        }
+        if (!caseRow.problem_text || !caseRow.problem_text.trim()) {
+          throw new BadRequestException("Cannot publish Review Study case: Problem text must be provided");
+        }
+      } else {
+        // BRANCHING_STUDY requires root node and at least one terminal node
+        if (!caseRow.root_node_id) {
+          throw new ForbiddenException("Cannot publish case without a designated root node");
+        }
+
+        const terminalRes = await this.db.query(
+          "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
+          [caseId],
+        );
+        const terminalCount = parseInt(terminalRes.rows[0]?.count || "0", 10);
+        if (terminalCount === 0) {
+          throw new BadRequestException("Cannot publish case: The decision tree must contain at least one terminal node");
         }
       }
+    }
 
-      const updateRes = await client.query(
-        "UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2 AND status = $3",
-        [newStatus, caseId, currentStatus],
-      );
-      if (updateRes.rowCount !== 1) {
-        throw new ConflictException("Case status changed before the transition could be saved");
+    // D5 (PO 2026-11-27): a PUBLISHED case that already has a student attempt can no longer go back to
+    // DRAFT, so attempts always run on published content (INV-01). The case row is locked FOR UPDATE, the
+    // same lock startAttempt takes, so "start attempt" and "revert to DRAFT" are serialized: either the
+    // attempt commits first and the revert sees it (409), or the revert commits first and the attempt sees
+    // DRAFT (403). The status is re-read under the lock so a concurrent change is never overwritten.
+    const client = await this.db.getClient();
+    try {
+      await client.query("BEGIN");
+      const locked = await client.query("SELECT status FROM cases WHERE id = $1 FOR UPDATE", [caseId]);
+      if (locked.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
+      if (locked.rows[0].status !== currentStatus) {
+        throw new ConflictException("The case status changed meanwhile; reload the case and try again");
       }
-
+      if (currentStatus === "PUBLISHED" && newStatus === "DRAFT") {
+        const attempts = await client.query(
+          "SELECT COUNT(*)::int AS count FROM branching_attempts WHERE case_id = $1",
+          [caseId],
+        );
+        if ((attempts.rows[0]?.count ?? 0) > 0) {
+          throw new ConflictException("A published case that students have attempted cannot return to DRAFT");
+        }
+      }
+      await client.query("UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2", [newStatus, caseId]);
       await client.query("COMMIT");
-      transactionCommitted = true;
-      return { id: caseId, status: newStatus };
-    } catch (error) {
-      if (!transactionCommitted) {
-        await client.query("ROLLBACK");
-      }
-      throw error;
+    } catch (e) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw e;
     } finally {
       client.release();
     }
+    if (currentStatus !== newStatus) {
+      await this.audit?.record({
+        type: "CASE_STATUS_CHANGED",
+        outcome: "SUCCESS",
+        actorId: lecturerId,
+        targetId: caseId,
+        meta: { from: currentStatus, to: newStatus },
+      });
+    }
+    return { id: caseId, status: newStatus };
+  }
+
+  /** Spec 007 AC-A9: a failed generation is logged with its duration; never with material text. */
+  private async recordGenerationFailure(lecturerId: string, courseId: string, startedAt: number, err: unknown) {
+    const status = (err as { status?: number; getStatus?: () => number })?.getStatus?.() ?? (err as any)?.status;
+    await this.audit?.record({
+      type: "CASE_GENERATION_FAILED",
+      outcome: "ERROR",
+      actorId: lecturerId,
+      meta: {
+        courseId,
+        durationMs: Date.now() - startedAt,
+        errorCode: typeof status === "number" ? `HTTP_${status}` : (err as Error)?.name ?? "ERROR",
+      },
+    });
   }
 }

@@ -17,6 +17,8 @@ describe('MigrationRunner Hardened', () => {
   beforeEach(() => {
     runner = new MigrationRunner(mockPool);
     jest.clearAllMocks();
+    // Drop queued mockResolvedValueOnce values a previous (rejected) run left unused.
+    mockClient.query.mockReset();
   });
 
   afterEach(() => {
@@ -69,6 +71,66 @@ describe('MigrationRunner Hardened', () => {
 
       expect(checksum1).toBe(checksum2);
       expect(checksum1).toHaveLength(64);
+    });
+
+    it('treats CRLF and LF forms of the same SQL as equivalent, but not a content change', () => {
+      const lf = 'CREATE TABLE a (id INT);\nCREATE TABLE b (id INT);\n';
+      const crlf = lf.replace(/\n/g, '\r\n');
+      const fromLf = runner.equivalentChecksums(lf);
+      const fromCrlf = runner.equivalentChecksums(crlf);
+
+      expect(fromLf.has(runner.computeChecksum(crlf))).toBe(true);
+      expect(fromCrlf.has(runner.computeChecksum(lf))).toBe(true);
+      expect(fromLf.has(runner.computeChecksum(lf.replace('b (id INT)', 'b (id BIGINT)')))).toBe(false);
+      expect(fromLf.has(runner.computeChecksum(lf + ' '))).toBe(false);
+    });
+
+    const runWithStoredV1 = async (storedChecksum: string) => {
+      const migrations = runner.discoverMigrations(runner.getMigrationsDirectory());
+      mockClient.query
+        .mockResolvedValueOnce({}) // pg_advisory_lock
+        .mockResolvedValueOnce({}) // CREATE TABLE IF NOT EXISTS
+        .mockResolvedValueOnce({}) // ALTER TABLE
+        .mockResolvedValueOnce({ rows: [{ version: 'V1', name: 'init_schema', checksum: storedChecksum }] });
+      for (let i = 1; i < migrations.length; i++) {
+        mockClient.query
+          .mockResolvedValueOnce({}) // BEGIN
+          .mockResolvedValueOnce({}) // SQL execution
+          .mockResolvedValueOnce({}) // INSERT schema_migrations
+          .mockResolvedValueOnce({}); // COMMIT
+      }
+      mockClient.query.mockResolvedValueOnce({}); // unlock
+      return { migrations, result: runner.run() };
+    };
+
+    it('accepts a V1 checksum recorded from a CRLF checkout when the file on disk is LF (and vice versa)', async () => {
+      const v1 = fs.readFileSync(runner.discoverMigrations(runner.getMigrationsDirectory())[0].filepath, 'utf8');
+      const lf = runner.normalizeLineEndings(v1);
+      for (const recorded of [lf.replace(/\n/g, '\r\n'), lf]) {
+        mockClient.query.mockReset();
+        const { result } = await runWithStoredV1(runner.computeChecksum(recorded));
+        await expect(result).resolves.toMatchObject({ skipped: ['V1'] });
+      }
+    });
+
+    it('still rejects a V1 whose recorded checksum belongs to different SQL content', async () => {
+      const v1 = fs.readFileSync(runner.discoverMigrations(runner.getMigrationsDirectory())[0].filepath, 'utf8');
+      const tampered = runner.normalizeLineEndings(v1) + '\n-- altered after execution\n';
+      const { result } = await runWithStoredV1(runner.computeChecksum(tampered.replace(/\n/g, '\r\n')));
+      await expect(result).rejects.toThrow('Migration checksum mismatch for V1');
+    });
+
+    it('records new migrations with the LF-normalized checksum', async () => {
+      const v1 = fs.readFileSync(runner.discoverMigrations(runner.getMigrationsDirectory())[0].filepath, 'utf8');
+      const { migrations, result } = await runWithStoredV1(runner.computeChecksum(runner.normalizeLineEndings(v1)));
+      await result;
+      const inserts = mockClient.query.mock.calls.filter(([q]) => typeof q === 'string' && q.startsWith('INSERT INTO schema_migrations'));
+      expect(inserts).toHaveLength(migrations.length - 1);
+      for (const [, params] of inserts) {
+        const file = migrations.find((m) => m.version === params[0])!;
+        const lfSql = runner.normalizeLineEndings(fs.readFileSync(file.filepath, 'utf8'));
+        expect(params[2]).toBe(runner.computeChecksum(lfSql));
+      }
     });
 
     it('should reject corrupted or malformed checksum format in database', async () => {

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { BadGatewayException, GatewayTimeoutException, HttpException, Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 export interface ProcessIngestionPayload {
@@ -99,19 +99,23 @@ export class AiClientService {
         signal: controller.signal,
       });
 
+      // QA-007: an AI failure reaches the lecturer as 502 (504 on timeout), never as a 500;
+      // the AI service detail stays in the log, not in the response.
       if (!response.ok) {
         const errText = await response.text();
         this.logger.error(`AI Service generation failed (${response.status}): ${errText}`);
-        throw new Error(`AI Service generation error (${response.status}): ${errText}`);
+        throw new BadGatewayException("The AI service could not generate the case");
       }
 
       return await response.json();
     } catch (err: any) {
-      if (err.name === "AbortError") {
+      if (err instanceof HttpException) throw err;
+      if (err?.name === "AbortError") {
         this.logger.error(`AI Service generation timed out after ${timeoutMs}ms`);
-        throw new Error(`AI Service generation timed out after ${timeoutMs}ms`);
+        throw new GatewayTimeoutException("The AI service did not answer in time");
       }
-      throw err;
+      this.logger.error(`AI Service generation unreachable: ${err?.message ?? err}`);
+      throw new BadGatewayException("The AI service could not generate the case");
     } finally {
       clearTimeout(timeoutHandle);
     }

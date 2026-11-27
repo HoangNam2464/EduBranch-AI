@@ -518,4 +518,81 @@ describe("CourseService (EBA-107 / BE-003)", () => {
       expect(attemptsCall[0]).not.toContain("ba.user_id");
     });
   });
+
+  describe("getCourseForViewer (H3)", () => {
+    it("rejects missing/unknown role with 403", async () => {
+      await expect(service.getCourseForViewer("c-1", { id: "u-1", role: "GUEST" })).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it("returns 404 for unknown course across roles", async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [] });
+      await expect(service.getCourseForViewer("missing", { id: "a-1", role: "ADMIN" })).rejects.toThrow(
+        NotFoundException,
+      );
+
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [] });
+      await expect(service.getCourseForViewer("missing", { id: "l-1", role: "LECTURER" })).rejects.toThrow(
+        NotFoundException,
+      );
+
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [] });
+      await expect(service.getCourseForViewer("missing", { id: "s-1", role: "STUDENT" })).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it("allows ADMIN without owner filter and returns full row", async () => {
+      const row = { id: "c-1", name: "C", lecturer_id: "l-1", active: true, is_active: true };
+      mockDbService.query.mockResolvedValueOnce({ rows: [row] });
+
+      const result = await service.getCourseForViewer("c-1", { id: "a-1", role: "ADMIN" });
+      expect(result).toEqual(row);
+      expect(mockDbService.query.mock.calls[0][0]).not.toContain("lecturer_id =");
+      expect(mockDbService.query.mock.calls[0][1]).toEqual(["c-1"]);
+    });
+
+    it("allows owner LECTURER with SQL lecturer_id filter and forbids non-owner with 403", async () => {
+      const row = { id: "c-1", name: "C", lecturer_id: "l-1", active: true, is_active: true };
+      mockDbService.query.mockResolvedValueOnce({ rows: [row] });
+
+      const result = await service.getCourseForViewer("c-1", { id: "l-1", role: "LECTURER" });
+      expect(result).toEqual(row);
+      expect(mockDbService.query.mock.calls[0][0]).toContain("lecturer_id = $2");
+      expect(mockDbService.query.mock.calls[0][1]).toEqual(["c-1", "l-1"]);
+
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: "c-1" }] });
+      await expect(service.getCourseForViewer("c-1", { id: "l-2", role: "LECTURER" })).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it("allows STUDENT via enrollment or PUBLISHED case without lecturer_id/invite fields, else 403", async () => {
+      const safeRow = { id: "c-1", name: "C", description: null, course_code: "C1", active: true, is_active: true };
+      mockDbService.query.mockResolvedValueOnce({ rows: [safeRow] });
+
+      const result = await service.getCourseForViewer("c-1", { id: "s-1", role: "STUDENT" });
+      expect(result).toEqual(safeRow);
+      const sql = mockDbService.query.mock.calls[0][0] as string;
+      expect(sql).toContain("course_enrollments");
+      expect(sql).toContain("PUBLISHED");
+      expect(sql).not.toContain("SELECT *");
+      expect(sql).not.toMatch(/\bc\.lecturer_id\b/);
+      expect(mockDbService.query.mock.calls[0][1]).toEqual(["c-1", "s-1"]);
+
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [] })
+        .mockResolvedValueOnce({ rows: [{ id: "c-1" }] });
+      await expect(service.getCourseForViewer("c-1", { id: "s-2", role: "STUDENT" })).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+  });
 });

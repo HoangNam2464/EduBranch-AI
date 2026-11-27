@@ -18,6 +18,9 @@ import { StatisticsModule } from "./modules/statistics/statistics.module";
 import { NotificationModule } from "./modules/notification/notification.module";
 import { EvaluationModule } from "./modules/evaluation/evaluation.module";
 
+import { AuditModule } from "./common/audit/audit.module";
+import { AdminModule } from "./modules/admin/admin.module";
+
 import { validateEnvironment } from "./common/config/env.validation";
 
 @Module({
@@ -28,6 +31,7 @@ import { validateEnvironment } from "./common/config/env.validation";
       validate: validateEnvironment,
     }),
     DatabaseModule,
+    AuditModule,
     MinioModule,
     AiClientModule,
     HealthModule,
@@ -44,6 +48,7 @@ import { validateEnvironment } from "./common/config/env.validation";
     StatisticsModule,
     NotificationModule,
     EvaluationModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

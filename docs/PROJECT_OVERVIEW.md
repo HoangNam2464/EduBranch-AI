@@ -77,25 +77,40 @@ Use [`docs/README.md`](README.md) as the unified Documentation Hub for the full 
 
 ---
 
-## Feature Status (as of 2026-11-25)
+## Feature Status (as of 2026-11-27)
 
-> Updated from the 2026-11-21 snapshot (`6f903f2`) to `develop` `0e78075` (post PRs #68, #69, #70, #73, #74, #75, #77, #79, #83, #84, #85). Status words: **Implemented** = code on `develop` with automated tests; **Partial** = some flows or backend endpoints missing; **Documented / Skeleton** = boundary only. Implemented never means PO-accepted or Done in Jira (`AGENTS.md` rule 10). Latest local frontend checks at `0e78075`: lint 0 errors, unit specs 298/298, build 0; open PR #80 (`feature/mvp-completion-backend`, `[BE-030]..[BE-033]`) carries remaining backend admin/profile/dashboard/rubric APIs.
+> **Baseline**: code on `develop` `cf3a6a5` (merge PR #91). The MVP completion phase closed with **QG7 PASS** on this commit. The current `develop` HEAD is `12c01f5` (merge PR #93, docs only); it has no code change after `cf3a6a5`. The phase covers PRs #87, #88, #89, #90, #91, #92, #93; PR #59 and #74 were closed and point to their replacement PRs. Evidence, test numbers and remaining exceptions: [`docs/qa/MVP-BASELINE-QG7-REPORT.md`](qa/MVP-BASELINE-QG7-REPORT.md).
+>
+> Status words:
+> - **Implemented**: code on `develop` with automated tests.
+> - **Partial**: some flows or backend endpoints are missing.
+> - **Documented / Skeleton**: boundary only.
+>
+> Implemented never means PO-accepted or Done in Jira (`AGENTS.md` rule 10).
+>
+> QG7 at `cf3a6a5` (clean clone):
+> - backend unit 410/410; e2e 337 pass, 43 skip (live suites); matrix 26/26; regression 44/44;
+> - frontend lint 0, unit 321/321, build 0;
+> - ai-service 165 passed, 1 xfailed (QA-005);
+> - `start:prod` and Docker image run;
+> - browser checks 84/84;
+> - Backend and Frontend CI success on `develop` at `cf3a6a5`; AI Service CI success at `19a1a2b` (PR #92, the last ai-service change).
 
 | Feature Area | Status | Evidence / gap |
 |---|---|---|
-| Authentication & Roles | Implemented (email/password, JWT, RBAC, rate limit) | Google/Microsoft sign-in (`BE-034`) not started; forgot/reset password UI is MVP (PO 2026-11-25), backend reset API pending |
-| Course Context & Enrollment | Implemented | Soft archive (`OPD-014`), invite code + student desk (`BE-029`, `V5`) |
+| Authentication & Roles | Implemented (email/password, JWT, RBAC, rate limit) | Google/Microsoft sign-in (`BE-034`, EBA-101 In Progress) not on `develop`; forgot/reset password UI is MVP (PO 2026-11-25), backend reset API and `rememberMe` TTL not on `develop` (rule B4) |
+| Course Context & Enrollment | Implemented | Soft archive (`OPD-014`), invite code + student desk (`BE-029`, `V5`); course read ownership in SQL (H3, PR #88) |
 | Teaching Materials & Upload | Implemented | MinIO storage, PDF/DOCX validation, RAG source inspector UI |
-| Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary (`test_retrieval_boundary.py` F-07 still open) |
+| Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary tests pass (F-07 fixed in PR #92); known defect QA-005 (stale chunks after failed re-ingest, xfail, EBA-116) |
 | AI Case Generation | Implemented | 3-color DFS DAG validation, grounded prompting (`gemini-3.5-flash`) |
-| Decision Tree / Case Editor | Implemented | node save with topology checks (`BE-017`), editor (`FE-009/010`) |
-| Lecturer Review & Publishing | Implemented | lifecycle state machine, published-only student gate (`INV-01`) |
-| Branching Case Player & Attempts | Implemented | play → review → reflect → retry (`PR #77` merged for reasoning access) |
-| Review Study | Implemented (core) | BE-025 + FE `ReviewStudyPage` & `ReviewFeedbackPage` (`PR #69` merged); MVP scope confirmed (`P4` `(LATER)` removed per PO `2026-11-25`, distinct from full verification); `D4-13` remains `OPEN PO DECISION`, `06.2` badge/Visual E2E open |
+| Decision Tree / Case Editor | Implemented | node save with topology checks (`BE-017`), editor (`FE-009/010`); `findTreeViolation` vs AI terminal-path rule mismatch (EBA-117) |
+| Lecturer Review & Publishing | Implemented | lifecycle state machine; published-only student gate (`INV-01`) for case reads and listings (H1–H2, PR #88) and for existing attempts (spec 013): a `PUBLISHED` case with an attempt cannot return to `DRAFT` (D5, PO 2026-11-27), serialized with attempt creation by a case row lock; case versioning `OPD-007` is Post-MVP |
+| Branching Case Player & Attempts | Implemented | play → review → reflect → retry; attempt creation transactional (PR #88); in-progress attempts continue to terminal (`OPD-003`, PO 2026-11-27); retry limit `OPD-004` open |
+| Review Study | Implemented (core) | BE-025 + FE `ReviewStudyPage` & `ReviewFeedbackPage` (`PR #69`); MVP scope confirmed (`P4` `(LATER)` removed per PO `2026-11-25`); `D4-13` remains `OPEN PO DECISION` |
 | AI Challenge Support | Implemented | 2-round cap in gateway and AI service (`BE-027`, `FE-021`) |
-| Lecturer Feedback & Statistics | Partial / Implemented (core) | Core `BE-026/028` + `FE-019`/`FE-022` merged (`PR #68`/`#70`/`#76`); MVP scope confirmed (`P3` `(LATER)` removed per PO `2026-11-25`, distinct from full completion); route convention `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`, `D-04`, `OPD-010` remain `OPEN PO DECISION`, CSV `BE-033` in PR #80 |
-| Lecturer Dashboard | Partial | FE (`PR #73` merged); aggregation API `BE-030` pending in open PR #80 |
-| Profile | Partial | view implemented; update API `BE-031` pending in open PR #80 |
-| Admin Portal | Partial | shell + admin screens (`PR #75` merged; dashboard still shows sample data), admin APIs `BE-032` pending in open PR #80 |
-| Evaluation & Rubric | Partial | rubric UI (`PR #74` merged); backend `evaluation/` skeleton & storage/export `BE-033` pending in open PR #80 |
-| Notifications | Documented / Skeleton | `backend/src/modules/notification/` remains structural boundary only (Phase 2) |
+| Lecturer Feedback & Statistics | Implemented (core) | `BE-026/028` + `FE-019`/`FE-022` (`PR #68`/`#70`/`#76`); route convention `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`, `D-04`, `OPD-010` remain `OPEN PO DECISION` |
+| Lecturer Dashboard | Implemented | FE (`PR #73`) + aggregation API `BE-030` (`GET /lecturer/dashboard`, PR #80); default lecturer route after login still an open PO item (`ROLE_HOME.LECTURER`) |
+| Profile | Implemented | view + update (`GET`/`PATCH /users/me`, `BE-031`, PR #80) |
+| Admin Portal | Implemented | admin screens for Figma frames 10.1–10.10 (`FE-031`/`FE-032`) on admin APIs `BE-032` (PR #80); 10.6 / 10.9 fixes in PR #91 (log filter groups, exact totals, VI/EN event labels); remaining Low items EBA-114 |
+| Evaluation & Rubric | Implemented | rubric storage + anonymized CSV `BE-033` (PR #80); rubric UI `FE-029` (07.8 / 10.8) on that API (PR #89, replaces closed PR #74) |
+| Notifications | Documented / Skeleton | `backend/src/modules/notification/` has no endpoints (Phase 2; `PSD-03` open) |

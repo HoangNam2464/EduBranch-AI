@@ -53,6 +53,7 @@ describe("buildPath", () => {
       buildPath(PATHS.LECTURER.MATERIAL_SOURCES, { courseId: 7, materialId: "m-1" }),
       "/lecturer/courses/7/materials/m-1/rag",
     );
+    assert.equal(buildPath(PATHS.ADMIN.CASE_RUBRIC, { caseId: "c1" }), "/admin/rubric/c1");
   });
 
   it("URI-encodes values so they cannot inject path segments", () => {

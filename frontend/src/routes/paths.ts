@@ -65,6 +65,7 @@ export const PATHS = {
     COURSES: "/admin/courses",
     CASES: "/admin/cases",
     RUBRIC: "/admin/rubric",
+    CASE_RUBRIC: "/admin/rubric/:caseId",
     LOGS: "/admin/logs",
     AI_SERVICE: "/admin/ai-service",
     SETTINGS: "/admin/settings",

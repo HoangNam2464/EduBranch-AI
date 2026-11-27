@@ -102,7 +102,7 @@ Xem mục 1.3. Các màn 01.1–01.3 và 01.8 dựng trên màn Quản lý khóa
 - Đã rà soát: "Lưu thay đổi"; có thể Phê duyệt; Xuất bản vẫn khóa.
 - Đã phê duyệt: "Trả về bản nháp" và "Xuất bản cho sinh viên".
 - Đã xuất bản: chỉ còn "Sao chép đường dẫn".
-- Sửa case sau khi xuất bản còn chờ **OPD-007**.
+- Sửa case sau khi xuất bản: **OPD-007 đã chốt 2026-11-27** — versioning để Post-MVP; case đã có attempt không về bản nháp được (D5).
 
 **03.7 Phê duyệt và xuất bản** — hộp thoại có danh sách kiểm tra trước khi xuất bản; nút "Xác nhận xuất bản".
 
@@ -118,7 +118,7 @@ Xem mục 1.3. Các màn 01.1–01.3 và 01.8 dựng trên màn Quản lý khóa
 
 ### 05 · Sinh viên · Branching Study
 
-- **05.1 Giới thiệu tình huống** — thông tin học phần, lịch sử các lần làm, "Cách làm case này". Nút "Tiếp tục làm dở" còn chờ **OPD-003**.
+- **05.1 Giới thiệu tình huống** — thông tin học phần, lịch sử các lần làm, "Cách làm case này". Nút "Tiếp tục làm dở": **OPD-003 đã chốt 2026-11-27** — lượt dở được tiếp tục đến terminal.
 - **05.2 Đã chọn phương án** — điểm quyết định, thông số, các phương án A/B/C, tín hiệu từ hiện trường. Có bước xác nhận sau khi chọn hay chuyển ngay còn chờ PO (PSD-08).
 - **05.3 Kết thúc hành trình** — kết cục, chỉ số, tiến trình lượt làm, nút "Chuyển sang Journey Review".
 - **05.4 Journey Review** — sơ đồ hành trình, các bước đã đi, chi tiết quyết định & hậu quả. Quy tắc bắt buộc lập luận còn chờ **OPD-002**.
@@ -186,10 +186,10 @@ Khi sửa một màn trong bảng: sao màn gốc, chèn vào đúng vị trí b
 | Mã | Nội dung | Màn bị ảnh hưởng |
 |---|---|---|
 | OPD-002 | Lập luận ở quyết định then chốt có bắt buộc không | 05.4, 03.4 |
-| OPD-003 | Tiếp tục hay hủy lượt làm dở | 05.1 |
+| OPD-003 | Tiếp tục hay hủy lượt làm dở — **đã chốt 2026-11-27: tiếp tục đến terminal** | 05.1 |
 | OPD-004 | Giới hạn số lượt làm | 05.9, 05.10 |
 | OPD-005 | Challenge Support dạng modal hay trang riêng (HOLD) | 05.5, 05.6 |
-| OPD-007 | Sửa case sau khi xuất bản | 03.6 (trạng thái Đã xuất bản) |
+| OPD-007 | Sửa case sau khi xuất bản — **đã chốt 2026-11-27: versioning Post-MVP; case có attempt bị khóa (D5)** | 03.6 (trạng thái Đã xuất bản) |
 | OPD-008 | Xác minh tài khoản giảng viên (HOLD email kích hoạt) | 00.5, 10.3 |
 | OPD-014 | Xóa cứng hay lưu trữ — **ĐÃ QUYẾT ĐỊNH 2026-11-16: lưu trữ mềm khóa học** | 02.3, 10.5, 10.6 |
 | D-07 | Tạo case thủ công | 07.6 |

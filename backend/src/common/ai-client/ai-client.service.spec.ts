@@ -154,3 +154,37 @@ describe("AiClientService - Challenge Support", () => {
     expect(global.fetch).toHaveBeenCalledTimes(3);
   });
 });
+
+describe("AiClientService - case generation errors (QA-007)", () => {
+  const originalFetch = global.fetch;
+  const config = {
+    get: jest.fn((key: string, d?: any) => (key === "AI_SERVICE_TIMEOUT_MS" ? 50 : d)),
+  } as unknown as ConfigService;
+  const payload = { material_ids: ["m"], course_id: "c" };
+  afterEach(() => {
+    global.fetch = originalFetch;
+  });
+
+  it("maps a non-OK AI response to 502 without echoing the AI detail", async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 503, text: async () => "provider secret detail" }) as any;
+    const err = await new AiClientService(config).generateCase(payload).catch((e) => e);
+    expect(err.getStatus()).toBe(502);
+    expect(JSON.stringify(err.getResponse())).not.toContain("provider secret detail");
+  });
+
+  it("maps a timeout to 504", async () => {
+    global.fetch = jest.fn((_url: string, init: { signal: AbortSignal }) =>
+      new Promise((_resolve, reject) =>
+        init.signal.addEventListener("abort", () => reject(Object.assign(new Error("aborted"), { name: "AbortError" }))),
+      ),
+    ) as any;
+    const err = await new AiClientService(config).generateCase(payload).catch((e) => e);
+    expect(err.getStatus()).toBe(504);
+  });
+
+  it("maps an unreachable AI service to 502", async () => {
+    global.fetch = jest.fn().mockRejectedValue(new TypeError("fetch failed")) as any;
+    const err = await new AiClientService(config).generateCase(payload).catch((e) => e);
+    expect(err.getStatus()).toBe(502);
+  });
+});

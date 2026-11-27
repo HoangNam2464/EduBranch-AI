@@ -148,6 +148,7 @@ const router = createBrowserRouter([
       { path: A.COURSES, element: <AdminCoursesPage /> },
       { path: A.CASES, element: <AdminCasesPage /> },
       { path: A.RUBRIC, element: <AdminRubricPage /> },
+      { path: A.CASE_RUBRIC, element: <AdminRubricPage /> },
       { path: A.LOGS, element: <AdminLogsPage /> },
       { path: A.AI_SERVICE, element: <AdminAiConfigPage /> },
       { path: A.SETTINGS, element: <AdminSettingsPage /> },
