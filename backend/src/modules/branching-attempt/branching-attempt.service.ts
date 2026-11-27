@@ -6,7 +6,11 @@ import {
   ConflictException,
   Logger,
 } from "@nestjs/common";
+import type { PoolClient } from "pg";
 import { DatabaseService } from "../../common/database/database.service";
+
+/** INV-01: students never act on or see an attempt of a case that is not PUBLISHED. */
+const UNPUBLISHED_CASE_MESSAGE = "This case is not published";
 import { randomUUID } from "crypto";
 import { ChooseOptionDto } from "./dto/choose-option.dto";
 import { SaveReasoningDto } from "./dto/save-reasoning.dto";
@@ -121,7 +125,7 @@ export class BranchingAttemptService {
    */
   async getAttempt(attemptId: string, studentId?: string, isLecturer = false) {
     const attemptRes = await this.db.query(
-      `SELECT a.*, c.title as case_title, c.description as case_description
+      `SELECT a.*, c.title as case_title, c.description as case_description, c.status as case_status
        FROM branching_attempts a
        JOIN cases c ON a.case_id = c.id
        WHERE a.id = $1`,
@@ -136,6 +140,12 @@ export class BranchingAttemptService {
     // Ownership check: If not lecturer, must be owner student
     if (!isLecturer && studentId && attempt.student_id !== studentId) {
       throw new ForbiddenException("You do not have permission to view this attempt");
+    }
+
+    // INV-01 (D5, PO 2026-11-27): a student sees an attempt only while its case is PUBLISHED. A case with
+    // attempts cannot leave PUBLISHED (CaseService.updateCaseStatus), so this only guards older data.
+    if (!isLecturer && attempt.case_status !== "PUBLISHED") {
+      throw new ForbiddenException(UNPUBLISHED_CASE_MESSAGE);
     }
 
     // Fetch steps taken
@@ -263,6 +273,8 @@ export class BranchingAttemptService {
         throw new ForbiddenException("You do not have permission to modify this attempt");
       }
 
+      await this.assertCasePublished(client, attempt.case_id);
+
       if (attempt.is_completed) {
         throw new BadRequestException("This attempt has already reached its terminal outcome");
       }
@@ -352,7 +364,7 @@ export class BranchingAttemptService {
       await client.query("BEGIN");
 
       const attemptRes = await client.query(
-        "SELECT student_id, is_completed FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        "SELECT student_id, case_id, is_completed FROM branching_attempts WHERE id = $1 FOR UPDATE",
         [attemptId],
       );
       if (attemptRes.rows.length === 0) {
@@ -362,6 +374,8 @@ export class BranchingAttemptService {
       if (attemptRes.rows[0].student_id !== studentId) {
         throw new ForbiddenException("You do not have permission to modify this attempt");
       }
+
+      await this.assertCasePublished(client, attemptRes.rows[0].case_id);
 
       if (!attemptRes.rows[0].is_completed) {
         throw new BadRequestException("Retrospective reasoning is available only after the attempt is completed");
@@ -409,7 +423,7 @@ export class BranchingAttemptService {
       await client.query("BEGIN");
 
       const attemptRes = await client.query(
-        "SELECT student_id, is_completed, reflection_status FROM branching_attempts WHERE id = $1 FOR UPDATE",
+        "SELECT student_id, case_id, is_completed, reflection_status FROM branching_attempts WHERE id = $1 FOR UPDATE",
         [attemptId],
       );
       if (attemptRes.rows.length === 0) {
@@ -421,6 +435,8 @@ export class BranchingAttemptService {
       if (attempt.student_id !== studentId) {
         throw new ForbiddenException("You do not have permission to modify this attempt");
       }
+
+      await this.assertCasePublished(client, attempt.case_id);
 
       if (!attempt.is_completed) {
         throw new BadRequestException("Cannot submit reflection before reaching a terminal outcome");
@@ -454,15 +470,27 @@ export class BranchingAttemptService {
   }
 
   /**
-   * List all attempts of a student for a case
+   * INV-01 inside an attempt transaction: the case row is read FOR SHARE, so a concurrent status change
+   * (which takes FOR UPDATE on the same row) waits for this transaction instead of interleaving.
+   */
+  private async assertCasePublished(client: { query: PoolClient["query"] }, caseId: string) {
+    const res = await client.query("SELECT status FROM cases WHERE id = $1 FOR SHARE", [caseId]);
+    if (res.rows[0]?.status !== "PUBLISHED") {
+      throw new ForbiddenException(UNPUBLISHED_CASE_MESSAGE);
+    }
+  }
+
+  /**
+   * List all attempts of a student for a case (only while the case is PUBLISHED, like reasoning reads)
    */
   async getAttemptsByCase(caseId: string, studentId: string) {
     const effectiveStudentId = await this.resolveStudent(studentId);
     const res = await this.db.query(
-      `SELECT id, attempt_number, is_completed, reflection_status, started_at, completed_at
-       FROM branching_attempts
-       WHERE case_id = $1 AND student_id = $2
-       ORDER BY attempt_number DESC`,
+      `SELECT a.id, a.attempt_number, a.is_completed, a.reflection_status, a.started_at, a.completed_at
+       FROM branching_attempts a
+       JOIN cases c ON c.id = a.case_id
+       WHERE a.case_id = $1 AND a.student_id = $2 AND c.status = 'PUBLISHED'
+       ORDER BY a.attempt_number DESC`,
       [caseId, effectiveStudentId],
     );
     return res.rows;

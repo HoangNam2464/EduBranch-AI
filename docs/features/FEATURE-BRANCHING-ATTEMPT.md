@@ -61,4 +61,4 @@ CONSTRAINT uq_branching_attempt_number
 
 ## 5. Implementation Status
 **Implemented**
-*(`branching_attempts` `V2` table, attempt initialization/step/terminal/retry APIs, `UNIQUE (student_id, case_id, attempt_number)`, and `UNIQUE (attempt_id, node_id)` are implemented on `develop`; `OPD-003` resume & `OPD-004` retry limit remain `OPEN PO DECISION`.)*
+*(`branching_attempts` `V2` table, attempt initialization/step/terminal/retry APIs, `UNIQUE (student_id, case_id, attempt_number)`, and `UNIQUE (attempt_id, node_id)` are implemented on `develop`. `OPD-003` decided 2026-11-27: an in-progress attempt continues to terminal. D5 (2026-11-27): a `PUBLISHED` case with at least one attempt cannot return to `DRAFT`, and students act on attempts only while the case is `PUBLISHED` (`specs/013-attempt-publish-lock/`). `OPD-004` retry limit remains `OPEN PO DECISION`.)*

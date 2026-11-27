@@ -89,6 +89,7 @@ describe('BranchingAttemptService', () => {
               is_completed: false,
               reflection_status: 'NOT_STARTED',
               case_title: 'Business Case',
+              case_status: 'PUBLISHED',
             },
           ],
         })
@@ -153,6 +154,7 @@ describe('BranchingAttemptService', () => {
             {
               id: 'att-1',
               student_id: 'student-1',
+              case_status: 'PUBLISHED',
               is_completed: false,
               current_node_id: 'n-2',
             },
@@ -191,6 +193,7 @@ describe('BranchingAttemptService', () => {
             {
               id: 'att-1',
               student_id: 'student-1',
+              case_status: 'PUBLISHED',
               is_completed: true,
               outcome_node_id: 'n-3',
             },
@@ -242,7 +245,8 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
           rows: [{ id: 'att-1', student_id: 'student-1', is_completed: true }],
-        }); // FOR UPDATE
+        }) // FOR UPDATE
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE;
 
       await expect(
         service.chooseOption('att-1', 'student-1', { nodeId: 'n-1', selectedOptionId: 'opt-1' }),
@@ -256,7 +260,8 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
           rows: [{ id: 'att-1', student_id: 'student-1', is_completed: false, current_node_id: 'n-2' }],
-        }); // FOR UPDATE
+        }) // FOR UPDATE
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE;
 
       await expect(
         service.chooseOption('att-1', 'student-1', { nodeId: 'n-wrong', selectedOptionId: 'opt-1' }),
@@ -271,6 +276,7 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({
           rows: [{ id: 'att-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }],
         }) // SELECT ... FOR UPDATE
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE
         .mockResolvedValueOnce({
           rows: [{ id: 'opt-1', option_text: 'Choice A', consequence: 'Cons A', next_node_id: 'n-2' }],
         }) // option check
@@ -282,7 +288,7 @@ describe('BranchingAttemptService', () => {
       // getAttempt mock calls:
       mockDbService.query
         .mockResolvedValueOnce({
-          rows: [{ id: 'att-1', student_id: 'student-1', current_node_id: 'n-2', is_completed: false }],
+          rows: [{ id: 'att-1', student_id: 'student-1', case_status: 'PUBLISHED', current_node_id: 'n-2', is_completed: false }],
         })
         .mockResolvedValueOnce({ rows: [] })
         .mockResolvedValueOnce({ rows: [{ id: 'n-2', situation: 'Next Sit', is_terminal: false }] })
@@ -308,6 +314,7 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({
           rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }],
         })
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE
         .mockResolvedValueOnce({
           rows: [{ id: 'opt-1', option_text: 'Choice A', consequence: 'Cons A', next_node_id: 'n-other-case' }],
         })
@@ -331,6 +338,7 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({
           rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }],
         })
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE
         .mockResolvedValueOnce({
           rows: [{ id: 'opt-null', option_text: 'End here', consequence: 'Terminal path', next_node_id: null }],
         })
@@ -340,7 +348,7 @@ describe('BranchingAttemptService', () => {
 
       mockDbService.query
         .mockResolvedValueOnce({
-          rows: [{ id: 'att-1', student_id: 'student-1', current_node_id: 'n-1', outcome_node_id: 'n-1', is_completed: true }],
+          rows: [{ id: 'att-1', student_id: 'student-1', case_status: 'PUBLISHED', current_node_id: 'n-1', outcome_node_id: 'n-1', is_completed: true }],
         })
         .mockResolvedValueOnce({ rows: [] })
         .mockResolvedValueOnce({ rows: [{ id: 'n-1', situation: 'Sit 1', is_terminal: false }] });
@@ -375,7 +383,8 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
           rows: [{ student_id: 'student-1', is_completed: false }],
-        }); // FOR UPDATE
+        }) // FOR UPDATE
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE;
 
       await expect(
         service.saveRetrospectiveReasoning('att-1', 'student-1', { nodeId: 'n-1', reasoningText: 'My reasoning' }),
@@ -391,6 +400,7 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({
           rows: [{ student_id: 'student-1', is_completed: true }],
         }) // FOR UPDATE
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE
         .mockResolvedValueOnce({
           rows: [{ id: 'reasoning-1' }],
         }) // check reasoning exists
@@ -413,7 +423,8 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
           rows: [{ student_id: 'student-1', is_completed: false, reflection_status: 'NOT_STARTED' }],
-        });
+        })
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE;
 
       await expect(
         service.submitReflection('att-1', 'student-1', { reflectionText: 'Reflection text' }),
@@ -427,7 +438,8 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({}) // BEGIN
         .mockResolvedValueOnce({
           rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'SUBMITTED' }],
-        });
+        })
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE;
 
       await expect(
         service.submitReflection('att-1', 'student-1', { reflectionText: 'New overwrite' }),
@@ -442,6 +454,7 @@ describe('BranchingAttemptService', () => {
         .mockResolvedValueOnce({
           rows: [{ student_id: 'student-1', is_completed: true, reflection_status: 'NOT_STARTED' }],
         })
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // INV-01: case FOR SHARE
         .mockResolvedValueOnce({}) // UPDATE reflection
         .mockResolvedValueOnce({}); // COMMIT
 
@@ -451,6 +464,87 @@ describe('BranchingAttemptService', () => {
 
       expect(res.reflectionStatus).toBe('SUBMITTED');
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+    });
+  });
+  describe('INV-01 for existing attempts (D5, PO 2026-11-27)', () => {
+    // A case with attempts cannot leave PUBLISHED (CaseService); these guard older data and any future path.
+    const notPublished = { rows: [{ status: 'DRAFT' }] };
+
+    it('getAttempt: the owner student gets 403 when the case is not PUBLISHED', async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ id: 'att-1', student_id: 'student-1', case_status: 'DRAFT', is_completed: true }],
+      });
+      await expect(service.getAttempt('att-1', 'student-1')).rejects.toThrow(
+        new ForbiddenException('This case is not published'),
+      );
+      expect(mockDbService.query).toHaveBeenCalledTimes(1); // no steps or node text read
+    });
+
+    it('getAttempt: ownership is checked before the case status (no status leak to other students)', async () => {
+      mockDbService.query.mockResolvedValueOnce({
+        rows: [{ id: 'att-1', student_id: 'student-owner', case_status: 'DRAFT' }],
+      });
+      await expect(service.getAttempt('att-1', 'intruder')).rejects.toThrow(
+        new ForbiddenException('You do not have permission to view this attempt'),
+      );
+    });
+
+    it('getAttempt: the lecturer view is not blocked by the student-only rule', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'att-1', student_id: 's', case_status: 'DRAFT', is_completed: true }] })
+        .mockResolvedValueOnce({ rows: [] }); // steps
+      await expect(service.getAttempt('att-1', undefined, true)).resolves.toMatchObject({ id: 'att-1' });
+    });
+
+    it('chooseOption: 403 and ROLLBACK when the case is not PUBLISHED; the case row is read FOR SHARE', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockResolvedValueOnce({
+          rows: [{ id: 'att-1', case_id: 'case-1', student_id: 'student-1', current_node_id: 'n-1', is_completed: false }],
+        })
+        .mockResolvedValueOnce(notPublished);
+      await expect(
+        service.chooseOption('att-1', 'student-1', { nodeId: 'n-1', selectedOptionId: 'opt-1' }),
+      ).rejects.toThrow(new ForbiddenException('This case is not published'));
+      expect(mockDbClient.query).toHaveBeenCalledWith('SELECT status FROM cases WHERE id = $1 FOR SHARE', ['case-1']);
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO student_reasoning'), expect.anything());
+    });
+
+    it('saveRetrospectiveReasoning: 403 and ROLLBACK when the case is not PUBLISHED', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', case_id: 'case-1', is_completed: true }] })
+        .mockResolvedValueOnce(notPublished);
+      await expect(
+        service.saveRetrospectiveReasoning('att-1', 'student-1', { nodeId: 'n-1', reasoningText: 'x' }),
+      ).rejects.toThrow(new ForbiddenException('This case is not published'));
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE student_reasoning'), expect.anything());
+    });
+
+    it('submitReflection: 403 and ROLLBACK when the case is not PUBLISHED', async () => {
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ student_id: 'student-1', case_id: 'case-1', is_completed: true, reflection_status: 'NOT_STARTED' }] })
+        .mockResolvedValueOnce(notPublished);
+      await expect(
+        service.submitReflection('att-1', 'student-1', { reflectionText: 'x' }),
+      ).rejects.toThrow(new ForbiddenException('This case is not published'));
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE branching_attempts'), expect.anything());
+    });
+
+    it('getAttemptsByCase: lists attempts only of a PUBLISHED case', async () => {
+      mockDbService.query
+        .mockResolvedValueOnce({ rows: [{ id: 'student-1' }] }) // resolveStudent
+        .mockResolvedValueOnce({ rows: [] });
+      await service.getAttemptsByCase('case-1', 'student-1');
+      expect(mockDbService.query).toHaveBeenLastCalledWith(
+        expect.stringContaining("c.status = 'PUBLISHED'"),
+        ['case-1', 'student-1'],
+      );
     });
   });
 });

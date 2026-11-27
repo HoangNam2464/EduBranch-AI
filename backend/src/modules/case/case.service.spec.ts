@@ -401,11 +401,17 @@ describe('CaseService', () => {
             lecturer_id: 'lecturer-1',
           }],
         })
-        .mockResolvedValueOnce({ rows: [{ count: '2' }] }) // terminal count = 2
-        .mockResolvedValueOnce({ rows: [] }); // update
+        .mockResolvedValueOnce({ rows: [{ count: '2' }] }); // terminal count = 2
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ status: 'APPROVED' }] }) // case row FOR UPDATE
+        .mockResolvedValueOnce({}) // UPDATE
+        .mockResolvedValueOnce({}); // COMMIT
 
       const result = await service.updateCaseStatus('case-1', 'lecturer-1', 'PUBLISHED');
       expect(result).toEqual({ id: 'case-1', status: 'PUBLISHED' });
+      expect(mockDbClient.query).toHaveBeenCalledWith('SELECT status FROM cases WHERE id = $1 FOR UPDATE', ['case-1']);
+      expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
     });
 
     it('should allow valid transition to PUBLISHED for REVIEW_STUDY case without root node when context and problem exist', async () => {
@@ -420,8 +426,12 @@ describe('CaseService', () => {
             problem_text: 'What turnaround strategy should the executive committee adopt?',
             lecturer_id: 'lecturer-1',
           }],
-        })
-        .mockResolvedValueOnce({ rows: [] }); // update
+        });
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ status: 'APPROVED' }] }) // case row FOR UPDATE
+        .mockResolvedValueOnce({}) // UPDATE
+        .mockResolvedValueOnce({}); // COMMIT
 
       const result = await service.updateCaseStatus('case-review-1', 'lecturer-1', 'PUBLISHED');
       expect(result).toEqual({ id: 'case-review-1', status: 'PUBLISHED' });
@@ -461,6 +471,69 @@ describe('CaseService', () => {
       await expect(
         service.updateCaseStatus('case-review-1', 'lecturer-1', 'PUBLISHED'),
       ).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('D5: a published case with attempts cannot return to DRAFT (PO 2026-11-27, INV-01)', () => {
+    const publishedRow = { rows: [{ id: 'case-1', status: 'PUBLISHED', learning_mode: 'BRANCHING_STUDY', root_node_id: 'n-1', lecturer_id: 'lecturer-1' }] };
+
+    it('rejects PUBLISHED → DRAFT with 409 when the case has at least one attempt, and changes nothing', async () => {
+      mockDbService.query.mockResolvedValueOnce(publishedRow);
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // FOR UPDATE
+        .mockResolvedValueOnce({ rows: [{ count: 1 }] }) // attempts
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'DRAFT')).rejects.toThrow(
+        new ConflictException('A published case that students have attempted cannot return to DRAFT'),
+      );
+      expect(mockDbClient.query).toHaveBeenCalledWith(
+        'SELECT COUNT(*)::int AS count FROM branching_attempts WHERE case_id = $1',
+        ['case-1'],
+      );
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases'), expect.anything());
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.release).toHaveBeenCalled();
+      expect(mockAuditService.record).not.toHaveBeenCalled();
+    });
+
+    it('allows PUBLISHED → DRAFT when the case has no attempt (case stays editable as before)', async () => {
+      mockDbService.query.mockResolvedValueOnce(publishedRow);
+      mockDbClient.query
+        .mockResolvedValueOnce({}) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ status: 'PUBLISHED' }] }) // FOR UPDATE
+        .mockResolvedValueOnce({ rows: [{ count: 0 }] }) // attempts
+        .mockResolvedValueOnce({}) // UPDATE
+        .mockResolvedValueOnce({}); // COMMIT
+
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'DRAFT')).resolves.toEqual({ id: 'case-1', status: 'DRAFT' });
+      expect(mockDbClient.query).toHaveBeenCalledWith('UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2', ['DRAFT', 'case-1']);
+      expect(mockAuditService.record).toHaveBeenCalledWith(expect.objectContaining({ type: 'CASE_STATUS_CHANGED', meta: { from: 'PUBLISHED', to: 'DRAFT' } }));
+    });
+
+    it('does not count attempts for other transitions (e.g. APPROVED → DRAFT)', async () => {
+      mockDbService.query.mockResolvedValueOnce({ rows: [{ ...publishedRow.rows[0], status: 'APPROVED' }] });
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ status: 'APPROVED' }] })
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({});
+
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'DRAFT')).resolves.toEqual({ id: 'case-1', status: 'DRAFT' });
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('branching_attempts'), expect.anything());
+    });
+
+    it('returns 409 and does not overwrite when the status changed between the check and the lock', async () => {
+      mockDbService.query.mockResolvedValueOnce(publishedRow);
+      mockDbClient.query
+        .mockResolvedValueOnce({})
+        .mockResolvedValueOnce({ rows: [{ status: 'DRAFT' }] }) // someone else changed it meanwhile
+        .mockResolvedValueOnce({}); // ROLLBACK
+
+      await expect(service.updateCaseStatus('case-1', 'lecturer-1', 'DRAFT')).rejects.toThrow(ConflictException);
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('UPDATE cases'), expect.anything());
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
     });
   });
 
