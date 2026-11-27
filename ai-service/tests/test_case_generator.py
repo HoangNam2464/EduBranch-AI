@@ -172,7 +172,10 @@ async def test_generation_provider_timeout_exhaustion(sample_request):
     """AC-4, AC-5, AC-8: Provider times out on all 3 attempts -> GenerationTimeoutError."""
     mock_provider = MagicMock()
 
+    calls = []
+
     async def slow_generation(*args, **kwargs):
+        calls.append(1)
         await asyncio.sleep(0.5)
         return {}
 
@@ -190,6 +193,8 @@ async def test_generation_provider_timeout_exhaustion(sample_request):
         await generator.generate(sample_request)
 
     assert "timed out after 3 attempts" in str(exc_info.value)
+    # QA-007: never more than 3 provider calls per generation operation.
+    assert len(calls) == 3
 
 
 @pytest.mark.asyncio
@@ -239,6 +244,8 @@ async def test_generation_transient_error_exhaustion_raises_structured_error(sam
         await generator.generate(sample_request)
 
     assert "transient retries exhausted after 3 attempts" in str(exc_info.value)
+    # QA-007: never more than 3 provider calls per generation operation.
+    assert mock_provider.generate_structured.call_count == 3
 
 
 @pytest.mark.asyncio

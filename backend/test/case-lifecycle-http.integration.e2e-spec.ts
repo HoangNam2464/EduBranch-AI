@@ -2,7 +2,7 @@ import request from "supertest";
 import { Pool } from "pg";
 import { randomUUID } from "crypto";
 import { Test } from "@nestjs/testing";
-import { INestApplication, ValidationPipe, BadGatewayException } from "@nestjs/common";
+import { INestApplication, ValidationPipe } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { PassportModule } from "@nestjs/passport";
 import { ConfigService } from "@nestjs/config";
@@ -30,7 +30,8 @@ import { BranchingAttemptService } from "../src/modules/branching-attempt/branch
  *
  * Real HTTP: supertest → global JwtAuthGuard + RolesGuard (real JwtStrategy and AuthService, tokens
  * signed with JwtService) → ValidationPipe → real controllers → real services → real SQL on PostgreSQL 16.
- * Only the AI service is replaced (AiClientService), because the gateway must never depend on it in tests.
+ * The real AiClientService is used too; only its outgoing HTTP call to the AI service (`fetch`) is stubbed, so the
+ * status a lecturer gets when the AI service fails is the real one.
  * Uses its own throwaway database `edubranch_case_lifecycle_it`; CREATE/DROP go through the `postgres`
  * maintenance database, so this suite never connects to the dev database `edubranch_ai`.
  */
@@ -48,7 +49,12 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
   let pool: Pool | undefined;
   let app: INestApplication | undefined;
   let reachable = false;
-  const ai = { generateCase: jest.fn() };
+  const realFetch = global.fetch;
+  const fetchStub = jest.fn();
+  const aiCalls = () => fetchStub.mock.calls.filter(([url]) => String(url).endsWith("/internal/v1/generation/generate-case")).length;
+  const aiReturns = (body: unknown) =>
+    fetchStub.mockImplementation(async () => ({ ok: true, status: 200, json: async () => body, text: async () => JSON.stringify(body) }));
+  const AI_TIMEOUT_MS = 300;
   const jwt = new JwtService({ secret: SECRET });
 
   const u = {
@@ -56,9 +62,10 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
     lectB: randomUUID(),
     stu: randomUUID(),
     admin: randomUUID(),
+    stuOut: randomUUID(),
   };
   const courseA = randomUUID();
-  const auth: Record<keyof typeof u, string> = { lectA: "", lectB: "", stu: "", admin: "" };
+  const auth: Record<keyof typeof u, string> = { lectA: "", lectB: "", stu: "", admin: "", stuOut: "" };
 
   const q = (t: string, p: unknown[] = []) => pool!.query(t, p);
   const http = () => request(app!.getHttpServer());
@@ -127,9 +134,12 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
         CourseService,
         BranchingAttemptService,
         { provide: JwtService, useValue: jwt },
-        { provide: ConfigService, useValue: { get: (k: string, d?: any) => (k === "JWT_SECRET" ? SECRET : d) } },
+        {
+          provide: ConfigService,
+          useValue: { get: (k: string, d?: any) => (k === "JWT_SECRET" ? SECRET : k === "AI_SERVICE_TIMEOUT_MS" ? AI_TIMEOUT_MS : d) },
+        },
         { provide: DatabaseService, useValue: db },
-        { provide: AiClientService, useValue: ai },
+        AiClientService,
       ],
     }).compile();
     app = moduleRef.createNestApplication();
@@ -144,6 +154,7 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       ["lectB", "LECTURER"],
       ["stu", "STUDENT"],
       ["admin", "ADMIN"],
+      ["stuOut", "STUDENT"],
     ];
     for (const [key, role] of people) {
       await q(`INSERT INTO users (id, email, password_hash, full_name, role) VALUES ($1, $2, 'h', $3, $4)`, [
@@ -163,6 +174,7 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
   }, 60000);
 
   afterAll(async () => {
+    global.fetch = realFetch;
     await app?.close().catch(() => undefined);
     if (pool) await pool.end().catch(() => undefined);
     if (reachable) {
@@ -175,7 +187,13 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
     }
   });
 
-  beforeEach(() => ai.generateCase.mockReset());
+  beforeEach(() => {
+    fetchStub.mockReset();
+    global.fetch = fetchStub as any;
+  });
+  afterEach(() => {
+    global.fetch = realFetch;
+  });
 
   const itDb = (name: string, fn: () => Promise<void>) =>
     it(name, async () => {
@@ -199,6 +217,8 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
         expect(attempts.rows[0].n).toBe(0);
 
         const mine = await http().get(`/api/v1/cases/${c.caseId}/attempts`).set("Authorization", auth.stu);
+        expect(mine.status).toBe(200);
+        expect(mine.body.data).toEqual([]);
         expect(JSON.stringify(mine.body)).not.toContain(c.marker);
         expect(await statusOf(c.caseId)).toBe(status);
       });
@@ -217,6 +237,15 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       }
       const start = await http().post(`/api/v1/cases/${c.caseId}/branching-attempts`).set("Authorization", auth.stu);
       expect(start.status).toBe(201);
+    });
+
+    itDb("a student who did not join the course: a direct link to a PUBLISHED case works, a DRAFT one is 403", async () => {
+      const pub = await seedCase("PUBLISHED");
+      const draft = await seedCase("DRAFT");
+      expect((await http().get(`/api/v1/cases/${pub.caseId}`).set("Authorization", auth.stuOut)).status).toBe(200);
+      const denied = await http().get(`/api/v1/cases/${draft.caseId}`).set("Authorization", auth.stuOut);
+      expect(denied.status).toBe(403);
+      expect(JSON.stringify(denied.body)).not.toContain(draft.marker);
     });
 
     itDb("the course case list shows the student PUBLISHED cases only", async () => {
@@ -298,6 +327,28 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
         expect(audit.rows[0].n).toBe(0);
       });
     }
+
+    for (const from of ["REVIEWED", "APPROVED"]) {
+      itDb(`allows the revert ${from} → DRAFT (200), persisted and audited`, async () => {
+        const c = await seedCase(from);
+        const res = await patch(c.caseId, auth.lectA, "DRAFT");
+        expect(res.status).toBe(200);
+        expect(await statusOf(c.caseId)).toBe("DRAFT");
+        const audit = await q(`SELECT meta->>'from' AS f, meta->>'to' AS t FROM audit_events WHERE target_id = $1`, [c.caseId]);
+        expect(audit.rows).toEqual([{ f: from, t: "DRAFT" }]);
+      });
+    }
+
+    itDb("a request for the current status is a no-op: 200, unchanged, no audit row", async () => {
+      for (const status of ["DRAFT", "REVIEWED", "APPROVED", "PUBLISHED"]) {
+        const c = await seedCase(status);
+        const res = await patch(c.caseId, auth.lectA, status);
+        expect(res.status).toBe(200);
+        expect(await statusOf(c.caseId)).toBe(status);
+        const audit = await q(`SELECT COUNT(*)::int AS n FROM audit_events WHERE target_id = $1`, [c.caseId]);
+        expect(audit.rows[0].n).toBe(0);
+      }
+    });
 
     itDb("refuses an unknown status value (400) before any service code runs", async () => {
       const c = await seedCase("DRAFT");
@@ -405,6 +456,15 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       expect(await optionsOf(c.caseId)).toEqual(before);
     });
 
+    itDb("a decision node with a single option is refused by the topology check (400); graph unchanged", async () => {
+      const c = await seedCase("DRAFT");
+      const before = await optionsOf(c.caseId);
+      const res = await putNode(c.caseId, c.n.mid, [{ id: c.o.midToEnd1, text: "Only", consequence: "One", nextNodeId: c.n.end }]);
+      expect(res.status).toBe(400);
+      expect(res.body.message).toContain("between 2 and 4 options");
+      expect(await optionsOf(c.caseId)).toEqual(before);
+    });
+
     itDb("more than 4 options is refused by validation (400); graph unchanged", async () => {
       const c = await seedCase("DRAFT");
       const before = await optionsOf(c.caseId);
@@ -438,7 +498,7 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
     // Root is index 0, so its options point forward: before the fix this failed with a 500
     // (case_options.next_node_id FK) and no AI-generated tree with a forward link could be stored.
     itDb("a valid AI tree is stored as DRAFT, even if the AI payload claims another status", async () => {
-      ai.generateCase.mockResolvedValue({
+      aiReturns({
         title: "Generated",
         description: "d",
         status: "PUBLISHED",
@@ -469,16 +529,37 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
         { from_index: 0, to_index: 1 },
         { from_index: 0, to_index: 1 },
       ]);
-      expect(ai.generateCase).toHaveBeenCalledTimes(1);
+      expect(aiCalls()).toBe(1);
     });
 
-    itDb("an AI failure (502) stores no case and calls the AI service once from the gateway", async () => {
+    itDb("an AI service error (503) gives the lecturer 502 without the AI detail, stores no case, one call", async () => {
       const before = await caseCount();
-      ai.generateCase.mockRejectedValue(new BadGatewayException("AI service unavailable"));
+      fetchStub.mockImplementation(async () => ({ ok: false, status: 503, text: async () => "provider overloaded: secret detail" }));
       const res = await generate();
       expect(res.status).toBe(502);
+      expect(JSON.stringify(res.body)).not.toContain("secret detail");
       expect(await caseCount()).toBe(before);
-      expect(ai.generateCase).toHaveBeenCalledTimes(1);
+      expect(aiCalls()).toBe(1);
+    });
+
+    itDb("an AI service that does not answer in time gives 504 and stores no case", async () => {
+      const before = await caseCount();
+      fetchStub.mockImplementation(
+        (_url: string, init: { signal: AbortSignal }) =>
+          new Promise((_resolve, reject) =>
+            init.signal.addEventListener("abort", () => reject(Object.assign(new Error("aborted"), { name: "AbortError" }))),
+          ),
+      );
+      const res = await generate();
+      expect(res.status).toBe(504);
+      expect(await caseCount()).toBe(before);
+    });
+
+    itDb("an unreachable AI service gives 502 and stores no case", async () => {
+      const before = await caseCount();
+      fetchStub.mockRejectedValue(new TypeError("fetch failed"));
+      expect((await generate()).status).toBe(502);
+      expect(await caseCount()).toBe(before);
     });
 
     itDb("an AI tree with an invalid root or option index is refused (502) and nothing is stored", async () => {
@@ -493,7 +574,7 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
         },
       ]) {
         const before = await caseCount();
-        ai.generateCase.mockResolvedValue({ title: "Broken", description: "d", ...bad });
+        aiReturns({ title: "Broken", description: "d", ...bad });
         const res = await generate();
         expect(res.status).toBe(502);
         expect(await caseCount()).toBe(before);
@@ -503,14 +584,12 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
     });
 
     itDb("a student or a non-owner lecturer cannot generate (403); the AI service is not called", async () => {
-      for (const who of [auth.stu, auth.lectB]) {
-        const res = await http()
-          .post(`/api/v1/cases/generate`)
-          .set("Authorization", who)
-          .send({ courseId: courseA, materialIds: [randomUUID()] });
-        expect([403, 404]).toContain(res.status);
-      }
-      expect(ai.generateCase).not.toHaveBeenCalled();
+      const send = (who: string) =>
+        http().post(`/api/v1/cases/generate`).set("Authorization", who).send({ courseId: courseA, materialIds: [randomUUID()] });
+      // Student: refused by the role guard. Other lecturer: the course is not theirs and is reported as not found.
+      expect((await send(auth.stu)).status).toBe(403);
+      expect((await send(auth.lectB)).status).toBe(404);
+      expect(aiCalls()).toBe(0);
     });
   });
 });
