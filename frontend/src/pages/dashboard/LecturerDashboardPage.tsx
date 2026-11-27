@@ -16,12 +16,14 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Button, FilterControl, MetricCard, StatusTabs, cx } from "@/components/ds";
-import { ErrorState, SkeletonLine, SkeletonRegion } from "@/components/feedback";
+import { ErrorState, SkeletonLine, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
 import { PATHS, buildPath } from "@/routes/paths";
 import { addMonths, buildMonthWeeks, startOfMonth } from "@/pages/profile/components/calendar";
 import { MonthStepper } from "@/pages/profile/components/MonthStepper";
-import { countCases, describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo } from "@/pages/statistics/useLecturerCourseCases";
+import { describeTodo, lecturerTodos, useLecturerCourseCases, type LecturerTodo } from "@/pages/statistics/useLecturerCourseCases";
 import { groupCasesByDay } from "./calendarGrouping";
+import { useLecturerDashboard } from "./useLecturerDashboard";
+import type { PendingReviewItem } from "@/services/mappers/lecturerDashboard";
 import { usePrefersReducedMotion } from "@/pages/landing/usePrefersReducedMotion";
 import type { Case } from "@/types";
 
@@ -33,7 +35,9 @@ import type { Case } from "@/types";
  *    (fills) + side panels 259 wide, gap 20.
  *  - Quick Actions Hub: 4 shortcut cards for lecturer workflows.
  *  - Active Courses Portfolio: real courses, case counts and material status.
- * Data: `GET /courses` + `GET /courses/:id/cases` + `GET /courses/:id/materials` (cached 60s).
+ * Data: the four metric cards and the pending-review panel come from the backend aggregate
+ * `GET /lecturer/dashboard` (BE-030, FE-027 AC-1). The calendar, to-do list and course portfolio list
+ * real items from `GET /courses` + `GET /courses/:id/cases` + `GET /courses/:id/materials` (cached 60s).
  */
 
 const MONTH_VIEW_MIN_WEEKS = 5;
@@ -86,6 +90,45 @@ function TodoList({ todos }: { todos: LecturerTodo[] }) {
                     {desc.meta}
                   </p>
                 </div>
+              </div>
+              <ChevronRight size={16} className="shrink-0 text-ink-muted group-hover:text-primary transition-colors" />
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function initialsOf(name: string): string {
+  const words = name.split(" ").filter(Boolean);
+  return words.slice(-2).map((w) => w[0]).join("").toUpperCase() || "—";
+}
+
+function PendingReviews({ items }: { items: PendingReviewItem[] }) {
+  const { t } = useTranslation();
+  if (items.length === 0) return <NoteRow>{t("g4.dashboard.pendingEmpty")}</NoteRow>;
+  return (
+    <ul className="flex flex-col gap-2">
+      {items.map((item) => {
+        const at = new Date(item.submittedAt);
+        return (
+          <li key={item.submissionId}>
+            <Link
+              to={buildPath(PATHS.LECTURER.FEEDBACK_DETAIL, { submissionId: item.submissionId })}
+              className="group flex items-center justify-between gap-3 rounded-eb-lg bg-canvas px-3.5 py-3 hover:bg-surface-hover transition-colors"
+            >
+              {/* Figma 07.1: initials avatar · student name · case and submission time. */}
+              <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-eb-md bg-primary-subtle text-[12px] font-semibold text-primary">
+                {initialsOf(item.studentName)}
+              </span>
+              <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                <p className="truncate text-[14px] leading-5 font-medium text-ink group-hover:text-primary transition-colors" title={item.caseTitle}>
+                  {item.studentName || "—"}
+                </p>
+                <p className="truncate text-[12px] leading-4 text-ink-secondary" title={item.caseTitle}>
+                  {t("g4.dashboard.pendingItemMeta", { caseTitle: item.caseTitle || "—", time: isValidDate(at) ? formatDateTime(at) : "—" })}
+                </p>
               </div>
               <ChevronRight size={16} className="shrink-0 text-ink-muted group-hover:text-primary transition-colors" />
             </Link>
@@ -185,6 +228,8 @@ export function LecturerDashboardPage() {
   const { t } = useTranslation();
   const reducedMotion = usePrefersReducedMotion();
   const { state, retry } = useLecturerCourseCases({ withMaterials: true });
+  const { state: dashState, retry: retryDash } = useLecturerDashboard();
+  const dash = dashState.status === "ready" ? dashState.data : null;
   const [today] = useState(() => new Date());
   const [month, setMonth] = useState(() => startOfMonth(today));
   const [mode, setMode] = useState("ALL");
@@ -201,21 +246,30 @@ export function LecturerDashboardPage() {
       .filter((c) => mode === "ALL" || c.learningMode === mode);
   }, [ready, course, mode]);
 
-  if (state.status === "error") {
+  if (state.status === "error" || dashState.status === "error") {
+    const failed = state.status === "error" ? state : dashState.status === "error" ? dashState : null;
     return (
       <div className="flex flex-1 flex-col pb-5">
-        <ErrorState title={t("g4.dashboard.loadError")} onRetry={retry} errorCode={state.code} occurredAt={state.at} />
+        <ErrorState
+          title={t("g4.dashboard.loadError")}
+          onRetry={() => {
+            if (state.status === "error") retry();
+            if (dashState.status === "error") retryDash();
+          }}
+          errorCode={failed?.code}
+          occurredAt={failed?.at}
+        />
       </div>
     );
   }
 
   const metricValue = (value: number | null) => (value === null ? <SkeletonLine width={16} /> : value);
   const metrics = [
-    { icon: BookOpen, stroke: 1.7, label: t("g4.dashboard.metrics.courses"), value: metricValue(ready ? ready.length : null) },
-    { icon: Clock, stroke: 1.5, label: t("g4.dashboard.metrics.published"), value: metricValue(ready ? countCases(ready, ["PUBLISHED"]) : null) },
-    { icon: SquarePen, stroke: 1.5, label: t("g4.dashboard.metrics.drafts"), value: metricValue(ready ? countCases(ready, ["DRAFT", "REVIEWED"]) : null) },
-    // No lecturer submissions endpoint yet: the count is unknown, never 0.
-    { icon: FileText, stroke: 1.7, label: t("g4.dashboard.metrics.pending"), value: t("g4.common.unknownValue") },
+    // Counts from the backend aggregate (BE-030), not computed in the browser (FE-027 AC-1).
+    { icon: BookOpen, stroke: 1.7, label: t("g4.dashboard.metrics.courses"), value: metricValue(dash ? dash.courses : null) },
+    { icon: Clock, stroke: 1.5, label: t("g4.dashboard.metrics.published"), value: metricValue(dash ? dash.publishedCases : null) },
+    { icon: SquarePen, stroke: 1.5, label: t("g4.dashboard.metrics.drafts"), value: metricValue(dash ? dash.draftCases : null) },
+    { icon: FileText, stroke: 1.7, label: t("g4.dashboard.metrics.pending"), value: metricValue(dash ? dash.pendingReviews : null) },
   ];
 
   const quickActions: {
@@ -305,21 +359,15 @@ export function LecturerDashboardPage() {
         <div className="flex items-start gap-5">
           <MonthView month={month} today={today} cases={filteredCases} />
           <div className="flex w-[259px] shrink-0 flex-col gap-4">
-            <SidePanel title={t("g4.dashboard.pendingTitle")}>
-              <div className="flex flex-col gap-2 rounded-eb-lg bg-canvas px-3.5 py-3 text-[12px] leading-4 text-ink-secondary">
-                <div className="flex items-center gap-2 font-medium text-ink">
-                  <Clock size={16} className="text-primary shrink-0" />
-                  <span>{t("g4.dashboard.trackSubmissions")}</span>
-                </div>
-                <p>{t("g4.dashboard.pendingUnavailable")}</p>
-                <Link
-                  to={PATHS.LECTURER.FEEDBACK}
-                  className="mt-1 inline-flex items-center gap-1 font-medium text-primary hover:underline"
-                >
-                  <span>{t("g4.dashboard.openSubmissionsQueue")}</span>
-                  <ChevronRight size={14} />
-                </Link>
-              </div>
+            <SidePanel title={dash ? `${t("g4.dashboard.pendingTitle")} (${dash.pendingReviews})` : t("g4.dashboard.pendingTitle")}>
+              {dash ? (
+                <PendingReviews items={dash.pendingItems} />
+              ) : (
+                <SkeletonRegion className="flex flex-col gap-2 rounded-eb-lg bg-canvas px-3.5 py-3">
+                  <SkeletonLine width="70%" />
+                  <SkeletonLine width="45%" size="sm" />
+                </SkeletonRegion>
+              )}
             </SidePanel>
             <SidePanel title={t("g4.dashboard.todoTitle")}>
               {ready ? (

@@ -40,8 +40,6 @@
 | `g1.landing.modes.review.receiveFeedback` | Nhận phản hồi Giảng viên → | Receive lecturer feedback → | PROPOSED | — | — | PR-54-FIX |
 | `g4.calendar.today` | Hôm nay | Today | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.moreCases` | +{{count}} case khác | +{{count}} other cases | PROPOSED | — | — | PR-54-FIX |
-| `g4.dashboard.trackSubmissions` | Theo dõi bài nộp | Track submissions | PROPOSED | — | — | PR-54-FIX |
-| `g4.dashboard.openSubmissionsQueue` | Mở hàng đợi bài nộp | Open submissions queue | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.access` | Truy cập | Access | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.courseSectionFallback` | HỌC PHẦN | COURSE | PROPOSED | — | — | PR-54-FIX |
 | `g4.dashboard.statusActive` | Đang giảng dạy | Active | PROPOSED | — | — | PR-54-FIX |
@@ -689,3 +687,6 @@
 | `g6.logs.reasons.ACCOUNT_LOCKED` | Tài khoản đang bị khóa | Account is locked | PROPOSED | — | — | FE-032 R5 |
 | `g3.list.nodes_one` | {{count}} nút | {{count}} node | PROPOSED | — | — | FE-032 R5 |
 | `g3.list.nodes_other` | {{count}} nút | {{count}} nodes | PROPOSED | — | — | FE-032 R5 |
+| `g4.dashboard.pendingEmpty` | Không có bài nộp nào đang chờ bạn phản hồi. | No submissions are waiting for your feedback. | PROPOSED | — | — | FE-027 |
+| `g4.dashboard.pendingItemMeta` | {{caseTitle}} · {{time}} | {{caseTitle}} · {{time}} | PROPOSED | — | — | FE-027 |
+| `g4.dashboard.pendingTitle` | Bài nộp chờ bạn phản hồi | Submissions awaiting your feedback | PROPOSED | — | — | FE-027 |
