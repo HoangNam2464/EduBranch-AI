@@ -26,16 +26,15 @@
 | **Cột "Mã" `10.9`** | Chấp nhận ẩn cột "Mã" dưới 1280px (mã vẫn hiện trong tiêu đề hộp thoại chi tiết) | 2026-11-27 | — |
 | **KPI "Lượt đăng nhập" `10.9`** | KPI chỉ đếm `LOGIN_SUCCEEDED`; bộ lọc "Đăng nhập" gồm cả thành công và thất bại | 2026-11-27 | — |
 | **N1** | Chấp nhận ô thời gian trên `10.9` xuống 2 dòng ở 1024px; ghi nhận lỗi Low, không chặn MVP | 2026-11-27 | Backlog EBA-114 |
+| **D5 + OPD-003** | Case đã có ít nhất một attempt không được chuyển `PUBLISHED` → `DRAFT`; case chưa có attempt vẫn chỉnh sửa như hiện tại. Attempt đang làm dở được tiếp tục đến terminal; attempt đã hoàn thành và reflection vẫn xem lại được | 2026-11-27 | Triển khai `specs/013-attempt-publish-lock/` (EBA-113); chi tiết PSD-11 |
+| **OPD-007** | Chức năng versioning case sau khi xuất bản để **Post-MVP**. Trong MVP, case đã có attempt bị khóa theo D5 (không về `DRAFT`, nên không sửa được) | 2026-11-27 | — |
 
 ### B. Đang chờ PO quyết định (`[OPEN PO DECISION]` / `[UNRESOLVED]`)
 | Mã | Vấn đề còn mở | Màn / Module chịu ảnh hưởng |
 |---|---|---|
 | **OPD-002 / D-06** | Quy tắc bắt buộc lập luận ở quyết định then chốt & cách xác định điểm then chốt | `05.4`, `03.4`, `FEATURE-BRANCHING-STUDY` |
-| **OPD-003** | Hành vi khi mở lại lượt làm Branching đang làm dở (tiếp tục hay hủy) | `05.1`, `branching-attempt/` |
-| **D5** (2026-11-26) | Attempt khi case rời `PUBLISHED` (INV-01 phía attempt). Ba trường hợp: lượt đang làm dở, lượt đã hoàn thành, mở lại lịch sử / kết quả / reflection. Phải nhất quán với OPD-003 và OPD-007. Chi tiết: PSD-11. Jira EBA-113 (To Do, label `blocked-on-d5`) | `branching-attempt/`, `case/`, `05.x`, `03.6` |
 | **OPD-004** | Giới hạn số lượt làm lại tối đa (nếu có) | `05.9`, `05.10` |
 | **OPD-005** | AI Challenge Support mở dạng Modal hay trang riêng (**HOLD** frame `05.5`, `05.6`) | `05.4`, `05.5`, `05.6`, `SITE-ARCHITECTURE` |
-| **OPD-007** | Sửa/phiên bản hóa case sau khi đã `PUBLISHED` khi có bài làm | `03.6`, `FEATURE-CASE-REVIEW-AND-PUBLISHING` |
 | **OPD-008** | Cơ chế xác minh/kích hoạt tài khoản giảng viên (**HOLD** email kích hoạt `26:148`) | `00.5`, `10.3`, `auth/` |
 | **OPD-010** | Có nút gợi ý phản hồi bằng AI trên màn `04.2` hay không | `04.2`, `FEATURE-LECTURER-FEEDBACK` |
 | **D-04** | Lưu hay không trường Mã số sinh viên trên bảng `users` | `00.4`, `04.1`, `V1__init_schema.sql` |
@@ -121,8 +120,8 @@ Vì vậy tài liệu dừng ở bước phân loại và chờ PO.
 |---|---|---|
 | Thông báo kích hoạt giảng viên | `1:122` | OPD-008 |
 | Nội dung xóa khóa học | `86:2682` | OPD-014 — **ĐÃ QUYẾT ĐỊNH 2026-11-16: lưu trữ mềm** (hộp thoại lưu trữ) |
-| Sửa case sau xuất bản | `88:2343` | OPD-007 |
-| Tiếp tục lượt làm dở | `1:972` | OPD-003 |
+| Sửa case sau xuất bản | `88:2343` | OPD-007 — **ĐÃ QUYẾT ĐỊNH 2026-11-27: versioning để Post-MVP**; case có attempt bị khóa (D5) |
+| Tiếp tục lượt làm dở | `1:972` | OPD-003 — **ĐÃ QUYẾT ĐỊNH 2026-11-27: tiếp tục đến terminal** |
 | Giới hạn số lượt | `86:2712` | OPD-004 |
 | Cách xác định quyết định then chốt | `1:619` | OPD-002, D-06 |
 | Gợi ý phản hồi bằng AI | `1:1702` | OPD-010 |
@@ -132,7 +131,8 @@ Vì vậy tài liệu dừng ở bước phân loại và chờ PO.
 | Sửa khóa học (có route, không có frame) | — | PO xác nhận có trong MVP |
 | Phạm vi responsive | Tất cả | PO quyết |
 
-### PSD-11 — D5: attempt khi case rời `PUBLISHED` (`OPEN PO DECISION`, nêu ngày 2026-11-26)
+### PSD-11 — D5: attempt khi case rời `PUBLISHED` (ĐÃ QUYẾT ĐỊNH 2026-11-27)
+**ĐÃ QUYẾT ĐỊNH 2026-11-27 (PO):** Case đã có ít nhất một attempt không được chuyển `PUBLISHED` → `DRAFT`; case chưa có attempt vẫn chỉnh sửa như hiện tại. Attempt đang làm dở được tiếp tục đến terminal; attempt đã hoàn thành và reflection vẫn xem lại được. OPD-007 (versioning) để Post-MVP. Triển khai: `specs/013-attempt-publish-lock/`, Jira EBA-113. Phần dưới là bản tóm tắt trình PO ngày 2026-11-27, giữ lại để truy nguyên.
 Mục này chỉ tóm tắt dữ kiện và các lựa chọn để PO quyết. **Không có lựa chọn tạm thời nào được triển khai** (AGENTS rule 5; policy 02 §5).
 
 **Hiện trạng trên `develop` `cf3a6a5`:**
@@ -155,7 +155,7 @@ Mục này chỉ tóm tắt dữ kiện và các lựa chọn để PO quyết. 
 
 **Câu hỏi phụ cần PO xác nhận:** có giữ khả năng `PUBLISHED → DRAFT` ở API hay không. Đây là phạm vi OPD-007. Trên `develop`, đây là đường duy nhất trong `ALLOWED_TRANSITIONS` làm case rời `PUBLISHED`.
 
-**Phụ thuộc:** Jira EBA-113 (To Do, label `blocked-on-d5`) chỉ triển khai sau khi PO chốt D5, OPD-003 và phần liên quan của OPD-007.
+**Phụ thuộc (lịch sử):** EBA-113 chờ D5; D5 đã chốt ngày 2026-11-27, EBA-113 được triển khai trong spec 013.
 
 ## 3. Thứ tự đề xuất
 1. PSD-01 (OPD-001), PSD-04 (OPD-015 + OPD-008) — khung điều hướng.

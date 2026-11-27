@@ -621,7 +621,36 @@ export class CaseService {
       }
     }
 
-    await this.db.query("UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2", [newStatus, caseId]);
+    // D5 (PO 2026-11-27): a PUBLISHED case that already has a student attempt can no longer go back to
+    // DRAFT, so attempts always run on published content (INV-01). The case row is locked FOR UPDATE, the
+    // same lock startAttempt takes, so "start attempt" and "revert to DRAFT" are serialized: either the
+    // attempt commits first and the revert sees it (409), or the revert commits first and the attempt sees
+    // DRAFT (403). The status is re-read under the lock so a concurrent change is never overwritten.
+    const client = await this.db.getClient();
+    try {
+      await client.query("BEGIN");
+      const locked = await client.query("SELECT status FROM cases WHERE id = $1 FOR UPDATE", [caseId]);
+      if (locked.rows.length === 0) throw new NotFoundException(`Case ${caseId} not found`);
+      if (locked.rows[0].status !== currentStatus) {
+        throw new ConflictException("The case status changed meanwhile; reload the case and try again");
+      }
+      if (currentStatus === "PUBLISHED" && newStatus === "DRAFT") {
+        const attempts = await client.query(
+          "SELECT COUNT(*)::int AS count FROM branching_attempts WHERE case_id = $1",
+          [caseId],
+        );
+        if ((attempts.rows[0]?.count ?? 0) > 0) {
+          throw new ConflictException("A published case that students have attempted cannot return to DRAFT");
+        }
+      }
+      await client.query("UPDATE cases SET status = $1, updated_at = NOW() WHERE id = $2", [newStatus, caseId]);
+      await client.query("COMMIT");
+    } catch (e) {
+      await client.query("ROLLBACK").catch(() => undefined);
+      throw e;
+    } finally {
+      client.release();
+    }
     if (currentStatus !== newStatus) {
       await this.audit?.record({
         type: "CASE_STATUS_CHANGED",

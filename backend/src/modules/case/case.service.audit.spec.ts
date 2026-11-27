@@ -7,6 +7,18 @@ describe("CaseService — activity log (BE-032)", () => {
 
   beforeEach(() => audit.record.mockClear());
 
+  /** Ownership read via db.query; the status write runs in a transaction that locks the case row (D5). */
+  const statusDb = (row: { status: string }) => {
+    const client = {
+      query: jest.fn(async (sql: string) => (sql.includes("FOR UPDATE") ? { rows: [{ status: row.status }] } : { rows: [] })),
+      release: jest.fn(),
+    };
+    return {
+      query: jest.fn(async (sql: string) => (sql.startsWith("SELECT c.id") ? { rows: [row] } : { rows: [] })),
+      getClient: jest.fn(async () => client),
+    };
+  };
+
   it("logs CASE_GENERATION_FAILED with duration and HTTP code when the AI call fails, then rethrows", async () => {
     const db = {
       query: jest.fn(async (sql: string) =>
@@ -27,7 +39,7 @@ describe("CaseService — activity log (BE-032)", () => {
 
   it("logs CASE_STATUS_CHANGED only when the status really changes", async () => {
     const row = { id: "k-1", status: "DRAFT", learning_mode: "BRANCHING_STUDY", lecturer_id: owner };
-    const db = { query: jest.fn(async (sql: string) => (sql.startsWith("SELECT c.id") ? { rows: [row] } : { rows: [] })) };
+    const db = statusDb(row);
     const service = new CaseService(db as any, {} as any, audit as any);
 
     await service.updateCaseStatus("k-1", owner, "REVIEWED");
@@ -42,7 +54,7 @@ describe("CaseService — activity log (BE-032)", () => {
 
   it("works without an audit service (existing module wiring and tests)", async () => {
     const row = { id: "k-1", status: "DRAFT", learning_mode: "BRANCHING_STUDY", lecturer_id: owner };
-    const db = { query: jest.fn(async (sql: string) => (sql.startsWith("SELECT c.id") ? { rows: [row] } : { rows: [] })) };
+    const db = statusDb(row);
     await expect(new CaseService(db as any, {} as any).updateCaseStatus("k-1", owner, "REVIEWED")).resolves.toEqual({
       id: "k-1",
       status: "REVIEWED",

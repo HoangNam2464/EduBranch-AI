@@ -122,6 +122,6 @@ stateDiagram-v2
     PUBLISHED --> [*]
 ```
 
-> **Post-Publish Editing (`OPD-007`)**: Versioning/unpublish policy for editing a `PUBLISHED` case with active student attempts remains an `OPEN PO DECISION` tracked in [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md).
+> **Post-Publish Editing (`OPD-007`, decided 2026-11-27)**: case versioning is **Post-MVP**. In the MVP a `PUBLISHED` case that has at least one attempt cannot return to `DRAFT` (D5), so its tree cannot be edited; a case without attempts can still be reverted and edited. See [`PRODUCT_OWNER_SCOPE_DECISIONS.md`](../mvp-scope/PRODUCT_OWNER_SCOPE_DECISIONS.md) PSD-11.
 
 Students can ONLY see cases in PUBLISHED status.
