@@ -218,3 +218,10 @@ Môi trường chạy lại sau lần sửa code cuối: Windows, Docker `edubra
 | `ai-service/`: `pytest tests/test_health.py -v` | `0` | **2/2 PASS** |
 
 - **Điều kiện PO chấp nhận 5 rủi ro còn lại (2026-11-26)**: PO chấp nhận 5 giới hạn tại §7.3 cho MVP để giữ QG2 ở `PASS WITH CONDITIONS` (giữ AC-R4, AC-R5, L3 Option C; mô tả là pseudonymization + giảm khả năng liên kết, không phải anonymization tuyệt đối; không công bố hay chia sẻ tùy tiện dữ liệu cấp dòng). Đề xuất mở **task riêng hậu MVP** xử lý tiếp biện pháp giảm thiểu cho **nhóm nhỏ** và **khả năng so sánh nhiều lần export**.
+
+---
+
+## 8. Sync Reality Check (2026-11-28, Recovery Wave 1C)
+
+- **Admin `10.9` Logs & `10.2` Overview (`BE-032` / `EBA-114`)**: Ghi chú tại §5 (`"/admin/logs tìm theo mã sự kiện, không theo tiêu đề đã dịch"`) được khắc phục ở nhánh Recovery Wave 1A (`admin.service.ts` `listLogs` hỗ trợ tìm theo nhãn sự kiện VI/EN & lý do lỗi đăng nhập). Biểu đồ `ActivityChartPanel` trên `10.2` vẫn giữ trạng thái `unavailable` do Backend chưa có series attempts/Review Study theo tuần (được đưa vào Decision Register trình PO).
+- **`EBA-114` FE (`10.9` cell ngày 2 dòng @ 1024px)** & `FE-030` profile layout ngoài batch PR #101 vẫn mở thuộc Wave 1B / sau PR #101.

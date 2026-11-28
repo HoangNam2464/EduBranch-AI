@@ -179,3 +179,19 @@ Order convention: A = keep the approved Figma as drawn; B = follow the earlier P
 | **QG5** | PR checks | Every GitHub Actions run on the PR is green, plus manual test of the PR head. | Downstream |
 | **QG6** | Merge | Valid Code Owner/PO approval; merge by approved method; no bypass. | Downstream |
 | **QG7** | Post-merge | QG1 + QG3 re-run on `develop` at the merge SHA. | Downstream |
+
+---
+
+## 5. Sync Reality Check (2026-11-28, Recovery Wave 1C)
+
+> Đối chiếu thực tế với `origin/develop` (`59a9aa3`) và PR #101 (`fix/fe-screen-quality` @ `0be0268`, **OPEN**). Không đánh dấu `Done` hoặc `APPROVED` khi PR chưa merge và PO chưa chốt mục mở.
+
+1. **Những phần đã có trong code thực tế (`develop` + PR #101 OPEN)**:
+   - `FE-023` đã merge (`src/components/ds/`, `src/components/feedback/`, `src/routes/paths.ts`, `src/lib/i18n.ts`, `frontend/tests/visual/`).
+   - `BE-PROP-2` (`PATCH /courses/:courseId/archive`, C1-B / OPD-014) đã merge vào `develop`; `CoursesPage.tsx` gọi `archiveCourse` thay vì `DELETE`.
+   - `CoursesPage.tsx` (`02.1–02.3`), `MaterialsPage.tsx` (`02.4–02.6` — bỏ fake files, sửa route `DELETE /materials/:id` theo Q5, lỗi upload/delete, bộ lọc & toast theo Q3) và `RagSourceInspectorPage.tsx` (`02.7` — bỏ `MOCK_CHUNKS`/`OTHER_DOCUMENTS`, hiển thị `EmptyState`/thông báo chưa có API chunks) đã triển khai; riêng bản sửa QA-R4 của `FE-003..005` & `FE-026` nằm trên **PR #101** (`0be0268`, OPEN).
+2. **Khoảng trống & sai lệch còn lại (chưa đạt QG4 / QG7)**:
+   - **`BE-PROP-1` (`GET /materials/:id/chunks`)**: Backend chưa triển khai → `RagSourceInspectorPage.tsx` chưa đọc được nội dung chunk thật (vẫn giữ trạng thái chưa khả dụng).
+   - **L10n Registry (`STALE` + `UNREGISTERED`)**: FE thực tế đưa copy Khóa học/Tài liệu vào namespace `g2.*` (`frontend/src/locales/{vi,en}.json`) thay vì `courses.*`/`materials.*` như `l10n-copy-review.md` (`30` key `STALE`). Toàn repo trên `origin/develop` còn `1323 UNREGISTERED` + `676 PROPOSED` (+ PR #101 thêm key `PROPOSED`) nên `--release` chưa thể pass cho tới khi gộp registry sau PR #101 và được PO duyệt `APPROVED`.
+   - **Responsive ngoài batch PR #101**: `RagSourceInspectorPage.tsx` phụ đề KPI bị cắt ~44px tại 1024px (`FE-006`) và `test:visual` 1440px chưa chạy lại trên bản mới.
+   - **Quyết định PO mở giữ nguyên**: `C1-F1`, `C2`, `C3` (chưa chốt; giữ `BLOCKED-ON-C2` / `BLOCKED-ON-C3` trên phần phụ thuộc).

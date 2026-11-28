@@ -13,7 +13,7 @@
 | QG2 | Xem §4 | Review độc lập. |
 | QG3 | Không áp dụng | Không đổi frontend. |
 | QG4 | PASS | Không đổi chuỗi i18n; không có secret trong diff. |
-| QG5–QG7 | Chờ | CI trên PR, lệnh merge của PO, rồi kiểm tra lại trên `develop`. |
+| QG5–QG7 | PASS (PR #95) | Đã merge PR #95 vào `develop` (`373c8a4`, `2026-11-27`) trước baseline `59a9aa3`; riêng câu hỏi §5 về `REVIEW_STUDY` vẫn giữ mở chờ PO. |
 
 ## 2. Thay đổi
 - **`backend/src/modules/case/case.service.ts` (`updateCaseStatus`):** phần ghi trạng thái chạy trong một transaction:

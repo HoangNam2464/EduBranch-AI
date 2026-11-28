@@ -71,7 +71,7 @@ Every document under this repository belongs to one of six strictly separated au
 - [`docs/architecture/DECISION-TREE-MODEL.md`](architecture/DECISION-TREE-MODEL.md) — **Tree Model SSOT**: `Case`/`CaseNode`/`CaseOption` schema, structural invariants & AI JSON format
 - [`docs/architecture/ADR-001-TECHNOLOGY-STACK.md`](architecture/ADR-001-TECHNOLOGY-STACK.md) — Ratified technology stack selections & Gemini model pins
 - [`docs/architecture/ADR-002-FRAMER-MOTION.md`](architecture/ADR-002-FRAMER-MOTION.md) — Approved Framer Motion dependency & reduced-motion constraints
-- [`docs/database/DATA-MODEL.md`](database/DATA-MODEL.md) — **DB Schema SSOT**: tables, constraints, ER diagram & `V1`–`V5` migrations
+- [`docs/database/DATA-MODEL.md`](database/DATA-MODEL.md) — **DB Schema SSOT**: tables, constraints, ER diagram & `V1`–`V8` migrations
 - [`docs/database/OPERATIONAL-BASELINE-GUIDE.md`](database/OPERATIONAL-BASELINE-GUIDE.md) — Legacy Postgres baseline & transactional DDL rules
 - [`docs/ai/RAG-PIPELINE.md`](ai/RAG-PIPELINE.md) — **RAG SSOT**: PDF/DOCX ingestion, `vector(768)` retrieval & `<sources>` safety pipeline
 - [`docs/ai/REASONING-CHALLENGE-SUPPORT.md`](ai/REASONING-CHALLENGE-SUPPORT.md) — **Challenge Support SSOT**: 2-round Socratic cap & zero-grading enforcement
@@ -94,7 +94,7 @@ Every document under this repository belongs to one of six strictly separated au
 - [`FEATURE-BRANCHING-STUDY.md`](features/FEATURE-BRANCHING-STUDY.md) · [`FEATURE-BRANCHING-ATTEMPT.md`](features/FEATURE-BRANCHING-ATTEMPT.md) · [`FEATURE-REVIEW-STUDY.md`](features/FEATURE-REVIEW-STUDY.md)
 - [`FEATURE-REFLECTION.md`](features/FEATURE-REFLECTION.md) · [`FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md`](features/FEATURE-AI-REASONING-CHALLENGE-SUPPORT.md) · [`FEATURE-LECTURER-FEEDBACK.md`](features/FEATURE-LECTURER-FEEDBACK.md)
 - [`FEATURE-BASIC-STATISTICS.md`](features/FEATURE-BASIC-STATISTICS.md) · [`FEATURE-EVALUATION-AND-RESEARCH.md`](features/FEATURE-EVALUATION-AND-RESEARCH.md) · [`FEATURE-NOTIFICATIONS.md`](features/FEATURE-NOTIFICATIONS.md)
-- Active Spec Kit feature records: [`specs/001-fe026-courses-materials/`](../specs/001-fe026-courses-materials/), [`specs/002-feedback-stats-api/`](../specs/002-feedback-stats-api/), [`specs/006`](../specs/006-app-fluid-layout/), [`specs/008`](../specs/008-ui-foundations/), [`specs/009`](../specs/009-public-landing-fixes/), [`specs/010`](../specs/010-ds-components/).
+- Active Spec Kit feature records: [`specs/001-fe026-courses-materials/`](../specs/001-fe026-courses-materials/), [`specs/002-feedback-stats-api/`](../specs/002-feedback-stats-api/), [`specs/003-reasoning-access/`](../specs/003-reasoning-access/), [`specs/006`](../specs/006-app-fluid-layout/), [`specs/007`](../specs/007-mvp-completion-backend/), [`specs/008`](../specs/008-ui-foundations/), [`specs/009`](../specs/009-public-landing-fixes/), [`specs/010`](../specs/010-ds-components/), [`specs/011`](../specs/011-case-access-hardening/), [`specs/012`](../specs/012-case-rubric-ui/), [`specs/013`](../specs/013-attempt-publish-lock/).
 
 ### 3.6 Testing, Research & Service Guides `[SUPPORTING GUIDE]`
 - [`docs/qa/TESTING-STRATEGY.md`](qa/TESTING-STRATEGY.md) — Living multi-tier verification & CI strategy
