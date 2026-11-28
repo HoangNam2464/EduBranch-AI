@@ -26,6 +26,7 @@ import { adminService } from "@/services/adminService";
 import type { HealthState, SystemHealth } from "@/services/mappers/adminHealth";
 import type { AdminOverview } from "@/services/mappers/adminOverview";
 import { AdminPanel } from "@/pages/admin/components/AdminPanel";
+import { eventLabel, eventMetaLabel } from "@/pages/admin/adminLogLabels";
 import { httpStatusOf, type LoadState } from "@/pages/statistics/useLecturerCourseCases";
 
 type HealthLoad =
@@ -62,37 +63,7 @@ function useAdminOverview() {
       (error: unknown) => {
         if (cancelled) return;
         const code = httpStatusOf(error);
-        // Fallback for pending backend endpoint (404/501/502)
-        if (code === 404 || code === 501 || code === 502) {
-          setState({
-            status: "ready",
-            data: {
-              attentionAlerts: [],
-              kpis: {
-                totalUsers: 0,
-                userGrowthThisMonth: 0,
-                openCourses: 0,
-                courseGrowthThisMonth: 0,
-                publishedCases: 0,
-                caseGrowthThisMonth: 0,
-                aiCaseGenerations: 0,
-                aiCaseFailures: 0,
-              },
-              roleBreakdown: {
-                studentsCount: 0,
-                lecturersCount: 0,
-                adminsCount: 0,
-                studentPercent: 0,
-                lecturerPercent: 0,
-                adminPercent: 0,
-              },
-              casesByCourse: [],
-              recentLogs: [],
-            },
-          });
-        } else {
-          setState({ status: "error", code, at: new Date() });
-        }
+        setState({ status: "error", code, at: new Date() });
       },
     );
     return () => {
@@ -129,7 +100,7 @@ function AttentionBanner({ alerts }: { alerts: AdminOverview["attentionAlerts"] 
             <span aria-hidden="true" className="text-warning-border">
               •
             </span>
-            <span>{alert.message}</span>
+            <span>{alert.type === "general" ? alert.message : t(`g6.dashboard.alerts.${alert.type}`, { count: alert.count ?? 0 })}</span>
           </span>
         ))}
       </div>
@@ -332,21 +303,22 @@ function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["rol
   );
 }
 
-function ServiceRow({ label, state, info }: { label: string; state: HealthState; info?: string }) {
+function ServiceRow({ label, state, info }: { label: string; state: HealthState | undefined; info?: string }) {
   const { t } = useTranslation();
   const up = state === "UP";
+  const unknown = state === undefined;
   return (
     <li className="flex items-center gap-2.5">
-      <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${up ? "bg-success" : "bg-error"}`} />
+      <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${unknown ? "bg-line" : up ? "bg-success" : "bg-error"}`} />
       <span className="min-w-0 flex-1 text-[14px] leading-5 text-ink">{label}</span>
-      <span className={`shrink-0 text-[12px] leading-4 font-medium ${up ? "text-ink-secondary" : "text-error-text"}`}>
-        {info ?? (up ? t("g6.dashboard.health.up") : t("g6.dashboard.health.down"))}
+      <span className={`shrink-0 text-[12px] leading-4 font-medium ${unknown || up ? "text-ink-secondary" : "text-error-text"}`}>
+        {unknown ? "—" : info ?? (up ? t("g6.dashboard.health.up") : t("g6.dashboard.health.down"))}
       </span>
     </li>
   );
 }
 
-function SystemHealthCard() {
+function SystemHealthCard({ overview }: { overview?: AdminOverview["systemHealth"] }) {
   const { t } = useTranslation();
   const { state, reload } = useSystemHealth();
   const checkedAt = state.kind === "ready" && state.health.checkedAt ? new Date(state.health.checkedAt) : undefined;
@@ -367,11 +339,15 @@ function SystemHealthCard() {
       {state.kind === "ready" && (
         <ul className="flex flex-col gap-3">
           <ServiceRow label={t("g6.dashboard.health.appServer")} state={state.health.appServer} />
-          <ServiceRow label={t("g6.dashboard.health.aiService")} state="UP" />
+          <ServiceRow label={t("g6.dashboard.health.aiService")} state={overview?.aiService} />
           <ServiceRow
             label={t("g6.dashboard.health.indexing")}
-            state="UP"
-            info={t("g6.dashboard.health.indexingProcessing", { count: 2 })}
+            state={overview?.indexing}
+            info={
+              overview?.indexing === "UP" && overview.indexingProcessingCount > 0
+                ? t("g6.dashboard.health.indexingProcessing", { count: overview.indexingProcessingCount })
+                : undefined
+            }
           />
           <ServiceRow label={t("g6.dashboard.health.database")} state={state.health.database} />
         </ul>
@@ -489,8 +465,8 @@ function RecentLogsPanel({ logs }: { logs: AdminOverview["recentLogs"] }) {
             <li key={log.id} className="flex items-start gap-2.5">
               <span aria-hidden="true" className={`mt-1.5 size-2 shrink-0 rounded-full ${dotColor}`} />
               <div className="flex min-w-0 flex-1 flex-col">
-                <span className="line-clamp-1 text-[13px] leading-5 font-medium text-ink">{log.description}</span>
-                <span className="text-[12px] leading-4 text-ink-muted">{log.meta}</span>
+                <span className="line-clamp-1 text-[13px] leading-5 font-medium text-ink">{eventLabel(t, log.description)}</span>
+                <span className="text-[12px] leading-4 text-ink-muted">{eventMetaLabel(t, log.meta)}</span>
               </div>
             </li>
           );
@@ -542,12 +518,11 @@ export function AdminDashboardPage() {
   } else if (state.status === "error") {
     return (
       <div className="flex flex-1 flex-col pb-5">
-        <ErrorState
-          title={t("g6.dashboard.loadError")}
-          onRetry={retry}
-          errorCode={state.code}
-          occurredAt={state.at}
-        />
+        {state.code === 403 ? (
+          <ErrorState title={t("states.forbidden.title")} description={t("states.forbidden.description")} errorCode={403} onRetry={retry} />
+        ) : (
+          <ErrorState title={t("g6.dashboard.loadError")} onRetry={retry} errorCode={state.code} occurredAt={state.at} />
+        )}
       </div>
     );
   } else {
@@ -560,7 +535,7 @@ export function AdminDashboardPage() {
           <ActivityChartPanel />
           <div className="flex w-[360px] shrink-0 flex-col gap-5">
             <UsersByRolePanel roleBreakdown={data.roleBreakdown} />
-            <SystemHealthCard />
+            <SystemHealthCard overview={data.systemHealth} />
           </div>
         </div>
 

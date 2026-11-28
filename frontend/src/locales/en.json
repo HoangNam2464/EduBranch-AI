@@ -1471,7 +1471,10 @@
       "recent": "Recent submissions",
       "prompt": {
         "title": "Select a case study to view learning analytics",
-        "description": "Select a course and a case study from the filters above to track branching data and student cohort behavior."
+        "description": "Select a course and a case study from the filters above to track branching data and student cohort behavior.",
+        "coursesError": "Could not load your courses",
+        "noCoursesTitle": "No courses yet",
+        "noCoursesDescription": "Create a course and publish a case to see learning-flow statistics."
       },
       "emptyCase": {
         "title": "No attempts yet",
@@ -1883,7 +1886,7 @@
       "lecturerFeedbackNotice": "100% human qualitative academic feedback. Strictly no grading, points, or AI scoring.",
       "feedbackSentAt": "Sent on {{time}}",
       "noFeedbackYet": "No feedback provided yet",
-      "reflectionTitle": "Student Post-Feedback Reflection",
+      "reflectionTitle": "Your summary reflection",
       "reflectionDescription": "After reading the lecturer's qualitative feedback, write a reflective commentary comparing your initial reasoning and proposed solution.",
       "reflectionPlaceholder": "Write your post-feedback reflection here (minimum 10 characters)...",
       "reflectionHelper": "{{current}} / {{max}} characters",
@@ -2025,7 +2028,15 @@
         "subtitle": "Today",
         "empty": "No activity has been recorded yet."
       },
-      "loadError": "Failed to load dashboard overview data"
+      "loadError": "Failed to load dashboard overview data",
+      "alerts": {
+        "indexing_failure_one": "{{count}} material failed indexing",
+        "indexing_failure_other": "{{count}} materials failed indexing",
+        "login_failure_one": "{{count}} failed sign-in",
+        "login_failure_other": "{{count}} failed sign-ins",
+        "locked_account_one": "{{count}} locked account",
+        "locked_account_other": "{{count}} locked accounts"
+      }
     },
     "users": {
       "emptyTitle": "No user data yet",
@@ -2104,7 +2115,9 @@
       "coursesTaught_one": "{{count}} course taught",
       "coursesTaught_other": "{{count}} courses taught",
       "coursesJoined_one": "{{count}} course joined",
-      "coursesJoined_other": "{{count}} courses joined"
+      "coursesJoined_other": "{{count}} courses joined",
+      "attemptsCount_one": "{{count}} attempt",
+      "attemptsCount_other": "{{count}} attempts"
     },
     "courses": {
       "title": "All courses",

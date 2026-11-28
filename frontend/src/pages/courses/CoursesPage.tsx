@@ -652,7 +652,11 @@ export function CoursesPage() {
     courseService
       .getMyCourses()
       .then((list) => !cancelled && setCourses(list))
-      .catch(() => !cancelled && setLoadError(true))
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        setLoadError(true);
+        setLoadErrorCode(httpStatusOf(error));
+      })
       .finally(() => !cancelled && setLoading(false));
     return () => {
       cancelled = true;

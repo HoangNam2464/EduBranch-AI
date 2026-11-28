@@ -104,8 +104,8 @@ function MaterialRow({
       {/* Figma draws the first row hovered: canvas fill, 8px inset, trash replaces the status. */}
       <div className="group/row flex h-[67px] items-center gap-3 rounded-[10px] py-2.5 hover:bg-canvas hover:px-2 has-[:focus-visible]:bg-canvas has-[:focus-visible]:px-2">
         <span aria-hidden="true" className="flex size-10 shrink-0 flex-col items-center justify-center rounded-eb-md bg-selected text-link">
-          <File size={17} absoluteStrokeWidth strokeWidth={1.5} />
-          <span className="text-[7px] leading-2 font-bold">{ext}</span>
+          <File size={14} absoluteStrokeWidth strokeWidth={1.5} />
+          <span className="text-[12px] leading-4 font-semibold">{ext}</span>
         </span>
         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
           <Link to={sourcesPath} title={material.originalFilename} aria-label={t("g2.materials.openSources", { name: material.originalFilename })} className={cx("truncate text-[14px] leading-5 text-ink hover:text-link", FOCUS_RING)}>
@@ -115,18 +115,24 @@ function MaterialRow({
             {meta}
           </span>
         </span>
-        <span className={cx("flex shrink-0 items-center", status !== "FAILED" && "group-hover/row:hidden group-has-[:focus-visible]/row:hidden")}>{indicator}</span>
-        <button
-          type="button"
-          onClick={onDelete}
-          aria-label={t("g2.materials.delete", { name: material.originalFilename })}
-          className={cx(
-            "hidden size-8 shrink-0 cursor-pointer items-center justify-center rounded-eb-md bg-canvas text-ink-secondary hover:bg-surface-hover group-hover/row:flex group-has-[:focus-visible]/row:flex",
-            FOCUS_RING,
+        {status === "FAILED" && <span className="flex shrink-0 items-center">{indicator}</span>}
+        <span className="relative flex size-8 shrink-0 items-center justify-center">
+          {status !== "FAILED" && (
+            <span className="flex items-center group-hover/row:invisible group-has-[:focus-visible]/row:invisible">{indicator}</span>
           )}
-        >
-          <Trash2 aria-hidden="true" size={16} absoluteStrokeWidth strokeWidth={1.51} />
-        </button>
+          <button
+            type="button"
+            onClick={onDelete}
+            aria-label={t("g2.materials.delete", { name: material.originalFilename })}
+            className={cx(
+              "absolute inset-0 flex cursor-pointer items-center justify-center rounded-eb-md bg-canvas text-ink-secondary hover:bg-surface-hover",
+              status !== "FAILED" && "opacity-0 group-hover/row:opacity-100 group-has-[:focus-visible]/row:opacity-100 focus-visible:opacity-100",
+              FOCUS_RING,
+            )}
+          >
+            <Trash2 aria-hidden="true" size={16} absoluteStrokeWidth strokeWidth={1.51} />
+          </button>
+        </span>
       </div>
     </li>
   );

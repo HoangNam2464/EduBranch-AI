@@ -194,7 +194,7 @@
 | `g5.feedback.reflectionSubmittedAt` | Đã nộp phản tư lúc {{time}} | Reflection submitted at {{time}} | PROPOSED | — | — | FE-020 PR #69 |
 | `g5.feedback.reflectionSubmittedNotice` | Bạn đã hoàn tất nộp bài phản tư cho tình huống này. Bài làm đã hoàn tất chu trình học tập. | You have completed your post-feedback reflection. Your learning cycle for this case is complete. | PROPOSED | — | — | FE-020 PR #69 |
 | `g5.feedback.reflectionSuccess` | Đã nộp bài phản tư. Bài làm chuyển sang trạng thái Đã phản tư. | Reflection submitted. Your submission is now Reflected. | PROPOSED | — | — | FE screen quality 2026-11-28 |
-| `g5.feedback.reflectionTitle` | Bài phản tư tổng kết của sinh viên | Student Post-Feedback Reflection | PROPOSED | — | — | FE-020 PR #69 |
+| `g5.feedback.reflectionTitle` | Bài phản tư tổng kết của bạn | Your summary reflection | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g5.feedback.reviewedBadge` | Đã nhận xét | Reviewed | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g5.feedback.solutionTitle` | 2. Phương án giải pháp | 2. Proposed Solution | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g5.feedback.submissionDetailsTitle` | Nội dung bài làm của bạn | Your Submitted Work | PROPOSED | — | — | FE-020 PR #69 |
@@ -582,6 +582,17 @@
 | `g4.queue.pagination.pageN` | Trang {{page}} | Page {{page}} | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.modeFilter` | Lọc theo chế độ học | Filter by learning mode | PROPOSED | — | — | FE-019 screen quality |
 | `g4.queue.allModes` | Mọi chế độ học | All learning modes | PROPOSED | — | — | FE-019 screen quality |
+| `g6.dashboard.alerts.indexing_failure_one` | {{count}} tài liệu lập chỉ mục thất bại | {{count}} material failed indexing | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.dashboard.alerts.indexing_failure_other` | {{count}} tài liệu lập chỉ mục thất bại | {{count}} materials failed indexing | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.dashboard.alerts.login_failure_one` | {{count}} lần đăng nhập thất bại | {{count}} failed sign-in | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.dashboard.alerts.login_failure_other` | {{count}} lần đăng nhập thất bại | {{count}} failed sign-ins | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.dashboard.alerts.locked_account_one` | {{count}} tài khoản đang bị khóa | {{count}} locked account | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.dashboard.alerts.locked_account_other` | {{count}} tài khoản đang bị khóa | {{count}} locked accounts | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g4.stats.prompt.coursesError` | Không tải được danh sách khóa học | Could not load your courses | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g4.stats.prompt.noCoursesTitle` | Chưa có khóa học nào | No courses yet | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g4.stats.prompt.noCoursesDescription` | Tạo khóa học và xuất bản case để xem thống kê luồng học tập. | Create a course and publish a case to see learning-flow statistics. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.users.attemptsCount_one` | {{count}} lượt làm | {{count}} attempt | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.users.attemptsCount_other` | {{count}} lượt làm | {{count}} attempts | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g2.materials.filterStatus` | Lọc theo trạng thái xử lý | Filter by processing status | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g2.materials.filterAllStatuses` | Mọi trạng thái | All statuses | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g2.materials.filterType` | Lọc theo loại tệp | Filter by file type | PROPOSED | — | — | FE screen quality 2026-11-28 |

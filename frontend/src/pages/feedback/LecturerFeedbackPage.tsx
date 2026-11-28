@@ -318,7 +318,7 @@ export function LecturerFeedbackPage() {
   return (
     <div className="flex flex-col gap-5">
       {/* 4 Metric Cards */}
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 gap-5 xl:grid-cols-4">
         {metrics.map((m) => (
           <MetricCard
             key={m.label}
@@ -376,8 +376,8 @@ export function LecturerFeedbackPage() {
               }}
               options={[
                 { value: "ALL", label: t("g4.queue.allModes") },
-                { value: "BRANCHING_STUDY", label: t("g4.common.branching") },
-                { value: "REVIEW_STUDY", label: t("g4.common.review") },
+                { value: "BRANCHING_STUDY", label: t("g4.queue.modes.branching") },
+                { value: "REVIEW_STUDY", label: t("g4.queue.modes.review") },
               ]}
             />
             <FilterControl
@@ -419,7 +419,7 @@ export function LecturerFeedbackPage() {
         ) : selectedItem ? (
           <div className="flex flex-1 gap-5 overflow-hidden">
             {/* Master List (360px left column) */}
-            <div className="flex w-[360px] shrink-0 flex-col overflow-hidden rounded-eb-lg border border-line bg-canvas/40">
+            <div className="hidden w-[320px] shrink-0 flex-col overflow-hidden rounded-eb-lg border border-line bg-canvas/40 xl:flex 2xl:w-[360px]">
               <div className="flex items-center justify-between border-b border-line bg-canvas px-4 py-2.5">
                 <span className="text-[12px] font-medium text-ink-secondary">
                   {t("g4.queue.listLabel")} ({filteredSubmissions.length})
@@ -719,14 +719,9 @@ export function LecturerFeedbackPage() {
                         size="md"
                         onClick={handleSubmitFeedback}
                         disabled={isSubmitting || feedbackText.trim().length < FEEDBACK_MIN_LENGTH}
-                        className="inline-flex items-center gap-2 whitespace-nowrap"
+                        leadingIcon={MessageSquareText}
                       >
-                        <MessageSquareText size={16} className="shrink-0" />
-                        <span>
-                          {isSubmitting
-                            ? t("g4.queue.inspector.submittingFeedback")
-                            : t("g4.queue.inspector.submitFeedback")}
-                        </span>
+                        {isSubmitting ? t("g4.queue.inspector.submittingFeedback") : t("g4.queue.inspector.submitFeedback")}
                       </Button>
                     </div>
                   </>

@@ -1471,7 +1471,10 @@
       "recent": "Bài nộp gần đây",
       "prompt": {
         "title": "Chọn tình huống để xem thống kê luồng học tập",
-        "description": "Chọn một khóa học và tình huống từ thanh bộ lọc phía trên để theo dõi dữ liệu rẽ nhánh và hành vi của người học."
+        "description": "Chọn một khóa học và tình huống từ thanh bộ lọc phía trên để theo dõi dữ liệu rẽ nhánh và hành vi của người học.",
+        "coursesError": "Không tải được danh sách khóa học",
+        "noCoursesTitle": "Chưa có khóa học nào",
+        "noCoursesDescription": "Tạo khóa học và xuất bản case để xem thống kê luồng học tập."
       },
       "emptyCase": {
         "title": "Chưa có lượt làm nào",
@@ -1883,7 +1886,7 @@
       "lecturerFeedbackNotice": "Nhận xét 100% mang tính định tính sư phạm từ giảng viên. Tuyệt đối không có điểm số hay AI chấm điểm.",
       "feedbackSentAt": "Gửi ngày {{time}}",
       "noFeedbackYet": "Chưa có nhận xét nào từ giảng viên",
-      "reflectionTitle": "Bài phản tư tổng kết của sinh viên",
+      "reflectionTitle": "Bài phản tư tổng kết của bạn",
       "reflectionDescription": "Sau khi đọc nhận xét định tính của giảng viên, hãy viết bài phản tư so sánh, đánh giá lại lập luận hoặc giải pháp ban đầu của bạn.",
       "reflectionPlaceholder": "Viết bài phản tư của bạn tại đây (tối thiểu 10 ký tự)...",
       "reflectionHelper": "{{current}} / {{max}} ký tự",
@@ -2025,7 +2028,15 @@
         "subtitle": "Hôm nay",
         "empty": "Chưa có hoạt động nào được ghi nhận."
       },
-      "loadError": "Không tải được dữ liệu tổng quan"
+      "loadError": "Không tải được dữ liệu tổng quan",
+      "alerts": {
+        "indexing_failure_one": "{{count}} tài liệu lập chỉ mục thất bại",
+        "indexing_failure_other": "{{count}} tài liệu lập chỉ mục thất bại",
+        "login_failure_one": "{{count}} lần đăng nhập thất bại",
+        "login_failure_other": "{{count}} lần đăng nhập thất bại",
+        "locked_account_one": "{{count}} tài khoản đang bị khóa",
+        "locked_account_other": "{{count}} tài khoản đang bị khóa"
+      }
     },
     "users": {
       "emptyTitle": "Chưa có dữ liệu người dùng",
@@ -2104,7 +2115,9 @@
       "coursesTaught_one": "{{count}} khóa học phụ trách",
       "coursesTaught_other": "{{count}} khóa học phụ trách",
       "coursesJoined_one": "{{count}} khóa học đã tham gia",
-      "coursesJoined_other": "{{count}} khóa học đã tham gia"
+      "coursesJoined_other": "{{count}} khóa học đã tham gia",
+      "attemptsCount_one": "{{count}} lượt làm",
+      "attemptsCount_other": "{{count}} lượt làm"
     },
     "courses": {
       "title": "Tất cả khóa học",

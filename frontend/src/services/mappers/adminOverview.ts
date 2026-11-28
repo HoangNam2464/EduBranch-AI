@@ -7,6 +7,7 @@ export interface AttentionAlertRow {
   id?: string;
   message: string;
   type?: "indexing_failure" | "login_failure" | "locked_account" | "general";
+  count?: number;
 }
 
 export interface CourseCaseStatRow {
@@ -79,6 +80,7 @@ export interface AttentionAlert {
   id: string;
   message: string;
   type: "indexing_failure" | "login_failure" | "locked_account" | "general";
+  count?: number;
 }
 
 export interface CourseCaseStat {
@@ -122,8 +124,9 @@ export interface AdminOverview {
   systemHealth?: {
     appServer: "UP" | "DOWN";
     database: "UP" | "DOWN";
-    aiService: "UP" | "DOWN";
-    indexing: "UP" | "DOWN";
+    /** Absent when the API did not report it — shown as "—", never assumed UP (rule F2). */
+    aiService?: "UP" | "DOWN";
+    indexing?: "UP" | "DOWN";
     indexingProcessingCount: number;
   };
 }
@@ -160,6 +163,7 @@ export function toAdminOverview(row?: AdminOverviewRow | null): AdminOverview {
     id: a.id ?? `alert-${i}`,
     message: a.message,
     type: a.type ?? "general",
+    count: typeof a.count === "number" ? a.count : undefined,
   }));
 
   const totalUsers = row.totalUsers ?? row.total_users ?? 0;
@@ -210,8 +214,8 @@ export function toAdminOverview(row?: AdminOverviewRow | null): AdminOverview {
     systemHealth = {
       appServer: row.system_health.app_server ?? "UP",
       database: row.system_health.database ?? "UP",
-      aiService: row.system_health.ai_service ?? "UP",
-      indexing: row.system_health.indexing ?? "UP",
+      aiService: row.system_health.ai_service,
+      indexing: row.system_health.indexing,
       indexingProcessingCount: row.system_health.indexing_processing_count ?? 0,
     };
   }

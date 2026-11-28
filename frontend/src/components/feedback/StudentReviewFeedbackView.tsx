@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button, Field, SubmissionBadge, cx } from "@/components/ds";
 import { formatDateTime } from "@/components/feedback/stateFormat";
+import { SupportEmailLink } from "@/components/feedback/StateButton";
 import {
   canWriteReflection,
   mapErrorToI18nKey,
@@ -270,6 +271,7 @@ export function StudentReviewFeedbackView({
                 {feedbackErrorCode !== undefined && (
                   <p className="text-[12px] opacity-75">
                     {t("states.error.codeLineNoTime", { code: feedbackErrorCode })}
+                    <SupportEmailLink />
                   </p>
                 )}
               </div>

@@ -25,6 +25,7 @@ import {
   SkeletonLine,
   SkeletonRegion,
   StateCard,
+  EmptyState,
 } from "@/components/feedback";
 import { BranchStatsChart } from "@/components/stats/BranchStatsChart";
 import { MiniCalendar } from "@/pages/profile/components/MiniCalendar";
@@ -185,9 +186,9 @@ function OpenCaseRow({ item }: { item: Case }) {
   const monthLabel = !valid ? "" : isEn ? updated.toLocaleDateString("en-GB", { month: "short" }) : t("g4.calendar.monthShort", { month: updated.getMonth() + 1 });
   const mode =
     item.learningMode === "REVIEW_STUDY"
-      ? t("g4.common.review")
+      ? t("g4.queue.modes.review")
       : item.learningMode === "BRANCHING_STUDY"
-        ? t("g4.common.branching")
+        ? t("g4.queue.modes.branching")
         : null;
 
   return (
@@ -358,7 +359,20 @@ export function StatisticsPage() {
   // Render main analytics content according to states
   let mainContent: ReactNode;
 
-  if (!selectedCaseId) {
+  if (!selectedCaseId && coursesState.status === "error") {
+    mainContent = (
+      <ErrorState
+        title={t("g4.stats.prompt.coursesError")}
+        onRetry={retryCourses}
+        errorCode={coursesState.code}
+        occurredAt={coursesState.at}
+      />
+    );
+  } else if (!selectedCaseId && coursesState.status === "ready" && coursesState.data.length === 0) {
+    mainContent = (
+      <EmptyState icon={ChartColumn} title={t("g4.stats.prompt.noCoursesTitle")} description={t("g4.stats.prompt.noCoursesDescription")} />
+    );
+  } else if (!selectedCaseId) {
     // Prompt state: until a case is chosen, no numbers
     mainContent = (
       <div className="flex min-h-[400px] flex-col items-center justify-center rounded-eb-xl bg-surface p-8 text-center shadow-eb-card">
@@ -717,7 +731,7 @@ export function StatisticsPage() {
           subtitle={t("g4.stats.flow.subtitle")}
           className="min-h-[220px]"
         >
-          <div className="grid grid-cols-4 gap-4 py-2">
+          <div className="grid grid-cols-2 gap-4 py-2 min-[1440px]:grid-cols-4">
             <div className="flex flex-col gap-1 rounded-eb-lg border border-line bg-canvas/40 p-3">
               <span className="flex items-center gap-1.5 text-[12px] text-ink-secondary">
                 <Users size={14} className="text-primary" />
@@ -752,7 +766,7 @@ export function StatisticsPage() {
   }
 
   return (
-    <div className="flex items-start gap-5">
+    <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
       {/* Main Workspace */}
       <div className="flex min-w-0 flex-1 flex-col gap-5">
         {/* Filter Toolbar */}
@@ -795,7 +809,7 @@ export function StatisticsPage() {
       </div>
 
       {/* Right Column: MiniCalendar & Published Cases */}
-      <aside className="flex w-80 shrink-0 flex-col gap-5">
+      <aside className="flex w-full shrink-0 flex-col gap-5 xl:w-80">
         <section
           className="flex flex-col gap-5 rounded-eb-xl bg-surface p-2 shadow-eb-card"
           aria-label={t("g4.stats.openCases")}
