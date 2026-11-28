@@ -83,4 +83,39 @@ describe("MaterialService.uploadMaterial — archived course (C1-B)", () => {
       ForbiddenException,
     );
   });
+
+  it("resets chunk_count = 0 and removes document_chunks atomically when AI ingestion throws (QA-005 / Option 1)", async () => {
+    mockMinio.generateSecureObjectKey.mockReturnValueOnce("materials/course-1/k/giao-trinh.pdf");
+    mockDbService.query
+      .mockResolvedValueOnce({ rows: [{ id: "course-1", lecturer_id: "lecturer-1", is_active: true }] })
+      .mockResolvedValueOnce({ rows: [{ id: "mat-fail-1", processing_status: "PENDING" }] })
+      .mockResolvedValueOnce({
+        rows: [
+          {
+            id: "mat-fail-1",
+            processing_status: "FAILED",
+            chunk_count: 0,
+            processing_error: "AI service unavailable",
+          },
+        ],
+      });
+    mockMinio.putObject.mockResolvedValueOnce(undefined);
+    mockAiClient.processMaterial.mockRejectedValueOnce(new Error("AI service unavailable"));
+
+    const result = await service.uploadMaterial("course-1", pdf, "lecturer-1");
+
+    expect(result).toMatchObject({
+      id: "mat-fail-1",
+      processing_status: "FAILED",
+      chunk_count: 0,
+      processing_error: "AI service unavailable",
+    });
+    const failedQuery = mockDbService.query.mock.calls[2][0] as string;
+    const failedParams = mockDbService.query.mock.calls[2][1] as unknown[];
+    expect(failedQuery).toContain("DELETE FROM document_chunks");
+    expect(failedQuery).toContain("processing_status = 'FAILED'");
+    expect(failedQuery).toContain("chunk_count = 0");
+    expect(failedParams[0]).toBe("AI service unavailable");
+    expect(typeof failedParams[1]).toBe("string");
+  });
 });

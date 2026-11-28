@@ -135,5 +135,5 @@ Extracts, chunks, embeds, and indexes university teaching materials to power Ret
 ---
 
 ## 15. Implementation Status
-**Implemented**
-*(FastAPI PDF/DOCX parser, chunker, `gemini-embedding-001` @768 embeddings via `app/providers/factory.py`, pgvector `vector(768)` storage, course-scoped cosine similarity retrieval with `<sources>` boundary wrapping & injection sanitization in `app/retrieval/service.py`, and internal routes `/internal/v1/ingestion/*` are implemented on `develop`.)*
+**Implemented** *(nhánh `fix/ingestion-stale-chunks`, chưa merge `develop`)*
+*(FastAPI PDF/DOCX parser, chunker, `gemini-embedding-001` @768 embeddings via `app/providers/factory.py`, pgvector `vector(768)` storage, course-scoped cosine similarity retrieval with `<sources>` boundary wrapping & injection sanitization in `app/retrieval/service.py`, and internal routes `/internal/v1/ingestion/*` are implemented on `develop`. Trên nhánh cục bộ `fix/ingestion-stale-chunks`, lỗi `QA-005` để lại chunk cũ khi re-ingest thất bại đã được sửa và đồng bộ theo PO Option 1 (2026-11-28): `teaching_materials.chunk_count` biểu diễn số chunk hiện có trong `document_chunks` và mọi chuyển trạng thái sang `FAILED` tại `_mark_failed` (`ai-service`) lẫn `MaterialService` (`backend`) đều xóa `document_chunks` + reset `chunk_count = 0` trong cùng transaction; mục `BE-009` kích thước chunk theo token vs ký tự vẫn `WAITING PO`.)*

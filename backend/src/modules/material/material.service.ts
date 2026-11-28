@@ -141,9 +141,15 @@ export class MaterialService {
       return updateRes.rows[0];
     } catch (err: any) {
       this.logger.error(`AI processing error for material ${materialId}:`, err);
+      // PO Option 1 (2026-11-28): chunk_count tracks current rows in document_chunks;
+      // any FAILED transition must keep chunk_count = 0 with zero leftover chunks.
       const updateRes = await this.db.query(
-        `UPDATE teaching_materials
+        `WITH deleted AS (
+           DELETE FROM document_chunks WHERE material_id = $2
+         )
+         UPDATE teaching_materials
          SET processing_status = 'FAILED',
+             chunk_count = 0,
              processing_error = $1,
              updated_at = NOW()
          WHERE id = $2

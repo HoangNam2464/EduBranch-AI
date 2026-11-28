@@ -113,43 +113,31 @@ async def _update_material_status(
     error: str | None = None,
 ) -> None:
     """Update processing_status (and optionally chunk_count / processing_error) on teaching_materials."""
+    assignments = ["processing_status = $1", "updated_at = NOW()"]
+    params: list = [status]
     if chunk_count is not None:
-        await conn.execute(
-            """
-            UPDATE teaching_materials
-            SET processing_status = $1,
-                chunk_count       = $2,
-                updated_at        = NOW()
-            WHERE id = $3
-            """,
-            status,
-            chunk_count,
-            uuid.UUID(material_id),
-        )
-    elif error is not None:
-        await conn.execute(
-            """
-            UPDATE teaching_materials
-            SET processing_status = $1,
-                processing_error  = $2,
-                updated_at        = NOW()
-            WHERE id = $3
-            """,
-            status,
-            error,
-            uuid.UUID(material_id),
-        )
-    else:
-        await conn.execute(
-            """
-            UPDATE teaching_materials
-            SET processing_status = $1,
-                updated_at        = NOW()
-            WHERE id = $2
-            """,
-            status,
-            uuid.UUID(material_id),
-        )
+        params.append(chunk_count)
+        assignments.append(f"chunk_count = ${len(params)}")
+    if error is not None:
+        params.append(error)
+        assignments.append(f"processing_error = ${len(params)}")
+    params.append(uuid.UUID(material_id))
+    await conn.execute(
+        f"UPDATE teaching_materials SET {', '.join(assignments)} WHERE id = ${len(params)}",
+        *params,
+    )
+
+
+async def _mark_failed(conn: asyncpg.Connection, material_id: str, error: str) -> None:
+    """
+    QA-005 (PO Direction Option 1, 2026-11-28): teaching_materials.chunk_count tracks current rows
+    in document_chunks. Remove any chunks from an earlier ingest, reset chunk_count = 0, and record
+    the FAILED status + error in one transaction so a failed re-ingest never leaves stale chunks or
+    a non-zero chunk_count.
+    """
+    async with conn.transaction():
+        await _delete_existing_chunks(conn, material_id)
+        await _update_material_status(conn, material_id, "FAILED", chunk_count=0, error=error)
 
 
 # ---------------------------------------------------------------------------
@@ -204,12 +192,12 @@ async def ingest_document(
         embedder = DocumentEmbedder(provider=get_provider())
         embeddings = await embedder.embed_chunks(chunk_texts)
 
-        # Step 5: Delete old chunks (idempotent), then insert new ones
-        await _delete_existing_chunks(conn, material_id)
-        inserted = await _insert_chunks(conn, material_id, course_id, chunk_texts, embeddings)
-
-        # Mark as COMPLETED
-        await _update_material_status(conn, material_id, "COMPLETED", chunk_count=inserted)
+        # Step 5: replace old chunks and mark COMPLETED atomically (a failure rolls back to the old chunks,
+        # which the error handler below then removes together with the FAILED status).
+        async with conn.transaction():
+            await _delete_existing_chunks(conn, material_id)
+            inserted = await _insert_chunks(conn, material_id, course_id, chunk_texts, embeddings)
+            await _update_material_status(conn, material_id, "COMPLETED", chunk_count=inserted)
 
         logger.info(
             "ingestion_complete",
@@ -222,21 +210,21 @@ async def ingest_document(
         error_msg = str(e)
         logger.error("ingestion_parse_error", material_id=material_id, error=error_msg)
         if conn:
-            await _update_material_status(conn, material_id, "FAILED", error=error_msg)
+            await _mark_failed(conn, material_id, error_msg)
         raise
 
     except EmbeddingException as e:
         error_msg = str(e)
         logger.error("ingestion_embedding_error", material_id=material_id, error=error_msg)
         if conn:
-            await _update_material_status(conn, material_id, "FAILED", error=error_msg)
+            await _mark_failed(conn, material_id, error_msg)
         raise
 
     except Exception as e:
         error_msg = f"Ingestion pipeline error: {e}"
         logger.error("ingestion_error", material_id=material_id, error=error_msg)
         if conn:
-            await _update_material_status(conn, material_id, "FAILED", error=error_msg)
+            await _mark_failed(conn, material_id, error_msg)
         raise
 
     finally:
