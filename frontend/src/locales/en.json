@@ -882,7 +882,7 @@
       "statusProcessing": "Processing",
       "statusFailed": "Indexing failed",
       "statusFailedReason": "Could not read file content",
-      "retry": "Retry",
+      "retry": "Re-upload",
       "openSources": "View chunks of {{name}}",
       "delete": "Delete {{name}}",
       "noMaterials": "No materials yet. Upload materials so the AI has sources when generating cases.",
@@ -914,6 +914,19 @@
         "REVIEWED": "Reviewed",
         "APPROVED": "Approved",
         "PUBLISHED": "Published"
+      },
+      "filterStatus": "Filter by processing status",
+      "filterAllStatuses": "All statuses",
+      "filterType": "Filter by file type",
+      "filterAllTypes": "All file types",
+      "noFilterMatch": "No materials match the filters.",
+      "reuploadNotice": "You are re-uploading “{{name}}”. The new file is saved as a new material; the failed material is kept until you delete it.",
+      "toast": {
+        "deleted": "Material deleted.",
+        "uploaded_one": "{{count}} material uploaded.",
+        "uploaded_other": "{{count}} materials uploaded.",
+        "uploadFailed_one": "{{count}} file could not be uploaded.",
+        "uploadFailed_other": "{{count}} files could not be uploaded."
       }
     },
     "sources": {

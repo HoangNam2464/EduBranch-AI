@@ -12,8 +12,8 @@ import { useCallback, useEffect, useRef, useState, type ChangeEvent, type DragEv
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ChevronDown, ChevronUp, CircleAlert, CircleCheck, Clock, CloudUpload, Database, File, FileText, GitBranch, LoaderCircle, Trash2, Upload, X } from "lucide-react";
-import { Button, CaseStatusBadge, CourseOverview, Dialog, cx, FOCUS_RING, type CaseStatus as CaseBadgeStatus } from "@/components/ds";
-import { ErrorState, SkeletonBlock, SkeletonRegion } from "@/components/feedback";
+import { Button, CaseStatusBadge, CourseOverview, Dialog, FilterControl, Toast, ToastRegion, cx, FOCUS_RING, type CaseStatus as CaseBadgeStatus } from "@/components/ds";
+import { ErrorState, SkeletonBlock, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
 import { httpStatusOf } from "@/pages/statistics/useLecturerCourseCases";
 import { useAuthStore } from "@/stores/authStore";
 import { initialsOf } from "@/layouts/shell/shellRoutes";
@@ -22,15 +22,17 @@ import { courseService } from "@/services/courseService";
 import { materialService } from "@/services/materialService";
 import { PATHS, buildPath } from "@/routes/paths";
 import type { Course, TeachingMaterial } from "@/types";
+import {
+  ACCEPTED_EXTENSIONS as ACCEPTED,
+  extensionOf,
+  filterMaterials,
+  isAcceptedFile,
+  type MaterialStatusFilter,
+  type MaterialTypeFilter,
+} from "@/pages/materials/materialFileRules";
 import { courseVisual, formatFileSize, loadCourseInsights, summarize, type CourseInsights } from "@/pages/courses/courseInsights";
 
 const MAX_BYTES = 50 * 1024 * 1024;
-const ACCEPTED = [".pdf", ".docx"];
-
-function extensionOf(name: string): string {
-  const dot = name.lastIndexOf(".");
-  return dot === -1 ? "" : name.slice(dot).toLowerCase();
-}
 
 // ── 02.4 left column ─────────────────────────────────────────────────────────
 
@@ -59,13 +61,17 @@ function MaterialRow({
   const { t } = useTranslation();
   const ext = extensionOf(material.originalFilename).slice(1).toUpperCase();
   const size = formatFileSize(material.sizeBytes, t);
+  const uploadedDate = new Date(material.uploadedAt);
+  const uploaded = isValidDate(uploadedDate) ? formatDateTime(uploadedDate) : "—";
   const status = material.processingStatus;
   const meta =
     status === "FAILED"
-      ? (material.processingError || t("g2.materials.statusFailedReason"))
+      ? // processing_error holds the raw server exception (English, technical): it stays in the tooltip only,
+        // so the row keeps one language (R01).
+        t("g2.materials.statusFailedReason")
       : status === "COMPLETED" && material.chunkCount !== undefined
-        ? `${t("g2.materials.chunks", { count: material.chunkCount })} · ${size}`
-        : size;
+        ? `${t("g2.materials.chunks", { count: material.chunkCount })} · ${size} · ${uploaded}`
+        : `${size} · ${uploaded}`;
   const sourcesPath = buildPath(PATHS.LECTURER.MATERIAL_SOURCES, { courseId, materialId: material.id });
 
   let indicator: ReactNode = null;
@@ -136,7 +142,20 @@ interface QueuedFile {
   done?: boolean;
 }
 
-function UploadDialog({ courseId, onClose, onUploaded }: { courseId: string; onClose: () => void; onUploaded: () => void }) {
+function UploadDialog({
+  courseId,
+  onClose,
+  onUploaded,
+  reuploadOf,
+  onResult,
+}: {
+  courseId: string;
+  onClose: () => void;
+  onUploaded: () => void;
+  /** File name of the FAILED material being re-uploaded (PO Q3), if any. */
+  reuploadOf?: string | null;
+  onResult?: (result: { uploaded: number; failed: number }) => void;
+}) {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const [queue, setQueue] = useState<QueuedFile[]>([]);
@@ -148,7 +167,7 @@ function UploadDialog({ courseId, onClose, onUploaded }: { courseId: string; onC
     const next = Array.from(files).map((file, i): QueuedFile => ({
       key: `${Date.now()}-${i}-${file.name}`,
       file,
-      error: !ACCEPTED.includes(extensionOf(file.name)) ? "invalidType" : file.size > MAX_BYTES ? "tooLarge" : undefined,
+      error: !isAcceptedFile(file) ? "invalidType" : file.size > MAX_BYTES ? "tooLarge" : undefined,
     }));
     setQueue((prev) => [...prev, ...next]);
   }
@@ -156,6 +175,8 @@ function UploadDialog({ courseId, onClose, onUploaded }: { courseId: string; onC
   async function upload() {
     setUploading(true);
     let anyUploaded = false;
+    let uploaded = 0;
+    let failed = 0;
     for (const item of valid) {
       const update = (patch: Partial<QueuedFile>) => setQueue((prev) => prev.map((q) => (q.key === item.key ? { ...q, ...patch } : q)));
       update({ progress: 0 });
@@ -163,12 +184,15 @@ function UploadDialog({ courseId, onClose, onUploaded }: { courseId: string; onC
         await materialService.uploadMaterial(courseId, item.file, (percent) => update({ progress: percent }));
         update({ done: true, progress: undefined });
         anyUploaded = true;
+        uploaded++;
       } catch {
         update({ error: "failed", progress: undefined });
+        failed++;
       }
     }
     setUploading(false);
     if (anyUploaded) onUploaded();
+    onResult?.({ uploaded, failed });
   }
 
   return (
@@ -189,6 +213,11 @@ function UploadDialog({ courseId, onClose, onUploaded }: { courseId: string; onC
         </>
       }
     >
+      {reuploadOf && (
+        <p role="note" className="rounded-eb-md bg-canvas p-3 text-[12px] leading-4 text-ink-secondary">
+          {t("g2.materials.reuploadNotice", { name: reuploadOf })}
+        </p>
+      )}
       <button
         type="button"
         onClick={onClose}
@@ -294,6 +323,11 @@ export function MaterialsPage() {
   const [uploadExpanded, setUploadExpanded] = useState(true);
   const [casesExpanded, setCasesExpanded] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
+  const [reuploadOf, setReuploadOf] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ type: "success" | "error"; title: string } | null>(null);
+  // FE-004: client-side filters by processing status and file type.
+  const [statusFilter, setStatusFilter] = useState<MaterialStatusFilter>("ALL");
+  const [typeFilter, setTypeFilter] = useState<MaterialTypeFilter>("ALL");
   const [toDelete, setToDelete] = useState<TeachingMaterial | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
@@ -349,8 +383,10 @@ export function MaterialsPage() {
       await materialService.deleteMaterial(toDelete.id);
       setInsights((prev) => (prev ? { ...prev, materials: prev.materials.filter((m) => m.id !== toDelete.id) } : prev));
       setToDelete(null);
+      setToast({ type: "success", title: t("g2.materials.toast.deleted") });
     } catch {
       setDeleteError(t("g2.materials.deleteDialog.failed"));
+      setToast({ type: "error", title: t("g2.materials.deleteDialog.failed") });
     } finally {
       setDeleting(false);
     }
@@ -377,6 +413,7 @@ export function MaterialsPage() {
   }
 
   const s = summarize(insights);
+  const visibleMaterials = filterMaterials(insights.materials, statusFilter, typeFilter);
   const visual = courseVisual(courseIndex);
   const indexedPercent = s.documents > 0 ? (s.ready / s.documents) * 100 : 0;
   const steps: Array<[string, string]> = [
@@ -490,7 +527,15 @@ export function MaterialsPage() {
                       <CloudUpload aria-hidden="true" size={32} absoluteStrokeWidth strokeWidth={1.09} className="text-link" />
                       <p className="text-[14px] leading-5 font-medium text-ink">{t("g2.materials.dropTitle")}</p>
                       <p className="text-[12px] leading-4 text-ink-secondary">{t("g2.materials.dropHint")}</p>
-                      <Button variant="primary" size="sm" leadingIcon={Upload} onClick={() => setUploadOpen(true)}>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        leadingIcon={Upload}
+                        onClick={() => {
+                          setReuploadOf(null);
+                          setUploadOpen(true);
+                        }}
+                      >
                         {t("g2.materials.choose")}
                       </Button>
                     </div>
@@ -551,11 +596,40 @@ export function MaterialsPage() {
               </span>
             )}
           </div>
+          {insights.materials.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 py-2">
+              <FilterControl
+                label={t("g2.materials.filterStatus")}
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
+                options={[
+                  { value: "ALL", label: t("g2.materials.filterAllStatuses") },
+                  { value: "PENDING", label: t("g2.materials.statusPending") },
+                  { value: "PROCESSING", label: t("g2.materials.statusProcessing") },
+                  { value: "COMPLETED", label: t("g2.materials.statusDone") },
+                  { value: "FAILED", label: t("g2.materials.statusFailed") },
+                ]}
+              />
+              <FilterControl
+                label={t("g2.materials.filterType")}
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value as typeof typeFilter)}
+                options={[
+                  { value: "ALL", label: t("g2.materials.filterAllTypes") },
+                  { value: "PDF", label: "PDF" },
+                  { value: "DOCX", label: "DOCX" },
+                ]}
+              />
+            </div>
+          )}
           {insights.materials.length === 0 ? (
             <p className="py-4 text-[14px] leading-5 text-ink-secondary">{t("g2.materials.noMaterials")}</p>
           ) : (
             <ul>
-              {insights.materials.map((m) => (
+              {visibleMaterials.length === 0 && (
+                <li className="py-4 text-[14px] leading-5 text-ink-secondary">{t("g2.materials.noFilterMatch")}</li>
+              )}
+              {visibleMaterials.map((m) => (
                 <MaterialRow
                   key={m.id}
                   material={m}
@@ -564,7 +638,10 @@ export function MaterialsPage() {
                     setDeleteError(null);
                     setToDelete(m);
                   }}
-                  onRetry={() => setUploadOpen(true)}
+                  onRetry={() => {
+                    setReuploadOf(m.originalFilename);
+                    setUploadOpen(true);
+                  }}
                 />
               ))}
             </ul>
@@ -572,7 +649,23 @@ export function MaterialsPage() {
         </section>
       </div>
 
-      {uploadOpen && <UploadDialog courseId={courseId} onClose={() => setUploadOpen(false)} onUploaded={() => void refreshMaterials()} />}
+      {uploadOpen && (
+        <UploadDialog
+          courseId={courseId}
+          reuploadOf={reuploadOf}
+          onClose={() => setUploadOpen(false)}
+          onUploaded={() => void refreshMaterials()}
+          onResult={({ uploaded, failed }) => {
+            if (failed > 0) setToast({ type: "error", title: t("g2.materials.toast.uploadFailed", { count: failed }) });
+            else if (uploaded > 0) setToast({ type: "success", title: t("g2.materials.toast.uploaded", { count: uploaded }) });
+          }}
+        />
+      )}
+      {toast && (
+        <ToastRegion>
+          <Toast type={toast.type} title={toast.title} onClose={() => setToast(null)} />
+        </ToastRegion>
+      )}
 
       <Dialog
         open={toDelete !== null}

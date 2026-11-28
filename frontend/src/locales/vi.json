@@ -882,7 +882,7 @@
       "statusProcessing": "Đang xử lý",
       "statusFailed": "Lập chỉ mục thất bại",
       "statusFailedReason": "Không đọc được nội dung tệp",
-      "retry": "Thử lại",
+      "retry": "Tải lên lại",
       "openSources": "Xem đoạn trích của {{name}}",
       "delete": "Xóa {{name}}",
       "noMaterials": "Chưa có tài liệu nào. Tải tài liệu lên để AI có nguồn khi sinh case.",
@@ -914,6 +914,19 @@
         "REVIEWED": "Đã rà soát",
         "APPROVED": "Đã phê duyệt",
         "PUBLISHED": "Đã xuất bản"
+      },
+      "filterStatus": "Lọc theo trạng thái xử lý",
+      "filterAllStatuses": "Mọi trạng thái",
+      "filterType": "Lọc theo loại tệp",
+      "filterAllTypes": "Mọi loại tệp",
+      "noFilterMatch": "Không có tài liệu khớp bộ lọc.",
+      "reuploadNotice": "Bạn đang tải lại «{{name}}». Tệp mới sẽ được lưu thành một tài liệu mới; tài liệu lỗi cũ vẫn được giữ cho đến khi bạn xóa.",
+      "toast": {
+        "deleted": "Đã xóa tài liệu.",
+        "uploaded_one": "Đã tải lên {{count}} tài liệu.",
+        "uploaded_other": "Đã tải lên {{count}} tài liệu.",
+        "uploadFailed_one": "{{count}} tệp tải lên không thành công.",
+        "uploadFailed_other": "{{count}} tệp tải lên không thành công."
       }
     },
     "sources": {

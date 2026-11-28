@@ -217,7 +217,7 @@
 | `g2.common.error` | Lỗi | Error | PROPOSED | — | — | FE-026 PR #72 |
 | `g2.courses.details.retry` | Thử lại | Retry | PROPOSED | — | — | FE-026 PR #72 |
 | `g2.courses.details.statAttempts` | Lượt làm bài | Attempts | PROPOSED | — | — | FE-026 PR #72 |
-| `g2.materials.retry` | Thử lại | Retry | PROPOSED | — | — | FE-026 PR #72 |
+| `g2.materials.retry` | Tải lên lại | Re-upload | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g2.materials.statusFailedReason` | Không đọc được nội dung tệp | Could not read file content | PROPOSED | — | — | FE-026 PR #72 |
 | `g4.stats.noData` | Chưa có dữ liệu thống kê | No statistics yet | PROPOSED | — | — | FE-022 PR #70 |
 | `g4.stats.kpi.completion` | Tỷ lệ hoàn thành | Completion rate | PROPOSED | — | — | FE-022 PR #70 |
@@ -582,6 +582,17 @@
 | `g4.queue.pagination.pageN` | Trang {{page}} | Page {{page}} | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.modeFilter` | Lọc theo chế độ học | Filter by learning mode | PROPOSED | — | — | FE-019 screen quality |
 | `g4.queue.allModes` | Mọi chế độ học | All learning modes | PROPOSED | — | — | FE-019 screen quality |
+| `g2.materials.filterStatus` | Lọc theo trạng thái xử lý | Filter by processing status | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.filterAllStatuses` | Mọi trạng thái | All statuses | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.filterType` | Lọc theo loại tệp | Filter by file type | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.filterAllTypes` | Mọi loại tệp | All file types | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.noFilterMatch` | Không có tài liệu khớp bộ lọc. | No materials match the filters. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.reuploadNotice` | Bạn đang tải lại «{{name}}». Tệp mới sẽ được lưu thành một tài liệu mới; tài liệu lỗi cũ vẫn được giữ cho đến khi bạn xóa. | You are re-uploading “{{name}}”. The new file is saved as a new material; the failed material is kept until you delete it. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.toast.deleted` | Đã xóa tài liệu. | Material deleted. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.toast.uploaded_one` | Đã tải lên {{count}} tài liệu. | {{count}} material uploaded. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.toast.uploaded_other` | Đã tải lên {{count}} tài liệu. | {{count}} materials uploaded. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.toast.uploadFailed_one` | {{count}} tệp tải lên không thành công. | {{count}} file could not be uploaded. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g2.materials.toast.uploadFailed_other` | {{count}} tệp tải lên không thành công. | {{count}} files could not be uploaded. | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g6.dashboard.activity.unavailable` | Hệ thống chưa cung cấp dữ liệu hoạt động học tập theo tuần. | Weekly learning activity data is not available from the system yet. | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g6.dashboard.usersByRole.empty` | Chưa có người dùng nào. | No users yet. | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g6.dashboard.casesByCourse.empty` | Chưa có khóa học nào có case. | No course has cases yet. | PROPOSED | — | — | FE screen quality 2026-11-28 |
