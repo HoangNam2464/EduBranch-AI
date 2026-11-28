@@ -53,7 +53,7 @@ Empowers university lecturers to automatically transform static teaching materia
 1. Lecturer opens the 3-step **AI Studio** wizard at `/lecturer/ai-studio` (reachable from `/lecturer/dashboard`, `/lecturer/cases`, or `/lecturer/courses/:courseId/cases`; `OPD-006`).
 2. Lecturer enters a topic prompt (e.g., "Ethical dilemmas in international supply chains") and selects source materials.
 3. Frontend sends `POST /api/v1/cases/generate` to Backend Gateway.
-4. Backend verifies ownership and forwards request to FastAPI AI Service: `POST /internal/v1/generation/generate-case`.
+4. Backend validates the body (`GenerateCaseDto`, same limits as the AI `CaseGenerationRequest`: `courseId` UUID, `materialIds` ≥ 1 UUID, `numNodes` 2–10; otherwise `400`), verifies ownership and forwards request to FastAPI AI Service: `POST /internal/v1/generation/generate-case`.
 5. AI Service performs semantic retrieval over `document_chunks` for the topic.
 6. AI Service constructs the prompt with `<sources>` boundary and passes `CaseGenerationOutput` schema to LLM.
 7. LLM returns structured JSON.

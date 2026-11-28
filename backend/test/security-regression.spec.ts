@@ -479,7 +479,7 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
         const res = await request(app.getHttpServer())
           .post("/api/v1/cases/generate")
           .set("Authorization", `Bearer ${studentToken}`)
-          .send({ courseId: "course-1", materialIds: ["mat-1"] })
+          .send({ courseId: "55555555-5555-4555-8555-555555555555", materialIds: ["44444444-4444-4444-8444-444444444444"] })
           .expect(403);
 
         expect(mockCaseService.generateCase).not.toHaveBeenCalled();
@@ -549,7 +549,7 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
         await request(app.getHttpServer())
           .post("/api/v1/cases/generate?role=LECTURER")
           .set("Authorization", `Bearer ${studentToken}`)
-          .send({ courseId: "c1", materialIds: ["m1"] })
+          .send({ courseId: "55555555-5555-4555-8555-555555555555", materialIds: ["44444444-4444-4444-8444-444444444444"] })
           .expect(403);
       });
 
@@ -605,7 +605,7 @@ describe("[QA-002] Security Regression: Token Expiry, Role Denial & Ownership Le
         const res = await request(app.getHttpServer())
           .post("/api/v1/cases/generate")
           .set("Authorization", `Bearer ${intruderLecturerToken}`)
-          .send({ courseId: validCourseId, materialIds: ["mat-1"] })
+          .send({ courseId: validCourseId, materialIds: ["44444444-4444-4444-8444-444444444444"] })
           .expect(403);
 
         expect(res.body.message).toBe("You do not own this course");

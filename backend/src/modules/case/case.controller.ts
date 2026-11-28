@@ -16,6 +16,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { Roles } from "../auth/decorators/roles.decorator";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
 import { UpdateCaseStatusDto } from "./dto/update-case-status.dto";
+import { GenerateCaseDto } from "./dto/generate-case.dto";
 
 /**
  * CaseController — Flow 2: AI Case Generation & Lecturer Review Lifecycle
@@ -36,14 +37,7 @@ export class CaseController {
   @Post("cases/generate")
   @HttpCode(HttpStatus.CREATED)
   async generateCase(
-    @Body()
-    body: {
-      courseId: string;
-      materialIds: string[];
-      topicHint?: string;
-      numNodes?: number;
-      idempotencyKey?: string;
-    },
+    @Body() body: GenerateCaseDto,
     @CurrentUser() user: { id: string; role: string },
   ) {
     if (user.role !== "LECTURER") {

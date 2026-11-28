@@ -583,6 +583,22 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       }
     });
 
+    itDb("an invalid body is refused with 400 before SQL or the AI service; nothing is stored", async () => {
+      const before = await caseCount();
+      for (const body of [
+        { courseId: "not-a-uuid", materialIds: [randomUUID()] },
+        { courseId: courseA, materialIds: [] },
+        { courseId: courseA, materialIds: ["m1"] },
+        { courseId: courseA, materialIds: [randomUUID()], numNodes: 11 },
+        { courseId: courseA, materialIds: [randomUUID()], status: "PUBLISHED" },
+      ]) {
+        const res = await http().post(`/api/v1/cases/generate`).set("Authorization", auth.lectA).send(body);
+        expect(res.status).toBe(400);
+      }
+      expect(aiCalls()).toBe(0);
+      expect(await caseCount()).toBe(before);
+    });
+
     itDb("a student or a non-owner lecturer cannot generate (403); the AI service is not called", async () => {
       const send = (who: string) =>
         http().post(`/api/v1/cases/generate`).set("Authorization", who).send({ courseId: courseA, materialIds: [randomUUID()] });
