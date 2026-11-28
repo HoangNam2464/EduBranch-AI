@@ -54,6 +54,10 @@ erDiagram
 |---|---|
 | `document_chunks` | Parsed text chunks with pgvector embeddings (`vector(768)` per V4 `gemini-embedding-001`), linked to `material_id` and `course_id` |
 
+### `teaching_materials.chunk_count` Definition (PO Option 1, 2026-11-28)
+- `teaching_materials.chunk_count` stores the **current number of chunk rows existing in `document_chunks`** for that material (not a historical peak).
+- Any transition to `FAILED` (both `ai-service` `_mark_failed` and Backend `MaterialService.uploadMaterial` fallback) atomically removes that material's `document_chunks` rows and resets `chunk_count = 0`.
+
 ---
 
 ## 3. Key Table Details & Constraints

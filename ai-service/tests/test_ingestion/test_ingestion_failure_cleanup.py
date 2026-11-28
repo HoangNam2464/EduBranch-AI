@@ -92,11 +92,15 @@ async def test_failed_ingest_removes_chunks_and_marks_failed_in_one_transaction(
     deletes = conn.statements("DELETE FROM DOCUMENT_CHUNKS")
     assert len(deletes) == 1, conn.calls
     _, delete_args, delete_in_tx = deletes[0]
-    _, _, failed_in_tx = _failed_update(conn)
+    failed_sql, failed_args, failed_in_tx = _failed_update(conn)
     assert str(delete_args[0]) == MATERIAL_ID
-    assert delete_in_tx and failed_in_tx, "chunk removal and FAILED status must commit together"
-    # The chunks are removed before the FAILED status is written.
-    assert conn.calls.index(deletes[0]) < conn.calls.index(_failed_update(conn))
+    assert delete_in_tx and failed_in_tx, "chunk removal, chunk_count=0 and FAILED status must commit together"
+    assert "chunk_count" in failed_sql.lower() and 0 in failed_args, (
+        f"FAILED update must reset chunk_count to 0; got sql={failed_sql!r}, args={failed_args!r}"
+    )
+    assert "processing_error" in failed_sql.lower()
+    # The chunks are removed before the FAILED status and chunk_count=0 are written.
+    assert conn.calls.index(deletes[0]) < conn.calls.index((failed_sql, failed_args, failed_in_tx))
     conn.close.assert_awaited_once()
 
 

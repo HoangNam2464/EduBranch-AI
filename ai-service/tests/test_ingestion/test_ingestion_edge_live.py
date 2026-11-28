@@ -229,6 +229,7 @@ async def test_ac2_empty_or_unextractable_files_fail_without_false_success(env, 
     row, chunks = await env["state"](mid)
     assert row["processing_status"] == "FAILED", label
     assert row["processing_error"], label
+    assert row["chunk_count"] == 0, label
     assert chunks == [], label
 
 
@@ -239,6 +240,7 @@ async def test_extra_missing_minio_object_fails_cleanly(env):
     row, chunks = await env["state"](mid)
     assert row["processing_status"] == "FAILED"
     assert row["processing_error"]
+    assert row["chunk_count"] == 0
     assert chunks == []
 
 
@@ -249,6 +251,7 @@ async def test_extra_embedding_failure_mid_pipeline_leaves_failed_state_and_no_c
     row, chunks = await env["state"](mid)
     assert row["processing_status"] == "FAILED"
     assert "simulated provider outage" in row["processing_error"]
+    assert row["chunk_count"] == 0
     assert chunks == []
 
 
@@ -278,3 +281,4 @@ async def test_extra_reingest_failure_mid_pipeline_cleans_stale_chunks(env):
     if row.get("processing_status") != "FAILED":
         pytest.fail(f"Precondition failed: re-ingest expected FAILED status, got {row.get('processing_status')}")
     assert chunks == [], "expected stale chunks to be removed on failed re-ingestion, but old chunks remain"
+    assert row.get("chunk_count") == 0, f"expected chunk_count=0 after failed re-ingestion, got {row.get('chunk_count')}"
