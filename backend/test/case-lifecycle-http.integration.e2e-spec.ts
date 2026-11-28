@@ -599,6 +599,46 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       expect(await caseCount()).toBe(before);
     });
 
+    itDb("BE-015 idempotency: sequential & concurrent retries with same idempotencyKey call AI once and persist one DRAFT case; mismatched payload gets 409", async () => {
+      const before = await caseCount();
+      const key = randomUUID();
+      const matA = randomUUID();
+      const body = { courseId: courseA, materialIds: [matA], topicHint: "Supply chain", numNodes: 2, idempotencyKey: key };
+
+      aiReturns({
+        title: "Idempotent HTTP Case",
+        description: "desc",
+        root_node_index: 0,
+        nodes: [
+          { situation: "Start", options: [{ text: "A", consequence: "ca", next_node_index: 1 }, { text: "B", consequence: "cb", next_node_index: 1 }] },
+          { situation: "End", options: [] },
+        ],
+      });
+
+      const [r1, r2] = await Promise.all([
+        http().post(`/api/v1/cases/generate`).set("Authorization", auth.lectA).send(body),
+        http().post(`/api/v1/cases/generate`).set("Authorization", auth.lectA).send(body),
+      ]);
+      expect(r1.status).toBe(201);
+      expect(r2.status).toBe(201);
+      expect(r1.body.data.id).toBe(r2.body.data.id);
+      expect(await caseCount()).toBe(before + 1);
+      expect(aiCalls()).toBe(1);
+
+      const r3 = await http().post(`/api/v1/cases/generate`).set("Authorization", auth.lectA).send(body);
+      expect(r3.status).toBe(201);
+      expect(r3.body.data.id).toBe(r1.body.data.id);
+      expect(await caseCount()).toBe(before + 1);
+      expect(aiCalls()).toBe(1);
+
+      const conflict = await http()
+        .post(`/api/v1/cases/generate`)
+        .set("Authorization", auth.lectA)
+        .send({ ...body, topicHint: "Changed topic" });
+      expect(conflict.status).toBe(409);
+      expect(aiCalls()).toBe(1);
+    });
+
     itDb("a student or a non-owner lecturer cannot generate (403); the AI service is not called", async () => {
       const send = (who: string) =>
         http().post(`/api/v1/cases/generate`).set("Authorization", who).send({ courseId: courseA, materialIds: [randomUUID()] });
