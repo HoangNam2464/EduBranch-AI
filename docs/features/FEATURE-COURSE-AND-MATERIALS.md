@@ -102,7 +102,7 @@ Enables university lecturers to organize their teaching domains by establishing 
   - `course_id`: UUID NOT NULL REFERENCES courses(id)
   - `uploaded_by`: UUID NOT NULL REFERENCES users(id)
   - `processing_status`: VARCHAR(50) DEFAULT 'PENDING' (`PENDING`, `PROCESSING`, `COMPLETED`, `FAILED`)
-  - `chunk_count`: INTEGER
+  - `chunk_count`: INTEGER — current number of rows in `document_chunks` for this material; reset atomically to `0` together with chunk cleanup on any `FAILED` transition (PO Option 1, 2026-11-28)
   - `processing_error`: TEXT
 
 ---

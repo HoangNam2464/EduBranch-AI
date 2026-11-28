@@ -81,8 +81,13 @@ class TestIngestionEndpoint:
             patch("app.ingestion.service._get_db_connection") as mock_conn_factory,
         ):
             mock_conn = AsyncMock()
-            mock_conn.execute = AsyncMock()
+            mock_conn.execute = AsyncMock(return_value="DELETE 0")  # asyncpg returns a status string
             mock_conn.close = AsyncMock()
+            # asyncpg: transaction() is a plain call that returns an async context manager.
+            tx = MagicMock()
+            tx.__aenter__ = AsyncMock(return_value=None)
+            tx.__aexit__ = AsyncMock(return_value=False)
+            mock_conn.transaction = MagicMock(return_value=tx)
             mock_conn_factory.return_value = mock_conn
 
             transport = ASGITransport(app=app)

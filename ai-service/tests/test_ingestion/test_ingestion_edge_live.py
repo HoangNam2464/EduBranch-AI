@@ -18,9 +18,9 @@ or unextractable files, a missing object, an embedding failure mid-pipeline.
 Correction / Defect Note (Finding M5):
   - Fresh ingestion: failure leaves FAILED status and zero chunks in document_chunks.
   - Re-ingestion: if re-ingesting an already-ingested document fails mid-pipeline (e.g. embedding failure),
-    teaching_materials status is updated to FAILED, but the previous chunks remain in document_chunks
-    (defect: retriever.py does not filter on processing_status, allowing stale chunks to be retrieved).
-    Asserted via strict xfail in test_extra_reingest_failure_mid_pipeline_cleans_stale_chunks.
+    teaching_materials status is updated to FAILED and the previous chunks are removed in the same transaction
+    (QA-005 fix in app/ingestion/service.py _mark_failed; the retriever does not filter on processing_status, so a
+    FAILED material must hold no chunks). Asserted in test_extra_reingest_failure_mid_pipeline_cleans_stale_chunks.
 
 Skips automatically when PostgreSQL or MinIO are not reachable (L3).
 """
@@ -229,6 +229,7 @@ async def test_ac2_empty_or_unextractable_files_fail_without_false_success(env, 
     row, chunks = await env["state"](mid)
     assert row["processing_status"] == "FAILED", label
     assert row["processing_error"], label
+    assert row["chunk_count"] == 0, label
     assert chunks == [], label
 
 
@@ -239,6 +240,7 @@ async def test_extra_missing_minio_object_fails_cleanly(env):
     row, chunks = await env["state"](mid)
     assert row["processing_status"] == "FAILED"
     assert row["processing_error"]
+    assert row["chunk_count"] == 0
     assert chunks == []
 
 
@@ -249,6 +251,7 @@ async def test_extra_embedding_failure_mid_pipeline_leaves_failed_state_and_no_c
     row, chunks = await env["state"](mid)
     assert row["processing_status"] == "FAILED"
     assert "simulated provider outage" in row["processing_error"]
+    assert row["chunk_count"] == 0
     assert chunks == []
 
 
@@ -260,12 +263,8 @@ async def test_extra_reingest_replaces_chunks_instead_of_duplicating(env):
     assert first["chunk_count"] == second["chunk_count"] == len(chunks) == row["chunk_count"]
 
 
-@pytest.mark.xfail(
-    strict=True,
-    raises=AssertionError,
-    reason="DEFECT (QA-005): re-ingest failure mid-pipeline (e.g. embedding failure) leaves material in FAILED "
-    "state but preserves old document_chunks rows, making stale chunks retrievable because retriever.py does not filter on processing_status.",
-)
+# QA-005 defect fixed in app/ingestion/service.py (_mark_failed): a failed re-ingest removes the old chunks
+# together with the FAILED status, so a FAILED material is never retrievable (was a strict xfail).
 async def test_extra_reingest_failure_mid_pipeline_cleans_stale_chunks(env):
     mid, key = await env["material"](_docx(UNICODE_PARAS), DOCX)
     first = await _ingest(mid, key, env["course"], DOCX, _provider())
@@ -281,6 +280,5 @@ async def test_extra_reingest_failure_mid_pipeline_cleans_stale_chunks(env):
     row, chunks = await env["state"](mid)
     if row.get("processing_status") != "FAILED":
         pytest.fail(f"Precondition failed: re-ingest expected FAILED status, got {row.get('processing_status')}")
-    # Defect: old chunks remain while status is FAILED.
-    # Expecting stale chunks to be removed on failed re-ingestion raises AssertionError:
     assert chunks == [], "expected stale chunks to be removed on failed re-ingestion, but old chunks remain"
+    assert row.get("chunk_count") == 0, f"expected chunk_count=0 after failed re-ingestion, got {row.get('chunk_count')}"
