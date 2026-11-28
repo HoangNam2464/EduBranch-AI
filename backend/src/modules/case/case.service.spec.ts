@@ -192,22 +192,16 @@ describe('CaseService', () => {
           ],
         },
       ],
-    ])('rejects %s with 502 BadGatewayException, rolls back and records failure audit (E)', async (_label, payload) => {
+    ])('rejects %s with 502 BadGatewayException before opening DB transaction and records failure audit (E)', async (_label, payload) => {
       mockAiClientService.generateCase.mockResolvedValue(payload);
       mockDbService.query
         .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] })
         .mockResolvedValueOnce({ rows: [{ id: 'course-1', is_active: true }] });
-      mockDbClient.query
-        .mockResolvedValueOnce(undefined) // BEGIN
-        .mockResolvedValueOnce({ rows: [{ is_active: true }] }); // FOR SHARE
 
       await expect(
         service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }),
       ).rejects.toThrow(BadGatewayException);
-      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
-      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
-      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO cases'), expect.anything());
-      expect(mockDbClient.release).toHaveBeenCalled();
+      expect(mockDbService.getClient).not.toHaveBeenCalled();
       expect(mockAuditService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'CASE_GENERATION_FAILED',

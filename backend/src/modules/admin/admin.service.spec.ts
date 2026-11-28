@@ -119,11 +119,28 @@ describe("AdminService — status and role (BE-032)", () => {
       expect(listParams).toContainEqual(["BAD_PASSWORD"]);
     });
 
-    it("matches English event titles without adding redundant clauses when nothing matches", async () => {
+    it("matches English event titles including hyphenated Sign-in labels and 'Account is locked'", async () => {
       const { service, db } = makeLogDb();
       await service.listLogs({ search: "Case generated" });
       const [, params] = db.query.mock.calls[0] as [string, unknown[]];
       expect(params).toContainEqual(["CASE_GENERATED"]);
+
+      db.query.mockClear();
+      await service.listLogs({ search: "Sign-in failed" });
+      const [signInFailSql, signInFailParams] = db.query.mock.calls[0] as [string, unknown[]];
+      expect(signInFailSql).toContain("ae.event_type = ANY($2::text[])");
+      expect(signInFailParams).toContainEqual(["LOGIN_FAILED"]);
+
+      db.query.mockClear();
+      await service.listLogs({ search: "Sign-in succeeded" });
+      const [, signInOkParams] = db.query.mock.calls[0] as [string, unknown[]];
+      expect(signInOkParams).toContainEqual(["LOGIN_SUCCEEDED"]);
+
+      db.query.mockClear();
+      await service.listLogs({ search: "Account is locked" });
+      const [lockedSql, lockedParams] = db.query.mock.calls[0] as [string, unknown[]];
+      expect(lockedSql).toContain("ae.meta->>'reason' = ANY($2::text[])");
+      expect(lockedParams).toContainEqual(["ACCOUNT_LOCKED"]);
 
       db.query.mockClear();
       await service.listLogs({ search: "no_label_match_xyz" });

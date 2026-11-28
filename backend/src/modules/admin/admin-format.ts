@@ -5,8 +5,8 @@ import { AUDIT_EVENT_TYPES, type AuditEventType } from "../../common/audit/audit
  */
 
 const EVENT_SEARCH_LABELS: Record<AuditEventType, string[]> = {
-  LOGIN_SUCCEEDED: ["đăng nhập thành công", "sign in succeeded", "signed in"],
-  LOGIN_FAILED: ["đăng nhập thất bại", "sign in failed", "login failed"],
+  LOGIN_SUCCEEDED: ["đăng nhập thành công", "sign-in succeeded", "sign in succeeded", "signed in"],
+  LOGIN_FAILED: ["đăng nhập thất bại", "sign-in failed", "sign in failed", "login failed"],
   USER_LOCKED: ["khóa tài khoản", "account locked"],
   USER_UNLOCKED: ["mở khóa tài khoản", "account unlocked"],
   USER_ROLE_CHANGED: ["đổi vai trò người dùng", "user role changed"],
@@ -20,12 +20,12 @@ const EVENT_SEARCH_LABELS: Record<AuditEventType, string[]> = {
 const LOGIN_REASON_SEARCH_LABELS: Record<string, string[]> = {
   UNKNOWN_ACCOUNT: ["tài khoản không tồn tại", "unknown account"],
   BAD_PASSWORD: ["sai mật khẩu", "wrong password", "bad password"],
-  ACCOUNT_LOCKED: ["tài khoản đang bị khóa", "account locked"],
+  ACCOUNT_LOCKED: ["tài khoản đang bị khóa", "account is locked", "account locked"],
 };
 
 /** Audit event types whose Vietnamese or English label contains `search` (case-insensitive, EBA-114). */
 export function matchingAuditEventTypes(search: string): AuditEventType[] {
-  const needle = search.trim().toLowerCase();
+  const needle = (search ?? "").trim().toLowerCase();
   if (!needle) return [];
   return AUDIT_EVENT_TYPES.filter((code) =>
     EVENT_SEARCH_LABELS[code].some((label) => label.includes(needle)),
@@ -34,7 +34,7 @@ export function matchingAuditEventTypes(search: string): AuditEventType[] {
 
 /** Login failure reason codes whose Vietnamese or English label contains `search` (case-insensitive, EBA-114). */
 export function matchingLoginFailureReasons(search: string): string[] {
-  const needle = search.trim().toLowerCase();
+  const needle = (search ?? "").trim().toLowerCase();
   if (!needle) return [];
   return Object.entries(LOGIN_REASON_SEARCH_LABELS)
     .filter(([, labels]) => labels.some((label) => label.includes(needle)))

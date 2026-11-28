@@ -609,6 +609,31 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       }
     });
 
+    itDb("null-target leaf options allow generating and publishing a case without empty-option nodes (EBA-117)", async () => {
+      aiReturns({
+        title: "Null-Edge Terminal Case",
+        description: "Ends via next_node_index: null",
+        root_node_index: 0,
+        nodes: [
+          {
+            situation: "Initial choice",
+            options: [
+              { text: "End immediately A", consequence: "Done A", next_node_index: null },
+              { text: "End immediately B", consequence: "Done B", next_node_index: null },
+            ],
+          },
+        ],
+      });
+      const gen = await generate();
+      expect(gen.status).toBe(201);
+      const caseId = gen.body.data.id;
+      expect((await http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status: "REVIEWED" })).status).toBe(200);
+      expect((await http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status: "APPROVED" })).status).toBe(200);
+      const pub = await http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status: "PUBLISHED" });
+      expect(pub.status).toBe(200);
+      expect(pub.body.data.status).toBe("PUBLISHED");
+    });
+
     itDb("a student or a non-owner lecturer cannot generate (403); the AI service is not called", async () => {
       const send = (who: string) =>
         http().post(`/api/v1/cases/generate`).set("Authorization", who).send({ courseId: courseA, materialIds: [randomUUID()] });

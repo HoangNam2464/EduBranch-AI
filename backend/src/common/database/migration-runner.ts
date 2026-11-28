@@ -207,7 +207,7 @@ export class MigrationRunner {
     const skipped: string[] = [];
     const onClientError = (err: Error) => {
       destroyClient = true;
-      this.logger.error(`PostgreSQL migration connection error: ${err.message}`);
+      this.logger.error(`PostgreSQL migration connection error: ${err?.message ?? String(err)}`);
     };
     if (typeof client.on === "function") {
       client.on("error", onClientError);

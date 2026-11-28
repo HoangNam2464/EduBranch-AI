@@ -68,6 +68,15 @@ export class CaseService {
       throw err;
     }
 
+    const nodes = Array.isArray(aiResponse?.nodes) ? aiResponse.nodes : [];
+    const rootIndex = aiResponse?.root_node_index;
+    const treeError = findGeneratedTreeViolation(rootIndex, nodes);
+    if (treeError) {
+      const err = new BadGatewayException(treeError);
+      await this.recordGenerationFailure(lecturerId, courseId, startedAt, err);
+      throw err;
+    }
+
     const client = await this.db.getClient();
     try {
       await client.query("BEGIN");
@@ -80,13 +89,6 @@ export class CaseService {
       );
       if (lockRes.rows[0]?.is_active !== true) {
         throw new ConflictException("Course is archived");
-      }
-
-      const nodes = Array.isArray(aiResponse?.nodes) ? aiResponse.nodes : [];
-      const rootIndex = aiResponse?.root_node_index;
-      const treeError = findGeneratedTreeViolation(rootIndex, nodes);
-      if (treeError) {
-        throw new BadGatewayException(treeError);
       }
 
       const caseId = randomUUID();
@@ -601,7 +603,11 @@ export class CaseService {
         }
 
         const terminalRes = await this.db.query(
-          "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
+          `SELECT (
+             (SELECT COUNT(*)::int FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE) +
+             (SELECT COUNT(*)::int FROM case_options co JOIN case_nodes cn ON co.node_id = cn.id
+              WHERE cn.case_id = $1 AND co.next_node_id IS NULL)
+           ) AS count`,
           [caseId],
         );
         const terminalCount = parseInt(terminalRes.rows[0]?.count || "0", 10);
