@@ -179,3 +179,24 @@ Order convention: A = keep the approved Figma as drawn; B = follow the earlier P
 | **QG5** | PR checks | Every GitHub Actions run on the PR is green, plus manual test of the PR head. | Downstream |
 | **QG6** | Merge | Valid Code Owner/PO approval; merge by approved method; no bypass. | Downstream |
 | **QG7** | Post-merge | QG1 + QG3 re-run on `develop` at the merge SHA. | Downstream |
+
+---
+
+## 5. Sync Reality Check (2026-11-28, Recovery Wave 1C)
+
+> Đối chiếu thực tế với `origin/develop` (`59a9aa3`) và PR #101 (`fix/fe-screen-quality` @ `0be0268`, **OPEN**). Không đánh dấu `Done` hoặc `APPROVED` khi PR chưa merge và PO chưa chốt mục mở.
+
+1. **Những phần đã có trong code thực tế (`develop` + PR #101 OPEN)**:
+   - `FE-023` đã merge (`src/components/ds/`, `src/components/feedback/`, `src/routes/paths.ts`, `src/lib/i18n.ts`, `frontend/tests/visual/`).
+   - `BE-PROP-2` (`PATCH /courses/:courseId/archive`, C1-B / OPD-014) đã merge vào `develop`; `CoursesPage.tsx` gọi `archiveCourse` thay vì `DELETE`.
+   - `CoursesPage.tsx` (`02.1–02.3`), `MaterialsPage.tsx` (`02.4–02.6` — bỏ fake files, sửa route `DELETE /materials/:id` theo Q5, lỗi upload/delete, bộ lọc & toast theo Q3) và `RagSourceInspectorPage.tsx` (`02.7` — bỏ `MOCK_CHUNKS`/`OTHER_DOCUMENTS`, hiển thị `EmptyState`/thông báo chưa có API chunks) đã triển khai; riêng bản sửa QA-R4 của `FE-003..005` & `FE-026` nằm trên **PR #101** (`0be0268`, OPEN).
+2. **Khoảng trống & sai lệch còn lại (chưa đạt QG4 / QG7)**:
+   - **`BE-PROP-1` (`GET /materials/:id/chunks`)**: Backend chưa triển khai → `RagSourceInspectorPage.tsx` chưa đọc được nội dung chunk thật (vẫn giữ trạng thái chưa khả dụng).
+   - **Kiểm kê L10n Registry (`EBA-118`, kết quả đo thực tế trên `origin/develop` `59a9aa3`, giữ nguyên trạng thái `PROPOSED` chưa duyệt `APPROVED`)**:
+     - Tổng hợp `node scripts/l10n-approval-check.mjs`: **`1999` en keys**, **`706` registered** (**`676 PROPOSED`** khớp với `en.json` + **`30 STALE`**), **`0 APPROVED`**, **`1323 UNREGISTERED`**.
+     - **`30 STALE`** (toàn bộ nằm ở `specs/001-fe026-courses-materials/l10n-copy-review.md`): `courses.*` (`14`) và `materials.*` (`16`) vì triển khai thực tế dùng namespace `g2.*` trong `frontend/src/locales/{vi,en}.json`.
+     - **Phân bổ `676 PROPOSED`**: `g6` (`222`), `g4` (`184`), `g5` (`84`), `rubric` (`67`), `caseReview` (`46`), `g1` (`32`), `g2` (`23`), `g3` (`9`), `common` (`3`), `shell` (`3`), `nav` (`2`), `states` (`1`).
+     - **Phân bổ `1323 UNREGISTERED`**: `g5` (`265`), `g1` (`225`), `g3` (`211`), `g2` (`166`), `caseReview` (`115`), `g4` (`91`), `g6` (`70`), `shell` (`52`), `states` (`44`), `ragInspector` (`38`), `nav` (`20`), `authRecovery` (`14`), `errors` (`10`), `common` (`2`).
+     - Kiểm thử công cụ `node --test scripts/l10n-approval-check.test.mjs`: **`26/26 PASS`**; chế độ `--release` chưa thể pass cho tới khi PR #101 merge, registry gộp đủ key chưa đăng ký/stale và PO duyệt `APPROVED`.
+   - **Responsive ngoài batch PR #101**: `RagSourceInspectorPage.tsx` phụ đề KPI bị cắt ~44px tại 1024px (`FE-006`) và `test:visual` 1440px chưa chạy lại trên bản mới.
+   - **Quyết định PO mở giữ nguyên**: `C1-F1`, `C2`, `C3` (chưa chốt; giữ `BLOCKED-ON-C2` / `BLOCKED-ON-C3` trên phần phụ thuộc).

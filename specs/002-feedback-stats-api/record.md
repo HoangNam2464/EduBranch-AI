@@ -129,3 +129,11 @@ Merge SHA `55eb9ef` (PR #76), isolated worktree, fresh database `qg7_55eb9ef` (P
 | `QA_LIVE=1 npx jest -c test/jest-e2e.json feedback-stats.live --runInBand` | 0 | 7/7 |
 
 QG3 not applicable (backend). Result: QG7 PASS for BE-025, BE-026, BE-028; Jira EBA-72, EBA-73, EBA-75 moved to Done with this evidence. The FE fixes in PRs #68–#70 are not covered here; their Visual QA (T054) is still required before merge.
+
+---
+
+## 9. Sync Reality Check (2026-11-28, Recovery Wave 1C)
+
+- **Backend**: `BE-025`, `BE-026`, `BE-028` đã chạy live SQL (`feedback-stats.live.spec.ts` `7/7` PASS); ngoài ra **PR #99** (`fix/statistics-aggregation-tests` @ `f772068`, **OPEN**) bổ sung real-HTTP aggregation test cho `BRANCHING_STUDY` (`3/3` PASS trên PostgreSQL 16).
+- **Frontend (`T050–T053`: `FE-018`, `FE-019`, `FE-020`, `FE-022`)**: Đã vào `develop` trước đó và được sửa tiếp các lỗi layout/i18n/state trong **PR #101** (`fix/fe-screen-quality` @ `0be0268`, **OPEN** — VQA Round 4 PASS cho `FE-019`, `FE-020`, `FE-022` theo báo cáo kèm điều kiện).
+- **Điều kiện còn mở**: PR #99 & PR #101 chưa merge `develop`; `T054` (`npm run test:visual` 1440px), chuẩn duyệt copy EN `APPROVED`, `D-04`, `OPD-010` và route convention `/lecturer/feedback` vs `/cases/:caseId/feedback` vẫn mở chờ PO.
