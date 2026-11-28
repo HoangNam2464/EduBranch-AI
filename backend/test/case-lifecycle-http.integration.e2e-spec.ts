@@ -543,6 +543,33 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       expect(aiCalls()).toBe(1);
     });
 
+    itDb("null-target leaf options allow generating and publishing a case without empty-option nodes (EBA-117)", async () => {
+      aiReturns({
+        title: "Null-Edge Terminal Case",
+        description: "Ends via next_node_index: null",
+        root_node_index: 0,
+        nodes: [
+          {
+            situation: "Initial choice",
+            options: [
+              { text: "End immediately A", consequence: "Done A", next_node_index: null },
+              { text: "End immediately B", consequence: "Done B", next_node_index: null },
+            ],
+          },
+        ],
+      });
+      const gen = await generate();
+      expect(gen.status).toBe(201);
+      const caseId = gen.body.data.id;
+      const setStatus = (status: string) =>
+        http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status });
+      expect((await setStatus("REVIEWED")).status).toBe(200);
+      expect((await setStatus("APPROVED")).status).toBe(200);
+      const pub = await setStatus("PUBLISHED");
+      expect(pub.status).toBe(200);
+      expect(pub.body.data.status).toBe("PUBLISHED");
+    });
+
     itDb("an AI service error (503) gives the lecturer 502 without the AI detail, stores no case, one call", async () => {
       const before = await caseCount();
       fetchStub.mockImplementation(async () => ({ ok: false, status: 503, text: async () => "provider overloaded: secret detail" }));
@@ -607,31 +634,6 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
         const nodes = await q(`SELECT COUNT(*)::int AS n FROM case_nodes n JOIN cases c ON c.id = n.case_id WHERE c.title = 'Broken'`);
         expect(nodes.rows[0].n).toBe(0);
       }
-    });
-
-    itDb("null-target leaf options allow generating and publishing a case without empty-option nodes (EBA-117)", async () => {
-      aiReturns({
-        title: "Null-Edge Terminal Case",
-        description: "Ends via next_node_index: null",
-        root_node_index: 0,
-        nodes: [
-          {
-            situation: "Initial choice",
-            options: [
-              { text: "End immediately A", consequence: "Done A", next_node_index: null },
-              { text: "End immediately B", consequence: "Done B", next_node_index: null },
-            ],
-          },
-        ],
-      });
-      const gen = await generate();
-      expect(gen.status).toBe(201);
-      const caseId = gen.body.data.id;
-      expect((await http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status: "REVIEWED" })).status).toBe(200);
-      expect((await http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status: "APPROVED" })).status).toBe(200);
-      const pub = await http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status: "PUBLISHED" });
-      expect(pub.status).toBe(200);
-      expect(pub.body.data.status).toBe("PUBLISHED");
     });
 
     itDb("a student or a non-owner lecturer cannot generate (403); the AI service is not called", async () => {

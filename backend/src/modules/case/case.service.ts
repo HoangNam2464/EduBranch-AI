@@ -68,15 +68,6 @@ export class CaseService {
       throw err;
     }
 
-    const nodes = Array.isArray(aiResponse?.nodes) ? aiResponse.nodes : [];
-    const rootIndex = aiResponse?.root_node_index;
-    const treeError = findGeneratedTreeViolation(rootIndex, nodes);
-    if (treeError) {
-      const err = new BadGatewayException(treeError);
-      await this.recordGenerationFailure(lecturerId, courseId, startedAt, err);
-      throw err;
-    }
-
     const client = await this.db.getClient();
     try {
       await client.query("BEGIN");
@@ -89,6 +80,13 @@ export class CaseService {
       );
       if (lockRes.rows[0]?.is_active !== true) {
         throw new ConflictException("Course is archived");
+      }
+
+      const nodes = Array.isArray(aiResponse?.nodes) ? aiResponse.nodes : [];
+      const rootIndex = aiResponse?.root_node_index;
+      const treeError = findGeneratedTreeViolation(rootIndex, nodes);
+      if (treeError) {
+        throw new BadGatewayException(treeError);
       }
 
       const caseId = randomUUID();

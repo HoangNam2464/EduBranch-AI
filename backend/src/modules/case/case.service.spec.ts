@@ -192,16 +192,22 @@ describe('CaseService', () => {
           ],
         },
       ],
-    ])('rejects %s with 502 BadGatewayException before opening DB transaction and records failure audit (E)', async (_label, payload) => {
+    ])('rejects %s with 502 BadGatewayException, rolls back and records failure audit (E)', async (_label, payload) => {
       mockAiClientService.generateCase.mockResolvedValue(payload);
       mockDbService.query
         .mockResolvedValueOnce({ rows: [{ id: 'lecturer-1' }] })
         .mockResolvedValueOnce({ rows: [{ id: 'course-1', is_active: true }] });
+      mockDbClient.query
+        .mockResolvedValueOnce(undefined) // BEGIN
+        .mockResolvedValueOnce({ rows: [{ is_active: true }] }); // FOR SHARE
 
       await expect(
         service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'] }),
       ).rejects.toThrow(BadGatewayException);
-      expect(mockDbService.getClient).not.toHaveBeenCalled();
+      expect(mockDbClient.query).toHaveBeenCalledWith('ROLLBACK');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith('COMMIT');
+      expect(mockDbClient.query).not.toHaveBeenCalledWith(expect.stringContaining('INSERT INTO cases'), expect.anything());
+      expect(mockDbClient.release).toHaveBeenCalled();
       expect(mockAuditService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'CASE_GENERATION_FAILED',
@@ -439,6 +445,9 @@ describe('CaseService', () => {
       expect(result).toEqual({ id: 'case-1', status: 'PUBLISHED' });
       expect(mockDbClient.query).toHaveBeenCalledWith('SELECT status FROM cases WHERE id = $1 FOR UPDATE', ['case-1']);
       expect(mockDbClient.query).toHaveBeenCalledWith('COMMIT');
+      const terminalSql = mockDbService.query.mock.calls[1][0] as string;
+      expect(terminalSql).toContain('is_terminal = TRUE');
+      expect(terminalSql).toContain('next_node_id IS NULL');
     });
 
     it('should allow valid transition to PUBLISHED for REVIEW_STUDY case without root node when context and problem exist', async () => {
