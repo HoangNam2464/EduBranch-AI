@@ -92,8 +92,8 @@ function ReviewContent({
   const outcomeIndex = steps.length;
 
   return (
-    <div className="flex items-start gap-5">
-      <div className="flex w-[379px] shrink-0 flex-col gap-5">
+    <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
+      <div className="flex w-full flex-col gap-5 xl:w-[379px] xl:shrink-0">
         <Card className="gap-4">
           <CaseCover badge={t("g5.common.attemptN", { n: attempt.attemptNumber })} icon={GitBranch} strokeWidth={1.5} />
           <h2 className="text-[16px] leading-6 font-normal text-ink">{t("g5.review.mapTitle")}</h2>
@@ -309,8 +309,8 @@ function StepBody({
             )}
           </div>
         </SubPanel>
-        <div className="flex items-center gap-3 rounded-[9px] bg-surface p-4">
-          <AiOriginBadge type="assisted">{t("g5.common.aiAssisted")}</AiOriginBadge>
+        <div className="flex flex-wrap items-center gap-3 rounded-[9px] bg-surface p-4 sm:flex-nowrap">
+          <AiOriginBadge type="assisted" className="shrink-0 whitespace-nowrap">{t("g5.common.aiAssisted")}</AiOriginBadge>
           <span className="min-w-0 flex-1 text-[12px] leading-4 text-ink-secondary">{t("g5.review.challengeNote")}</span>
           <button
             type="button"

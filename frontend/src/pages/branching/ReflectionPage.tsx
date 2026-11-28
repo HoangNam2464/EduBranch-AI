@@ -113,7 +113,7 @@ function ReflectionForm({ ctx, onSubmitted }: { ctx: AttemptContext; onSubmitted
 
   return (
     <>
-      <div className="flex items-start gap-5">
+      <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
         <Card className="min-w-0 flex-1 gap-6">
           <CardTitle>
             <label htmlFor="reflection-text">{t("g5.reflection.yourReflection")}</label>
@@ -140,7 +140,7 @@ function ReflectionForm({ ctx, onSubmitted }: { ctx: AttemptContext; onSubmitted
           <ActionError message={error} />
         </Card>
 
-        <div className="flex w-[478px] shrink-0 flex-col gap-5">
+        <div className="flex w-full flex-col gap-5 xl:w-[478px] xl:shrink-0">
           <Card className="gap-[23px]">
             <CardTitle>{t("g5.reflection.attemptCard")}</CardTitle>
             <KeyValueList
@@ -212,8 +212,8 @@ function Submitted({ ctx }: { ctx: AttemptContext }) {
   }
 
   return (
-    <div className="flex items-start gap-5 pb-1">
-      <aside className="flex w-[379px] shrink-0 flex-col gap-2 rounded-eb-xl bg-primary p-2">
+    <div className="flex flex-col gap-5 pb-1 xl:flex-row xl:items-start">
+      <aside className="flex w-full flex-col gap-2 rounded-eb-xl bg-primary p-2 xl:w-[379px] xl:shrink-0">
         <div className="relative flex flex-col items-center px-0 py-3 text-center">
           <StatusPill tone="success" icon={CircleCheck} iconStrokeWidth={0.85} className="absolute top-3 left-3">
             {t("g5.common.submitted")}
@@ -274,7 +274,7 @@ function Submitted({ ctx }: { ctx: AttemptContext }) {
           </div>
         </Card>
         <div className="flex items-start gap-5">
-          <Card className="w-[379px] shrink-0 gap-5">
+          <Card className="w-full max-w-[379px] gap-5 xl:w-[379px] xl:shrink-0">
             <CardTitle>{t("g5.reflection.noScoreTitle")}</CardTitle>
             <p className="text-[14px] leading-5 text-ink-secondary">{t("g5.reflection.noScoreBody")}</p>
           </Card>
