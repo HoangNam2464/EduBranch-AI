@@ -51,5 +51,5 @@ CONSTRAINT chk_feedback_one_target CHECK (
 ---
 
 ## 4. Implementation Status
-**Implemented**
-*(Backend `lecturer-feedback/` `BE-026` merged in PR #76 and frontend feedback queue/detail screens merged in PR #68 / #69 on `develop`; MVP scope does not imply complete sign-off — route convention between `/lecturer/feedback` overview and `/lecturer/cases/:caseId/feedback` plus open elements `D-04` and `OPD-010` remain `OPEN PO DECISION / UNRESOLVED`.)*
+**Implemented** *(nhánh `fix/fe-screen-quality`, chưa merge `develop`)*
+*(Backend `lecturer-feedback/` `BE-026` merged in PR #76 and frontend feedback queue/detail screens merged in PR #68 / #69 on `develop`; trên nhánh cục bộ `fix/fe-screen-quality` (`174e69b`), `FE-019` đã PASS Visual QA Round 4 cho bộ lọc chế độ học, bảng hàng đợi ở 1024–1920px, dòng phụ `#attempt · date`, nút gửi 1 dòng và pill không rớt dòng. Các mục mở `D-04`, `OPD-010` và quy ước route `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback` vẫn giữ `OPEN PO DECISION / UNRESOLVED`.)*

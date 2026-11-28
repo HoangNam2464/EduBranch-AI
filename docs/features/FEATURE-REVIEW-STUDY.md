@@ -59,5 +59,5 @@ flowchart TD
 ---
 
 ## 5. Implementation Status
-**Implemented**
-*(Backend `review-study/` `BE-025` merged in PR #76 and frontend `ReviewStudyPage.tsx` / `ReviewFeedbackPage.tsx` merged in PR #63 / #69 on `develop`; Visual QA & live E2E suites tracked in Jira.)*
+**Implemented** *(nhánh `fix/fe-screen-quality`, chưa merge `develop`)*
+*(Backend `review-study/` `BE-025` merged in PR #76 and frontend `ReviewStudyPage.tsx` / `ReviewFeedbackPage.tsx` merged in PR #63 / #69 on `develop`; trên nhánh cục bộ `fix/fe-screen-quality` (`174e69b`), `FE-020` đã PASS Visual QA Round 4 cho khung `StateCard` 403/404/500, email hỗ trợ dòng lỗi inline, tiêu đề ngôi thứ hai và badge không còn raw enum.)*
