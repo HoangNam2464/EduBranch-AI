@@ -47,6 +47,9 @@ export function AdminLogsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Rule F2: KPI cards show "—" until real metrics arrive, and again after a failed load — never a placeholder 0.
+  const [metricsReady, setMetricsReady] = useState(false);
+  const kpi = (value: number) => (metricsReady && !loadError ? value : "—");
   const [reloadToken, setReloadToken] = useState(0);
 
   // Filters
@@ -87,6 +90,7 @@ export function AdminLogsPage() {
         setTotal(Number.isFinite(res.total) ? res.total : 0);
         if (res.metrics) {
           setMetrics(res.metrics);
+          setMetricsReady(true);
         }
         setLoading(false);
       })
@@ -108,22 +112,22 @@ export function AdminLogsPage() {
         <MetricCard
           icon={Calendar}
           label={t("g6.logs.kpi.eventsToday")}
-          value={metrics.eventsToday}
+          value={kpi(metrics.eventsToday)}
         />
         <MetricCard
           icon={LogIn}
           label={t("g6.logs.kpi.loginCount")}
-          value={metrics.loginCount}
+          value={kpi(metrics.loginCount)}
         />
         <MetricCard
           icon={Sparkles}
           label={t("g6.logs.kpi.aiGenerationsCount")}
-          value={metrics.aiGenerationsCount}
+          value={kpi(metrics.aiGenerationsCount)}
         />
         <MetricCard
           icon={AlertTriangle}
           label={t("g6.logs.kpi.errorsCount")}
-          value={metrics.errorsCount}
+          value={kpi(metrics.errorsCount)}
         />
       </div>
 

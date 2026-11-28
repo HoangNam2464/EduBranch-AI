@@ -195,7 +195,7 @@ export function ReviewFeedbackPage() {
   // Unauthorized Access State (403 Forbidden)
   if (state.status === "unauthorized") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center py-12">
+      <div className="flex flex-1 flex-col py-12">
         <EmptyState
           icon={ShieldAlert}
           title={t("g5.feedback.unauthorizedTitle")}
@@ -206,7 +206,6 @@ export function ReviewFeedbackPage() {
             icon: ArrowLeft,
           }}
           actionVariant="primary"
-          className="max-w-md self-center"
         />
       </div>
     );
@@ -215,7 +214,7 @@ export function ReviewFeedbackPage() {
   // Submission Not Found State (404)
   if (state.status === "notFound") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center py-12">
+      <div className="flex flex-1 flex-col py-12">
         <EmptyState
           icon={FileSearch}
           title={t("g5.feedback.notFoundTitle")}
@@ -226,7 +225,6 @@ export function ReviewFeedbackPage() {
             icon: ArrowLeft,
           }}
           actionVariant="secondary"
-          className="max-w-md self-center"
         />
       </div>
     );
@@ -235,11 +233,10 @@ export function ReviewFeedbackPage() {
   // Unexpected Error State
   if (state.status === "error") {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center py-12">
+      <div className="flex flex-1 flex-col py-12">
         <ErrorState
           errorCode={state.errorCode}
           onRetry={handleReload}
-          className="max-w-md self-center"
         />
       </div>
     );

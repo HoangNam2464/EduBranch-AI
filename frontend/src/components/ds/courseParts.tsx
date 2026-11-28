@@ -21,8 +21,8 @@ export function InstructorLine({ name, initials, avatarTone = "subtle" }: { name
         className={cx(
           "inline-flex size-6 shrink-0 select-none items-center justify-center",
           avatarTone === "accent"
-            ? "rounded-eb-sm bg-accent text-[10px] leading-3 font-semibold text-ink-inverse"
-            : "rounded-[7px] bg-selected text-[9px] leading-4 font-normal text-link",
+            ? "rounded-eb-sm bg-accent text-[12px] leading-3 font-semibold text-ink-inverse"
+            : "rounded-[7px] bg-selected text-[12px] leading-4 font-normal text-link",
         )}
       >
         {initials}

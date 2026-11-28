@@ -242,7 +242,7 @@ export function LessonRow({
     >
       <Icon aria-hidden="true" size={12} absoluteStrokeWidth strokeWidth={strokeWidth} className="shrink-0 text-link" />
       <span className="min-w-0 flex-1 text-[12px] leading-4 text-ink">{title}</span>
-      {meta && <span className="shrink-0 text-[10px] leading-[14px] text-ink-muted">{meta}</span>}
+      {meta && <span className="shrink-0 text-[12px] leading-[14px] text-ink-muted">{meta}</span>}
     </span>
   );
 }

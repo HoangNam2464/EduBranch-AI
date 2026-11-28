@@ -67,4 +67,32 @@ describe("AdminDashboardPage (FE-031 / Figma 10.1–10.2)", () => {
     assert.deepEqual(emptyOverview.casesByCourse, []);
     assert.deepEqual(emptyOverview.recentLogs, []);
   });
+
+  it("never shows invented data: no fallback numbers, sample courses, sample log rows or hard-coded week labels (rule F2)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { fileURLToPath } = await import("node:url");
+    const source = readFileSync(fileURLToPath(new URL("./AdminDashboardPage.tsx", import.meta.url)), "utf8");
+    for (const invented of [
+      /\|\|\s*(92|186|6|2)\b/,
+      /Tu\u1ea7n\s*4\d/,
+      /courseCode:\s*"[A-Z]{2}\d{3}"/,
+      /state="UP"/,
+      /indexingProcessing",\s*\{\s*count:\s*\d/,
+      /code === 404 \|\| code === 501/,
+      /description:\s*"[^"]*(n\u1ed9p b\u00e0i|sinh case|\u0110\u0103ng nh\u1eadp th\u1ea5t b\u1ea1i)/,
+    ]) {
+      assert.doesNotMatch(source, invented);
+    }
+  });
+
+  it("health and alerts come from the overview: a missing AI/indexing status stays unknown, alert counts are kept", async () => {
+    const { toAdminOverview } = await import("@/services/mappers/adminOverview");
+    const o = toAdminOverview({
+      attention_alerts: [{ id: "indexing_failure", type: "indexing_failure", message: "indexing_failure", count: 3 }],
+      system_health: { app_server: "UP", database: "UP", indexing_processing_count: 0 },
+    } as never);
+    assert.equal(o.systemHealth?.aiService, undefined);
+    assert.equal(o.systemHealth?.indexing, undefined);
+    assert.equal(o.attentionAlerts[0].count, 3);
+  });
 });

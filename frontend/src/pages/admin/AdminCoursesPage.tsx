@@ -26,6 +26,7 @@ import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
 import { adminService, type AdminCourseItem } from "@/services/adminService";
 import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 import { PATHS } from "@/routes/paths";
+import { cx } from "@/components/ds";
 
 export function AdminCoursesPage() {
   const { t } = useTranslation();
@@ -175,8 +176,8 @@ export function AdminCoursesPage() {
                   >
                     {/* Top Row: Code and Status */}
                     <div className="flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] font-medium text-success-text">
-                        <span className="size-1.5 rounded-full bg-success" />
+                      <span className={cx("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium whitespace-nowrap", c.status === "ARCHIVED" ? "bg-canvas text-ink-secondary" : "bg-success-bg text-success-text")}>
+                        <span className={cx("size-1.5 rounded-full", c.status === "ARCHIVED" ? "bg-ink-muted" : "bg-success")} />
                         {c.status === "ARCHIVED" ? t("g6.courses.status.archived") : t("g6.courses.status.teaching")}
                       </span>
                       <span className="rounded bg-canvas px-2 py-0.5 text-[12px] font-semibold text-ink-secondary">
@@ -282,7 +283,7 @@ export function AdminCoursesPage() {
 
             {/* Course Brand Banner Card */}
             <div className="relative mt-4 flex h-36 flex-col justify-between overflow-hidden rounded-eb-xl bg-primary p-4 text-white">
-              <span className="self-start rounded bg-white/20 px-2 py-0.5 text-[11px] font-bold text-white uppercase backdrop-blur-xs">
+              <span className="self-start rounded bg-white/20 px-2 py-0.5 text-[12px] font-bold text-white uppercase backdrop-blur-xs">
                 {selectedCourse.courseCode}
               </span>
               <div className="flex items-center justify-center">
@@ -299,8 +300,8 @@ export function AdminCoursesPage() {
                 {selectedCourse.lecturerName}
               </p>
               <div className="mt-1">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-success-bg px-2.5 py-0.5 text-[12px] font-medium text-success-text">
-                  <span className="size-1.5 rounded-full bg-success" />
+                <span className={cx("inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium whitespace-nowrap", selectedCourse.status === "ARCHIVED" ? "bg-canvas text-ink-secondary" : "bg-success-bg text-success-text")}>
+                        <span className={cx("size-1.5 rounded-full", selectedCourse.status === "ARCHIVED" ? "bg-ink-muted" : "bg-success")} />
                   {selectedCourse.status === "ARCHIVED" ? t("g6.courses.status.archived") : t("g6.courses.status.teaching")}
                 </span>
               </div>
@@ -309,19 +310,19 @@ export function AdminCoursesPage() {
             {/* 3 Metric Tiles (Figma 10.5) */}
             <div className="mt-4 grid grid-cols-3 gap-2 rounded-eb-lg bg-canvas p-3 text-center">
               <div className="flex flex-col">
-                <span className="text-[11px] text-ink-secondary">{t("g6.courses.detail.attempts")}</span>
+                <span className="text-[12px] text-ink-secondary">{t("g6.courses.detail.attempts")}</span>
                 <span className="text-[16px] font-bold text-ink">
                   {selectedCourse.attemptsCount ?? 0}
                 </span>
               </div>
               <div className="flex flex-col border-x border-line/60">
-                <span className="text-[11px] text-ink-secondary">{t("g6.courses.detail.materials")}</span>
+                <span className="text-[12px] text-ink-secondary">{t("g6.courses.detail.materials")}</span>
                 <span className="text-[16px] font-bold text-ink">
                   {selectedCourse.materialsCount}
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-[11px] text-ink-secondary">{t("g6.courses.detail.cases")}</span>
+                <span className="text-[12px] text-ink-secondary">{t("g6.courses.detail.cases")}</span>
                 <span className="text-[16px] font-bold text-ink">
                   {selectedCourse.casesCount}
                 </span>
@@ -371,7 +372,7 @@ export function AdminCoursesPage() {
                     <FileText size={18} className="text-primary" />
                     <div className="flex flex-col">
                       <span className="font-medium text-ink">{t("g6.courses.detail.navMaterials")}</span>
-                      <span className="text-[11px] text-ink-secondary">
+                      <span className="text-[12px] text-ink-secondary">
                         {t("g6.courses.detail.navMaterialsSub", {
                           count: selectedCourse.materialsCount,
                           ready: selectedCourse.materialsReady,
@@ -393,7 +394,7 @@ export function AdminCoursesPage() {
                     <GitBranch size={18} className="text-primary" />
                     <div className="flex flex-col">
                       <span className="font-medium text-ink">{t("g6.courses.detail.navCases")}</span>
-                      <span className="text-[11px] text-ink-secondary">
+                      <span className="text-[12px] text-ink-secondary">
                         {t("g6.courses.detail.navCasesSub", { count: selectedCourse.casesCount })}
                       </span>
                     </div>

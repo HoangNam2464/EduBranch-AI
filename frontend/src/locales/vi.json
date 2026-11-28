@@ -882,7 +882,7 @@
       "statusProcessing": "Đang xử lý",
       "statusFailed": "Lập chỉ mục thất bại",
       "statusFailedReason": "Không đọc được nội dung tệp",
-      "retry": "Thử lại",
+      "retry": "Tải lên lại",
       "openSources": "Xem đoạn trích của {{name}}",
       "delete": "Xóa {{name}}",
       "noMaterials": "Chưa có tài liệu nào. Tải tài liệu lên để AI có nguồn khi sinh case.",
@@ -914,6 +914,19 @@
         "REVIEWED": "Đã rà soát",
         "APPROVED": "Đã phê duyệt",
         "PUBLISHED": "Đã xuất bản"
+      },
+      "filterStatus": "Lọc theo trạng thái xử lý",
+      "filterAllStatuses": "Mọi trạng thái",
+      "filterType": "Lọc theo loại tệp",
+      "filterAllTypes": "Mọi loại tệp",
+      "noFilterMatch": "Không có tài liệu khớp bộ lọc.",
+      "reuploadNotice": "Bạn đang tải lại «{{name}}». Tệp mới sẽ được lưu thành một tài liệu mới; tài liệu lỗi cũ vẫn được giữ cho đến khi bạn xóa.",
+      "toast": {
+        "deleted": "Đã xóa tài liệu.",
+        "uploaded_one": "Đã tải lên {{count}} tài liệu.",
+        "uploaded_other": "Đã tải lên {{count}} tài liệu.",
+        "uploadFailed_one": "{{count}} tệp tải lên không thành công.",
+        "uploadFailed_other": "{{count}} tệp tải lên không thành công."
       }
     },
     "sources": {
@@ -1356,15 +1369,15 @@
         "title": "Chi tiết bài nộp & Nhận xét",
         "studentInfo": "Thông tin sinh viên",
         "submissionDetails": "Nội dung bài làm",
-        "analysisTitle": "1. Phân tích tình huống (Situation Analysis)",
-        "solutionTitle": "2. Phương án giải pháp (Proposed Solution)",
-        "reasoningTitle": "3. Lập luận căn cứ & Đánh đổi (Supporting Reasoning)",
+        "analysisTitle": "1. Phân tích tình huống",
+        "solutionTitle": "2. Phương án giải pháp",
+        "reasoningTitle": "3. Lập luận căn cứ & đánh đổi",
         "journeyTitle": "Lộ trình hành trình",
         "attemptNumber": "Lần làm #{{n}}",
         "stepsCount": "{{count}} bước quyết định",
         "outcome": "Kết cục hành trình",
         "reflectionTitle": "Bài phản tư tổng kết của sinh viên",
-        "emptyAnalysis": "Sinh viên không điền phân tích tình huống",
+        "emptyAnalysis": "Không có phần phân tích tình huống",
         "emptyReflection": "Sinh viên chưa nộp bài phản tư tổng kết",
         "composerTitle": "Nhận xét định tính của giảng viên",
         "composerNotice": "Nhận xét 100% mang tính định tính sư phạm. Không có AI chấm điểm và không gán điểm số/thang điểm.",
@@ -1373,7 +1386,7 @@
         "feedbackMin": "Nhận xét định tính phải có ít nhất 10 ký tự.",
         "submitFeedback": "Lưu & Gửi nhận xét cho sinh viên",
         "submittingFeedback": "Đang lưu nhận xét...",
-        "feedbackSuccess": "Đã lưu nhận xét định tính và chuyển trạng thái bài nộp sang REVIEWED thành công!",
+        "feedbackSuccess": "Đã lưu nhận xét. Bài nộp chuyển sang trạng thái Đã phản hồi.",
         "feedbackFailed": "Không thể lưu nhận xét: {{error}}",
         "previousFeedback": "Nhận xét đã gửi trước đó:",
         "alreadyReviewedNotice": "Bài làm này đã có nhận xét định tính (chỉ xem, không thể sửa đổi).",
@@ -1384,10 +1397,11 @@
         "stepNumber": "Bước {{n}}",
         "stepReasoningTitle": "Lập luận hồi cứu của sinh viên",
         "sentAt": "Gửi ngày {{time}}",
-        "close": "Đóng panel",
+        "close": "Đóng khung chi tiết",
         "selectPromptTitle": "Chọn bài nộp để xét duyệt",
         "selectPromptDesc": "Nhấp vào bất kỳ bài nộp nào ở danh sách bên trái để kiểm tra chi tiết bài làm và soạn nhận xét định tính."
-      }
+      },
+      "allModes": "Mọi chế độ học"
     },
     "detail": {
       "unavailableTitle": "Chưa thể hiển thị bài nộp",
@@ -1401,7 +1415,7 @@
         "avgAttempts": "Số lần làm trung bình",
         "inProgress": "Đang trong hành trình",
         "totalAttempts": "Tổng lượt làm",
-        "singleVsRetry": "Lần đầu / Làm lại",
+        "singleVsRetry": "Sinh viên làm 1 lần / làm lại",
         "reflectionsSubmitted": "Bài phản tư đã nộp"
       },
       "filters": {
@@ -1414,7 +1428,7 @@
       },
       "panels": {
         "choices": "Phân bổ nhánh quyết định sinh viên lựa chọn",
-        "attempts": "Thống kê số lượt thử (Single vs. Retry)",
+        "attempts": "Sinh viên làm một lần và làm lại",
         "outcomes": "Kết cục cuối cùng của hành trình",
         "timing": "Thời điểm làm bài",
         "progress": "Tiến độ của sinh viên đã mở case",
@@ -1427,22 +1441,26 @@
         "selections": "{{count}} lượt chọn",
         "percent": "{{percent}}%",
         "noBranches": "Tình huống này chưa có dữ liệu rẽ nhánh hoặc thuộc chế độ Review Study.",
-        "emptyCase": "Chưa có sinh viên nào tham gia rẽ nhánh cho tình huống này."
+        "emptyCase": "Chưa có sinh viên nào tham gia rẽ nhánh cho tình huống này.",
+        "selections_one": "{{count}} lượt chọn",
+        "selections_other": "{{count}} lượt chọn"
       },
       "outcomes": {
         "title": "Kết cục cuối cùng của hành trình",
-        "subtitle": "Tỷ lệ sinh viên kết thúc tại các nút kết cục (terminal nodes)",
+        "subtitle": "Tỷ lệ lượt đã hoàn thành dừng ở từng kết cục",
         "terminalNode": "Kết cục: {{title}}",
         "reachCount": "{{count}} lượt kết thúc ({{percent}}%)",
-        "emptyOutcomes": "Chưa có sinh viên nào đi đến kết cục cuối cùng."
+        "emptyOutcomes": "Chưa có sinh viên nào đi đến kết cục cuối cùng.",
+        "reachCount_one": "{{count}} lượt kết thúc ({{percent}}%)",
+        "reachCount_other": "{{count}} lượt kết thúc ({{percent}}%)"
       },
       "attempts": {
-        "title": "Thống kê số lượt thử (Attempts)",
-        "subtitle": "Tỷ lệ lượt làm một lần duy nhất so với các lượt thử lại để khám phá các nhánh khác",
-        "singleLabel": "Lượt làm lần đầu (Single Attempt)",
-        "retryLabel": "Lượt làm lại (Retry Attempt)",
-        "singleVsRetry": "Tỷ lệ Lần đầu / Làm lại: {{single}} / {{retry}}",
-        "totalLabel": "Tổng lượt thực hiện: {{total}}",
+        "title": "Thống kê lượt làm",
+        "subtitle": "Tỷ lệ sinh viên chỉ làm một lần so với sinh viên làm lại để khám phá nhánh khác",
+        "singleLabel": "Sinh viên chỉ làm một lần",
+        "retryLabel": "Sinh viên đã làm lại",
+        "singleVsRetry": "Sinh viên làm 1 lần / làm lại: {{single}} / {{retry}}",
+        "totalLabel": "Tổng {{total}} lượt làm của {{participants}} sinh viên",
         "emptyAttempts": "Chưa có dữ liệu lượt làm."
       },
       "openCases": "Case đang mở",
@@ -1451,10 +1469,12 @@
       "published": "Xuất bản",
       "updatedOn": "Cập nhật ngày {{date}}",
       "recent": "Bài nộp gần đây",
-      "recentUnavailable": "Chưa có dữ liệu bài nộp: hệ thống chưa cung cấp danh sách bài làm cho giảng viên.",
       "prompt": {
         "title": "Chọn tình huống để xem thống kê luồng học tập",
-        "description": "Chọn một khóa học và tình huống từ thanh bộ lọc phía trên để theo dõi dữ liệu rẽ nhánh và hành vi của người học."
+        "description": "Chọn một khóa học và tình huống từ thanh bộ lọc phía trên để theo dõi dữ liệu rẽ nhánh và hành vi của người học.",
+        "coursesError": "Không tải được danh sách khóa học",
+        "noCoursesTitle": "Chưa có khóa học nào",
+        "noCoursesDescription": "Tạo khóa học và xuất bản case để xem thống kê luồng học tập."
       },
       "emptyCase": {
         "title": "Chưa có lượt làm nào",
@@ -1481,7 +1501,10 @@
         "forbidden": "Bạn không có quyền xem thống kê của tình huống này.",
         "serverError": "Lỗi máy chủ khi tải thống kê. Vui lòng thử lại sau.",
         "network": "Không thể kết nối đến máy chủ. Kiểm tra mạng rồi thử lại."
-      }
+      },
+      "recentPickCase": "Chọn một case để xem các bài nộp gần đây.",
+      "recentEmpty": "Case này chưa có bài nộp nào.",
+      "recentError": "Không tải được danh sách bài nộp."
     },
     "profile": {
       "loadError": "Không tải được hồ sơ tài khoản",
@@ -1810,7 +1833,7 @@
       "format": "Hình thức",
       "formatValue": "Bài nộp tự luận",
       "status": "Trạng thái",
-      "submittedStatus": "Đã nộp bài (SUBMITTED)",
+      "submittedStatus": "Đã nộp bài",
       "submittedBadge": "Đã nộp",
       "submittedNotice": "Bài nộp của bạn đã được ghi nhận và đang chờ giảng viên đánh giá. Chế độ Review Study cho phép nộp một lần duy nhất.",
       "submittedAt": "Thời gian nộp: {{time}}",
@@ -1844,9 +1867,9 @@
       "backToDesk": "Về Bàn học",
       "backToWork": "Quay lại bài làm",
       "caseAndCourse": "Tình huống: {{case}} · Học phần: {{course}}",
-      "submittedBadge": "Đã nộp bài (SUBMITTED)",
-      "reviewedBadge": "Đã nhận xét (REVIEWED)",
-      "reflectedBadge": "Đã phản tư (REFLECTED)",
+      "submittedBadge": "Đã nộp bài",
+      "reviewedBadge": "Đã nhận xét",
+      "reflectedBadge": "Đã phản tư",
       "pendingTitle": "Bài làm đang chờ Giảng viên nhận xét",
       "pendingBody": "Giảng viên của bạn chưa gửi nhận xét định tính cho bài làm này. Ô phản tư sẽ được mở sau khi có nhận xét từ giảng viên.",
       "unauthorizedTitle": "Không có quyền truy cập",
@@ -1854,25 +1877,25 @@
       "notFoundTitle": "Không tìm thấy bài làm",
       "notFoundBody": "Bài nộp không tồn tại hoặc đã bị xóa.",
       "submissionDetailsTitle": "Nội dung bài làm của bạn",
-      "analysisTitle": "1. Phân tích tình huống (Situation Analysis)",
-      "emptyAnalysis": "Sinh viên không điền phân tích tình huống",
-      "solutionTitle": "2. Phương án giải pháp (Proposed Solution)",
-      "reasoningTitle": "3. Lập luận căn cứ & Đánh đổi (Supporting Reasoning)",
+      "analysisTitle": "1. Phân tích tình huống",
+      "emptyAnalysis": "Bạn không điền phần phân tích tình huống",
+      "solutionTitle": "2. Phương án giải pháp",
+      "reasoningTitle": "3. Lập luận căn cứ & đánh đổi",
       "submittedAt": "Nộp lúc {{time}}",
       "lecturerFeedbackTitle": "Nhận xét định tính của giảng viên",
       "lecturerFeedbackNotice": "Nhận xét 100% mang tính định tính sư phạm từ giảng viên. Tuyệt đối không có điểm số hay AI chấm điểm.",
       "feedbackSentAt": "Gửi ngày {{time}}",
       "noFeedbackYet": "Chưa có nhận xét nào từ giảng viên",
-      "reflectionTitle": "Bài phản tư tổng kết của sinh viên",
+      "reflectionTitle": "Bài phản tư tổng kết của bạn",
       "reflectionDescription": "Sau khi đọc nhận xét định tính của giảng viên, hãy viết bài phản tư so sánh, đánh giá lại lập luận hoặc giải pháp ban đầu của bạn.",
       "reflectionPlaceholder": "Viết bài phản tư của bạn tại đây (tối thiểu 10 ký tự)...",
       "reflectionHelper": "{{current}} / {{max}} ký tự",
       "reflectionMin": "Bài phản tư phải có ít nhất 10 ký tự.",
       "reflectionLockedTitle": "Ô nhập bài phản tư đang bị khóa",
-      "reflectionLockedNotice": "Bài phản tư chỉ được mở sau khi giảng viên đã gửi nhận xét định tính (trạng thái REVIEWED).",
+      "reflectionLockedNotice": "Bài phản tư chỉ mở sau khi giảng viên đã gửi nhận xét.",
       "submitReflection": "Nộp bài phản tư",
       "submittingReflection": "Đang nộp bài phản tư...",
-      "reflectionSuccess": "Đã nộp bài phản tư thành công. Trạng thái bài làm đã chuyển sang REFLECTED.",
+      "reflectionSuccess": "Đã nộp bài phản tư. Bài làm chuyển sang trạng thái Đã phản tư.",
       "reflectionFailed": "Không thể nộp bài phản tư: {{error}}",
       "reflectionSubmittedNotice": "Bạn đã hoàn tất nộp bài phản tư cho tình huống này. Bài làm đã hoàn tất chu trình học tập.",
       "reflectionSubmittedAt": "Đã nộp phản tư lúc {{time}}",
@@ -1966,7 +1989,8 @@
         "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống",
         "filter8Weeks": "8 tuần",
         "branchingAttempts": "Lượt làm bài",
-        "reviewSubmissions": "Bài nộp Review Study"
+        "reviewSubmissions": "Bài nộp Review Study",
+        "unavailable": "Hệ thống chưa cung cấp dữ liệu hoạt động học tập theo tuần."
       },
       "usersByRole": {
         "title": "Người dùng theo vai trò",
@@ -1974,7 +1998,8 @@
         "students": "Sinh viên",
         "lecturers": "Giảng viên",
         "admins": "Quản trị viên",
-        "totalUsers": "{{count}} người dùng"
+        "totalUsers": "{{count}} người dùng",
+        "empty": "Chưa có người dùng nào."
       },
       "health": {
         "title": "Tình trạng hệ thống",
@@ -1995,13 +2020,23 @@
         "filterAll": "Mọi khóa học",
         "published": "Đã xuất bản",
         "draft": "Bản nháp",
-        "noCases": "Chưa có case"
+        "noCases": "Chưa có case",
+        "empty": "Chưa có khóa học nào có case."
       },
       "recentLog": {
         "title": "Nhật ký gần đây",
-        "subtitle": "Hôm nay"
+        "subtitle": "Hôm nay",
+        "empty": "Chưa có hoạt động nào được ghi nhận."
       },
-      "loadError": "Không tải được dữ liệu tổng quan"
+      "loadError": "Không tải được dữ liệu tổng quan",
+      "alerts": {
+        "indexing_failure_one": "{{count}} tài liệu lập chỉ mục thất bại",
+        "indexing_failure_other": "{{count}} tài liệu lập chỉ mục thất bại",
+        "login_failure_one": "{{count}} lần đăng nhập thất bại",
+        "login_failure_other": "{{count}} lần đăng nhập thất bại",
+        "locked_account_one": "{{count}} tài khoản đang bị khóa",
+        "locked_account_other": "{{count}} tài khoản đang bị khóa"
+      }
     },
     "users": {
       "emptyTitle": "Chưa có dữ liệu người dùng",
@@ -2016,7 +2051,7 @@
         "students": "Sinh viên",
         "lockedUsers": "Tài khoản bị khóa"
       },
-      "searchPlaceholder": "Tìm hoặc email người dùng...",
+      "searchPlaceholder": "Tìm theo tên hoặc email...",
       "filterRoleAria": "Lọc theo vai trò",
       "filterRole": {
         "all": "Mọi vai trò",
@@ -2074,7 +2109,15 @@
         "lockSuccess": "Đã khóa tài khoản {{name}}",
         "unlockSuccess": "Đã mở khóa tài khoản {{name}}",
         "actionError": "Có lỗi xảy ra khi thay đổi trạng thái tài khoản."
-      }
+      },
+      "coursesTaught": "{{count}} khóa học phụ trách",
+      "coursesJoined": "{{count}} khóa học đã tham gia",
+      "coursesTaught_one": "{{count}} khóa học phụ trách",
+      "coursesTaught_other": "{{count}} khóa học phụ trách",
+      "coursesJoined_one": "{{count}} khóa học đã tham gia",
+      "coursesJoined_other": "{{count}} khóa học đã tham gia",
+      "attemptsCount_one": "{{count}} lượt làm",
+      "attemptsCount_other": "{{count}} lượt làm"
     },
     "courses": {
       "title": "Tất cả khóa học",
@@ -2176,11 +2219,13 @@
     "aiService": {
       "recent": {
         "title": "Lần sinh case gần đây",
-        "subtitle": "Mỗi lần sinh tạo một bản nháp chờ giảng viên rà soát"
+        "subtitle": "Mỗi lần sinh tạo một bản nháp chờ giảng viên rà soát",
+        "empty": "Chưa có lần sinh case nào được ghi nhận."
       },
       "indexing": {
         "title": "Trạng thái lập chỉ mục tài liệu",
-        "subtitle": "Tài liệu được tách đoạn và lập chỉ mục để AI trích dẫn khi sinh case"
+        "subtitle": "Tài liệu được tách đoạn và lập chỉ mục để AI trích dẫn khi sinh case",
+        "empty": "Chưa có tài liệu nào được tải lên để lập chỉ mục."
       },
       "config": {
         "title": "Cấu hình hiện tại",
@@ -2192,7 +2237,7 @@
       },
       "change": {
         "title": "Thay đổi cấu hình",
-        "body": "Nhà cung cấp và mô hình AI được cố định trong tệp môi trường của máy chủ (OPD-013). Màn này chỉ để theo dõi, không có thao tác đổi cấu hình."
+        "body": "Nhà cung cấp và mô hình AI được cố định trong tệp môi trường của máy chủ. Màn này chỉ để theo dõi, không có thao tác thay đổi cấu hình."
       },
       "loadErrorTitle": "Lỗi dịch vụ AI",
       "loading": "Đang tải thông tin dịch vụ AI...",
@@ -2314,7 +2359,7 @@
         "title": "Dịch vụ AI",
         "provider": "Nhà cung cấp: cố định trong cấu hình máy chủ",
         "monitor": "Theo dõi trạng thái tại mục Dịch vụ AI",
-        "note": "Cấu hình AI không chỉnh trên giao diện (OPD-013)."
+        "note": "Cấu hình AI không chỉnh trên giao diện."
       },
       "breadcrumb": "Quản trị hệ thống > Cài đặt",
       "header": "Cài đặt hệ thống",
@@ -2351,6 +2396,9 @@
         "description": "Các thông tin cập nhật sẽ được lưu và áp dụng cho toàn bộ người dùng trong nền tảng EduBranch AI.",
         "confirm": "Lưu & Áp dụng",
         "cancel": "Hủy bỏ"
+      },
+      "registrationModes": {
+        "OPEN_LECTURER_STUDENT": "Mở cho giảng viên và sinh viên"
       }
     }
   },

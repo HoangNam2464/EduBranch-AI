@@ -119,7 +119,7 @@ export function Sidebar({
             <span className="text-xl leading-7 font-normal text-ink">{t("common.appName")}</span>
           </Link>
           {/* Figma: text-case UPPER, letter-spacing 4% */}
-          <span className="text-[11px] leading-4 font-medium tracking-[0.04em] text-ink-muted uppercase">
+          <span className="text-[12px] leading-4 font-medium tracking-[0.04em] text-ink-muted uppercase">
             {t(nav.workspaceKey)}
           </span>
         </div>

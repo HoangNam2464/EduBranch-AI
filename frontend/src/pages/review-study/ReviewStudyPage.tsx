@@ -250,7 +250,7 @@ function Workspace({
       {isSubmitted && (
         <div
           role="status"
-          className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-eb-xl border border-line-default bg-surface p-5 shadow-eb-card"
+          className="mb-5 flex flex-wrap items-center justify-between gap-4 rounded-eb-xl border border-line bg-surface p-5 shadow-eb-card"
         >
           <div className="flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-eb-md bg-success-bg text-success">

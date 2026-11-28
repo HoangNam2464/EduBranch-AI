@@ -131,5 +131,5 @@ Enables university lecturers to organize their teaching domains by establishing 
 ---
 
 ## 15. Implementation Status
-**Implemented**
-*(Course CRUD, soft archive `PATCH /courses/:courseId/archive` (`OPD-014`), invite-code student enrollment (`V5__course_enrollments.sql`, `BE-029`), material PDF/DOCX validation, MinIO object upload, RAG source inspector UI, and async AI ingestion trigger are implemented on `develop`.)*
+**Implemented** *(nhánh `fix/fe-screen-quality`, chưa merge `develop`)*
+*(Course CRUD, soft archive `PATCH /courses/:courseId/archive` (`OPD-014`), invite-code student enrollment (`V5__course_enrollments.sql`, `BE-029`), material PDF/DOCX validation, MinIO object upload, RAG source inspector UI, and async AI ingestion trigger are implemented on `develop`. Trên nhánh cục bộ `fix/fe-screen-quality` (`174e69b`), các task `FE-003`/`FE-004`/`FE-005`/`FE-026` đã PASS Visual QA Round 4: kiểm tra extension + MIME ở client, hiển thị ngày tải lên và bộ lọc, luồng "Tải lên lại" kèm toast theo PO Q3, sửa lỗi 403 lần tải đầu của `/lecturer/courses`, truy cập nút xóa bằng phím `Tab`, và sửa hồi quy hiển thị trạng thái `PENDING`/`PROCESSING`; xem [`FE-SCREEN-QUALITY-VERIFICATION-REPORT.md`](../qa/FE-SCREEN-QUALITY-VERIFICATION-REPORT.md).)*

@@ -52,5 +52,5 @@ Provides university lecturers with clear, foundational **Learning-Flow Statistic
 ---
 
 ## 6. Implementation Status
-**Implemented**
-*(Backend `statistics/` `BE-028` merged in PR #76 and frontend `StatisticsPage.tsx` + `BranchStatsChart.tsx` merged in PR #70 on `develop`.)*
+**Implemented** *(nhánh `fix/fe-screen-quality`, chưa merge `develop`)*
+*(Backend `statistics/` `BE-028` merged in PR #76 and frontend `StatisticsPage.tsx` + `BranchStatsChart.tsx` merged in PR #70 on `develop`. Trên nhánh cục bộ `fix/fe-screen-quality` (`174e69b`), `FE-022` đã PASS Visual QA Round 4: bỏ emoji ở select, sửa % làm lại, xếp cột lịch dưới 1280px, KPI 2×2 dưới 1920px, tiêu đề điểm quyết định không cắt ellipsis, và trạng thái 403/500/empty khi tải danh sách khóa học.)*

@@ -565,7 +565,7 @@ function OutcomeStage({ ctx, attempt }: { ctx: CaseAttemptsContext; attempt: Att
             <span className="text-[14px] leading-5 font-medium text-ink-inverse">{t("g5.common.attemptRun", { n: attempt.attemptNumber })}</span>
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-2.5">
-            <span className="text-[11px] leading-4 font-medium tracking-normal text-link uppercase">{t("g5.player.outcomeLabel")}</span>
+            <span className="text-[12px] leading-4 font-medium tracking-normal text-link uppercase">{t("g5.player.outcomeLabel")}</span>
             <p className="line-clamp-4 text-[14px] leading-5 whitespace-pre-line text-ink-secondary">{attempt.outcome?.situation ?? "—"}</p>
             <div className="mt-auto flex gap-3">
               <Fact label={t("g5.player.decisionCount")} value={t("g5.common.stepsCount", { count: attempt.steps.length })} />

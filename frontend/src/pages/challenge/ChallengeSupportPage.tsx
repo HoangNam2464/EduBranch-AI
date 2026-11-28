@@ -234,7 +234,7 @@ export function ChallengeDialog({
           </span>
           <p className="text-[14px] leading-5 text-ink">{decision}</p>
           {reasoning && (
-            <p className="text-[13px] leading-4 text-ink-secondary mt-1 whitespace-pre-line border-t border-border/50 pt-2">
+            <p className="text-[13px] leading-4 text-ink-secondary mt-1 whitespace-pre-line border-t border-line/50 pt-2">
               {reasoning}
             </p>
           )}
@@ -427,7 +427,7 @@ export function ChallengeSupportPage() {
 
       <div className="flex flex-col gap-3 rounded-eb-lg bg-canvas p-4">
         {session.messages.map((m) => (
-          <div key={m.id} className="flex flex-col gap-1 border-b border-border/50 pb-2 last:border-b-0">
+          <div key={m.id} className="flex flex-col gap-1 border-b border-line/50 pb-2 last:border-b-0">
             <span className="text-[12px] font-medium text-ink-secondary">
               {m.role === "CHALLENGE_SUPPORT"
                 ? t("g5.challenge.counterQuestionLabel")

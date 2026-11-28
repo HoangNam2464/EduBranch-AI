@@ -37,6 +37,9 @@ export function AdminCasesPage() {
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Rule F2: the analytics show "—" until real numbers arrive, and again after a failed load.
+  const [analyticsReady, setAnalyticsReady] = useState(false);
+  const ready = analyticsReady && !loadError;
   const [reloadToken, setReloadToken] = useState(0);
 
   // Filters
@@ -67,6 +70,7 @@ export function AdminCasesPage() {
         setCases(res.cases ?? []);
         if (res.analytics) {
           setAnalytics(res.analytics);
+          setAnalyticsReady(true);
         }
         setLoading(false);
       })
@@ -118,7 +122,7 @@ export function AdminCasesPage() {
         <AdminPanel className="w-full shrink-0 xl:w-[478px]" title={t("g6.cases.byStatus")}>
           <div className="flex flex-col gap-4">
             <div className="flex items-baseline gap-2">
-              <span className="text-[32px] font-bold text-ink">{analytics.totalCases}</span>
+              <span className="text-[32px] font-bold text-ink">{ready ? analytics.totalCases : "—"}</span>
               <span className="text-[14px] text-ink-secondary">{t("g6.cases.totalSuffix")}</span>
             </div>
 
@@ -142,28 +146,28 @@ export function AdminCasesPage() {
                 <span className="size-2.5 rounded-full bg-line-strong" />
                 <span className="text-ink-secondary">{t("g6.cases.status.draft")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.draft / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.draft})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.draft / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.draft})` : "—"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2.5 rounded-full bg-primary" />
                 <span className="text-ink-secondary">{t("g6.cases.status.published")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.published / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.published})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.published / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.published})` : "—"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2.5 rounded-full bg-accent" />
                 <span className="text-ink-secondary">{t("g6.cases.status.reviewed")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.reviewed / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.reviewed})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.reviewed / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.reviewed})` : "—"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2.5 rounded-full bg-warning" />
                 <span className="text-ink-secondary">{t("g6.cases.status.approved")}</span>
                 <span className="ml-auto font-medium text-ink">
-                  {analytics.totalCases > 0 ? Math.round((analytics.byStatus.approved / analytics.totalCases) * 100) : 0}% ({analytics.byStatus.approved})
+                  {ready ? `${analytics.totalCases > 0 ? Math.round((analytics.byStatus.approved / analytics.totalCases) * 100) : 0}% (${analytics.byStatus.approved})` : "—"}
                 </span>
               </div>
             </div>
@@ -190,7 +194,7 @@ export function AdminCasesPage() {
                 <div className="flex flex-col items-center gap-1.5">
                   <div className="flex flex-col gap-1">
                     {Array.from({ length: analytics.byMode.review }).map((_, i) => (
-                      <div key={i} className="h-5 w-16 rounded bg-sky-500" />
+                      <div key={i} className="h-5 w-16 rounded bg-accent" />
                     ))}
                   </div>
                   <span className="text-[12px] font-medium text-ink-secondary">{t("g6.cases.analytics.modeReview")}</span>
@@ -212,7 +216,7 @@ export function AdminCasesPage() {
                   >
                     <div className="flex min-w-0 flex-1 flex-col gap-0.5">
                       <span className="truncate text-[13px] font-medium text-ink">{item.title}</span>
-                      <span className="text-[11px] text-ink-secondary">
+                      <span className="text-[12px] text-ink-secondary">
                         {shownDay(item.updatedAt)} · {item.learningMode === "BRANCHING_STUDY" ? t("g6.cases.card.branchingMode") : t("g6.cases.card.reviewMode")}
                       </span>
                     </div>
@@ -297,7 +301,7 @@ export function AdminCasesPage() {
                     {/* Top status badges */}
                     <div className="flex items-center justify-between">
                       <span
-                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                        className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[12px] font-medium ${
                           isPublished
                             ? "bg-success-bg text-success-text"
                             : "bg-surface text-ink-secondary border border-line"
@@ -306,7 +310,7 @@ export function AdminCasesPage() {
                         {isPublished ? t("g6.cases.status.published") : t("g6.cases.status.draft")}
                       </span>
                       {c.isAiDraft && (
-                        <span className="flex items-center gap-1 rounded bg-surface px-1.5 py-0.5 text-[11px] text-ink-muted border border-line">
+                        <span className="flex items-center gap-1 rounded bg-surface px-1.5 py-0.5 text-[12px] text-ink-muted border border-line">
                           <Sparkles size={11} />
                           {t("g6.cases.card.aiDraft")}
                         </span>
@@ -319,7 +323,7 @@ export function AdminCasesPage() {
                     </div>
 
                     {/* Mode tag */}
-                    <div className="flex items-center justify-between text-[11px] text-ink-secondary">
+                    <div className="flex items-center justify-between text-[12px] text-ink-secondary">
                       <span className="rounded bg-surface px-1.5 py-0.5 font-medium text-primary">
                         {isBranching ? t("g6.cases.card.branchingMode") : t("g6.cases.card.reviewMode")}
                       </span>

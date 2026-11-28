@@ -30,6 +30,7 @@ import {
   type CourseNoteTone,
 } from "@/components/ds";
 import { CourseListSkeleton, EmptyState, ErrorState, NoResultsState } from "@/components/feedback";
+import { httpStatusOf } from "@/pages/statistics/useLecturerCourseCases";
 import { useAuthStore } from "@/stores/authStore";
 import { initialsOf } from "@/layouts/shell/shellRoutes";
 import { courseService } from "@/services/courseService";
@@ -194,7 +195,7 @@ function InviteCodeSection({ courseId, active }: { courseId: string; active: boo
       <div className="flex items-center justify-between">
         <h4 className="text-[14px] leading-5 font-normal text-ink">{t("g2.courses.details.inviteCode")}</h4>
         {code && !isActive && (
-          <span className="rounded-full bg-warning-bg px-2 py-0.5 text-[11px] font-medium text-warning-text">
+          <span className="rounded-full bg-warning-bg px-2 py-0.5 text-[12px] font-medium text-warning-text">
             {t("g2.courses.details.codeDisabled")}
           </span>
         )}
@@ -376,7 +377,7 @@ function CourseDetails({
   }
 
   return (
-    <aside aria-labelledby="course-details-title" className="flex w-[360px] shrink-0 flex-col gap-4 rounded-eb-xl bg-surface p-5 shadow-eb-card 2xl:w-[424px]">
+    <aside aria-labelledby="course-details-title" className="flex w-full flex-col gap-4 rounded-eb-xl bg-surface p-5 shadow-eb-card xl:w-[360px] xl:shrink-0 2xl:w-[424px]">
       <div className="flex h-8 items-center justify-between">
         <h2 id="course-details-title" className="text-[16px] leading-6 font-normal tracking-normal text-ink">
           {t("g2.courses.details.title")}
@@ -587,6 +588,8 @@ export function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
+  // HTTP status of the failed load: 403 gets the permission copy, not the network one.
+  const [loadErrorCode, setLoadErrorCode] = useState<number | undefined>(undefined);
   const [insights, setInsights] = useState<Record<string, CourseInsights>>({});
 
   const [search, setSearch] = useState("");
@@ -633,10 +636,12 @@ export function CoursesPage() {
   const loadCourses = useCallback(async () => {
     setLoading(true);
     setLoadError(false);
+    setLoadErrorCode(undefined);
     try {
       setCourses(await courseService.getMyCourses());
-    } catch {
+    } catch (error) {
       setLoadError(true);
+      setLoadErrorCode(httpStatusOf(error));
     } finally {
       setLoading(false);
     }
@@ -647,7 +652,11 @@ export function CoursesPage() {
     courseService
       .getMyCourses()
       .then((list) => !cancelled && setCourses(list))
-      .catch(() => !cancelled && setLoadError(true))
+      .catch((error: unknown) => {
+        if (cancelled) return;
+        setLoadError(true);
+        setLoadErrorCode(httpStatusOf(error));
+      })
       .finally(() => !cancelled && setLoading(false));
     return () => {
       cancelled = true;
@@ -712,7 +721,12 @@ export function CoursesPage() {
   if (loading) {
     listBody = <CourseListSkeleton loadingLabel={t("states.loading.courseList")} />;
   } else if (loadError) {
-    listBody = <ErrorState title={t("states.error.courses.title")} description={t("states.error.courses.description")} onRetry={() => void loadCourses()} />;
+    listBody =
+      loadErrorCode === 403 ? (
+        <ErrorState title={t("states.forbidden.title")} description={t("states.forbidden.description")} errorCode={403} onRetry={() => void loadCourses()} />
+      ) : (
+        <ErrorState title={t("states.error.courses.title")} description={t("states.error.courses.description")} errorCode={loadErrorCode} onRetry={() => void loadCourses()} />
+      );
   } else if (courses.length === 0) {
     listBody = (
       <EmptyState
@@ -812,7 +826,9 @@ export function CoursesPage() {
   }
 
   return (
-    <div className="flex items-start gap-5">
+    // Figma 02.1: list + 360/424 details side by side; below 1280 the details stack under the list so course
+    // titles and the pagination keep a readable width (R01, 1024).
+    <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
       <section aria-labelledby="course-list-title" className="flex min-w-0 flex-1 flex-col gap-5">
         <div className="flex min-h-[72px] flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-eb-xl bg-surface p-5 shadow-eb-card">
           <h2 id="course-list-title" className="shrink-0 text-[16px] leading-6 font-normal tracking-normal whitespace-nowrap text-ink">

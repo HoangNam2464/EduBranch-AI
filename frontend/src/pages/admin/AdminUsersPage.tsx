@@ -16,7 +16,7 @@ import {
   Users,
 } from "lucide-react";
 import { Dialog, MetricCard, Toast, ToastRegion, cx } from "@/components/ds";
-import { EmptyState, ErrorState, SkeletonRegion } from "@/components/feedback";
+import { EmptyState, ErrorState, SkeletonRegion, formatDateTime, isValidDate } from "@/components/feedback";
 import { adminService, type AdminUserItem } from "@/services/adminService";
 import { mapAdminHttpErrorToKey } from "@/pages/admin/adminErrorHelper";
 
@@ -32,6 +32,9 @@ export function AdminUsersPage() {
   });
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  // Rule F2: KPI cards show "—" until real metrics arrive, and again after a failed load — never a placeholder 0.
+  const [metricsReady, setMetricsReady] = useState(false);
+  const kpi = (value: number) => (metricsReady && !loadError ? value : "—");
   const [reloadToken, setReloadToken] = useState(0);
 
   // Filters & Pagination
@@ -69,6 +72,7 @@ export function AdminUsersPage() {
         setUsers(res.users ?? []);
         if (res.metrics) {
           setMetrics(res.metrics);
+          setMetricsReady(true);
         }
         setLoading(false);
       })
@@ -149,22 +153,22 @@ export function AdminUsersPage() {
         <MetricCard
           icon={Users}
           label={t("g6.users.kpi.totalUsers")}
-          value={metrics.totalUsers}
+          value={kpi(metrics.totalUsers)}
         />
         <MetricCard
           icon={GraduationCap}
           label={t("g6.users.kpi.lecturers")}
-          value={metrics.lecturers}
+          value={kpi(metrics.lecturers)}
         />
         <MetricCard
           icon={UserCheck}
           label={t("g6.users.kpi.students")}
-          value={metrics.students}
+          value={kpi(metrics.students)}
         />
         <MetricCard
           icon={Lock}
           label={t("g6.users.kpi.lockedUsers")}
-          value={metrics.lockedUsers}
+          value={kpi(metrics.lockedUsers)}
         />
       </div>
 
@@ -247,11 +251,11 @@ export function AdminUsersPage() {
               <thead className="border-b border-line bg-canvas text-[12px] font-medium text-ink-secondary">
                 <tr>
                   <th className="py-3 pr-4 pl-5">{t("g6.users.columns.user")}</th>
-                  <th className="px-4 py-3">{t("g6.users.columns.createdAt")}</th>
-                  <th className="px-4 py-3">{t("g6.users.columns.role")}</th>
-                  <th className="px-4 py-3 text-center">{t("g6.users.columns.attempts")}</th>
-                  <th className="px-4 py-3 text-center">{t("g6.users.columns.action")}</th>
-                  <th className="py-3 pr-5 pl-4 text-right">{t("g6.users.columns.status")}</th>
+                  <th className="hidden px-3 py-3 xl:px-4 xl:table-cell">{t("g6.users.columns.createdAt")}</th>
+                  <th className="px-3 py-3 xl:px-4">{t("g6.users.columns.role")}</th>
+                  <th className="hidden px-3 py-3 xl:px-4 text-center whitespace-nowrap xl:table-cell">{t("g6.users.columns.attempts")}</th>
+                  <th className="px-3 py-3 xl:px-4 text-center whitespace-nowrap">{t("g6.users.columns.action")}</th>
+                  <th className="py-3 pr-5 pl-4 text-right whitespace-nowrap">{t("g6.users.columns.status")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -276,20 +280,20 @@ export function AdminUsersPage() {
                           <span className="flex size-9 shrink-0 items-center justify-center rounded-eb-full bg-primary-subtle text-[13px] font-semibold text-primary">
                             {initials}
                           </span>
-                          <div className="flex flex-col">
-                            <span className="font-medium text-ink">{user.name}</span>
-                            <span className="text-[12px] text-ink-secondary">{user.email}</span>
+                          <div className="flex min-w-0 flex-col">
+                            <span className="truncate font-medium text-ink">{user.name}</span>
+                            <span className="max-w-[180px] truncate text-[12px] text-ink-secondary xl:max-w-none" title={user.email}>{user.email}</span>
                           </div>
                         </div>
                       </td>
 
                       {/* Column 2: Created Date */}
-                      <td className="px-4 py-3.5 text-ink-secondary">
-                        {user.createdAt}
+                      <td className="hidden px-3 py-3.5 xl:px-4 whitespace-nowrap text-ink-secondary xl:table-cell">
+                        {isValidDate(new Date(user.createdAt)) ? formatDateTime(new Date(user.createdAt)) : "—"}
                       </td>
 
                       {/* Column 3: Role & Courses */}
-                      <td className="px-4 py-3.5">
+                      <td className="px-3 py-3.5 xl:px-4">
                         <div className="flex flex-col">
                           <span className="font-medium text-ink">
                             {user.role === "LECTURER"
@@ -298,26 +302,33 @@ export function AdminUsersPage() {
                               ? t("g6.users.role.admin")
                               : t("g6.users.role.student")}
                           </span>
-                          {user.coursesInfo && (
-                            <span className="text-[12px] text-ink-secondary">
-                              {user.coursesInfo}
+                          {user.coursesInfo !== undefined && user.role !== "ADMIN" && (
+                            <span className="text-[12px] whitespace-nowrap text-ink-secondary">
+                              {t(user.role === "LECTURER" ? "g6.users.coursesTaught" : "g6.users.coursesJoined", {
+                                count: Number(user.coursesInfo) || 0,
+                              })}
+                            </span>
+                          )}
+                          {user.role === "STUDENT" && user.attemptCount !== undefined && (
+                            <span className="text-[12px] whitespace-nowrap text-ink-secondary xl:hidden">
+                              {t("g6.users.attemptsCount", { count: user.attemptCount })}
                             </span>
                           )}
                         </div>
                       </td>
 
                       {/* Column 4: Attempts */}
-                      <td className="px-4 py-3.5 text-center font-medium text-ink">
+                      <td className="hidden px-3 py-3.5 xl:px-4 text-center font-medium text-ink xl:table-cell">
                         {user.attemptCount !== undefined ? user.attemptCount : "—"}
                       </td>
 
                       {/* Column 5: Action Button */}
-                      <td className="px-4 py-3.5 text-center">
+                      <td className="px-3 py-3.5 xl:px-4 text-center">
                         <button
                           type="button"
                           onClick={() => handleOpenDialog(user)}
                           className={cx(
-                            "rounded-eb-md px-3 py-1 text-[13px] font-medium transition-colors border",
+                            "rounded-eb-md border px-3 py-1 text-[13px] font-medium whitespace-nowrap transition-colors",
                             isLocked
                               ? "border-primary text-primary hover:bg-primary-subtle"
                               : "border-line text-ink hover:bg-canvas hover:text-error",
@@ -331,7 +342,7 @@ export function AdminUsersPage() {
                       <td className="py-3.5 pr-5 pl-4 text-right">
                         <span
                           className={cx(
-                            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium",
+                            "inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[12px] font-medium whitespace-nowrap",
                             isLocked
                               ? "bg-error-bg text-error-text"
                               : "bg-success-bg text-success-text",

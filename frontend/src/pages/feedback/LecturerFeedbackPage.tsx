@@ -21,7 +21,6 @@ import {
   Pagination,
   ResultCount,
   SearchField,
-  SubmissionBadge,
   cx,
 } from "@/components/ds";
 import { SubmissionReviewList } from "@/components/feedback";
@@ -67,6 +66,8 @@ export function LecturerFeedbackPage() {
   const [search, setSearch] = useState("");
   const [course, setCourse] = useState("ALL");
   const [status, setStatus] = useState("ALL");
+  // FE-019 AC: filter by learning mode; each mode keeps its own status rules (lecturerFeedbackLogic).
+  const [learningMode, setLearningMode] = useState<"ALL" | "BRANCHING_STUDY" | "REVIEW_STUDY">("ALL");
   const [sort, setSort] = useState<"NEWEST" | "OLDEST">("NEWEST");
 
   // Pagination states
@@ -171,10 +172,11 @@ export function LecturerFeedbackPage() {
     return filterSubmissions(submissions, {
       search,
       course,
+      learningMode,
       status,
       sort,
     });
-  }, [submissions, search, course, status, sort]);
+  }, [submissions, search, course, learningMode, status, sort]);
 
   // Pagination calculation
   const pageCount = Math.max(1, Math.ceil(filteredSubmissions.length / pageSize));
@@ -316,7 +318,7 @@ export function LecturerFeedbackPage() {
   return (
     <div className="flex flex-col gap-5">
       {/* 4 Metric Cards */}
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid grid-cols-2 gap-5 xl:grid-cols-4">
         {metrics.map((m) => (
           <MetricCard
             key={m.label}
@@ -366,6 +368,19 @@ export function LecturerFeedbackPage() {
               ]}
             />
             <FilterControl
+              label={t("g4.queue.modeFilter")}
+              value={learningMode}
+              onChange={(e) => {
+                setLearningMode(e.target.value as "ALL" | "BRANCHING_STUDY" | "REVIEW_STUDY");
+                setPage(1);
+              }}
+              options={[
+                { value: "ALL", label: t("g4.queue.allModes") },
+                { value: "BRANCHING_STUDY", label: t("g4.queue.modes.branching") },
+                { value: "REVIEW_STUDY", label: t("g4.queue.modes.review") },
+              ]}
+            />
+            <FilterControl
               label={t("g4.queue.statusFilter")}
               value={status}
               onChange={(e) => {
@@ -404,8 +419,8 @@ export function LecturerFeedbackPage() {
         ) : selectedItem ? (
           <div className="flex flex-1 gap-5 overflow-hidden">
             {/* Master List (360px left column) */}
-            <div className="flex w-[360px] shrink-0 flex-col overflow-hidden rounded-eb-lg border border-default bg-canvas/40">
-              <div className="flex items-center justify-between border-b border-default bg-canvas px-4 py-2.5">
+            <div className="hidden w-[320px] shrink-0 flex-col overflow-hidden rounded-eb-lg border border-line bg-canvas/40 xl:flex 2xl:w-[360px]">
+              <div className="flex items-center justify-between border-b border-line bg-canvas px-4 py-2.5">
                 <span className="text-[12px] font-medium text-ink-secondary">
                   {t("g4.queue.listLabel")} ({filteredSubmissions.length})
                 </span>
@@ -422,9 +437,9 @@ export function LecturerFeedbackPage() {
             </div>
 
             {/* Submission Inspection & Feedback Composer (Right column) */}
-            <div className="flex flex-1 flex-col overflow-y-auto rounded-eb-lg border border-default bg-surface p-5">
+            <div className="flex flex-1 flex-col overflow-y-auto rounded-eb-lg border border-line bg-surface p-5">
               {/* Header */}
-              <div className="flex items-start justify-between border-b border-default pb-4">
+              <div className="flex items-start justify-between border-b border-line pb-4">
                 <div className="flex flex-col gap-1.5">
                   <div className="flex items-center gap-2.5">
                     <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-selected text-link">
@@ -444,9 +459,9 @@ export function LecturerFeedbackPage() {
                   <div className="flex flex-wrap items-center gap-2 pt-1 text-[12px] text-ink-secondary">
                     <span
                       className={cx(
-                        "inline-flex items-center gap-1 rounded-eb-sm px-2 py-0.5 text-[11px] font-medium",
+                        "inline-flex items-center gap-1 rounded-eb-sm px-2 py-0.5 text-[12px] font-medium",
                         selectedItem.targetType === "REVIEW_STUDY"
-                          ? "border border-accent/20 bg-sky-50 text-accent"
+                          ? "border border-selected bg-selected text-link"
                           : "border border-primary/20 bg-primary/10 text-primary",
                       )}
                     >
@@ -505,7 +520,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.analysisTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.studentAnalysis || (
                           <span className="italic text-ink-muted">
                             {t("g4.queue.inspector.emptyAnalysis")}
@@ -519,7 +534,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.solutionTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.proposedSolution || (
                           <span className="italic text-ink-muted">—</span>
                         )}
@@ -531,7 +546,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.reasoningTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.reasoningText || (
                           <span className="italic text-ink-muted">—</span>
                         )}
@@ -545,7 +560,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.journeyTitle")}
                       </span>
-                      <div className="flex flex-wrap items-center gap-4 rounded-eb-md border border-default bg-canvas/60 p-3 text-[13px] text-ink">
+                      <div className="flex flex-wrap items-center gap-4 rounded-eb-md border border-line bg-canvas/60 p-3 text-[13px] text-ink">
                         {selectedItem.attemptNumber !== undefined && (
                           <span>
                             {t("g4.queue.inspector.attemptNumber", {
@@ -572,9 +587,9 @@ export function LecturerFeedbackPage() {
                         selectedItem.steps.map((step, idx) => (
                           <div
                             key={step.nodeId || idx}
-                            className="flex flex-col gap-2 rounded-eb-md border border-default bg-canvas/40 p-3.5"
+                            className="flex flex-col gap-2 rounded-eb-md border border-line bg-canvas/40 p-3.5"
                           >
-                            <div className="flex items-center justify-between border-b border-default/60 pb-2">
+                            <div className="flex items-center justify-between border-b border-line/60 pb-2">
                               <span className="text-[12px] font-medium text-primary">
                                 {t("g4.queue.inspector.stepNumber", { n: idx + 1 })}
                               </span>
@@ -598,10 +613,10 @@ export function LecturerFeedbackPage() {
 
                             {/* Retrospective Reasoning */}
                             <div className="flex flex-col gap-1 pt-1">
-                              <span className="text-[11px] font-medium text-ink-secondary">
+                              <span className="text-[12px] font-medium text-ink-secondary">
                                 {t("g4.queue.inspector.stepReasoningTitle")}
                               </span>
-                              <div className="rounded-eb-sm border border-default/80 bg-surface p-2.5 text-[13px] leading-5 text-ink">
+                              <div className="rounded-eb-sm border border-line/80 bg-surface p-2.5 text-[13px] leading-5 text-ink">
                                 {step.reasoningText && step.reasoningText.trim() ? (
                                   step.reasoningText
                                 ) : (
@@ -614,7 +629,7 @@ export function LecturerFeedbackPage() {
                           </div>
                         ))
                       ) : (
-                        <div className="rounded-eb-md border border-default bg-canvas/40 p-3 text-[13px] text-ink-muted italic">
+                        <div className="rounded-eb-md border border-line bg-canvas/40 p-3 text-[13px] text-ink-muted italic">
                           {t("g4.queue.inspector.emptySteps")}
                         </div>
                       )}
@@ -625,7 +640,7 @@ export function LecturerFeedbackPage() {
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.reflectionTitle")}
                       </span>
-                      <div className="rounded-eb-md border border-default bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
+                      <div className="rounded-eb-md border border-line bg-canvas/60 p-3.5 text-[14px] leading-5 text-ink">
                         {selectedItem.reflectionText || (
                           <span className="italic text-ink-muted">
                             {t("g4.queue.inspector.emptyReflection")}
@@ -638,7 +653,7 @@ export function LecturerFeedbackPage() {
               </div>
 
               {/* Qualitative Feedback Composer (AC-3, Frame 05.3, Fix 4: C2-A) */}
-              <div className="flex flex-col gap-3.5 rounded-eb-lg border border-default bg-surface-muted/50 p-5">
+              <div className="flex flex-col gap-3.5 rounded-eb-lg border border-line bg-surface-muted/50 p-5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <UserCheck size={18} className="text-primary" />
@@ -647,9 +662,9 @@ export function LecturerFeedbackPage() {
                     </h3>
                   </div>
                   {selectedItem.feedbackStatus === "REVIEWED" && (
-                    <SubmissionBadge status="reviewed">
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-selected px-2.5 py-0.5 text-[12px] leading-4 font-medium whitespace-nowrap text-link">
                       {t("g4.queue.badges.reviewed")}
-                    </SubmissionBadge>
+                    </span>
                   )}
                 </div>
 
@@ -659,13 +674,13 @@ export function LecturerFeedbackPage() {
 
                 {/* When existingFeedback is present, show read-only card and hide composer */}
                 {selectedItem.existingFeedback ? (
-                  <div className="flex flex-col gap-2 rounded-eb-md border border-default bg-surface p-4 text-[13px] leading-5">
+                  <div className="flex flex-col gap-2 rounded-eb-md border border-line bg-surface p-4 text-[13px] leading-5">
                     <div className="flex items-center justify-between">
                       <span className="text-[12px] font-medium text-ink-secondary">
                         {t("g4.queue.inspector.previousFeedback")}
                       </span>
                       {selectedItem.existingFeedback.createdAt && (
-                        <span className="text-[11px] text-ink-muted">
+                        <span className="text-[12px] text-ink-muted">
                           {t("g4.queue.inspector.sentAt", {
                             time: formatDateTime(new Date(selectedItem.existingFeedback.createdAt)),
                           })}
@@ -675,7 +690,7 @@ export function LecturerFeedbackPage() {
                     <p className="whitespace-pre-wrap rounded-eb-sm bg-canvas/60 p-3 text-ink">
                       {selectedItem.existingFeedback.feedbackText}
                     </p>
-                    <p className="text-[11px] text-ink-muted italic">
+                    <p className="text-[12px] text-ink-muted italic">
                       {t("g4.queue.inspector.alreadyReviewedNotice")}
                     </p>
                   </div>
@@ -704,14 +719,9 @@ export function LecturerFeedbackPage() {
                         size="md"
                         onClick={handleSubmitFeedback}
                         disabled={isSubmitting || feedbackText.trim().length < FEEDBACK_MIN_LENGTH}
-                        className="inline-flex items-center gap-2"
+                        leadingIcon={MessageSquareText}
                       >
-                        <MessageSquareText size={16} />
-                        <span>
-                          {isSubmitting
-                            ? t("g4.queue.inspector.submittingFeedback")
-                            : t("g4.queue.inspector.submitFeedback")}
-                        </span>
+                        {isSubmitting ? t("g4.queue.inspector.submittingFeedback") : t("g4.queue.inspector.submitFeedback")}
                       </Button>
                     </div>
                   </>

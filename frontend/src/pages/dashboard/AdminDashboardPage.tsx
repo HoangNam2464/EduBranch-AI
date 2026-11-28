@@ -26,6 +26,7 @@ import { adminService } from "@/services/adminService";
 import type { HealthState, SystemHealth } from "@/services/mappers/adminHealth";
 import type { AdminOverview } from "@/services/mappers/adminOverview";
 import { AdminPanel } from "@/pages/admin/components/AdminPanel";
+import { eventLabel, eventMetaLabel } from "@/pages/admin/adminLogLabels";
 import { httpStatusOf, type LoadState } from "@/pages/statistics/useLecturerCourseCases";
 
 type HealthLoad =
@@ -62,37 +63,7 @@ function useAdminOverview() {
       (error: unknown) => {
         if (cancelled) return;
         const code = httpStatusOf(error);
-        // Fallback for pending backend endpoint (404/501/502)
-        if (code === 404 || code === 501 || code === 502) {
-          setState({
-            status: "ready",
-            data: {
-              attentionAlerts: [],
-              kpis: {
-                totalUsers: 0,
-                userGrowthThisMonth: 0,
-                openCourses: 0,
-                courseGrowthThisMonth: 0,
-                publishedCases: 0,
-                caseGrowthThisMonth: 0,
-                aiCaseGenerations: 0,
-                aiCaseFailures: 0,
-              },
-              roleBreakdown: {
-                studentsCount: 0,
-                lecturersCount: 0,
-                adminsCount: 0,
-                studentPercent: 0,
-                lecturerPercent: 0,
-                adminPercent: 0,
-              },
-              casesByCourse: [],
-              recentLogs: [],
-            },
-          });
-        } else {
-          setState({ status: "error", code, at: new Date() });
-        }
+        setState({ status: "error", code, at: new Date() });
       },
     );
     return () => {
@@ -129,7 +100,7 @@ function AttentionBanner({ alerts }: { alerts: AdminOverview["attentionAlerts"] 
             <span aria-hidden="true" className="text-warning-border">
               •
             </span>
-            <span>{alert.message}</span>
+            <span>{alert.type === "general" ? alert.message : t(`g6.dashboard.alerts.${alert.type}`, { count: alert.count ?? 0 })}</span>
           </span>
         ))}
       </div>
@@ -151,7 +122,7 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
   return (
     <section
       aria-label="KPI overview"
-      className="grid grid-cols-1 rounded-[16px] bg-surface p-6 shadow-eb-card sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line"
+      className="grid grid-cols-2 gap-y-5 rounded-[16px] bg-surface p-6 shadow-eb-card xl:grid-cols-4 xl:gap-y-0"
     >
       {/* 1. Người dùng */}
       <MetricCard
@@ -185,9 +156,10 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
       />
 
       {/* 3. Case đã xuất bản */}
+      {/* 2 x 2 below 1280 px: the left column of the second row has no divider. */}
       <MetricCard
         variant="kpi"
-        divided
+        className="xl:border-l xl:border-line"
         label={t("g6.dashboard.kpi.publishedCases")}
         value={kpis.publishedCases}
         delta={{
@@ -201,7 +173,7 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
       />
 
       {/* 4. Lượt sinh case AI */}
-      <div className="flex min-w-0 flex-col items-start gap-2 border-t border-line pt-4 sm:border-t-0 sm:pt-0 lg:border-l lg:border-line lg:px-6">
+      <div className="flex min-w-0 flex-col items-start gap-2 border-l border-line px-6">
         <p className="text-[15px] leading-[22px] text-ink-secondary">{t("g6.dashboard.kpi.aiGenerations")}</p>
         <p className="text-[28px] leading-9 font-medium text-ink">{kpis.aiCaseGenerations}</p>
         {kpis.aiCaseFailures > 0 ? (
@@ -226,6 +198,8 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
 /** Biểu đồ hoạt động học tập theo tuần (Figma 10.2). */
 function ActivityChartPanel() {
   const { t } = useTranslation();
+  // The overview API has no weekly attempts / Review Study submissions series yet, so nothing is drawn
+  // (no invented curve or week labels — rule F2). The gap is reported to the PO.
   return (
     <AdminPanel
       variant="dashboard"
@@ -233,83 +207,7 @@ function ActivityChartPanel() {
       title={t("g6.dashboard.activity.title")}
       subtitle={t("g6.dashboard.activity.subtitle")}
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-[12px] leading-4 text-ink-secondary">
-            <span className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="size-2 rounded-full bg-[#2A4E7F]" />
-              {t("g6.dashboard.activity.branchingAttempts")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="size-2 rounded-full bg-[#00A5F5]" />
-              {t("g6.dashboard.activity.reviewSubmissions")}
-            </span>
-          </div>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 rounded-eb-md border border-line bg-surface px-2.5 py-1 text-[12px] font-medium text-ink"
-          >
-            {t("g6.dashboard.activity.filter8Weeks")}
-            <ChevronDown size={14} className="text-ink-secondary" />
-          </button>
-        </div>
-
-        {/* SVG Area chart */}
-        <div className="relative h-[220px] w-full pt-2">
-          <svg className="h-full w-full" viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Activity trend">
-            <defs>
-              <linearGradient id="gradient-blue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2A4E7F" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#2A4E7F" stopOpacity="0.0" />
-              </linearGradient>
-              <linearGradient id="gradient-cyan" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#00A5F5" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#00A5F5" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-            {/* Grid lines */}
-            <line x1="0" y1="18" x2="600" y2="18" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="58" x2="600" y2="58" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="98" x2="600" y2="98" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="138" x2="600" y2="138" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="178" x2="600" y2="178" stroke="#E1E8F5" strokeWidth="1" />
-
-            {/* Branching Study Area & Line */}
-            <path
-              d="M 0 135 Q 80 120, 150 100 T 300 70 T 450 40 T 600 25 L 600 178 L 0 178 Z"
-              fill="url(#gradient-blue)"
-            />
-            <path
-              d="M 0 135 Q 80 120, 150 100 T 300 70 T 450 40 T 600 25"
-              fill="none"
-              stroke="#2A4E7F"
-              strokeWidth="2.5"
-            />
-
-            {/* Review Study Area & Line */}
-            <path
-              d="M 0 168 Q 80 162, 150 155 T 300 152 T 450 142 T 600 130 L 600 178 L 0 178 Z"
-              fill="url(#gradient-cyan)"
-            />
-            <path
-              d="M 0 168 Q 80 162, 150 155 T 300 152 T 450 142 T 600 130"
-              fill="none"
-              stroke="#00A5F5"
-              strokeWidth="2.5"
-            />
-          </svg>
-          <div className="flex justify-between pt-2 text-[11px] text-ink-muted">
-            <span>Tuần 40</span>
-            <span>Tuần 41</span>
-            <span>Tuần 42</span>
-            <span>Tuần 43</span>
-            <span>Tuần 44</span>
-            <span>Tuần 45</span>
-            <span>Tuần 46</span>
-            <span>Tuần 47</span>
-          </div>
-        </div>
-      </div>
+      <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.activity.unavailable")}</p>
     </AdminPanel>
   );
 }
@@ -317,10 +215,10 @@ function ActivityChartPanel() {
 /** Donut Chart: Người dùng theo vai trò (Figma 10.2). */
 function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["roleBreakdown"] }) {
   const { t } = useTranslation();
-  const students = roleBreakdown.studentPercent || 92;
-  const lecturers = roleBreakdown.lecturerPercent || 6;
-  const admins = roleBreakdown.adminPercent || 2;
-  const total = roleBreakdown.studentsCount + roleBreakdown.lecturersCount + roleBreakdown.adminsCount || 186;
+  const students = roleBreakdown.studentPercent;
+  const lecturers = roleBreakdown.lecturerPercent;
+  const admins = roleBreakdown.adminPercent;
+  const total = roleBreakdown.studentsCount + roleBreakdown.lecturersCount + roleBreakdown.adminsCount;
 
   return (
     <AdminPanel
@@ -328,6 +226,9 @@ function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["rol
       title={t("g6.dashboard.usersByRole.title")}
       subtitle={t("g6.dashboard.usersByRole.subtitle")}
     >
+      {total === 0 ? (
+        <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.usersByRole.empty")}</p>
+      ) : (
       <div className="flex items-center justify-between gap-4 py-2">
         {/* SVG Donut */}
         <div className="relative flex size-[130px] shrink-0 items-center justify-center">
@@ -369,7 +270,7 @@ function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["rol
           </svg>
           <div className="absolute flex flex-col items-center justify-center text-center">
             <span className="text-[18px] font-semibold text-ink">{total}</span>
-            <span className="text-[10px] text-ink-muted">{t("g6.dashboard.kpi.users")}</span>
+            <span className="text-[12px] text-ink-muted">{t("g6.dashboard.kpi.users")}</span>
           </div>
         </div>
 
@@ -398,25 +299,27 @@ function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["rol
           </li>
         </ul>
       </div>
+      )}
     </AdminPanel>
   );
 }
 
-function ServiceRow({ label, state, info }: { label: string; state: HealthState; info?: string }) {
+function ServiceRow({ label, state, info }: { label: string; state: HealthState | undefined; info?: string }) {
   const { t } = useTranslation();
   const up = state === "UP";
+  const unknown = state === undefined;
   return (
     <li className="flex items-center gap-2.5">
-      <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${up ? "bg-success" : "bg-error"}`} />
+      <span aria-hidden="true" className={`size-2 shrink-0 rounded-full ${unknown ? "bg-line" : up ? "bg-success" : "bg-error"}`} />
       <span className="min-w-0 flex-1 text-[14px] leading-5 text-ink">{label}</span>
-      <span className={`shrink-0 text-[12px] leading-4 font-medium ${up ? "text-ink-secondary" : "text-error-text"}`}>
-        {info ?? (up ? t("g6.dashboard.health.up") : t("g6.dashboard.health.down"))}
+      <span className={`shrink-0 text-[12px] leading-4 font-medium ${unknown || up ? "text-ink-secondary" : "text-error-text"}`}>
+        {unknown ? "—" : info ?? (up ? t("g6.dashboard.health.up") : t("g6.dashboard.health.down"))}
       </span>
     </li>
   );
 }
 
-function SystemHealthCard() {
+function SystemHealthCard({ overview }: { overview?: AdminOverview["systemHealth"] }) {
   const { t } = useTranslation();
   const { state, reload } = useSystemHealth();
   const checkedAt = state.kind === "ready" && state.health.checkedAt ? new Date(state.health.checkedAt) : undefined;
@@ -437,11 +340,15 @@ function SystemHealthCard() {
       {state.kind === "ready" && (
         <ul className="flex flex-col gap-3">
           <ServiceRow label={t("g6.dashboard.health.appServer")} state={state.health.appServer} />
-          <ServiceRow label={t("g6.dashboard.health.aiService")} state="UP" />
+          <ServiceRow label={t("g6.dashboard.health.aiService")} state={overview?.aiService} />
           <ServiceRow
             label={t("g6.dashboard.health.indexing")}
-            state="UP"
-            info={t("g6.dashboard.health.indexingProcessing", { count: 2 })}
+            state={overview?.indexing}
+            info={
+              overview?.indexing === "UP" && overview.indexingProcessingCount > 0
+                ? t("g6.dashboard.health.indexingProcessing", { count: overview.indexingProcessingCount })
+                : undefined
+            }
           />
           <ServiceRow label={t("g6.dashboard.health.database")} state={state.health.database} />
         </ul>
@@ -463,16 +370,7 @@ function SystemHealthCard() {
 /** Case theo khóa học (Figma 10.2). */
 function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse"] }) {
   const { t } = useTranslation();
-  const sampleCourses = courses.length > 0 ? courses : [
-    { courseCode: "CS402", courseName: "An ninh mạng", publishedCount: 4, draftCount: 2, totalCount: 6 },
-    { courseCode: "FN310", courseName: "Tài chính doanh nghiệp", publishedCount: 3, draftCount: 1, totalCount: 4 },
-    { courseCode: "BA220", courseName: "Quản trị dự án", publishedCount: 3, draftCount: 0, totalCount: 3 },
-    { courseCode: "CS301", courseName: "Kỹ thuật phần mềm", publishedCount: 1, draftCount: 1, totalCount: 2 },
-    { courseCode: "MK210", courseName: "Marketing số", publishedCount: 2, draftCount: 0, totalCount: 2 },
-    { courseCode: "OP330", courseName: "Quản trị vận hành", publishedCount: 2, draftCount: 0, totalCount: 2 },
-    { courseCode: "HR205", courseName: "Hành vi tổ chức", publishedCount: 1, draftCount: 0, totalCount: 1 },
-    { courseCode: "IT305", courseName: "Quản trị HTTT", publishedCount: 0, draftCount: 0, totalCount: 0 },
-  ];
+  const sampleCourses = courses;
 
   return (
     <AdminPanel
@@ -503,6 +401,7 @@ function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse
         </div>
 
         <ul className="flex flex-col gap-3">
+          {sampleCourses.length === 0 && <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.casesByCourse.empty")}</p>}
           {sampleCourses.map((c) => {
             const hasCases = c.totalCount > 0;
             const pubPercent = hasCases ? Math.round((c.publishedCount / 6) * 100) : 0;
@@ -542,22 +441,17 @@ function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse
 /** Nhật ký gần đây (Figma 10.2). */
 function RecentLogsPanel({ logs }: { logs: AdminOverview["recentLogs"] }) {
   const { t } = useTranslation();
-  const sampleLogs = logs.length > 0 ? logs : [
-    { id: "1", description: "Nguyễn Minh Anh nộp bài Review Study", meta: "09:42 · MK210", tone: "success" as const },
-    { id: "2", description: "TS. Nguyễn Văn An sinh case bằng AI", meta: "08:55 · CS402", tone: "info" as const },
-    { id: "3", description: "Đăng nhập thất bại 5 lần", meta: "08:31 · giahuy@dtu.edu.vn", tone: "warning" as const },
-    { id: "4", description: "ThS. Trần Thu Hà tải tài liệu môn học", meta: "08:20 · MK210", tone: "success" as const },
-    { id: "5", description: "Khóa tài khoản Phạm Gia Huy", meta: "08:02 · Quản trị viên", tone: "error" as const },
-  ];
+  const sampleLogs = logs;
 
   return (
     <AdminPanel
       variant="dashboard"
-      className="w-[360px] shrink-0"
+      className="w-full shrink-0 xl:w-[360px]"
       title={t("g6.dashboard.recentLog.title")}
       subtitle={t("g6.dashboard.recentLog.subtitle")}
     >
       <ul className="flex flex-col gap-3 py-1">
+        {sampleLogs.length === 0 && <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.recentLog.empty")}</p>}
         {sampleLogs.map((log) => {
           const dotColor =
             log.tone === "success"
@@ -572,8 +466,8 @@ function RecentLogsPanel({ logs }: { logs: AdminOverview["recentLogs"] }) {
             <li key={log.id} className="flex items-start gap-2.5">
               <span aria-hidden="true" className={`mt-1.5 size-2 shrink-0 rounded-full ${dotColor}`} />
               <div className="flex min-w-0 flex-1 flex-col">
-                <span className="line-clamp-1 text-[13px] leading-5 font-medium text-ink">{log.description}</span>
-                <span className="text-[11px] leading-4 text-ink-muted">{log.meta}</span>
+                <span className="line-clamp-1 text-[13px] leading-5 font-medium text-ink">{eventLabel(t, log.description)}</span>
+                <span className="text-[12px] leading-4 text-ink-muted">{eventMetaLabel(t, log.meta)}</span>
               </div>
             </li>
           );
@@ -609,11 +503,11 @@ export function AdminDashboardPage() {
     );
     mainContent = (
       <div className="flex flex-col gap-5">
-        <div className="flex items-stretch gap-5">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-stretch">
           <SkeletonRegion className="h-80 flex-1 rounded-[16px] bg-surface p-6">
             <SkeletonLine width="40%" />
           </SkeletonRegion>
-          <div className="flex w-[360px] shrink-0 flex-col gap-5">
+          <div className="flex w-full shrink-0 flex-col gap-5 xl:w-[360px]">
             <SkeletonRegion className="h-44 rounded-[16px] bg-surface p-6">
               <SkeletonLine width="50%" />
             </SkeletonRegion>
@@ -625,12 +519,11 @@ export function AdminDashboardPage() {
   } else if (state.status === "error") {
     return (
       <div className="flex flex-1 flex-col pb-5">
-        <ErrorState
-          title={t("g6.dashboard.loadError")}
-          onRetry={retry}
-          errorCode={state.code}
-          occurredAt={state.at}
-        />
+        {state.code === 403 ? (
+          <ErrorState title={t("states.forbidden.title")} description={t("states.forbidden.description")} errorCode={403} onRetry={retry} />
+        ) : (
+          <ErrorState title={t("g6.dashboard.loadError")} onRetry={retry} errorCode={state.code} occurredAt={state.at} />
+        )}
       </div>
     );
   } else {
@@ -639,15 +532,15 @@ export function AdminDashboardPage() {
     kpiContent = <KpiBand kpis={data.kpis} />;
     mainContent = (
       <>
-        <div className="flex items-stretch gap-5">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-stretch">
           <ActivityChartPanel />
-          <div className="flex w-[360px] shrink-0 flex-col gap-5">
+          <div className="flex w-full shrink-0 flex-col gap-5 xl:w-[360px]">
             <UsersByRolePanel roleBreakdown={data.roleBreakdown} />
-            <SystemHealthCard />
+            <SystemHealthCard overview={data.systemHealth} />
           </div>
         </div>
 
-        <div className="flex items-stretch gap-5">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-stretch">
           <CasesByCoursePanel courses={data.casesByCourse} />
           <RecentLogsPanel logs={data.recentLogs} />
         </div>

@@ -210,7 +210,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                         {d.day}
                       </span>
                       {d.isToday && (
-                        <span className="text-[10px] font-medium text-primary bg-primary-subtle px-1.5 py-0.5 rounded-full">
+                        <span className="text-[12px] font-medium text-primary bg-primary-subtle px-1.5 py-0.5 rounded-full">
                           {t("g4.calendar.today")}
                         </span>
                       )}
@@ -222,7 +222,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                             key={c.id}
                             to={c.status === "PUBLISHED" ? PATHS.LECTURER.CASES : buildPath(PATHS.LECTURER.CASE_REVIEW, { caseId: c.id })}
                             className={cx(
-                              "group flex flex-col gap-0.5 rounded px-2 py-1 text-[11px] leading-tight font-medium truncate transition-all duration-150",
+                              "group flex flex-col gap-0.5 rounded px-2 py-1 text-[12px] leading-tight font-medium truncate transition-all duration-150",
                               c.status === "PUBLISHED"
                                 ? "bg-primary text-white hover:bg-primary-hover"
                                 : "bg-accent text-white hover:bg-accent/90",
@@ -233,7 +233,7 @@ function MonthView({ month, today, cases }: { month: Date; today: Date; cases: C
                           </Link>
                         ))}
                         {dayCases.length > 2 && (
-                          <span className="text-[10px] text-ink-secondary px-1 font-medium">
+                          <span className="text-[12px] text-ink-secondary px-1 font-medium">
                             {t("g4.dashboard.moreCases", { count: dayCases.length - 2 })}
                           </span>
                         )}
@@ -428,7 +428,7 @@ export function LecturerDashboardPage() {
                     <action.icon size={20} strokeWidth={1.75} />
                   </div>
                   {action.badge && (
-                    <span className="rounded-full bg-primary-subtle px-2 py-0.5 text-[11px] font-medium text-primary">
+                    <span className="rounded-full bg-primary-subtle px-2 py-0.5 text-[12px] font-medium text-primary">
                       {action.badge}
                     </span>
                   )}

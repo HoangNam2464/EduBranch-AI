@@ -46,7 +46,7 @@ export function StateCard({
   const styles = toneStyles[tone];
   return (
     <div
-      className={`flex w-[480px] max-w-full flex-col items-center gap-3 rounded-eb-xl bg-surface p-8 ${className}`}
+      className={`flex w-fit min-w-[min(480px,100%)] max-w-full flex-col items-center gap-3 rounded-eb-xl bg-surface p-8 ${className}`}
     >
       <div className={`flex size-12 shrink-0 items-center justify-center rounded-eb-lg ${styles.box}`}>
         <Icon
@@ -57,11 +57,11 @@ export function StateCard({
           className={styles.icon}
         />
       </div>
-      <Title className="text-center text-base leading-6 font-normal tracking-normal text-ink">{title}</Title>
+      <Title className="max-w-[416px] text-center text-base leading-6 font-normal tracking-normal text-ink">{title}</Title>
       {description && (
         /* Figma lets the description hug its text past the 416px inner width
            (e.g. 504px in 01.8), centred on the card; w-max keeps one line up to 560px. */
-        <p className="w-max max-w-[560px] text-center text-sm leading-5 text-ink-secondary">{description}</p>
+        <p className="w-max max-w-[min(560px,100%)] text-center text-sm leading-5 text-ink-secondary">{description}</p>
       )}
       {action && (
         <div className="pt-2">

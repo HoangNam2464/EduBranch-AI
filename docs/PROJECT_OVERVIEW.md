@@ -100,17 +100,17 @@ Use [`docs/README.md`](README.md) as the unified Documentation Hub for the full 
 |---|---|---|
 | Authentication & Roles | Implemented (email/password, JWT, RBAC, rate limit) | Google/Microsoft sign-in (`BE-034`, EBA-101 In Progress) not on `develop`; forgot/reset password UI is MVP (PO 2026-11-25), backend reset API and `rememberMe` TTL not on `develop` (rule B4) |
 | Course Context & Enrollment | Implemented | Soft archive (`OPD-014`), invite code + student desk (`BE-029`, `V5`); course read ownership in SQL (H3, PR #88) |
-| Teaching Materials & Upload | Implemented | MinIO storage, PDF/DOCX validation, RAG source inspector UI |
+| Teaching Materials & Upload | Implemented | MinIO storage, PDF/DOCX validation, RAG source inspector UI; `FE-003/004/005/026` PASS Visual QA Round 4 on local branch `fix/fe-screen-quality` (pending PR/merge) |
 | Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary tests pass (F-07 fixed in PR #92); a failed ingest or re-ingest removes the material's chunks, resets `chunk_count = 0`, and records FAILED atomically (QA-005, PO Option 1) |
 | AI Case Generation | Implemented | 3-color DFS DAG validation, grounded prompting (`gemini-3.5-flash`) |
 | Decision Tree / Case Editor | Implemented | node save with topology checks (`BE-017`), editor (`FE-009/010`); `findTreeViolation` vs AI terminal-path rule mismatch (EBA-117) |
 | Lecturer Review & Publishing | Implemented | lifecycle state machine; published-only student gate (`INV-01`) for case reads and listings (H1–H2, PR #88) and for existing attempts (spec 013): a `PUBLISHED` case with an attempt cannot return to `DRAFT` (D5, PO 2026-11-27), serialized with attempt creation by a case row lock; case versioning `OPD-007` is Post-MVP |
 | Branching Case Player & Attempts | Implemented | play → review → reflect → retry; attempt creation transactional (PR #88); in-progress attempts continue to terminal (`OPD-003`, PO 2026-11-27); retry limit `OPD-004` open |
-| Review Study | Implemented (core) | BE-025 + FE `ReviewStudyPage` & `ReviewFeedbackPage` (`PR #69`); MVP scope confirmed (`P4` `(LATER)` removed per PO `2026-11-25`); `D4-13` remains `OPEN PO DECISION` |
+| Review Study | Implemented (core) | BE-025 + FE `ReviewStudyPage` & `ReviewFeedbackPage` (`PR #69`); MVP scope confirmed (`P4` `(LATER)` removed per PO `2026-11-25`); `D4-13` remains `OPEN PO DECISION`; `FE-020` PASS Visual QA Round 4 on local branch `fix/fe-screen-quality` |
 | AI Challenge Support | Implemented | 2-round cap in gateway and AI service (`BE-027`, `FE-021`) |
-| Lecturer Feedback & Statistics | Implemented (core) | `BE-026/028` + `FE-019`/`FE-022` (`PR #68`/`#70`/`#76`); route convention `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`, `D-04`, `OPD-010` remain `OPEN PO DECISION` |
+| Lecturer Feedback & Statistics | Implemented (core) | `BE-026/028` + `FE-019`/`FE-022` (`PR #68`/`#70`/`#76`); `FE-019`/`FE-022` PASS Visual QA Round 4 on local branch `fix/fe-screen-quality`; route convention `/lecturer/feedback` vs `/lecturer/cases/:caseId/feedback`, `D-04`, `OPD-010` remain `OPEN PO DECISION` |
 | Lecturer Dashboard | Implemented | FE (`PR #73`) + aggregation API `BE-030` (`GET /lecturer/dashboard`, PR #80); default lecturer route after login still an open PO item (`ROLE_HOME.LECTURER`) |
 | Profile | Implemented | view + update (`GET`/`PATCH /users/me`, `BE-031`, PR #80) |
-| Admin Portal | Implemented | admin screens for Figma frames 10.1–10.10 (`FE-031`/`FE-032`) on admin APIs `BE-032` (PR #80); 10.6 / 10.9 fixes in PR #91 (log filter groups, exact totals, VI/EN event labels); remaining Low items EBA-114 |
+| Admin Portal | Implemented | admin screens for Figma frames 10.1–10.10 (`FE-031`/`FE-032`) on admin APIs `BE-032` (PR #80); `FE-031`/`FE-032` PASS Visual QA Round 4 on local branch `fix/fe-screen-quality` (real data only, 1024px layout fixed, pending PR/merge) |
 | Evaluation & Rubric | Implemented | rubric storage + anonymized CSV `BE-033` (PR #80); rubric UI `FE-029` (07.8 / 10.8) on that API (PR #89, replaces closed PR #74) |
 | Notifications | Documented / Skeleton | `backend/src/modules/notification/` has no endpoints (Phase 2; `PSD-03` open) |

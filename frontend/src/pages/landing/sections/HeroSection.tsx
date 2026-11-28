@@ -164,7 +164,7 @@ function StudioMockupWindow() {
         </div>
 
         {/* Right: Clean Live Simulator Badge */}
-        <div className="flex items-center gap-1.5 text-[11px] text-white/75 font-medium bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
+        <div className="flex items-center gap-1.5 text-[12px] text-white/75 font-medium bg-white/10 px-2.5 py-1 rounded-full border border-white/10">
           <span className="size-2 rounded-full bg-accent animate-pulse" />
           <span>{k("simulationBadge")}</span>
         </div>
@@ -261,7 +261,7 @@ function StudioMockupWindow() {
           )}
         >
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-semibold text-sky-300 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="text-[12px] font-semibold text-sky-300 uppercase tracking-wider flex items-center gap-1.5">
               <span className="size-2 rounded-full bg-accent" />
               {k("situationLabel")} · {k("decisionPoint1")}
             </span>
@@ -275,7 +275,7 @@ function StudioMockupWindow() {
         {/* 2. MIDDLE ROW: 3 Option Cards */}
         {/* Option A (Left) */}
         <div className="absolute top-[134px] left-[16px] min-h-[114px] w-[172px] rounded-[14px] border border-white/12 bg-white/6 p-3 text-left opacity-55">
-          <p className="text-[11px] leading-4 font-medium text-white/50">{k("optionA")}</p>
+          <p className="text-[12px] leading-4 font-medium text-white/50">{k("optionA")}</p>
           <p className="mt-1 text-[12px] leading-4.5 text-white/75">{k("optionAText")}</p>
         </div>
 
@@ -289,7 +289,7 @@ function StudioMockupWindow() {
           )}
         >
           <div className="flex items-center justify-between">
-            <p className={cx("text-[11px] leading-4 font-semibold", phase >= 1 ? "text-[#00699E]" : "text-white/60")}>
+            <p className={cx("text-[12px] leading-4 font-semibold", phase >= 1 ? "text-[#00699E]" : "text-white/60")}>
               {k("chosen")}
             </p>
             {phase >= 1 && (
@@ -305,7 +305,7 @@ function StudioMockupWindow() {
 
         {/* Option C (Right) */}
         <div className="absolute top-[134px] left-[392px] min-h-[114px] w-[172px] rounded-[14px] border border-white/12 bg-white/6 p-3 text-left opacity-55">
-          <p className="text-[11px] leading-4 font-medium text-white/50">{k("optionC")}</p>
+          <p className="text-[12px] leading-4 font-medium text-white/50">{k("optionC")}</p>
           <p className="mt-1 text-[12px] leading-4.5 text-white/75">{k("optionCText")}</p>
         </div>
 
@@ -348,7 +348,7 @@ function StudioMockupWindow() {
                 {k("attempt2Title")}
               </p>
             </div>
-            <span className="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[10px] font-medium text-emerald-300">
+            <span className="rounded-full bg-emerald-400/20 px-2 py-0.5 text-[12px] font-medium text-emerald-300">
               {k("retrospective")}
             </span>
           </div>
