@@ -152,6 +152,17 @@ async def _update_material_status(
         )
 
 
+async def _mark_failed(conn: asyncpg.Connection, material_id: str, error: str) -> None:
+    """
+    QA-005: a FAILED material keeps no chunks. Remove any chunks from an earlier successful ingest
+    and record the failure in one transaction, so a failed re-ingest never leaves stale chunks
+    retrievable (the retriever does not filter on processing_status).
+    """
+    async with conn.transaction():
+        await _delete_existing_chunks(conn, material_id)
+        await _update_material_status(conn, material_id, "FAILED", error=error)
+
+
 # ---------------------------------------------------------------------------
 # Main ingestion orchestrator
 # ---------------------------------------------------------------------------
@@ -204,12 +215,12 @@ async def ingest_document(
         embedder = DocumentEmbedder(provider=get_provider())
         embeddings = await embedder.embed_chunks(chunk_texts)
 
-        # Step 5: Delete old chunks (idempotent), then insert new ones
-        await _delete_existing_chunks(conn, material_id)
-        inserted = await _insert_chunks(conn, material_id, course_id, chunk_texts, embeddings)
-
-        # Mark as COMPLETED
-        await _update_material_status(conn, material_id, "COMPLETED", chunk_count=inserted)
+        # Step 5: replace old chunks and mark COMPLETED atomically (a failure rolls back to the old chunks,
+        # which the error handler below then removes together with the FAILED status).
+        async with conn.transaction():
+            await _delete_existing_chunks(conn, material_id)
+            inserted = await _insert_chunks(conn, material_id, course_id, chunk_texts, embeddings)
+            await _update_material_status(conn, material_id, "COMPLETED", chunk_count=inserted)
 
         logger.info(
             "ingestion_complete",
@@ -222,21 +233,21 @@ async def ingest_document(
         error_msg = str(e)
         logger.error("ingestion_parse_error", material_id=material_id, error=error_msg)
         if conn:
-            await _update_material_status(conn, material_id, "FAILED", error=error_msg)
+            await _mark_failed(conn, material_id, error_msg)
         raise
 
     except EmbeddingException as e:
         error_msg = str(e)
         logger.error("ingestion_embedding_error", material_id=material_id, error=error_msg)
         if conn:
-            await _update_material_status(conn, material_id, "FAILED", error=error_msg)
+            await _mark_failed(conn, material_id, error_msg)
         raise
 
     except Exception as e:
         error_msg = f"Ingestion pipeline error: {e}"
         logger.error("ingestion_error", material_id=material_id, error=error_msg)
         if conn:
-            await _update_material_status(conn, material_id, "FAILED", error=error_msg)
+            await _mark_failed(conn, material_id, error_msg)
         raise
 
     finally:

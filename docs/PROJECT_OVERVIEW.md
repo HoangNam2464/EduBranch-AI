@@ -101,7 +101,7 @@ Use [`docs/README.md`](README.md) as the unified Documentation Hub for the full 
 | Authentication & Roles | Implemented (email/password, JWT, RBAC, rate limit) | Google/Microsoft sign-in (`BE-034`, EBA-101 In Progress) not on `develop`; forgot/reset password UI is MVP (PO 2026-11-25), backend reset API and `rememberMe` TTL not on `develop` (rule B4) |
 | Course Context & Enrollment | Implemented | Soft archive (`OPD-014`), invite code + student desk (`BE-029`, `V5`); course read ownership in SQL (H3, PR #88) |
 | Teaching Materials & Upload | Implemented | MinIO storage, PDF/DOCX validation, RAG source inspector UI |
-| Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary tests pass (F-07 fixed in PR #92); known defect QA-005 (stale chunks after failed re-ingest, xfail, EBA-116) |
+| Document Processing & RAG | Implemented | parse → chunk → embed (768) → pgvector; `<sources>` boundary tests pass (F-07 fixed in PR #92); a failed ingest or re-ingest removes the material's chunks together with the FAILED status (QA-005) |
 | AI Case Generation | Implemented | 3-color DFS DAG validation, grounded prompting (`gemini-3.5-flash`) |
 | Decision Tree / Case Editor | Implemented | node save with topology checks (`BE-017`), editor (`FE-009/010`); `findTreeViolation` vs AI terminal-path rule mismatch (EBA-117) |
 | Lecturer Review & Publishing | Implemented | lifecycle state machine; published-only student gate (`INV-01`) for case reads and listings (H1–H2, PR #88) and for existing attempts (spec 013): a `PUBLISHED` case with an attempt cannot return to `DRAFT` (D5, PO 2026-11-27), serialized with attempt creation by a case row lock; case versioning `OPD-007` is Post-MVP |
