@@ -88,7 +88,7 @@ function SummaryCard({ icon: Icon, iconStrokeWidth, label, value, hint }: { icon
         <p className="text-[15px] leading-[22px] text-ink-secondary">{label}</p>
       </div>
       <p className="text-[22px] leading-7 text-ink">{value}</p>
-      <p className="truncate text-[12px] leading-4 text-ink-muted">{hint}</p>
+      <p className="min-w-0 break-words text-[12px] leading-4 text-ink-muted">{hint}</p>
     </div>
   );
 }
@@ -153,10 +153,10 @@ function RagSourceInspector({ courseId, materialId }: { courseId: string; materi
   const chunkHint = t(`ragInspector.metrics.chunksHint.${doc.processingStatus}`);
 
   return (
-    <div className="flex items-start gap-5">
+    <div className="flex flex-col gap-5 xl:flex-row xl:items-start">
       {/* ── Left column ── */}
       <div className="flex min-w-0 flex-1 flex-col gap-5">
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           <SummaryCard
             icon={Database}
             iconStrokeWidth={2}
@@ -201,7 +201,7 @@ function RagSourceInspector({ courseId, materialId }: { courseId: string; materi
       </div>
 
       {/* ── Right column ── */}
-      <div className="flex w-[379px] shrink-0 flex-col gap-5">
+      <div className="flex w-full flex-col gap-5 xl:w-[379px] xl:shrink-0">
         <SectionCard labelledBy="rag-info-title">
           <SectionHeading id="rag-info-title" title={t("ragInspector.info.title")} />
           <dl className="contents">
@@ -329,9 +329,9 @@ function OtherMaterials({ courseId, materialId, result, onRetry }: { courseId: s
 /** Loading placeholder in the shape of the 02.7 content. */
 function InspectorSkeleton({ label }: { label: string }) {
   return (
-    <SkeletonRegion label={label} className="flex items-start gap-5">
+    <SkeletonRegion label={label} className="flex flex-col gap-5 xl:flex-row xl:items-start">
       <div className="flex min-w-0 flex-1 flex-col gap-5">
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
           {[0, 1, 2].map((i) => (
             <div key={i} className="flex h-[148px] flex-col gap-3 rounded-eb-lg bg-surface p-5">
               <div className="flex items-center gap-3">
@@ -358,7 +358,7 @@ function InspectorSkeleton({ label }: { label: string }) {
           ))}
         </div>
       </div>
-      <div className="flex w-[379px] shrink-0 flex-col gap-5">
+      <div className="flex w-full flex-col gap-5 xl:w-[379px] xl:shrink-0">
         <div className="flex flex-col gap-5 rounded-eb-xl bg-surface p-5">
           <div className="flex h-6 items-center"><SkeletonLine width={140} /></div>
           {[0, 1, 2].map((i) => (
