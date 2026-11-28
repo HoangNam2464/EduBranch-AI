@@ -16,6 +16,8 @@ import {
   eventCode,
   generationStatus,
   likePattern,
+  matchingAuditEventTypes,
+  matchingLoginFailureReasons,
   pageParams,
   percentages,
   toInt,
@@ -593,11 +595,25 @@ export class AdminService {
     if (q.search) {
       params.push(likePattern(q.search));
       const n = params.length;
-      where.push(
-        `(u.full_name ILIKE $${n} ESCAPE '\\' OR u.email ILIKE $${n} ESCAPE '\\' OR ae.event_type ILIKE $${n} ESCAPE '\\'
-          OR ae.meta->>'caseTitle' ILIKE $${n} ESCAPE '\\' OR ae.meta->>'fileName' ILIKE $${n} ESCAPE '\\'
-          OR ae.meta->>'targetName' ILIKE $${n} ESCAPE '\\')`,
-      );
+      const clauses = [
+        `u.full_name ILIKE $${n} ESCAPE '\\'`,
+        `u.email ILIKE $${n} ESCAPE '\\'`,
+        `ae.event_type ILIKE $${n} ESCAPE '\\'`,
+        `ae.meta->>'caseTitle' ILIKE $${n} ESCAPE '\\'`,
+        `ae.meta->>'fileName' ILIKE $${n} ESCAPE '\\'`,
+        `ae.meta->>'targetName' ILIKE $${n} ESCAPE '\\'`,
+      ];
+      const matchedTypes = matchingAuditEventTypes(q.search);
+      if (matchedTypes.length > 0) {
+        params.push(matchedTypes);
+        clauses.push(`ae.event_type = ANY($${params.length}::text[])`);
+      }
+      const matchedReasons = matchingLoginFailureReasons(q.search);
+      if (matchedReasons.length > 0) {
+        params.push(matchedReasons);
+        clauses.push(`ae.meta->>'reason' = ANY($${params.length}::text[])`);
+      }
+      where.push(`(${clauses.join(" OR ")})`);
     }
     // A filter group (e.g. sign-in = LOGIN_SUCCEEDED + LOGIN_FAILED) arrives as a list; one type still works.
     const eventTypes = q.eventType === undefined ? [] : Array.isArray(q.eventType) ? q.eventType : [q.eventType];

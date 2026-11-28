@@ -169,6 +169,29 @@ describe('CaseService', () => {
           nodes: [{ situation: 'S', options: [{ text: 'Opt', consequence: 'Cons', next_node_index: 1.2 }] }],
         },
       ],
+      [
+        'cycle in AI tree (QA-008)',
+        {
+          title: 'T',
+          root_node_index: 0,
+          nodes: [
+            { situation: 'S0', options: [{ text: 'Opt', consequence: 'Cons', next_node_index: 1 }, { text: 'End', consequence: 'Cons2', next_node_index: null }] },
+            { situation: 'S1', options: [{ text: 'Back', consequence: 'Cons3', next_node_index: 0 }] },
+          ],
+        },
+      ],
+      [
+        'unreachable node in AI tree (QA-008)',
+        {
+          title: 'T',
+          root_node_index: 0,
+          nodes: [
+            { situation: 'S0', options: [{ text: 'Opt', consequence: 'Cons', next_node_index: 1 }] },
+            { situation: 'S1', options: [] },
+            { situation: 'Orphan', options: [] },
+          ],
+        },
+      ],
     ])('rejects %s with 502 BadGatewayException, rolls back and records failure audit (E)', async (_label, payload) => {
       mockAiClientService.generateCase.mockResolvedValue(payload);
       mockDbService.query
@@ -228,7 +251,7 @@ describe('CaseService', () => {
       return sql;
     }
 
-    const body = (options: Array<{ id?: string; text?: string; consequence?: string; nextNodeId: string }>) => ({
+    const body = (options: Array<{ id?: string; text?: string; consequence?: string; nextNodeId: string | null }>) => ({
       situation: 'Tình huống',
       options: options.map((o) => ({ text: 'Phương án', consequence: 'Hệ quả', ...o })),
     });
@@ -333,6 +356,16 @@ describe('CaseService', () => {
       mockTree();
       await expect(service.updateCaseNode('case-1', '00000000-0000-4000-8000-0000000000ff', 'lecturer-1', body([])))
         .rejects.toThrow(NotFoundException);
+    });
+
+    it('accepts null nextNodeId as a terminal option branch when saving a node (EBA-117)', async () => {
+      const sql = mockTree();
+      await service.updateCaseNode('case-1', R, 'lecturer-1', body([
+        { id: OPT1, nextNodeId: A },
+        { id: OPT2, nextNodeId: B },
+        { nextNodeId: null },
+      ]));
+      expect(sql).toContain('COMMIT');
     });
   });
 

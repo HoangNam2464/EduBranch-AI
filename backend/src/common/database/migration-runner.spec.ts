@@ -323,4 +323,50 @@ describe('MigrationRunner Hardened', () => {
       expect(mockClient.release).toHaveBeenCalled();
     });
   });
+
+  describe('Checked-out client error listener (EBA-115)', () => {
+    it('attaches an error listener during run, detaches it cleanly, and destroys client if error fires', async () => {
+      const listeners = new Map<string, Array<(err: Error) => void>>();
+      const emitterClient = {
+        query: jest.fn(),
+        release: jest.fn(),
+        on: jest.fn((event: string, fn: (err: Error) => void) => {
+          listeners.set(event, [...(listeners.get(event) ?? []), fn]);
+        }),
+        removeListener: jest.fn((event: string, fn: (err: Error) => void) => {
+          listeners.set(
+            event,
+            (listeners.get(event) ?? []).filter((f) => f !== fn),
+          );
+        }),
+        emit: (event: string, err: Error) => {
+          for (const fn of listeners.get(event) ?? []) fn(err);
+        },
+      };
+      const emitterPool = { connect: jest.fn().mockResolvedValue(emitterClient) } as unknown as Pool;
+      const emitterRunner = new MigrationRunner(emitterPool);
+
+      const dir = emitterRunner.getMigrationsDirectory();
+      const migrations = emitterRunner.discoverMigrations(dir);
+      emitterClient.query
+        .mockResolvedValueOnce({}) // lock
+        .mockResolvedValueOnce({}) // CREATE TABLE
+        .mockResolvedValueOnce({}) // ALTER TABLE
+        .mockResolvedValueOnce({ rows: [] }); // applied
+      // Fail after emitting a connection error mid-run
+      emitterClient.query.mockImplementationOnce(async () => {
+        emitterClient.emit('error', new Error('terminating connection due to administrator command'));
+        throw new Error('Connection terminated unexpectedly');
+      });
+      emitterClient.query.mockResolvedValueOnce({}); // ROLLBACK
+      emitterClient.query.mockResolvedValueOnce({}); // unlock
+
+      await expect(emitterRunner.run()).rejects.toThrow(/Connection terminated unexpectedly/);
+      expect(migrations.length).toBeGreaterThan(0);
+      expect(emitterClient.on).toHaveBeenCalledWith('error', expect.any(Function));
+      expect(emitterClient.removeListener).toHaveBeenCalledWith('error', expect.any(Function));
+      expect(listeners.get('error')).toHaveLength(0);
+      expect(emitterClient.release).toHaveBeenCalledWith(true);
+    });
+  });
 });

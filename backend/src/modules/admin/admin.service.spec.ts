@@ -84,4 +84,52 @@ describe("AdminService — status and role (BE-032)", () => {
       expect.objectContaining({ type: "USER_ROLE_CHANGED", meta: { targetName: "Tran B", from: "STUDENT", to: "LECTURER" } }),
     );
   });
+
+  describe("listLogs translated event search (EBA-114)", () => {
+    function makeLogDb() {
+      const db = {
+        query: jest.fn(async (sql: string, _params?: unknown[]) => {
+          if (sql.includes("COUNT(*) FILTER")) {
+            return { rows: [{ events_today: "0", logins: "0", generations: "0", errors: "0" }] };
+          }
+          if (sql.startsWith("SELECT COUNT(*) AS total")) {
+            return { rows: [{ total: "0" }] };
+          }
+          return { rows: [] };
+        }),
+        getClient: jest.fn(),
+      };
+      const service = new AdminService(db as any, { record: jest.fn() } as any, { check: jest.fn() } as any);
+      return { service, db };
+    }
+
+    it("matches Vietnamese event titles and login failure reasons in parameterized SQL", async () => {
+      const { service, db } = makeLogDb();
+      await service.listLogs({ search: "Đăng nhập thất bại" });
+      const [listSql, listParams] = db.query.mock.calls[0] as [string, unknown[]];
+      expect(listSql).toContain("ae.event_type = ANY($2::text[])");
+      expect(listParams).toContainEqual(["LOGIN_FAILED"]);
+    });
+
+    it("matches Vietnamese reason label 'Sai mật khẩu' against meta->>'reason'", async () => {
+      const { service, db } = makeLogDb();
+      await service.listLogs({ search: "Sai mật khẩu" });
+      const [listSql, listParams] = db.query.mock.calls[0] as [string, unknown[]];
+      expect(listSql).toContain("ae.meta->>'reason' = ANY($2::text[])");
+      expect(listParams).toContainEqual(["BAD_PASSWORD"]);
+    });
+
+    it("matches English event titles without adding redundant clauses when nothing matches", async () => {
+      const { service, db } = makeLogDb();
+      await service.listLogs({ search: "Case generated" });
+      const [, params] = db.query.mock.calls[0] as [string, unknown[]];
+      expect(params).toContainEqual(["CASE_GENERATED"]);
+
+      db.query.mockClear();
+      await service.listLogs({ search: "no_label_match_xyz" });
+      const [sql] = db.query.mock.calls[0] as [string, unknown[]];
+      expect(sql).not.toContain("ae.event_type = ANY");
+      expect(sql).not.toContain("meta->>'reason'");
+    });
+  });
 });

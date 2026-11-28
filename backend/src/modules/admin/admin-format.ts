@@ -1,6 +1,45 @@
+import { AUDIT_EVENT_TYPES, type AuditEventType } from "../../common/audit/audit.types";
+
 /**
  * Pure helpers for the admin module (spec 007). No I/O, unit-tested in admin-format.spec.ts.
  */
+
+const EVENT_SEARCH_LABELS: Record<AuditEventType, string[]> = {
+  LOGIN_SUCCEEDED: ["đăng nhập thành công", "sign in succeeded", "signed in"],
+  LOGIN_FAILED: ["đăng nhập thất bại", "sign in failed", "login failed"],
+  USER_LOCKED: ["khóa tài khoản", "account locked"],
+  USER_UNLOCKED: ["mở khóa tài khoản", "account unlocked"],
+  USER_ROLE_CHANGED: ["đổi vai trò người dùng", "user role changed"],
+  CASE_GENERATED: ["sinh case bằng ai", "ai case generated", "case generated"],
+  CASE_GENERATION_FAILED: ["sinh case bằng ai thất bại", "ai case generation failed", "case generation failed"],
+  CASE_STATUS_CHANGED: ["đổi trạng thái case", "case status changed"],
+  MATERIAL_UPLOADED: ["tải lên tài liệu", "material uploaded"],
+  SETTINGS_UPDATED: ["cập nhật cài đặt hệ thống", "system settings updated"],
+};
+
+const LOGIN_REASON_SEARCH_LABELS: Record<string, string[]> = {
+  UNKNOWN_ACCOUNT: ["tài khoản không tồn tại", "unknown account"],
+  BAD_PASSWORD: ["sai mật khẩu", "wrong password", "bad password"],
+  ACCOUNT_LOCKED: ["tài khoản đang bị khóa", "account locked"],
+};
+
+/** Audit event types whose Vietnamese or English label contains `search` (case-insensitive, EBA-114). */
+export function matchingAuditEventTypes(search: string): AuditEventType[] {
+  const needle = search.trim().toLowerCase();
+  if (!needle) return [];
+  return AUDIT_EVENT_TYPES.filter((code) =>
+    EVENT_SEARCH_LABELS[code].some((label) => label.includes(needle)),
+  );
+}
+
+/** Login failure reason codes whose Vietnamese or English label contains `search` (case-insensitive, EBA-114). */
+export function matchingLoginFailureReasons(search: string): string[] {
+  const needle = search.trim().toLowerCase();
+  if (!needle) return [];
+  return Object.entries(LOGIN_REASON_SEARCH_LABELS)
+    .filter(([, labels]) => labels.some((label) => label.includes(needle)))
+    .map(([code]) => code);
+}
 
 /** Time zone used for "today" / "this month" boundaries (INFERENCE: the product runs at a Vietnamese university). */
 export const APP_TIME_ZONE = "Asia/Ho_Chi_Minh";
