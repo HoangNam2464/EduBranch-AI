@@ -1973,7 +1973,8 @@
         "subtitle": "Lượt làm Branching Study và bài nộp Review Study trên toàn hệ thống",
         "filter8Weeks": "8 tuần",
         "branchingAttempts": "Lượt làm bài",
-        "reviewSubmissions": "Bài nộp Review Study"
+        "reviewSubmissions": "Bài nộp Review Study",
+        "unavailable": "Hệ thống chưa cung cấp dữ liệu hoạt động học tập theo tuần."
       },
       "usersByRole": {
         "title": "Người dùng theo vai trò",
@@ -1981,7 +1982,8 @@
         "students": "Sinh viên",
         "lecturers": "Giảng viên",
         "admins": "Quản trị viên",
-        "totalUsers": "{{count}} người dùng"
+        "totalUsers": "{{count}} người dùng",
+        "empty": "Chưa có người dùng nào."
       },
       "health": {
         "title": "Tình trạng hệ thống",
@@ -2002,11 +2004,13 @@
         "filterAll": "Mọi khóa học",
         "published": "Đã xuất bản",
         "draft": "Bản nháp",
-        "noCases": "Chưa có case"
+        "noCases": "Chưa có case",
+        "empty": "Chưa có khóa học nào có case."
       },
       "recentLog": {
         "title": "Nhật ký gần đây",
-        "subtitle": "Hôm nay"
+        "subtitle": "Hôm nay",
+        "empty": "Chưa có hoạt động nào được ghi nhận."
       },
       "loadError": "Không tải được dữ liệu tổng quan"
     },

@@ -1973,7 +1973,8 @@
         "subtitle": "Branching Study attempts and Review Study submissions across the system",
         "filter8Weeks": "8 weeks",
         "branchingAttempts": "Study attempts",
-        "reviewSubmissions": "Review submissions"
+        "reviewSubmissions": "Review submissions",
+        "unavailable": "Weekly learning activity data is not available from the system yet."
       },
       "usersByRole": {
         "title": "Users by role",
@@ -1981,7 +1982,8 @@
         "students": "Students",
         "lecturers": "Lecturers",
         "admins": "Administrators",
-        "totalUsers": "{{count}} users"
+        "totalUsers": "{{count}} users",
+        "empty": "No users yet."
       },
       "health": {
         "title": "System status",
@@ -2002,11 +2004,13 @@
         "filterAll": "All courses",
         "published": "Published",
         "draft": "Draft",
-        "noCases": "No cases yet"
+        "noCases": "No cases yet",
+        "empty": "No course has cases yet."
       },
       "recentLog": {
         "title": "Recent log",
-        "subtitle": "Today"
+        "subtitle": "Today",
+        "empty": "No activity has been recorded yet."
       },
       "loadError": "Failed to load dashboard overview data"
     },

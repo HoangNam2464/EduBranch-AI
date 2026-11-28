@@ -67,4 +67,18 @@ describe("AdminDashboardPage (FE-031 / Figma 10.1–10.2)", () => {
     assert.deepEqual(emptyOverview.casesByCourse, []);
     assert.deepEqual(emptyOverview.recentLogs, []);
   });
+
+  it("never shows invented data: no fallback numbers, sample courses, sample log rows or hard-coded week labels (rule F2)", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { fileURLToPath } = await import("node:url");
+    const source = readFileSync(fileURLToPath(new URL("./AdminDashboardPage.tsx", import.meta.url)), "utf8");
+    for (const invented of [
+      /\|\|\s*(92|186|6|2)\b/,
+      /Tu\u1ea7n\s*4\d/,
+      /courseCode:\s*"[A-Z]{2}\d{3}"/,
+      /description:\s*"[^"]*(n\u1ed9p b\u00e0i|sinh case|\u0110\u0103ng nh\u1eadp th\u1ea5t b\u1ea1i)/,
+    ]) {
+      assert.doesNotMatch(source, invented);
+    }
+  });
 });

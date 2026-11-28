@@ -226,6 +226,8 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
 /** Biểu đồ hoạt động học tập theo tuần (Figma 10.2). */
 function ActivityChartPanel() {
   const { t } = useTranslation();
+  // The overview API has no weekly attempts / Review Study submissions series yet, so nothing is drawn
+  // (no invented curve or week labels — rule F2). The gap is reported to the PO.
   return (
     <AdminPanel
       variant="dashboard"
@@ -233,83 +235,7 @@ function ActivityChartPanel() {
       title={t("g6.dashboard.activity.title")}
       subtitle={t("g6.dashboard.activity.subtitle")}
     >
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4 text-[12px] leading-4 text-ink-secondary">
-            <span className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="size-2 rounded-full bg-[#2A4E7F]" />
-              {t("g6.dashboard.activity.branchingAttempts")}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <span aria-hidden="true" className="size-2 rounded-full bg-[#00A5F5]" />
-              {t("g6.dashboard.activity.reviewSubmissions")}
-            </span>
-          </div>
-          <button
-            type="button"
-            className="inline-flex items-center gap-1 rounded-eb-md border border-line bg-surface px-2.5 py-1 text-[12px] font-medium text-ink"
-          >
-            {t("g6.dashboard.activity.filter8Weeks")}
-            <ChevronDown size={14} className="text-ink-secondary" />
-          </button>
-        </div>
-
-        {/* SVG Area chart */}
-        <div className="relative h-[220px] w-full pt-2">
-          <svg className="h-full w-full" viewBox="0 0 600 180" preserveAspectRatio="none" aria-label="Activity trend">
-            <defs>
-              <linearGradient id="gradient-blue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#2A4E7F" stopOpacity="0.25" />
-                <stop offset="100%" stopColor="#2A4E7F" stopOpacity="0.0" />
-              </linearGradient>
-              <linearGradient id="gradient-cyan" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#00A5F5" stopOpacity="0.2" />
-                <stop offset="100%" stopColor="#00A5F5" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-            {/* Grid lines */}
-            <line x1="0" y1="18" x2="600" y2="18" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="58" x2="600" y2="58" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="98" x2="600" y2="98" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="138" x2="600" y2="138" stroke="#E1E8F5" strokeWidth="1" strokeDasharray="3 3" />
-            <line x1="0" y1="178" x2="600" y2="178" stroke="#E1E8F5" strokeWidth="1" />
-
-            {/* Branching Study Area & Line */}
-            <path
-              d="M 0 135 Q 80 120, 150 100 T 300 70 T 450 40 T 600 25 L 600 178 L 0 178 Z"
-              fill="url(#gradient-blue)"
-            />
-            <path
-              d="M 0 135 Q 80 120, 150 100 T 300 70 T 450 40 T 600 25"
-              fill="none"
-              stroke="#2A4E7F"
-              strokeWidth="2.5"
-            />
-
-            {/* Review Study Area & Line */}
-            <path
-              d="M 0 168 Q 80 162, 150 155 T 300 152 T 450 142 T 600 130 L 600 178 L 0 178 Z"
-              fill="url(#gradient-cyan)"
-            />
-            <path
-              d="M 0 168 Q 80 162, 150 155 T 300 152 T 450 142 T 600 130"
-              fill="none"
-              stroke="#00A5F5"
-              strokeWidth="2.5"
-            />
-          </svg>
-          <div className="flex justify-between pt-2 text-[12px] text-ink-muted">
-            <span>Tuần 40</span>
-            <span>Tuần 41</span>
-            <span>Tuần 42</span>
-            <span>Tuần 43</span>
-            <span>Tuần 44</span>
-            <span>Tuần 45</span>
-            <span>Tuần 46</span>
-            <span>Tuần 47</span>
-          </div>
-        </div>
-      </div>
+      <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.activity.unavailable")}</p>
     </AdminPanel>
   );
 }
@@ -317,10 +243,10 @@ function ActivityChartPanel() {
 /** Donut Chart: Người dùng theo vai trò (Figma 10.2). */
 function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["roleBreakdown"] }) {
   const { t } = useTranslation();
-  const students = roleBreakdown.studentPercent || 92;
-  const lecturers = roleBreakdown.lecturerPercent || 6;
-  const admins = roleBreakdown.adminPercent || 2;
-  const total = roleBreakdown.studentsCount + roleBreakdown.lecturersCount + roleBreakdown.adminsCount || 186;
+  const students = roleBreakdown.studentPercent;
+  const lecturers = roleBreakdown.lecturerPercent;
+  const admins = roleBreakdown.adminPercent;
+  const total = roleBreakdown.studentsCount + roleBreakdown.lecturersCount + roleBreakdown.adminsCount;
 
   return (
     <AdminPanel
@@ -328,6 +254,9 @@ function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["rol
       title={t("g6.dashboard.usersByRole.title")}
       subtitle={t("g6.dashboard.usersByRole.subtitle")}
     >
+      {total === 0 ? (
+        <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.usersByRole.empty")}</p>
+      ) : (
       <div className="flex items-center justify-between gap-4 py-2">
         {/* SVG Donut */}
         <div className="relative flex size-[130px] shrink-0 items-center justify-center">
@@ -398,6 +327,7 @@ function UsersByRolePanel({ roleBreakdown }: { roleBreakdown: AdminOverview["rol
           </li>
         </ul>
       </div>
+      )}
     </AdminPanel>
   );
 }
@@ -463,16 +393,7 @@ function SystemHealthCard() {
 /** Case theo khóa học (Figma 10.2). */
 function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse"] }) {
   const { t } = useTranslation();
-  const sampleCourses = courses.length > 0 ? courses : [
-    { courseCode: "CS402", courseName: "An ninh mạng", publishedCount: 4, draftCount: 2, totalCount: 6 },
-    { courseCode: "FN310", courseName: "Tài chính doanh nghiệp", publishedCount: 3, draftCount: 1, totalCount: 4 },
-    { courseCode: "BA220", courseName: "Quản trị dự án", publishedCount: 3, draftCount: 0, totalCount: 3 },
-    { courseCode: "CS301", courseName: "Kỹ thuật phần mềm", publishedCount: 1, draftCount: 1, totalCount: 2 },
-    { courseCode: "MK210", courseName: "Marketing số", publishedCount: 2, draftCount: 0, totalCount: 2 },
-    { courseCode: "OP330", courseName: "Quản trị vận hành", publishedCount: 2, draftCount: 0, totalCount: 2 },
-    { courseCode: "HR205", courseName: "Hành vi tổ chức", publishedCount: 1, draftCount: 0, totalCount: 1 },
-    { courseCode: "IT305", courseName: "Quản trị HTTT", publishedCount: 0, draftCount: 0, totalCount: 0 },
-  ];
+  const sampleCourses = courses;
 
   return (
     <AdminPanel
@@ -503,6 +424,7 @@ function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse
         </div>
 
         <ul className="flex flex-col gap-3">
+          {sampleCourses.length === 0 && <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.casesByCourse.empty")}</p>}
           {sampleCourses.map((c) => {
             const hasCases = c.totalCount > 0;
             const pubPercent = hasCases ? Math.round((c.publishedCount / 6) * 100) : 0;
@@ -542,13 +464,7 @@ function CasesByCoursePanel({ courses }: { courses: AdminOverview["casesByCourse
 /** Nhật ký gần đây (Figma 10.2). */
 function RecentLogsPanel({ logs }: { logs: AdminOverview["recentLogs"] }) {
   const { t } = useTranslation();
-  const sampleLogs = logs.length > 0 ? logs : [
-    { id: "1", description: "Nguyễn Minh Anh nộp bài Review Study", meta: "09:42 · MK210", tone: "success" as const },
-    { id: "2", description: "TS. Nguyễn Văn An sinh case bằng AI", meta: "08:55 · CS402", tone: "info" as const },
-    { id: "3", description: "Đăng nhập thất bại 5 lần", meta: "08:31 · giahuy@dtu.edu.vn", tone: "warning" as const },
-    { id: "4", description: "ThS. Trần Thu Hà tải tài liệu môn học", meta: "08:20 · MK210", tone: "success" as const },
-    { id: "5", description: "Khóa tài khoản Phạm Gia Huy", meta: "08:02 · Quản trị viên", tone: "error" as const },
-  ];
+  const sampleLogs = logs;
 
   return (
     <AdminPanel
@@ -558,6 +474,7 @@ function RecentLogsPanel({ logs }: { logs: AdminOverview["recentLogs"] }) {
       subtitle={t("g6.dashboard.recentLog.subtitle")}
     >
       <ul className="flex flex-col gap-3 py-1">
+        {sampleLogs.length === 0 && <p className="rounded-eb-lg bg-canvas p-4 text-[12px] leading-4 text-ink-secondary">{t("g6.dashboard.recentLog.empty")}</p>}
         {sampleLogs.map((log) => {
           const dotColor =
             log.tone === "success"
