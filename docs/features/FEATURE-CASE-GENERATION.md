@@ -53,7 +53,7 @@ Empowers university lecturers to automatically transform static teaching materia
 1. Lecturer opens the 3-step **AI Studio** wizard at `/lecturer/ai-studio` (reachable from `/lecturer/dashboard`, `/lecturer/cases`, or `/lecturer/courses/:courseId/cases`; `OPD-006`).
 2. Lecturer enters a topic prompt (e.g., "Ethical dilemmas in international supply chains") and selects source materials.
 3. Frontend sends `POST /api/v1/cases/generate` to Backend Gateway.
-4. Backend verifies ownership and forwards request to FastAPI AI Service: `POST /internal/v1/generation/generate-case`.
+4. Backend validates the body (`GenerateCaseDto`, same limits as the AI `CaseGenerationRequest`: `courseId` UUID, `materialIds` ≥ 1 UUID, `numNodes` 2–10; otherwise `400`), verifies ownership and forwards request to FastAPI AI Service: `POST /internal/v1/generation/generate-case`.
 5. AI Service performs semantic retrieval over `document_chunks` for the topic.
 6. AI Service constructs the prompt with `<sources>` boundary and passes `CaseGenerationOutput` schema to LLM.
 7. LLM returns structured JSON.
@@ -157,5 +157,6 @@ Empowers university lecturers to automatically transform static teaching materia
 ---
 
 ## 15. Implementation Status
-**Implemented**
+**Implemented** *(nhánh `fix/case-generate-validation`, chưa merge `develop`)*
+*(AI Case Generation flow (`BE-014`/`BE-015`) is implemented on `develop`. Trên nhánh cục bộ `fix/case-generate-validation`, `POST /api/v1/cases/generate` đã có `GenerateCaseDto` (`400` cho input sai trước SQL/AI), `CaseService.generateCase` đã bổ sung Gateway in-process idempotency cache + singleflight coalescing (`409 Conflict` khi trùng key khác tham số, chống lưu trùng `cases` khi retry tuần tự/song song), và `AiClientService.resolveTimeoutMs` xử lý an toàn giá trị env. Kiểm chứng: unit `437/437`, non-live e2e `398 pass / 43 skip`, `case-lifecycle-http` `38/38`, live Postgres `reasoning-access` & `feedback-stats` `17/17`, live `material-storage-security` PASS, live `material-upload` `8/9` PASS (chỉ skip nhánh `QA_AI_DOWN=1` đã test riêng). Vẫn `PASS WITH CONDITIONS`: persistence `idempotency_key` qua restart cần migration `V9` được PO duyệt, bài test `GEMINI_API_KEY` thật (`QA_EMBEDDINGS=1`) giữ riêng, và câu hỏi sinh case không tài liệu nguồn chờ PO.)*
 *(Pydantic schema `CaseGenerationOutput`, `CaseNode`, `CaseOption`, 3-color DFS DAG validator in `ai-service/app/generation/`, LLM generation route, and `POST /api/v1/cases/generate` + 3-step AI Studio wizard `AiStudioPage.tsx` are implemented on `develop`.)*

@@ -683,5 +683,81 @@ describe('CaseService', () => {
       expect(studentCasesSql).not.toContain('SELECT *');
       expect(mockDbService.query.mock.calls[10][1]).toEqual(['c-1', 'stu-1']);
     });
+
+    it('BE-015 AC-4: deduplicates sequential & concurrent retries with the same idempotencyKey and rejects mismatched parameters with 409', async () => {
+      mockAiClientService.generateCase.mockResolvedValue({
+        title: 'Idempotent Case',
+        description: 'Desc',
+        root_node_index: 0,
+        nodes: [
+          {
+            situation: 'Root',
+            options: [{ text: 'Opt', consequence: 'Cons', next_node_index: null }],
+          },
+        ],
+      });
+
+      mockDbService.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('FROM users')) return { rows: [{ id: 'lecturer-1' }] };
+        if (sql.includes('FROM courses')) return { rows: [{ id: 'course-1', is_active: true }] };
+        if (sql.includes('FROM cases c')) return { rows: [{ id: 'case-idem-1', status: 'DRAFT', lecturer_id: 'lecturer-1' }] };
+        if (sql.includes('FROM case_nodes')) return { rows: [{ id: 'node-1', situation: 'Root', node_index: 0 }] };
+        if (sql.includes('FROM case_options')) return { rows: [] };
+        return { rows: [] };
+      });
+      mockDbClient.query.mockImplementation(async (sql: string) =>
+        sql.includes('FOR SHARE') ? { rows: [{ is_active: true }] } : { rows: [] },
+      );
+
+      const payload = { materialIds: ['m1', 'm2'], topicHint: 'Ethics', numNodes: 3, idempotencyKey: 'idem-key-1' };
+      const [first, second] = await Promise.all([
+        service.generateCase('course-1', 'lecturer-1', payload),
+        service.generateCase('course-1', 'lecturer-1', { ...payload, materialIds: ['m2', 'm1'] }),
+      ]);
+      expect(first.id).toBe('case-idem-1');
+      expect(second.id).toBe('case-idem-1');
+      expect(mockAiClientService.generateCase).toHaveBeenCalledTimes(1);
+
+      const third = await service.generateCase('course-1', 'lecturer-1', payload);
+      expect(third.id).toBe('case-idem-1');
+      expect(mockAiClientService.generateCase).toHaveBeenCalledTimes(1);
+
+      await expect(
+        service.generateCase('course-1', 'lecturer-1', {
+          ...payload,
+          topicHint: 'Different topic',
+        }),
+      ).rejects.toThrow(ConflictException);
+      expect(mockAiClientService.generateCase).toHaveBeenCalledTimes(1);
+    });
+
+    it('BE-015 AC-4: does not cache failed generations so the same idempotencyKey can be retried after transient failure', async () => {
+      mockDbService.query.mockImplementation(async (sql: string) => {
+        if (sql.includes('FROM users')) return { rows: [{ id: 'lecturer-1' }] };
+        if (sql.includes('FROM courses')) return { rows: [{ id: 'course-1', is_active: true }] };
+        if (sql.includes('FROM cases c')) return { rows: [{ id: 'case-retry-ok', status: 'DRAFT', lecturer_id: 'lecturer-1' }] };
+        return { rows: [] };
+      });
+      mockDbClient.query.mockImplementation(async (sql: string) =>
+        sql.includes('FOR SHARE') ? { rows: [{ is_active: true }] } : { rows: [] },
+      );
+
+      mockAiClientService.generateCase.mockRejectedValueOnce(new BadGatewayException('temporary failure'));
+      await expect(
+        service.generateCase('course-1', 'lecturer-1', { materialIds: ['m1'], idempotencyKey: 'retry-after-fail' }),
+      ).rejects.toThrow(BadGatewayException);
+
+      mockAiClientService.generateCase.mockResolvedValueOnce({
+        title: 'Recovered',
+        root_node_index: 0,
+        nodes: [{ situation: 'End', options: [] }],
+      });
+      const res = await service.generateCase('course-1', 'lecturer-1', {
+        materialIds: ['m1'],
+        idempotencyKey: 'retry-after-fail',
+      });
+      expect(res.id).toBe('case-retry-ok');
+      expect(mockAiClientService.generateCase).toHaveBeenCalledTimes(2);
+    });
   });
 });

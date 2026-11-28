@@ -15,15 +15,47 @@ import { randomUUID } from "crypto";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
 import { findTreeViolation } from "./case-tree.validator";
 
+interface CachedGeneration {
+  fingerprint: string;
+  caseId: string;
+  expiresAt: number;
+}
+
+interface InFlightGeneration {
+  fingerprint: string;
+  promise: Promise<any>;
+}
+
+const DEFAULT_GENERATION_IDEMPOTENCY_TTL_MS = 10 * 60 * 1000;
+
 @Injectable()
 export class CaseService {
   private readonly logger = new Logger(CaseService.name);
+  private readonly generationCache = new Map<string, CachedGeneration>();
+  private readonly generationInFlight = new Map<string, InFlightGeneration>();
+  private readonly idempotencyTtlMs: number;
 
   constructor(
     private readonly db: DatabaseService,
     private readonly aiClient: AiClientService,
     @Optional() private readonly audit?: AuditService,
-  ) {}
+  ) {
+    const rawTtl = Number(process.env.CASE_GENERATION_IDEMPOTENCY_TTL_MS);
+    this.idempotencyTtlMs =
+      Number.isFinite(rawTtl) && rawTtl > 0 ? rawTtl : DEFAULT_GENERATION_IDEMPOTENCY_TTL_MS;
+  }
+
+  private generationFingerprint(
+    courseId: string,
+    dto: { materialIds: string[]; topicHint?: string; numNodes?: number },
+  ): string {
+    return JSON.stringify({
+      courseId,
+      materialIds: [...dto.materialIds].sort(),
+      topicHint: dto.topicHint ?? "",
+      numNodes: dto.numNodes ?? null,
+    });
+  }
 
   async generateCase(
     courseId: string,
@@ -52,6 +84,70 @@ export class CaseService {
       throw new ConflictException("Course is archived");
     }
 
+    const idempotencyKey = dto.idempotencyKey?.trim() || undefined;
+    const cacheKey = idempotencyKey ? `${lecturerId}:${idempotencyKey}` : undefined;
+    const fingerprint = this.generationFingerprint(courseId, dto);
+
+    if (cacheKey) {
+      const cached = this.generationCache.get(cacheKey);
+      if (cached) {
+        if (cached.expiresAt <= Date.now()) {
+          this.generationCache.delete(cacheKey);
+        } else if (cached.fingerprint !== fingerprint) {
+          throw new ConflictException(
+            "Idempotency key was previously used with different generation parameters",
+          );
+        } else {
+          try {
+            return await this.getCaseById(cached.caseId, "LECTURER", lecturerId);
+          } catch (err) {
+            if (!(err instanceof NotFoundException)) throw err;
+            this.generationCache.delete(cacheKey);
+          }
+        }
+      }
+
+      const inFlight = this.generationInFlight.get(cacheKey);
+      if (inFlight) {
+        if (inFlight.fingerprint !== fingerprint) {
+          throw new ConflictException(
+            "Idempotency key is currently in flight with different generation parameters",
+          );
+        }
+        return inFlight.promise;
+      }
+    }
+
+    const upstreamKey = idempotencyKey ?? randomUUID();
+    const run = () => this.executeCaseGeneration(courseId, lecturerId, dto, upstreamKey);
+
+    if (!cacheKey) {
+      return run();
+    }
+
+    const promise = run()
+      .then((created) => {
+        this.generationCache.set(cacheKey, {
+          fingerprint,
+          caseId: created.id,
+          expiresAt: Date.now() + this.idempotencyTtlMs,
+        });
+        return created;
+      })
+      .finally(() => {
+        this.generationInFlight.delete(cacheKey);
+      });
+
+    this.generationInFlight.set(cacheKey, { fingerprint, promise });
+    return promise;
+  }
+
+  private async executeCaseGeneration(
+    courseId: string,
+    lecturerId: string,
+    dto: { materialIds: string[]; topicHint?: string; numNodes?: number; idempotencyKey?: string },
+    idempotencyKey: string,
+  ) {
     // 2. Call AI Service to generate case draft with idempotency support
     const startedAt = Date.now();
     let aiResponse: any;
@@ -61,7 +157,7 @@ export class CaseService {
         course_id: courseId,
         topic_hint: dto.topicHint,
         num_nodes: dto.numNodes,
-        idempotency_key: dto.idempotencyKey,
+        idempotency_key: idempotencyKey,
       });
     } catch (err) {
       await this.recordGenerationFailure(lecturerId, courseId, startedAt, err);

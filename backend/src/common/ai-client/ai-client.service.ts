@@ -74,6 +74,14 @@ export class AiClientService {
     return data;
   }
 
+  private resolveTimeoutMs(primaryKey: string, fallbackMs: number, secondaryKey?: string): number {
+    const raw =
+      this.configService.get<string | number | undefined>(primaryKey) ??
+      (secondaryKey ? this.configService.get<string | number | undefined>(secondaryKey) : undefined);
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : fallbackMs;
+  }
+
   async generateCase(payload: {
     material_ids: string[];
     course_id: string;
@@ -84,7 +92,7 @@ export class AiClientService {
     const url = `${this.baseUrl}/internal/v1/generation/generate-case`;
     this.logger.log(`Invoking AI Service case generation: ${url} for course ${payload.course_id}`);
 
-    const timeoutMs = this.configService.get<number>("AI_SERVICE_TIMEOUT_MS", 60000);
+    const timeoutMs = this.resolveTimeoutMs("AI_SERVICE_TIMEOUT_MS", 60000);
     const controller = new AbortController();
     const timeoutHandle = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -168,13 +176,7 @@ export class AiClientService {
       `Invoking AI Service challenge support: ${url} for session ${payload.session_id} (round ${payload.round_number})`,
     );
 
-    const rawTimeout = this.configService.get<string | number>(
-      "CHALLENGE_SUPPORT_TIMEOUT_MS",
-      this.configService.get<string | number>("AI_SERVICE_TIMEOUT_MS", 30000),
-    );
-    const parsedTimeout = Number(rawTimeout);
-    const timeoutMs =
-      !isNaN(parsedTimeout) && parsedTimeout > 0 ? parsedTimeout : 30000;
+    const timeoutMs = this.resolveTimeoutMs("CHALLENGE_SUPPORT_TIMEOUT_MS", 30000, "AI_SERVICE_TIMEOUT_MS");
 
     const maxRetries = 2; // 1 initial + up to 2 retries = 3 attempts total
     let attempt = 0;
