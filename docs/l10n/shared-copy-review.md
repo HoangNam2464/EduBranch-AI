@@ -580,7 +580,6 @@
 | `g4.queue.pagination.previous` | Trang trước | Previous page | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.pagination.next` | Trang sau | Next page | PROPOSED | — | — | FE-019 PR #68 |
 | `g4.queue.pagination.pageN` | Trang {{page}} | Page {{page}} | PROPOSED | — | — | FE-019 PR #68 |
-| `g4.queue.modeFilter` | Lọc theo chế độ học | Filter by learning mode | PROPOSED | — | — | FE-019 screen quality |
 | `g4.queue.allModes` | Mọi chế độ học | All learning modes | PROPOSED | — | — | FE-019 screen quality |
 | `g6.dashboard.alerts.indexing_failure_one` | {{count}} tài liệu lập chỉ mục thất bại | {{count}} material failed indexing | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g6.dashboard.alerts.indexing_failure_other` | {{count}} tài liệu lập chỉ mục thất bại | {{count}} materials failed indexing | PROPOSED | — | — | FE screen quality 2026-11-28 |
