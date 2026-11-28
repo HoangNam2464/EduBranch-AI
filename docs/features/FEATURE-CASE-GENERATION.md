@@ -157,5 +157,6 @@ Empowers university lecturers to automatically transform static teaching materia
 ---
 
 ## 15. Implementation Status
-**Implemented**
+**Implemented** *(nhánh `fix/case-generate-validation`, chưa merge `develop`)*
+*(AI Case Generation flow (`BE-014`/`BE-015`) is implemented on `develop`. Trên nhánh cục bộ `fix/case-generate-validation` (`2e38554`), `POST /api/v1/cases/generate` đã có `GenerateCaseDto` (`400` cho input sai trước SQL/AI) và được kiểm chứng unit `435/435`, `case-lifecycle-http` `37/37`; e2e `397 pass / 43 skip` (`PASS WITH CONDITIONS` do 5 suite live bị skip); câu hỏi sinh case không tài liệu nguồn đang chờ PO quyết định.)*
 *(Pydantic schema `CaseGenerationOutput`, `CaseNode`, `CaseOption`, 3-color DFS DAG validator in `ai-service/app/generation/`, LLM generation route, and `POST /api/v1/cases/generate` + 3-step AI Studio wizard `AiStudioPage.tsx` are implemented on `develop`.)*
