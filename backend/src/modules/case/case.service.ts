@@ -13,7 +13,7 @@ import { AuditService } from "../../common/audit/audit.service";
 import { AiClientService } from "../../common/ai-client/ai-client.service";
 import { randomUUID } from "crypto";
 import { UpdateCaseNodeDto } from "./dto/update-case-node.dto";
-import { findTreeViolation } from "./case-tree.validator";
+import { findGeneratedTreeViolation, findTreeViolation } from "./case-tree.validator";
 
 @Injectable()
 export class CaseService {
@@ -84,23 +84,9 @@ export class CaseService {
 
       const nodes = Array.isArray(aiResponse?.nodes) ? aiResponse.nodes : [];
       const rootIndex = aiResponse?.root_node_index;
-      if (!Number.isInteger(rootIndex) || rootIndex < 0 || rootIndex >= nodes.length) {
-        throw new BadGatewayException("AI generated case has invalid root_node_index");
-      }
-      for (const node of nodes) {
-        if (node.options && Array.isArray(node.options)) {
-          for (const opt of node.options) {
-            if (opt.next_node_index !== null && opt.next_node_index !== undefined) {
-              if (
-                !Number.isInteger(opt.next_node_index) ||
-                opt.next_node_index < 0 ||
-                opt.next_node_index >= nodes.length
-              ) {
-                throw new BadGatewayException("AI generated case has invalid option next_node_index");
-              }
-            }
-          }
-        }
+      const treeError = findGeneratedTreeViolation(rootIndex, nodes);
+      if (treeError) {
+        throw new BadGatewayException(treeError);
       }
 
       const caseId = randomUUID();
@@ -488,11 +474,11 @@ export class CaseService {
         seenIds.add(option.id);
       }
 
-      const targetsByNode = new Map<string, string[]>();
+      const targetsByNode = new Map<string, Array<string | null>>();
       for (const o of options) {
         if (o.node_id === nodeId) continue;
         const list = targetsByNode.get(o.node_id) ?? [];
-        list.push(o.next_node_id ?? "");
+        list.push(o.next_node_id);
         targetsByNode.set(o.node_id, list);
       }
       targetsByNode.set(nodeId, dto.options.map((o) => o.nextNodeId));
@@ -544,7 +530,7 @@ export class CaseService {
       const writtenRes = await client.query("SELECT next_node_id FROM case_options WHERE node_id = $1", [nodeId]);
       targetsByNode.set(
         nodeId,
-        (writtenRes.rows as Array<{ next_node_id: string | null }>).map((r) => r.next_node_id ?? ""),
+        (writtenRes.rows as Array<{ next_node_id: string | null }>).map((r) => r.next_node_id),
       );
       const afterWrite = findTreeViolation(caseRow.root_node_id, nodes, targetsByNode, nodeId);
       if (afterWrite) throw new BadRequestException(afterWrite);
@@ -615,7 +601,11 @@ export class CaseService {
         }
 
         const terminalRes = await this.db.query(
-          "SELECT COUNT(*) as count FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE",
+          `SELECT (
+             (SELECT COUNT(*)::int FROM case_nodes WHERE case_id = $1 AND is_terminal = TRUE) +
+             (SELECT COUNT(*)::int FROM case_options co JOIN case_nodes cn ON co.node_id = cn.id
+              WHERE cn.case_id = $1 AND co.next_node_id IS NULL)
+           ) AS count`,
           [caseId],
         );
         const terminalCount = parseInt(terminalRes.rows[0]?.count || "0", 10);

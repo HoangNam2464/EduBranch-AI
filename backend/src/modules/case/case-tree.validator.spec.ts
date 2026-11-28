@@ -1,7 +1,7 @@
-import { findTreeViolation } from "./case-tree.validator";
+import { findGeneratedTreeViolation, findTreeViolation } from "./case-tree.validator";
 
 const nodes = (...ids: string[]) => ids.map((id) => ({ id }));
-const edges = (entries: Array<[string, string[]]>) => new Map(entries);
+const edges = (entries: Array<[string, Array<string | null>]>) => new Map(entries);
 
 describe("findTreeViolation (FND §5)", () => {
   it("accepts a root with two branches that end in terminal nodes", () => {
@@ -59,5 +59,48 @@ describe("findTreeViolation (FND §5)", () => {
       ["b", ["a", "r"]],
     ]);
     expect(findTreeViolation("r", nodes("r", "a", "b"), tree)).toMatch(/ending node/);
+  });
+
+  it("accepts null nextNodeId as a terminal branch while still rejecting empty strings (EBA-117)", () => {
+    expect(findTreeViolation("r", nodes("r", "a"), edges([["r", ["a", null]], ["a", [null, null]]]))).toBeNull();
+    expect(findTreeViolation("r", nodes("r", "a"), edges([["r", ["a", null]]]), "r")).toBeNull();
+    expect(findTreeViolation("r", nodes("r", "a"), edges([["r", ["a", ""]]]), "r")).toMatch(/node of this case/);
+  });
+});
+
+describe("findGeneratedTreeViolation (QA-008)", () => {
+  it("accepts a valid acyclic tree with all nodes reachable and at least one terminal path", () => {
+    expect(
+      findGeneratedTreeViolation(0, [
+        { options: [{ next_node_index: 1 }, { next_node_index: null }] },
+        { options: [] },
+      ]),
+    ).toBeNull();
+  });
+
+  it("rejects cycles and unreachable orphan nodes in AI payloads", () => {
+    expect(
+      findGeneratedTreeViolation(0, [
+        { options: [{ next_node_index: 1 }, { next_node_index: null }] },
+        { options: [{ next_node_index: 0 }] },
+      ]),
+    ).toMatch(/cycle/);
+
+    expect(
+      findGeneratedTreeViolation(0, [
+        { options: [{ next_node_index: 1 }] },
+        { options: [] },
+        { options: [] },
+      ]),
+    ).toMatch(/unreachable/);
+  });
+
+  it("rejects trees with no terminal node or null-target branch", () => {
+    expect(
+      findGeneratedTreeViolation(0, [
+        { options: [{ next_node_index: 1 }] },
+        { options: [{ next_node_index: 0 }] },
+      ]),
+    ).toMatch(/no terminal|cycle/);
   });
 });

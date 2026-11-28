@@ -484,6 +484,17 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       const rootOptions = (await optionsOf(c.caseId)).filter((o: any) => o.node_id === c.n.root);
       expect(rootOptions).toHaveLength(3);
     });
+
+    itDb("EBA-117: an option with nextNodeId = null is accepted over HTTP and persisted as a terminal branch", async () => {
+      const c = await seedCase("DRAFT");
+      const res = await putNode(c.caseId, c.n.mid, [
+        { id: c.o.midToEnd1, text: "Go end", consequence: "End", nextNodeId: c.n.end },
+        { id: c.o.midToEnd2, text: "End directly", consequence: "Direct end", nextNodeId: null },
+      ]);
+      expect(res.status).toBe(200);
+      const midOptions = (await optionsOf(c.caseId)).filter((o: any) => o.node_id === c.n.mid);
+      expect(midOptions.some((o: any) => o.next_node_id === null)).toBe(true);
+    });
   });
 
   // ---------------------------------------------------------------- QA-007 (gateway part)
@@ -532,6 +543,33 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       expect(aiCalls()).toBe(1);
     });
 
+    itDb("null-target leaf options allow generating and publishing a case without empty-option nodes (EBA-117)", async () => {
+      aiReturns({
+        title: "Null-Edge Terminal Case",
+        description: "Ends via next_node_index: null",
+        root_node_index: 0,
+        nodes: [
+          {
+            situation: "Initial choice",
+            options: [
+              { text: "End immediately A", consequence: "Done A", next_node_index: null },
+              { text: "End immediately B", consequence: "Done B", next_node_index: null },
+            ],
+          },
+        ],
+      });
+      const gen = await generate();
+      expect(gen.status).toBe(201);
+      const caseId = gen.body.data.id;
+      const setStatus = (status: string) =>
+        http().patch(`/api/v1/cases/${caseId}/status`).set("Authorization", auth.lectA).send({ status });
+      expect((await setStatus("REVIEWED")).status).toBe(200);
+      expect((await setStatus("APPROVED")).status).toBe(200);
+      const pub = await setStatus("PUBLISHED");
+      expect(pub.status).toBe(200);
+      expect(pub.body.data.status).toBe("PUBLISHED");
+    });
+
     itDb("an AI service error (503) gives the lecturer 502 without the AI detail, stores no case, one call", async () => {
       const before = await caseCount();
       fetchStub.mockImplementation(async () => ({ ok: false, status: 503, text: async () => "provider overloaded: secret detail" }));
@@ -562,7 +600,7 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
       expect(await caseCount()).toBe(before);
     });
 
-    itDb("an AI tree with an invalid root or option index is refused (502) and nothing is stored", async () => {
+    itDb("an AI tree with an invalid root, option index, cycle, or unreachable node is refused (502) and nothing is stored", async () => {
       for (const bad of [
         { root_node_index: 5, nodes: [{ situation: "Only", options: [] }] },
         {
@@ -570,6 +608,21 @@ describe("Case lifecycle + student access gate — real HTTP on PostgreSQL (QA-0
           nodes: [
             { situation: "Start", options: [{ text: "A", consequence: "c", next_node_index: 9 }] },
             { situation: "End", options: [] },
+          ],
+        },
+        {
+          root_node_index: 0,
+          nodes: [
+            { situation: "Start", options: [{ text: "A", consequence: "c", next_node_index: 1 }, { text: "B", consequence: "d", next_node_index: null }] },
+            { situation: "Loop", options: [{ text: "Back", consequence: "l", next_node_index: 0 }] },
+          ],
+        },
+        {
+          root_node_index: 0,
+          nodes: [
+            { situation: "Start", options: [{ text: "A", consequence: "c", next_node_index: 1 }] },
+            { situation: "End", options: [] },
+            { situation: "Orphan", options: [] },
           ],
         },
       ]) {

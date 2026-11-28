@@ -205,6 +205,13 @@ export class MigrationRunner {
     let destroyClient = false;
     const applied: string[] = [];
     const skipped: string[] = [];
+    const onClientError = (err: Error) => {
+      destroyClient = true;
+      this.logger.error(`PostgreSQL migration connection error: ${err?.message ?? String(err)}`);
+    };
+    if (typeof client.on === "function") {
+      client.on("error", onClientError);
+    }
 
     try {
       // 1. Acquire PostgreSQL Advisory Lock (Blocks other instances until released)
@@ -314,6 +321,9 @@ export class MigrationRunner {
       }
 
       // If connection state is uncertain or unlock failed, destroy client so PostgreSQL backend releases session locks.
+      if (typeof client.removeListener === "function") {
+        client.removeListener("error", onClientError);
+      }
       if (destroyClient) {
         try {
           client.release(true);
