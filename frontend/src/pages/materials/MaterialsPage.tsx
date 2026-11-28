@@ -116,16 +116,16 @@ function MaterialRow({
           </span>
         </span>
         {status === "FAILED" && <span className="flex shrink-0 items-center">{indicator}</span>}
-        <span className="relative flex size-8 shrink-0 items-center justify-center">
+        <span className="relative flex h-8 min-w-8 shrink-0 items-center justify-end">
           {status !== "FAILED" && (
-            <span className="flex items-center group-hover/row:invisible group-has-[:focus-visible]/row:invisible">{indicator}</span>
+            <span className="flex items-center whitespace-nowrap group-hover/row:invisible group-has-[:focus-visible]/row:invisible">{indicator}</span>
           )}
           <button
             type="button"
             onClick={onDelete}
             aria-label={t("g2.materials.delete", { name: material.originalFilename })}
             className={cx(
-              "absolute inset-0 flex cursor-pointer items-center justify-center rounded-eb-md bg-canvas text-ink-secondary hover:bg-surface-hover",
+              "absolute top-0 right-0 flex size-8 cursor-pointer items-center justify-center rounded-eb-md bg-canvas text-ink-secondary hover:bg-surface-hover",
               status !== "FAILED" && "opacity-0 group-hover/row:opacity-100 group-has-[:focus-visible]/row:opacity-100 focus-visible:opacity-100",
               FOCUS_RING,
             )}

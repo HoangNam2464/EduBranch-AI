@@ -1980,7 +1980,7 @@
         "openCourses": "Active courses",
         "publishedCases": "Published cases",
         "aiGenerations": "AI case generations",
-        "growthThisMonth": "+{{count}} in month {{month}}",
+        "growthThisMonth": "+{{count}} this month",
         "aiErrors": "{{count}} failed generations",
         "noAiErrors": "No errors"
       },

@@ -359,7 +359,11 @@ export function StatisticsPage() {
   // Render main analytics content according to states
   let mainContent: ReactNode;
 
-  if (!selectedCaseId && coursesState.status === "error") {
+  if (!selectedCaseId && coursesState.status === "error" && coursesState.code === 403) {
+    mainContent = (
+      <ErrorState title={t("states.forbidden.title")} description={t("states.forbidden.description")} errorCode={403} onRetry={retryCourses} />
+    );
+  } else if (!selectedCaseId && coursesState.status === "error") {
     mainContent = (
       <ErrorState
         title={t("g4.stats.prompt.coursesError")}
@@ -391,7 +395,7 @@ export function StatisticsPage() {
     // Loading skeleton state
     mainContent = (
       <div className="flex flex-col gap-5">
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 min-[1920px]:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
@@ -440,7 +444,7 @@ export function StatisticsPage() {
     const rs = caseStats.reviewStudy!;
     mainContent = (
       <div className="flex flex-col gap-5">
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 min-[1920px]:grid-cols-4">
           <MetricCard
             variant="compact"
             icon={CircleCheck}
@@ -551,8 +555,8 @@ export function StatisticsPage() {
 
     mainContent = (
       <div className="flex flex-col gap-5">
-        {/* 4 KPI cards in a row from 1440px (Figma 04.3); 2 x 2 below so labels and values fit (R01). */}
-        <div className="grid grid-cols-2 gap-4 min-[1440px]:grid-cols-4">
+        {/* 4 KPI cards in a row from 1920px; 2 x 2 below so labels and values fit without wrapping (R01). */}
+        <div className="grid grid-cols-2 gap-4 min-[1920px]:grid-cols-4">
           <MetricCard
             variant="compact"
             icon={CircleCheck}

@@ -222,8 +222,12 @@ export function SubmissionReviewList({
                     </p>
                     <p className="truncate text-[12px] leading-4 text-ink-secondary" title={item.courseName}>
                       {subLine}
-                      {item.attemptNumber ? <span className="min-[1440px]:hidden"> · #{item.attemptNumber}</span> : null}
-                      <span className="xl:hidden"> · {formattedDate}</span>
+                    </p>
+                    {/* Columns hidden at this width: attempt (below 1440 px) and submitted time (below 1280 px) on their own line. */}
+                    <p className="truncate text-[12px] leading-4 text-ink-muted min-[1440px]:hidden">
+                      {item.attemptNumber ? <span>#{item.attemptNumber}</span> : null}
+                      {item.attemptNumber ? <span className="xl:hidden"> · </span> : null}
+                      <span className="xl:hidden">{formattedDate}</span>
                     </p>
                   </div>
                 </td>

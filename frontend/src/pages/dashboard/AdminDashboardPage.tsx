@@ -122,7 +122,7 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
   return (
     <section
       aria-label="KPI overview"
-      className="grid grid-cols-1 rounded-[16px] bg-surface p-6 shadow-eb-card sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-line"
+      className="grid grid-cols-2 gap-y-5 rounded-[16px] bg-surface p-6 shadow-eb-card xl:grid-cols-4 xl:gap-y-0"
     >
       {/* 1. Người dùng */}
       <MetricCard
@@ -156,9 +156,10 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
       />
 
       {/* 3. Case đã xuất bản */}
+      {/* 2 x 2 below 1280 px: the left column of the second row has no divider. */}
       <MetricCard
         variant="kpi"
-        divided
+        className="xl:border-l xl:border-line"
         label={t("g6.dashboard.kpi.publishedCases")}
         value={kpis.publishedCases}
         delta={{
@@ -172,7 +173,7 @@ function KpiBand({ kpis }: { kpis: AdminOverview["kpis"] }) {
       />
 
       {/* 4. Lượt sinh case AI */}
-      <div className="flex min-w-0 flex-col items-start gap-2 border-t border-line pt-4 sm:border-t-0 sm:pt-0 lg:border-l lg:border-line lg:px-6">
+      <div className="flex min-w-0 flex-col items-start gap-2 border-l border-line px-6">
         <p className="text-[15px] leading-[22px] text-ink-secondary">{t("g6.dashboard.kpi.aiGenerations")}</p>
         <p className="text-[28px] leading-9 font-medium text-ink">{kpis.aiCaseGenerations}</p>
         {kpis.aiCaseFailures > 0 ? (
@@ -445,7 +446,7 @@ function RecentLogsPanel({ logs }: { logs: AdminOverview["recentLogs"] }) {
   return (
     <AdminPanel
       variant="dashboard"
-      className="w-[360px] shrink-0"
+      className="w-full shrink-0 xl:w-[360px]"
       title={t("g6.dashboard.recentLog.title")}
       subtitle={t("g6.dashboard.recentLog.subtitle")}
     >
@@ -502,11 +503,11 @@ export function AdminDashboardPage() {
     );
     mainContent = (
       <div className="flex flex-col gap-5">
-        <div className="flex items-stretch gap-5">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-stretch">
           <SkeletonRegion className="h-80 flex-1 rounded-[16px] bg-surface p-6">
             <SkeletonLine width="40%" />
           </SkeletonRegion>
-          <div className="flex w-[360px] shrink-0 flex-col gap-5">
+          <div className="flex w-full shrink-0 flex-col gap-5 xl:w-[360px]">
             <SkeletonRegion className="h-44 rounded-[16px] bg-surface p-6">
               <SkeletonLine width="50%" />
             </SkeletonRegion>
@@ -531,15 +532,15 @@ export function AdminDashboardPage() {
     kpiContent = <KpiBand kpis={data.kpis} />;
     mainContent = (
       <>
-        <div className="flex items-stretch gap-5">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-stretch">
           <ActivityChartPanel />
-          <div className="flex w-[360px] shrink-0 flex-col gap-5">
+          <div className="flex w-full shrink-0 flex-col gap-5 xl:w-[360px]">
             <UsersByRolePanel roleBreakdown={data.roleBreakdown} />
             <SystemHealthCard overview={data.systemHealth} />
           </div>
         </div>
 
-        <div className="flex items-stretch gap-5">
+        <div className="flex flex-col gap-5 xl:flex-row xl:items-stretch">
           <CasesByCoursePanel courses={data.casesByCourse} />
           <RecentLogsPanel logs={data.recentLogs} />
         </div>

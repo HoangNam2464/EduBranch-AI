@@ -608,6 +608,7 @@
 | `g6.dashboard.usersByRole.empty` | Chưa có người dùng nào. | No users yet. | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g6.dashboard.casesByCourse.empty` | Chưa có khóa học nào có case. | No course has cases yet. | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g6.dashboard.recentLog.empty` | Chưa có hoạt động nào được ghi nhận. | No activity has been recorded yet. | PROPOSED | — | — | FE screen quality 2026-11-28 |
+| `g6.dashboard.kpi.growthThisMonth` | +{{count}} trong tháng {{month}} | +{{count}} this month | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g4.stats.outcomes.reachCount_one` | {{count}} lượt kết thúc ({{percent}}%) | {{count}} completion ({{percent}}%) | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g4.stats.outcomes.reachCount_other` | {{count}} lượt kết thúc ({{percent}}%) | {{count}} completions ({{percent}}%) | PROPOSED | — | — | FE screen quality 2026-11-28 |
 | `g4.stats.branchChart.selections_one` | {{count}} lượt chọn | {{count}} selection | PROPOSED | — | — | FE screen quality 2026-11-28 |
